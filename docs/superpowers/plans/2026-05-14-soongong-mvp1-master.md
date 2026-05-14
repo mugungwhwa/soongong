@@ -10,7 +10,7 @@
 - Supabase (Postgres + RLS + Storage + Edge Functions + pgvector + Cron)
 - AI: Anthropic Claude API (Haiku 4.5 / Sonnet 4.6 폴백) + Vision LLM + Mathpix OCR (옵션)
 - 데이터 원칙: **Raw 최소 저장 + Derived 학습 객체 누적** (원본 자동 삭제 cron)
-- 마스코트: **순공이(가안, 듀공 형태)** — 일러스트는 외주 별도 트랙
+- 마스코트: **순공이(가안, 듀공 형태)** — 시각 자산은 Midjourney + Canva 트랙 (Mike 직접 작업, 외주 없음). 자세히: `docs/visual-assets/2026-05-14-soongong-asset-inventory.md`
 
 **Tech Stack:**
 - Frontend: Next.js 15, React 19, TypeScript 5.x, Tailwind v4, shadcn/ui, FSD 2.1, TanStack Query, Zustand
@@ -241,7 +241,7 @@
 
 **병렬 가능:**
 - P8 Admin은 P3 끝나면 P4-P7과 병렬 가능 (다른 트랙)
-- 일러스트 외주는 P1과 동시 시작 → P5 전에 완료
+- 시각 자산 작업(Midjourney 마스코트 6종 + Canva 앱아이콘/OG)은 P1과 동시 시작 → P5 전에 필수 4종(응원/축하/앱아이콘/favicon) 완료
 
 ---
 
@@ -279,18 +279,18 @@ tldraw는 상용 라이선스 비용 가능, Konva는 직접 구현 비용 큼. 
 
 ---
 
-## 일러스트 외주 (비기능 트랙)
+## 시각 자산 트랙 (Mike 직접 작업, 외주 없음)
 
-순공이(가안, 듀공 형태) 캐릭터 일러스트는 별도 외주 트랙:
+순공이(가안, 듀공 형태) 마스코트 + 앱 아이콘 + 마케팅 자산은 Mike가 **Midjourney + Canva**로 직접 제작. 자세한 inventory + Midjourney prompt + Canva 작업 가이드는 `docs/visual-assets/2026-05-14-soongong-asset-inventory.md` 참조.
 
-| 시점 | 산출물 |
-|---|---|
-| P1 진행 중 | 외주 발주 (브리프 + 가이드라인 + UI 설계.md §6 참조) |
-| P3 종료 시점 | 1차 시안 받음 |
-| P5 진입 전 | 최종안 확정 + asset (SVG/PNG/Lottie) 전달 |
-| P6 진입 전 | 표정 variants (응원/생각/축하) 추가 |
+| 시점 | 산출물 | 트랙 |
+|---|---|---|
+| W1 (P1 시작 시) | 마스코트 응원 + 축하 (Midjourney) + 앱 아이콘 + Favicon (Canva) | 필수 4종 |
+| W2 | 마스코트 생각 + 위로 (Midjourney) + Open Graph (Canva) | 추천 3종 |
+| W4 | 마스코트 잠 + 놀람 (Midjourney) | nice-to-have |
+| 출시 직전 | 스토어 스크린샷 + 랜딩 hero (Canva) | 마케팅 |
 
-**중간 placeholder:** 추상 도형 또는 시안 이미지의 작업용 임시안. UI 설계.md §6 명시한 "가안" 상태 유지.
+**중간 placeholder:** `apps/web/src/shared/ui/mascot.tsx`에 mood-keyed mapping 두고, 미준비 항목은 emoji + 라운드 fill로 대체. 자산이 채워지는 대로 자동 반영.
 
 ---
 
@@ -302,7 +302,7 @@ tldraw는 상용 라이선스 비용 가능, Konva는 직접 구현 비용 큼. 
 |---|---|
 | **문서 트랙** (sub-plan 작성) | **지금부터** — P1 → P2 → P3 순차로 sub-plan 문서만 작성 |
 | **환경 트랙** (실제 Supabase / Vercel / GitHub Actions / Anthropic API 키 셋업) | **별도 시점, Mike 명시 OK 후** |
-| 일러스트 외주 | P1 진행 중 발주 (환경 트랙과 무관) |
+| 시각 자산 (Midjourney+Canva) | P1 진행 중 시작 (Mike 직접, 환경 트랙과 무관) |
 
 ### 환경 트랙 진행 전 필요한 결정 (Mike 확인 사항)
 
