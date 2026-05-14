@@ -1,0 +1,29 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# 도구 / 임시
+.claude-dev-helper/
+.omc/
+*.swp
+*.swo
+*~
+
+# 빌드/캐시 (향후 코드베이스 진입 시)
+node_modules/
+.next/
+dist/
+build/
+.turbo/
+.vercel/
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 로그
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

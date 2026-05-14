@@ -1,0 +1,113 @@
+{
+  "project": "순공대장",
+  "created_at": "2026-05-13T08:56:36.112810",
+  "source_count": 14,
+  "categories": {
+    "00_프로젝트_사업_전략": {
+      "title": "프로젝트·사업·전략",
+      "desc": "순공대장의 사업 포지셔닝, 시장성, SparkClaw 제출용 문안, 유니크니스 판단, 리서치 방법론을 보관합니다."
+    },
+    "01_제품_UX_게임화": {
+      "title": "제품 UX·게임화",
+      "desc": "순공대장의 핵심 사용자 경험, UI 가이드, 오답회수 모드, 게임성·보상·리그 설계를 보관합니다."
+    },
+    "02_AI_Agent_학습엔진": {
+      "title": "AI Agent·학습 엔진",
+      "desc": "문제 생성, 난이도 조절, 과목 라우팅, 외부 데이터 유입, 망각곡선 기반 회독 메커니즘 등 AI 학습 엔진 설계를 보관합니다."
+    },
+    "03_데이터_RAG_보안_법무": {
+      "title": "데이터·RAG·보안·법무",
+      "desc": "수능 유형 RAG, 데이터 관리, 저작권/교육법/개인정보 리스크 및 운영 가드레일을 보관합니다."
+    },
+    "04_개발_스택_구현": {
+      "title": "개발 스택·구현",
+      "desc": "Next.js, Expo, Supabase, Claude Code, 패드 풀이 캔버스 등 실제 개발 구현 지침을 보관합니다."
+    }
+  },
+  "files": [
+    {
+      "title": "Claude Code 개발 가능성",
+      "source_file": "Claude Code 개발 가능성.txt",
+      "category": "개발 스택·구현",
+      "path": "04_개발_스택_구현/Claude_Code_개발_가능성.md"
+    },
+    {
+      "title": "SparkClaw 사업소개서",
+      "source_file": "SparkClaw 사업소개서.txt",
+      "category": "프로젝트·사업·전략",
+      "path": "00_프로젝트_사업_전략/SparkClaw_사업소개서.md"
+    },
+    {
+      "title": "게임성 기획 구조",
+      "source_file": "게임성 기획 구조.txt",
+      "category": "제품 UX·게임화",
+      "path": "01_제품_UX_게임화/게임성_기획_구조.md"
+    },
+    {
+      "title": "과목 라우팅 시스템",
+      "source_file": "과목 라우팅 시스템.txt",
+      "category": "AI Agent·학습 엔진",
+      "path": "02_AI_Agent_학습엔진/과목_라우팅_시스템.md"
+    },
+    {
+      "title": "리서치 방법 안내",
+      "source_file": "리서치 방법 안내.txt",
+      "category": "프로젝트·사업·전략",
+      "path": "00_프로젝트_사업_전략/리서치_방법_안내.md"
+    },
+    {
+      "title": "망각곡선과 학습 메커니즘",
+      "source_file": "망각곡선과 학습 메커니즘.txt",
+      "category": "AI Agent·학습 엔진",
+      "path": "02_AI_Agent_학습엔진/망각곡선과_학습_메커니즘.md"
+    },
+    {
+      "title": "문제 생성 Agent",
+      "source_file": "문제 생성 Agent.txt",
+      "category": "AI Agent·학습 엔진",
+      "path": "02_AI_Agent_학습엔진/문제_생성_Agent.md"
+    },
+    {
+      "title": "순공대장 UI 설계",
+      "source_file": "순공대장 UI 설계.txt",
+      "category": "제품 UX·게임화",
+      "path": "01_제품_UX_게임화/순공대장_UI_설계.md"
+    },
+    {
+      "title": "앱 포팅 기술 추천",
+      "source_file": "앱 포팅 기술 추천.txt",
+      "category": "개발 스택·구현",
+      "path": "04_개발_스택_구현/앱_포팅_기술_추천.md"
+    },
+    {
+      "title": "오답 회수 모드",
+      "source_file": "오답 회수 모드.txt",
+      "category": "제품 UX·게임화",
+      "path": "01_제품_UX_게임화/오답_회수_모드.md"
+    },
+    {
+      "title": "외부 데이터 유입 엔진",
+      "source_file": "외부 데이터 유입 엔진.txt",
+      "category": "AI Agent·학습 엔진",
+      "path": "02_AI_Agent_학습엔진/외부_데이터_유입_엔진.md"
+    },
+    {
+      "title": "유니크한 교육 앱 설계",
+      "source_file": "유니크한 교육 앱 설계.txt",
+      "category": "프로젝트·사업·전략",
+      "path": "00_프로젝트_사업_전략/유니크한_교육_앱_설계.md"
+    },
+    {
+      "title": "유저 데이터 관리 보안",
+      "source_file": "유저 데이터 관리 보안.txt",
+      "category": "데이터·RAG·보안·법무",
+      "path": "03_데이터_RAG_보안_법무/유저_데이터_관리_보안.md"
+    },
+    {
+      "title": "패드 풀이과정 분석 플러그인",
+      "source_file": "패드 풀이과정 분석 플러그인.txt",
+      "category": "개발 스택·구현",
+      "path": "04_개발_스택_구현/패드_풀이과정_분석_플러그인.md"
+    }
+  ]
+}
