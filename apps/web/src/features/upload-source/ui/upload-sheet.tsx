@@ -71,7 +71,7 @@ export function UploadSheet({
             />
             <Button
               onClick={() => fileRef.current?.click()}
-              className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+              className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
             >
               파일 선택
             </Button>
@@ -103,7 +103,7 @@ export function UploadSheet({
                 수정하기
               </Button>
               <Button
-                className="flex-1 bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+                className="flex-1 bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
                 onClick={() => handleClose(false)}
               >
                 맞아요

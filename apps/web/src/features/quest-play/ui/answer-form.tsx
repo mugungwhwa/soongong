@@ -25,7 +25,7 @@ export function AnswerForm({
       <Button
         onClick={onSubmit}
         disabled={disabled || !answer}
-        className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+        className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
       >
         제출
       </Button>

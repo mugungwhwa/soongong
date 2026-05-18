@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
-import { RiskBadge } from "@/entities/quest/ui/risk-badge";
+import { RiskBadge } from "@/entities/quest";
 import { ROUTES } from "@/shared/config/routes";
 import type { Quest } from "@/shared/mocks/quests";
 
@@ -30,7 +30,7 @@ export function QuestCard({ quest, index }: { quest: Quest; index: number }) {
           </div>
         </div>
         <Link href={ROUTES.play(quest.questId)}>
-          <Button className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]" size="sm">
+          <Button className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]" size="sm">
             풀기
           </Button>
         </Link>

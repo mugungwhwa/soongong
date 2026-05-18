@@ -9,7 +9,7 @@ export function ReviewMap() {
   const percent = Math.round((CURRENT_STEP / TOTAL_STEPS) * 100);
 
   return (
-    <Card className="p-5 shadow-[var(--shadow-card)] border-[var(--color-border-default)] bg-gradient-to-br from-[var(--color-mint-50)] to-[var(--color-bg-elevated)]">
+    <Card className="p-5 shadow-[var(--shadow-card)] border-[var(--color-border-default)] bg-[image:var(--gradient-quest-map)]">
       <div className="flex items-center gap-4">
         <Mascot mood="cheer" size="lg" />
         <div className="flex-1 min-w-0">

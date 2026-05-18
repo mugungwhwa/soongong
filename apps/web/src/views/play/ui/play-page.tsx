@@ -63,7 +63,7 @@ export function PlayPage({ questId }: { questId: string }) {
               홈으로
             </Button>
             <Button
-              className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+              className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
               onClick={() => router.push(ROUTES.result)}
             >
               결과 보기
@@ -86,7 +86,7 @@ export function PlayPage({ questId }: { questId: string }) {
               다시 풀기
             </Button>
             <Button
-              className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+              className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
               onClick={() => router.push(ROUTES.recovery(quest.objectId))}
             >
               오답회수 가기

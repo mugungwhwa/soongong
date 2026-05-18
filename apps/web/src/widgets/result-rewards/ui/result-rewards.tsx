@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/shared/ui/card";
 import { Mascot } from "@/shared/ui/mascot";
 import { XpCounter } from "./xp-counter";
-import { useGameState } from "@/entities/user-game-state/model/use-game-state";
+import { useGameState } from "@/entities/user-game-state";
 
 export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
   const s = useGameState();
@@ -22,7 +22,7 @@ export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
           <Mascot mood="celebrate" size="xl" className="mx-auto" />
         </motion.div>
         <div>
-          <div className="text-3xl font-bold text-[var(--color-mint-700)]">
+          <div className="text-3xl font-bold text-[var(--color-text-on-warm)] inline-block bg-[var(--color-xp)] px-4 py-1 rounded-[var(--radius-pill)]">
             +<XpCounter to={earnedXp} /> XP
           </div>
           <p className="text-sm text-[var(--color-text-muted)] mt-1">

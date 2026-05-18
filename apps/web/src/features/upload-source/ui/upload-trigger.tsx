@@ -8,7 +8,7 @@ export function UploadTrigger() {
   return (
     <>
       <Button
-        className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+        className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
         onClick={() => setOpen(true)}
       >
         + 문제 출제하기

@@ -36,7 +36,7 @@ export function RecoveryPage({ objectId }: { objectId: string }) {
             <Badge
               className={
                 activeTier === v.tier
-                  ? "bg-[var(--color-mint-500)] text-white"
+                  ? "bg-[var(--color-mint-500)] text-[var(--color-text-inverse)]"
                   : ""
               }
             >
@@ -55,7 +55,7 @@ export function RecoveryPage({ objectId }: { objectId: string }) {
         </p>
         <div className="flex gap-2">
           <Button
-            className="flex-1 bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+            className="flex-1 bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
             onClick={() => router.push(ROUTES.result)}
           >
             풀기 완료 (+30 XP)

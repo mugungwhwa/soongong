@@ -1,5 +1,5 @@
 import { Card } from "@/shared/ui/card";
-import { RiskBadge } from "@/entities/quest/ui/risk-badge";
+import { RiskBadge } from "@/entities/quest";
 
 interface ForgettingItem {
   subject: string;

@@ -1,5 +1,5 @@
 "use client";
-import { useTodayQuests } from "@/entities/quest/model/use-today-quests";
+import { useTodayQuests } from "@/entities/quest";
 import { QuestCard } from "./quest-card";
 
 export function QuestList() {

@@ -15,7 +15,7 @@ export function LoginPage() {
         와꾸 데모 — 로그인 없이 진입
       </p>
       <Button
-        className="bg-[var(--color-mint-500)] text-white hover:bg-[var(--color-mint-700)]"
+        className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
         onClick={() => router.push("/today")}
       >
         시작하기 (더미)
