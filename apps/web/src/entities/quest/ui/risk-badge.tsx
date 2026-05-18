@@ -1,0 +1,19 @@
+import type { QuestRiskLevel } from "@/shared/mocks/quests";
+
+const STYLE: Record<QuestRiskLevel, { bg: string; fg: string; label: string }> = {
+  low: { bg: "var(--color-risk-low)", fg: "#fff", label: "여유" },
+  mid: { bg: "var(--color-risk-mid)", fg: "#3a2a10", label: "주의" },
+  high: { bg: "var(--color-risk-high)", fg: "#fff", label: "위험" },
+};
+
+export function RiskBadge({ level }: { level: QuestRiskLevel }) {
+  const s = STYLE[level];
+  return (
+    <span
+      className="inline-flex items-center px-2 py-0.5 rounded-[var(--radius-pill)] text-xs font-semibold"
+      style={{ background: s.bg, color: s.fg }}
+    >
+      {s.label}
+    </span>
+  );
+}
