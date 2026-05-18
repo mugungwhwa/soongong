@@ -1,0 +1,192 @@
+# 순공대장 (Soongong)
+
+> **수능생을 위한 듀오링고형 AI 회독 앱.**
+> 문제를 풀어주는 AI가 아니라, **다시 풀게 만드는 AI**.
+
+<sub>한국 수능생 · 인강 중심 독학재수생 · 오답관리가 약한 학생 대상 B2C 구독 SaaS.
+1인 창업자가 **50+ Development Agent**와 **16개 Product Agent**를 듀얼 운용해 8주 안에 동작시키는 AI-native 제품.</sub>
+
+---
+
+## 한 줄 비전
+
+학생이 인강을 보고 끝내지 않도록, AI가 문제사진·오답·인강기록·캡처·메모를 매일 **회독퀘스트**로 바꿔주는 학습 리텐션 엔진.
+
+> 핵심 메시지 — **"까먹기 전에 다시 풀자"**
+
+---
+
+## 데모 시안
+
+| 모바일 | 웹 대시보드 |
+|---|---|
+| ![모바일 UI](app_UI.png) | ![웹 대시보드](web_ui.png) |
+
+(시안 SSoT — 텍스트와 충돌 시 이미지가 우선)
+
+---
+
+## 핵심 차별점
+
+1. **Source-to-Quest Engine** — 문제사진/인강기록/캡처를 단순 저장하는 것이 아니라 과목·단원·유형·오답원인·난이도·복습시점으로 구조화. 원본 최소 저장, 파생 학습 객체만 장기 누적.
+2. **오답회수 모드** — 틀린 순간 해설만 보여주고 끝내지 않고, 가까운 변형 문제(V0-V5)로 단계적 회수. "이해한 것 같은 상태"가 아니라 **다시 맞히는 상태**까지 끌고 감.
+3. **개인화 회독 스케줄** — 학생별 망각위험(시간경과 / 정답률 / 풀이시간 / 힌트사용 / 자신감) 기반으로 1/3/7/14일 자동 조정. 망각방어전 + 순공리그로 매일 복귀 유도.
+
+학술 근거: 에빙하우스 망각곡선 (Murre & Dros 2015) · 분산학습 (Cepeda 2006) · 인출 연습 (Karpicke & Roediger *Science* 2008) · 섞어풀기 (Rohrer 2014).
+
+---
+
+## AI Agent 듀얼 트랙
+
+| 트랙 | 구성 | 역할 |
+|---|---|---|
+| **Product Agents** | 16개 백서 / MVP 1차 9개 | 학생 학습 분석 엔진 (Input Router → OCR → Subject Routing → Learning Object Builder → Review Scheduling → Quest → Game) |
+| **Development Agents** | 50+ subagent / skill | 1인 창업자가 운용하는 가상 개발 팀 (Architect → Executor → Designer → Reviewer → QA → Security) |
+
+> **"AI Agent가 AI Agent를 만든다."** — SparkClaw 1인 창업 트랙의 메타-레벨 차별점.
+
+자세한 매트릭스: [`docs/agent-strategy/2026-05-14-agent-tracks.md`](docs/agent-strategy/2026-05-14-agent-tracks.md)
+
+---
+
+## 기술 스택
+
+| 계층 | 도구 |
+|---|---|
+| Frontend | Next.js 15 (App Router) + TypeScript 5 + Tailwind v4 + shadcn/ui + FSD 2.1 |
+| Backend | Supabase (Postgres + RLS + Storage + Edge Functions + pgvector + Cron) |
+| AI | Anthropic Claude API (Haiku 4.5 + Sonnet 4.6 + Mathpix OCR 옵션) + Vercel AI SDK |
+| Pad solving | tldraw (웹 MVP) / Konva 폴백 |
+| Hosting | Vercel |
+| Storage 정책 | 원본 7-30일 자동 삭제, 파생 학습 객체만 장기 누적 |
+
+---
+
+## 빠른 시작
+
+> 환경 트랙 결정사항(`docs/setup/2026-05-14-environment-decisions.md`)을 먼저 끝낸 후 진행.
+
+```bash
+# 1. clone
+git clone git@github.com:mugungwhwa/soongong.git
+cd soongong
+
+# 2. 환경 변수 (.env.local 채우기)
+cp docs/setup/.env.local.example apps/web/.env.local
+# Supabase URL/keys + ANTHROPIC_API_KEY 입력
+
+# 3. 의존성 + 마이그레이션
+cd apps/web && pnpm install
+pnpm dlx supabase db push
+
+# 4. dev
+pnpm dev
+```
+
+---
+
+## 문서 구조
+
+```
+soongong/
+├── README.md                                    ← 지금 이 파일
+├── CLAUDE.md                                    ← Claude Code 자동 로드 SSoT
+├── docs/
+│   ├── RESUME.md                                ← 세션 재개 첫 진입점
+│   ├── superpowers/plans/                       ← 마스터 플랜 + P1-P8 sub-plan 9종
+│   ├── setup/                                   ← 환경 결정 + .env 템플릿
+│   ├── visual-assets/                           ← Midjourney + Canva 가이드
+│   ├── agent-strategy/                          ← Agent 듀얼 트랙 매트릭스
+│   └── sparkclaw/                               ← SparkClaw 제출 자료 + Marp slide
+├── apps/web/                                    ← Next.js 15 + FSD 2.1
+├── supabase/                                    ← migrations + Edge Functions
+├── eval/                                        ← P2/P3 정확도 게이트 harness
+├── 00_프로젝트_사업_전략/                         ← 사업/시장/SparkClaw 사업소개서
+├── 01_제품_UX_게임화/                            ← UI 설계 v2.3 + 오답회수 + 게임성
+├── 02_AI_Agent_학습엔진/                         ← 16-Agent 백서
+├── 03_데이터_RAG_보안_법무/                       ← Raw/Derived 분리 정책
+└── 04_개발_스택_구현/                            ← Next.js/Expo/Supabase/패드 캔버스
+```
+
+---
+
+## 8주 로드맵
+
+| 주 | Phase | 출력물 |
+|---|---|---|
+| W1 | P1 Foundation | Next.js + Supabase + 디자인 토큰 |
+| W1-2 | P2 Source Intake | 업로드 + Compliance Gate |
+| W2-3 | **P3 AI Pipeline** ⚠️ | 라우팅 + OCR + 학습 객체 (정확도 ≥90% 게이트) |
+| W4 | P4 Scheduling | 1/3/7/14일 cron |
+| W4-5 | P5 Home/Quest UI | 홈 + 퀘스트 카드 |
+| W5-6 | P6 Play+Recovery+Canvas | 회독 플레이 + 오답회수 + 풀이 캔버스 |
+| W6-7 | P7 Game System | XP / 스트릭 / HP / 뱃지 |
+| W7-8 | P8 Admin | 검수 화면 |
+
+각 phase는 [`docs/superpowers/plans/`](docs/superpowers/plans/)에 **실제 코드 수준 sub-plan**으로 잠겨있음 (~6,500줄).
+
+---
+
+## 마스코트
+
+작업명: **순공이** (가안, 듀공 모티프) — Mike가 Midjourney + Canva로 직접 제작 (외주 없음).
+이름·외형은 가안이며 추후 확정 가능.
+
+작업 가이드: [`docs/visual-assets/2026-05-14-soongong-asset-inventory.md`](docs/visual-assets/2026-05-14-soongong-asset-inventory.md)
+
+---
+
+## 비즈니스 모델
+
+| Plan | 가격 | 기능 |
+|---|---|---|
+| Free | 무료 | 문제사진 제한 / 오늘의 회독 일부 / 스트릭 |
+| Plus | 월 9,900원 | 무제한 회독 / 오답던전 / 망각방어전 |
+| Pro | 월 19,900원 | AI 유사문항 / 고급 리포트 / 4점보스 / 학부모 공유 |
+| B2B/B2B2C | 별도 견적 | 독학재수학원·관리형 스터디센터 대시보드 |
+
+**시장**: 사교육비 27.5조 / 고등학생 7.8조 / 2026학년도 수능 응시자 55.4만명.
+
+자세히: [`00_프로젝트_사업_전략/SparkClaw_사업소개서.md`](00_프로젝트_사업_전략/SparkClaw_사업소개서.md)
+
+---
+
+## 보안 / 법무
+
+- **Raw / Derived 분리** — 원본 문제사진·인강 캡처는 7-30일 자동 삭제, 파생 학습 객체만 장기 저장
+- **Compliance Gate** — 업로드마다 저작권/PII 자동 분류
+- **Supabase RLS** — 학생 본인 데이터만 접근, 모든 admin 액션 audit_logs 자동 기록
+- **AI 분석 결과 고지** + 오류 신고 버튼
+- **만 14세 미만** 보호자 동의 게이트 (개인정보보호법 준수)
+
+자세히: [`03_데이터_RAG_보안_법무/유저_데이터_관리_보안.md`](03_데이터_RAG_보안_법무/유저_데이터_관리_보안.md)
+
+---
+
+## SparkClaw
+
+SparkClaw 1인 창업 트랙 제출 자료: [`docs/sparkclaw/2026-05-14-sparkclaw-submission.md`](docs/sparkclaw/2026-05-14-sparkclaw-submission.md)
+Marp 슬라이드 draft (11p): [`docs/sparkclaw/slide-deck-draft.md`](docs/sparkclaw/slide-deck-draft.md)
+
+PDF 변환:
+```bash
+# 본문 PDF
+pandoc docs/sparkclaw/2026-05-14-sparkclaw-submission.md -o submission.pdf \
+  --pdf-engine=xelatex -V CJKmainfont="Pretendard"
+
+# 슬라이드 PDF
+npx -y @marp-team/marp-cli docs/sparkclaw/slide-deck-draft.md --pdf
+```
+
+---
+
+## 연락
+
+- GitHub: [`mugungwhwa/soongong`](https://github.com/mugungwhwa/soongong)
+- 작성자: Mike (`mikeikhoonkim1208@gmail.com`)
+
+---
+
+## License
+
+미정 (MVP 1차 검증 단계). 출시 단계에서 결정.
