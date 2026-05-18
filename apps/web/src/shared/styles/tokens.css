@@ -13,10 +13,14 @@
     --color-mint-700: #4FA84F;
     --color-mint-900: #2E6B2E;
 
-    /* Risk (soft) */
-    --color-risk-low: #6FB3FF;
-    --color-risk-mid: #FFB36E;
-    --color-risk-high: #FF7B7B;
+    /* Risk (soft, 채도 ≤60 — UI 설계.md §3) */
+    --color-risk-low: #A0BFDC;
+    --color-risk-mid: #E6B788;
+    --color-risk-high: #E29B9B;
+
+    /* Reward / XP (Duolingo #ffc800과 차별, soft golden) */
+    --color-xp: #F2C94C;
+    --color-xp-soft: #FBE7A6;
 
     /* Text */
     --color-text-strong: #1A2A1A;
