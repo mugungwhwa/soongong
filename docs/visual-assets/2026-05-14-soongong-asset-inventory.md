@@ -130,6 +130,25 @@ MVP 1차에 필요한 표정 6종. 각각 PNG 1024×1024, 투명 배경.
 | 5 | **잠/대기** (sleep) | Empty state | nice-to-have |
 | 6 | **놀람** (surprise) | 망각위험 알림 | nice-to-have |
 
+### 3.x 입수 자산 v0.1 (2026-05-18, Mike Midjourney 작업본)
+
+위치: `docs/visual-assets/mascot-v0.1/`
+
+| 파일 | 해상도 | 컬러/포맷 | 매핑(잠정) | 사용 가능 여부 |
+|---|---|---|---|---|
+| `main.png` | 1254×1254 | 8-bit RGB, 비인터레이스, **배경 크림 합성** (알파 없음) | 풀바디 마스코트 — 홈 메인, 온보딩, 리워드 화면 메인 일러스트 | ✅ 즉시 사용 가능 (스케일다운만) / ⚠️ 합성 시 배경 분리 필요 |
+| `repeat_normal.png` | 1254×1254 | 8-bit RGB, 비인터레이스, **배경 크림 합성** (알파 없음) | 페이스 클로즈업 — 회독퀘스트 카드 썸네일, 뱃지 슬롯, 리액션 슬롯 | ✅ 즉시 사용 가능 / ⚠️ 합성 시 배경 분리 필요 |
+
+**관찰 사항:**
+- 듀공 모티프 + 민트 바디 + 크림 배경 + 노란 왕관 → §1 트랙 분류·`CLAUDE.md §2` 잠긴 결정 모두 정합.
+- 표정은 1종(평온/기본)만 보유. §3 표 6종 중 **#1 응원 변형** 또는 **#5 잠/대기**에 가장 가깝다고 판단 (별도 응원 포즈/표정 변형 필요).
+- 알파 채널 없음 → Canva BG Remover 또는 `rembg` 1회 처리 후 `apps/web/public/mascot/`에 배포.
+
+**남은 TODO (다음 단계):**
+1. Mike — Midjourney `--cref` 옵션으로 표정 5종 추가 생성 (cheer / celebrate / think / comfort / sleep / surprise 매핑 확정).
+2. Mike (Canva) — 배경 투명화 + 1024 / 512 / 256 / 128 / 64 5단 다운스케일 export.
+3. Claude — `apps/web/src/shared/ui/mascot.tsx` placeholder를 v0.1 자산으로 1차 교체 (`#1 응원/기본` 슬롯에 `main.png` 임시 매핑).
+
 ---
 
 ## 4. Midjourney Prompt 가이드 (Mike용)
@@ -347,3 +366,4 @@ export function Mascot({ mood = "cheer", size = 128 }: { mood?: Mood; size?: num
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. 외주 트랙 폐기. Claude/Lucide/Midjourney/Canva 4트랙 분류. 마스코트 6종 + 앱 아이콘 + 푸시/OG/스토어 자산 inventory + Midjourney prompt 가이드 + Canva 작업 가이드.** |
+| **v1.1** | **2026-05-18** | **§3.x 입수 자산 v0.1 섹션 신설. Mike Midjourney 작업본 2종(`main.png` 풀바디 + `repeat_normal.png` 페이스 클로즈업, 1254×1254) 등재. 폴더 `charcter image/` → `docs/visual-assets/mascot-v0.1/`로 이동, `repeat_nomal.png` 오타 수정.** |
