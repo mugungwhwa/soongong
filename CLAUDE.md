@@ -75,7 +75,8 @@ docs/
 ├── setup/2026-05-14-environment-decisions.md          ← Mike 결정 25분
 ├── setup/.env.local.example
 ├── visual-assets/2026-05-14-soongong-asset-inventory.md  ← GPT-4o+Canva 자산 인벤토리
-├── visual-assets/2026-05-18-character-design-agent.md  ← 순공이 캐릭터 디자인 에이전트 SSoT
+├── visual-assets/2026-05-18-character-design-agent.md  ← DEPRECATED, ui-master §4로 이관 (stub만 유지)
+├── superpowers/specs/2026-05-18-ui-master-design.md  ← UI master SSoT (디자인 시스템 + 캐릭터 production + 에이전트 dispatch + 리서치 + 모션 + 6게이트)
 ├── visual-assets/mascot-v0.1/                         ← Mike 작업본 reference (main.png, repeat_normal.png)
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
@@ -129,6 +130,7 @@ cd apps/web && pnpm dev
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. 잠긴 결정사항 9개 + 작업 패턴 + 위험 게이트 + 폐기 정책.** |
 | **v1.1** | **2026-05-18** | **§5 핵심 문서 경로 트리에 캐릭터 디자인 에이전트 SSoT(`2026-05-18-character-design-agent.md`) + 마스코트 v0.1 작업본 폴더 추가. 인벤토리 주석 Midjourney → GPT-4o 갱신.** |
+| **v1.2** | **2026-05-18** | **§5에 UI master spec(`superpowers/specs/2026-05-18-ui-master-design.md`) 추가. 캐릭터 SSoT는 DEPRECATED 표시(ui-master §4로 흡수, stub만 유지).** |
 
 ---
 

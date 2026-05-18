@@ -98,6 +98,8 @@ evaluator 출력 schema는 P4 회독 큐가 consume.
 
 ## §4. UI 리서치 — 듀오링고 follow-up mini-workflow
 
+> ⚠️ **DEPRECATED (v1.2)**: 본 §은 `docs/superpowers/specs/2026-05-18-ui-master-design.md` v1.0 §3으로 흡수 이관됨. 본 §은 history 보존용으로만 유지. 신규 작업은 UI master spec §3 참조.
+
 ### 4.1 진입 트리거
 **P0 킥오프 직전 또는 P0 Day 0-1과 병행** (v1.0의 "P5 1주 전 one-shot"에서 앞당김 — P0가 Day 1에 `tokens.css` SSoT를 잠그므로). P0 Day 1 토큰 잠금 **직전**까지 reference deck + 디자인 토큰 lock PR 완료 **필수**.
 
@@ -162,6 +164,7 @@ evaluator 출력 schema는 P4 회독 큐가 consume.
 |---|---|---|
 | **v1.0** | **2026-05-18** | **brainstorming 산출 초안. 3개 도메인 mini-workflow + 통합 게이트 + §3.2 보강 항목.** |
 | **v1.1** | **2026-05-18** | **P0 sub-plan(`2fc1821`) 신규 발견 반영. §4.1 UI 리서치 트리거를 "P5 1주 전" → "P0 킥오프 직전/병행"으로 앞당김. §2.3 / §3.2에 P0 contract 정합 단서. §6에 P0 행 신설.** |
+| **v1.2** | **2026-05-18** | **§4 UI 리서치 mini-workflow를 `ui-master-design.md` v1.0 §3으로 흡수 이관 + deprecate 마킹. 본 §은 history 보존용으로만 유지.** |
 
 ---
 

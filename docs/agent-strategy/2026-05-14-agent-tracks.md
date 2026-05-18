@@ -393,6 +393,7 @@ Development Agents (개발 운용, Mike + Claude Code 협업): 50+ subagent
 | **v1.0** | **2026-05-14** | **초안. Product Agents 16개 정확 명세 (SparkClaw §5 SSoT) + Source-to-Quest 6개 + 베리에이션 8개 = 3 레이어. MVP 단계별 구현 매트릭스. Development Agents 50+ subagent 카테고리별 매핑. P별 디스패치 매트릭스. Claude Code 하네스 권장 셋업 (settings/hooks/plugins/MCP/슬래시). SparkClaw 어필 단락.** |
 | **v1.1** | **2026-05-18** | **§8 인접 트랙 cross-link 신설. 시각 자산 specialist 트랙(순공이 캐릭터 디자인 에이전트) 1번째 등재.** |
 | **v1.2** | **2026-05-18** | **§3.2 매트릭스 보강 — P0 행 신설, P3/P4 리뷰/QA에 scientist 추가, P4에 silent-failure-hunter 추가, P5 진입 시에 external-context + ccg + document-specialist 추가, P5 매트릭스 아래 메모 1줄. Source: `docs/superpowers/specs/2026-05-18-eval-review-ui-research-design.md` v1.1 §6.** |
+| **v1.3** | **2026-05-18** | **§8 cross-link 갱신 — UI master spec(`docs/superpowers/specs/2026-05-18-ui-master-design.md`)을 cross-cut layer 안내로 §8 본문 추가. character-design-agent SSoT cell은 deprecated 표시 + UI master §4 redirect.** |
 
 ---
 
@@ -400,9 +401,11 @@ Development Agents (개발 운용, Mike + Claude Code 협업): 50+ subagent
 
 본 문서는 **코드 Agent**(Product 16 + Development 50)에 집중한다. 코드가 아닌 시각 자산은 별도 specialist 트랙으로 분리되어 자체 SSoT를 가진다.
 
+> 📎 **UI master cross-cut layer (v1.3)**: `docs/superpowers/specs/2026-05-18-ui-master-design.md` v1.0이 본 표 위 cross-cut layer로 작용. UI+캐릭터 dispatch matrix(§2) + 상품화 게이트(§1) + 리서치 자동화(§3) + 모션 spec(§6)을 한 페이지에 통합. specialist 트랙(아래 표)의 워크플로우는 그대로 유지하되 master spec이 phase-cross hook을 제공.
+
 | Specialist | 영문 ID | SSoT 문서 | 담당 | 도구 |
 |---|---|---|---|---|
-| **순공이 캐릭터 디자인 에이전트** | `character-design-agent` | `docs/visual-assets/2026-05-18-character-design-agent.md` | Mike(작업) + Claude(가이드·후처리) | GPT-4o(ChatGPT) + remove.bg + Canva + rembg |
+| **순공이 캐릭터 디자인 에이전트** | `character-design-agent` | `ui-master-design.md` **§4** (원본 `character-design-agent.md`는 deprecated stub) | Mike(작업) + Claude(가이드·후처리) | GPT-4o(ChatGPT) + remove.bg + Canva + rembg |
 
 각 specialist는 자체 잠긴 결정·워크플로우·진행 마일스톤·팔로업 프로토콜을 가지며, 코드 Agent 디스패치와는 독립적으로 운영된다. 향후 추가 specialist(예: 음성·모션 등) 등재 시 본 표에 한 행씩 누적.
 
