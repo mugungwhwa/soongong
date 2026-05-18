@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Button } from "@/shared/ui/button";
-import { UploadSheet } from "@/widgets/upload-sheet/ui/upload-sheet";
+import { UploadSheet } from "./upload-sheet";
 
 export function UploadTrigger() {
   const [open, setOpen] = useState(false);

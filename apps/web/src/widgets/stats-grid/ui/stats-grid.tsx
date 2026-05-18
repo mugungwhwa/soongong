@@ -1,3 +1,4 @@
+"use client";
 import { StatCard } from "./stat-card";
 import { useGameState } from "@/entities/user-game-state/model/use-game-state";
 

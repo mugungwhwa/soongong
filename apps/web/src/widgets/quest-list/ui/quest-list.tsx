@@ -1,3 +1,4 @@
+"use client";
 import { useTodayQuests } from "@/entities/quest/model/use-today-quests";
 import { QuestCard } from "./quest-card";
 
