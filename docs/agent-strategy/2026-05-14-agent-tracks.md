@@ -195,14 +195,17 @@ MVP 1.5/2차에 단계적 활성화. MVP 1차에서는 Source-to-Quest의 Quest 
 
 | Phase | 진입 시 (요구 발굴) | 설계 | 구현 | 디자인 | 리뷰 / QA | 커밋 게이트 |
 |---|---|---|---|---|---|---|
+| **P0 Demo Skeleton** ⚡ | brainstorming + UI 리서치 mini-workflow 병행 | code-architect + designer | executor (mock-first FSD 2.1 + shadcn 9종) | design-system 가이드 + design-review (Day 7 gate ≥ 70) | qa-tester (Playwright E2E) + silent-failure-hunter | arch-guard:pre-commit + pnpm lint:tokens + check-no-dark |
 | **P1 Foundation** | brainstorming | architect → code-architect | executor | design-system + design-review | code-reviewer | arch-guard:pre-commit |
 | **P2 Source Intake** | (skip) | code-architect | executor | design-review | security-check + security-reviewer (병렬) + silent-failure-hunter | arch-guard + security-check |
-| **P3 AI Pipeline** ⚠️ | brainstorming | vercel:ai-architect | executor + ai-architect | (skip, BE 중심) | qa-tester + verifier (정확도 측정) + critic | qa-tester gate (≥90%) |
-| **P4 Scheduling** | (skip) | code-architect | executor | (skip) | code-reviewer | arch-guard |
-| **P5 Home/Quest UI** | brainstorming | designer | executor | design-system 가이드 참조 + design-review 점수제 | react-best-practices + design-review | design-review ≥ 70점 |
+| **P3 AI Pipeline** ⚠️ | brainstorming | vercel:ai-architect | executor + ai-architect | (skip, BE 중심) | qa-tester + verifier (정확도 측정) + critic + scientist (분포 분석) | qa-tester gate (≥90%) |
+| **P4 Scheduling** | (skip) | code-architect | executor | (skip) | code-reviewer + scientist (retention 분석) + silent-failure-hunter (cron silent drop) | arch-guard |
+| **P5 Home/Quest UI** | brainstorming + external-context + ccg + document-specialist | designer | executor | design-system 가이드 참조 + design-review 점수제 | react-best-practices + design-review | design-review ≥ 70점 |
 | **P6 Play/Recovery/Canvas** | brainstorming | designer | executor | design-review | qa-tester (브라우저 E2E) + verifier + silent-failure-hunter | qa-tester + design-review |
 | **P7 Game System** | (skip) | code-architect | executor | (skip) | code-reviewer + type-design-analyzer | arch-guard |
 | **P8 Admin** | (skip) | code-architect | executor | (skip) | security-check + code-reviewer | security-check + arch-guard |
+
+> *Note (v1.2 spec 반영):* P5의 UI 리서치 mini-workflow는 P0 킥오프 직전/병행으로 앞당겨짐. P0 Day 1 `tokens.css` 잠금이 데드라인. (Source: `docs/superpowers/specs/2026-05-18-eval-review-ui-research-design.md` v1.1 §4.1)
 
 **공통 wrapper**: 모든 P 진입 전 `superpowers:writing-plans` (sub-plan 확인) + 실행은 `superpowers:subagent-driven-development` + 종료 시 `superpowers:verification-before-completion`.
 
@@ -389,6 +392,7 @@ Development Agents (개발 운용, Mike + Claude Code 협업): 50+ subagent
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. Product Agents 16개 정확 명세 (SparkClaw §5 SSoT) + Source-to-Quest 6개 + 베리에이션 8개 = 3 레이어. MVP 단계별 구현 매트릭스. Development Agents 50+ subagent 카테고리별 매핑. P별 디스패치 매트릭스. Claude Code 하네스 권장 셋업 (settings/hooks/plugins/MCP/슬래시). SparkClaw 어필 단락.** |
 | **v1.1** | **2026-05-18** | **§8 인접 트랙 cross-link 신설. 시각 자산 specialist 트랙(순공이 캐릭터 디자인 에이전트) 1번째 등재.** |
+| **v1.2** | **2026-05-18** | **§3.2 매트릭스 보강 — P0 행 신설, P3/P4 리뷰/QA에 scientist 추가, P4에 silent-failure-hunter 추가, P5 진입 시에 external-context + ccg + document-specialist 추가, P5 매트릭스 아래 메모 1줄. Source: `docs/superpowers/specs/2026-05-18-eval-review-ui-research-design.md` v1.1 §6.** |
 
 ---
 
