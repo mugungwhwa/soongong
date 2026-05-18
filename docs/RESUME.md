@@ -144,6 +144,20 @@ git -c user.name="Mike" -c user.email="mikeikhoonkim1208@gmail.com" commit -m ".
 git push
 ```
 
+### 8.1 Pre-commit hook (clone 후 1회 활성화)
+
+```bash
+bash scripts/setup-hooks.sh        # core.hooksPath = scripts/hooks 등록
+git config core.hooksPath          # 검증: scripts/hooks 출력되면 OK
+```
+
+검사 항목 (CLAUDE.md §8 폐기 정책 + 글로벌 §6 기반):
+- 잠긴 결정사항 회귀 키워드 9종 — 구체 목록은 `scripts/hooks/pre-commit`의 `PATTERNS` 배열 참조
+- 회사 계정 commit 차단 (`treenod` / `company` 패턴)
+- `.env` 파일 commit 차단 (`.env.local.example` 같은 템플릿만 허용)
+
+우회: `SKIP_PRECOMMIT=1 git commit ...` (의도된 회귀 변경 시 only)
+
 ---
 
 ## 9. 휴식 후 재개 체크리스트
