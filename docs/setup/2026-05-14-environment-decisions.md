@@ -62,13 +62,32 @@
 
 ---
 
-## 결정 3: Anthropic API 키 출처
+## 결정 3: AI 프로바이더 (Anthropic / OpenAI / 하이브리드)
+
+> ⚠️ **Mike 추가 검토 중 (2026-05-18)**: GPT API도 옵션 후보. 본 표에 옵션 D 추가 + Vercel AI Gateway(옵션 C) 강조. 최종 결정 전.
 
 | 옵션 | 장점 | 단점 |
 |---|---|---|
-| **A. 개인 결제로 시작** ⭐ 추천 (MVP 1차) | 즉시 사용 가능, prompt caching 적용 시 비용 절감 | 초기 카드 결제 ($20-50 한도 시작 권장) |
-| B. SparkClaw 인프라 혜택 활용 | 비용 0 | SparkClaw 선정 후에만 가능, 선정까지 lead time |
-| C. Vercel AI Gateway 경유 | 멀티 프로바이더 통합 (Anthropic/OpenAI/Google 등), 비용 추적 단일화 | 약간의 latency 추가, Gateway 설정 부담 |
+| **A. Anthropic Claude API (개인 결제)** ⭐ 추천 (MVP 1차) | 즉시 사용, prompt caching 우수, Vision(Sonnet 4.6) 한글+수식 강함, P3 sub-plan에 이미 박힘 | 초기 카드 결제 ($20-50 한도 시작 권장) |
+| B. SparkClaw 인프라 혜택 | 비용 0 (Anthropic/OpenAI 모두 포함) | 선정 후에만 가능, 선정 lead time |
+| **C. Vercel AI Gateway 경유** ⭐ 검토 가치 | **멀티 프로바이더 통합** (Anthropic + OpenAI + Google 동시), 비용 추적 단일화, A/B 모델 비교, failover 자동, 단일 키 관리 | 약간의 latency (~50ms), Gateway 설정 1회 |
+| D. OpenAI GPT API (개인 결제) | GPT-4o-mini 저렴 ($0.15/1M input, $0.6/1M output — Haiku 4.5와 비슷), 함수 호출 성숙, 시장 인지도 | Vision 한글+수식 정확도 Claude 대비 약함 (특히 한국 수능 OCR), prompt caching 다름, P3 sub-plan 모델 라우팅 일부 재작성 필요 |
+
+### 추천 (Mike의 GPT 옵션 검토 반영)
+
+**MVP 1차 시작**: 옵션 A (Anthropic) — sub-plan 이미 잠겨있음, 한국 수능 Vision OCR 품질 우선.
+
+**중기 검토**: 옵션 C (Vercel AI Gateway) — **GPT-4o-mini를 라우팅/태깅(Subject Routing / Wrong Reason Tagger)에 한정 사용**해서 비용 측정. Vision OCR은 Claude Sonnet 4.6 유지. Gateway가 비용/품질 매트릭스를 자동 추적해서 A/B 결정 데이터 기반 가능.
+
+**왜 옵션 D 단독 비추천**: 한국 수능 문제 OCR(한글+수식+그림 혼합)에서 Vision 성능이 Claude Sonnet > GPT-4o-mini로 측정되는 케이스가 많음 (개별 검증 권장). P3 게이트(정확도 ≥90%) 통과 위해 Vision은 Claude 유지가 안전.
+
+### 결정 후 액션 (옵션별)
+
+| 선택 | 액션 |
+|---|---|
+| A (Anthropic) | 기존 액션 그대로 (위 §결정 3 원본) |
+| C (AI Gateway) | Vercel Dashboard → AI → Gateway 활성 → 라우팅 규칙 (Subject/Tagging → GPT-4o-mini, Vision → Claude Sonnet) → P3 sub-plan `_shared/ai.ts`의 `getModel()` 함수 Gateway URL 사용하도록 1회 수정 |
+| D (OpenAI only) | OpenAI 콘솔 가입 + `OPENAI_API_KEY` 발급 + P3 sub-plan `_shared/ai.ts`의 anthropic import → openai로 교체 + Vision schema 재검증 (반나절 spike) |
 
 ### 추천: **A → SparkClaw 선정되면 B로 전환**
 
