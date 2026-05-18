@@ -1,7 +1,7 @@
 # 순공대장 시각 자산 Inventory
 
-> **외주 발주 없음.** 모든 시각 자산을 **Claude(코드) / Lucide(아이콘) / Midjourney(이미지) / Canva(디자인)** 4개 트랙으로 분류해 잠근다.
-> Midjourney와 Canva 작업은 Mike가 직접 수행. 본 문서는 (1) 자산 분류 (2) Midjourney prompt 가이드 (3) Canva 작업 가이드 (4) 우선순위를 잠근다.
+> **외주 발주 없음.** 모든 시각 자산을 **Claude(코드) / Lucide(아이콘) / GPT-4o(이미지) / Canva(디자인)** 4개 트랙으로 분류해 잠근다.
+> GPT-4o와 Canva 작업은 Mike가 직접 수행. 본 문서는 (1) 자산 분류 (2) GPT-4o prompt 가이드 (3) Canva 작업 가이드 (4) 우선순위를 잠근다.
 > 시안 SSoT: `app_UI.png` / `web_ui.png`.
 
 ---
@@ -12,12 +12,12 @@
 |---|---|---|---|---|
 | **Claude (코드)** | claude/agent | SVG 인라인, Tailwind 클래스, shadcn 컴포넌트 | UI 컴포넌트, 추상 도형, 그래프, 진행률 게이지, 회독 타임라인 | 즉시 |
 | **Lucide React** | npm `lucide-react` | TSX 아이콘 컴포넌트 | 표준 아이콘 (홈/캡처/통계/검색/알림/별/하트 등) | 즉시 |
-| **Midjourney** | Mike | PNG/WebP, 1024×1024 (투명 배경 권장) | 마스코트 캐릭터 + 표정 variants + 결과 일러스트 + Empty state | 1장당 5-10분 (Mike 작업) |
+| **GPT-4o** | Mike | PNG/WebP, 1024×1024 (투명 배경 권장) | 마스코트 캐릭터 + 표정 variants + 결과 일러스트 + Empty state | 1장당 5-10분 (Mike 작업) |
 | **Canva** | Mike | PNG/SVG, 다양한 사이즈 | 앱 아이콘, Open Graph, 푸시 미리보기, 스토어 스크린샷, 랜딩 hero | 1개당 10-30분 (Mike 작업) |
 
 **의도적으로 안 쓰는 트랙:**
 - 외주 작가: lead time 4-6주 + 비용 50-300만원. MVP 단계에선 과한 투자.
-- Figma 직접 제작: Mike가 디자이너 아니므로 Midjourney+Canva가 더 빠름.
+- Figma 직접 제작: Mike가 디자이너 아니므로 GPT-4o+Canva가 더 빠름.
 
 ---
 
@@ -30,7 +30,7 @@
 | 자산 | 트랙 | 비고 |
 |---|---|---|
 | 배경 그라디언트 | Claude (CSS) | `bg-gradient-to-b from-bg to-accent-mintLight` |
-| **마스코트 정면 (큰 사이즈)** | **Midjourney** | 512×512 또는 1024×1024, 투명 배경 |
+| **마스코트 정면 (큰 사이즈)** | **GPT-4o** | 512×512 또는 1024×1024, 투명 배경 |
 | 환영 문구 | Claude (텍스트) | "안녕! 같이 까먹기 전에 다시 풀어보자." |
 | 옵션 카드 4개 | Claude (shadcn Card) | 수능 준비 중 / 독학재수 / 재학생 / 반수생 |
 | CTA 버튼 | Claude (shadcn Button) | "📷 문제사진 1장 올리기" |
@@ -41,7 +41,7 @@
 |---|---|---|
 | 상단 로고 워드마크 | Canva (선택) 또는 Claude (텍스트) | "순공대장" |
 | 통계 카드 4종 (🔥❤️⏱⭐) | Lucide | `Flame`, `Heart`, `Clock`, `Star` |
-| **마스코트 인사 (작은, 응원 표정)** | **Midjourney** | 128×128 또는 256×256 |
+| **마스코트 인사 (작은, 응원 표정)** | **GPT-4o** | 128×128 또는 256×256 |
 | 말풍선 카드 | Claude (shadcn Card) | "오늘 회독퀘스트 3개 같이 가볼까?" |
 | 퀘스트 카드 × 3 | Claude (shadcn Card) | 위험도 배지 / 난이도 칩 / CTA |
 | 위험도 배지 (원형 점) | Claude (CSS) | `rounded-full bg-danger` 등 |
@@ -54,7 +54,7 @@
 | 사이드바 아이콘 | Lucide | `Home`, `Calendar`, `FileText`, `Target`, `User`, `Trophy` |
 | 통계 카드 4종 | Lucide + Claude | 모바일과 동일 |
 | 과목별 숙련도 게이지 | Claude (CSS bar) | 그라디언트 fill |
-| **마스코트 한마디 카드 (작은)** | **Midjourney** | 64×64 또는 빠진 자리에 SVG placeholder |
+| **마스코트 한마디 카드 (작은)** | **GPT-4o** | 64×64 또는 빠진 자리에 SVG placeholder |
 
 ### 2.4 업로드 모달 (시트)
 
@@ -87,8 +87,8 @@
 
 | 자산 | 트랙 | 비고 |
 |---|---|---|
-| 🎉 이모지 또는 별 일러스트 | Lucide `PartyPopper` 또는 Midjourney | - |
-| **마스코트 축하 표정** | **Midjourney** | 256×256 |
+| 🎉 이모지 또는 별 일러스트 | Lucide `PartyPopper` 또는 GPT-4o | - |
+| **마스코트 축하 표정** | **GPT-4o** | 256×256 |
 | Confetti 애니메이션 | Claude + `canvas-confetti` 라이브러리 | npm install |
 | XP 카운트업 | Claude + Framer Motion | 0 → 40 카운트업 |
 | 다음 회독/홈으로 버튼 | Claude | - |
@@ -98,14 +98,14 @@
 | 자산 | 트랙 | 비고 |
 |---|---|---|
 | 단계 칩 (1/3, 2/3, 3/3) | Claude | - |
-| **마스코트 응원 표정** | **Midjourney** | 128×128 |
+| **마스코트 응원 표정** | **GPT-4o** | 128×128 |
 | V1-V5 변형 단계 표시 | Claude | - |
 
 ### 2.9 Empty State (빈 상태)
 
 | 자산 | 트랙 | 비고 |
 |---|---|---|
-| **마스코트 잠/대기 표정** | **Midjourney** | 256×256 |
+| **마스코트 잠/대기 표정** | **GPT-4o** | 256×256 |
 | 안내 텍스트 + CTA | Claude | "아직 업로드한 문제가 없어요" |
 
 ### 2.10 로딩 상태
@@ -117,7 +117,7 @@
 
 ---
 
-## 3. 마스코트 표정 Variants (Midjourney 작업)
+## 3. 마스코트 표정 Variants (이미지 생성 도구, v0.1 이후 GPT-4o)
 
 MVP 1차에 필요한 표정 6종. 각각 PNG 1024×1024, 투명 배경.
 
@@ -145,83 +145,124 @@ MVP 1차에 필요한 표정 6종. 각각 PNG 1024×1024, 투명 배경.
 - 알파 채널 없음 → Canva BG Remover 또는 `rembg` 1회 처리 후 `apps/web/public/mascot/`에 배포.
 
 **남은 TODO (다음 단계):**
-1. Mike — Midjourney `--cref` 옵션으로 표정 5종 추가 생성 (cheer / celebrate / think / comfort / sleep / surprise 매핑 확정).
+1. Mike — **GPT-4o(ChatGPT)** 이미지 생성으로 표정 5종 추가 (celebrate / think / comfort / sleep / surprise). 워크플로우는 §4 참조. *(2026-05-18 결정: Midjourney → GPT-4o 트랙 전환)*
 2. Mike (Canva) — 배경 투명화 + 1024 / 512 / 256 / 128 / 64 5단 다운스케일 export.
 3. Claude — `apps/web/src/shared/ui/mascot.tsx` placeholder를 v0.1 자산으로 1차 교체 (`#1 응원/기본` 슬롯에 `main.png` 임시 매핑).
 
 ---
 
-## 4. Midjourney Prompt 가이드 (Mike용)
+## 4. GPT-4o 이미지 생성 가이드 (Mike용)
 
-### 4.1 기본 마스코트 prompt (Base)
+> **2026-05-18 결정**: Midjourney → **GPT-4o(ChatGPT) 이미지 생성** 트랙으로 전환. 이유: 한국어 친화 / ChatGPT Plus 외 추가 비용 0 / Discord 없이 진입장벽 최저. Mike의 AI Provider 결정 매트릭스에 GPT가 추가된 흐름과도 정합. 일관성은 §4.1 강제 프로토콜로 보완.
+
+### 4.1 일관성 강제 프로토콜 (필수)
+
+GPT-4o image generation은 Midjourney `--cref`처럼 시드 기반 강제 메커니즘이 약함 → 다음 3룰로 보완.
+
+1. **매 표정마다 reference 이미지 첨부 필수** — `docs/visual-assets/mascot-v0.1/main.png`를 매 생성 메시지에 첨부.
+2. **잠긴 결정사항을 프롬프트 마지막에 항상 명시** — 캐릭터/컬러/배경/왕관/사이즈/톤.
+3. **표정 5종은 같은 ChatGPT 세션에서 연속 생성** — 세션 끊기면 컨텍스트 사라져서 캐릭터 어긋남.
+
+### 4.2 기본 마스코트 prompt (한국어 base)
+
+이 base를 표정별로 변형해서 사용. **매번 main.png 첨부 + 아래 프롬프트 + §4.3의 표정 변형부**를 한 메시지로 보냄.
 
 ```
-mascot character, round chubby dugong sea creature,
-mint green body color, light pastel mint belly,
-small dot eyes, small fins, kawaii Korean app mascot,
-soft pastel illustration style, sticker design,
-transparent background, clean and friendly,
-high quality, vector style --ar 1:1 --v 6 --style raw
+첨부 이미지의 캐릭터(둥근 듀공 모티프 마스코트, 민트색 몸 #7CC97C 계열,
+연한 크림색 배, 작은 점눈, 작은 지느러미, 노란 왕관)와
+**완전히 동일한 외형·컬러·스타일**로 새 일러스트를 만들어줘.
+
+- 표정/포즈: [표정별 변형부]
+- 배경: 단색 크림 #F8FBF7 (가능하면 투명 PNG)
+- 사이즈: 1254×1254 정사각형
+- 톤: Light Study Garden — 둥글고 친근한 카와이 스티커 스타일
+- 한국 학습앱(수능생 대상) 마스코트. 듀오링고/카카오 헤이바이브 톤 참고.
+- 다크 RPG 톤 금지. 어두운 색조 금지.
+
+붙임 main.png가 캐릭터 reference. 절대 다른 인물처럼 변형 X.
 ```
 
-### 4.2 표정별 variant prompt
+### 4.3 표정별 변형부 (5종)
 
-**응원 (cheer):**
-```
-[BASE] + cheerful smile, one fin raised waving hello,
-holding a small book, encouraging expression
-```
+§3 표의 #2-6. (응원/기본은 v0.1 `main.png`로 대체 가능 → 우선 5종만 추가 생성)
 
 **축하 (celebrate):**
 ```
-[BASE] + big happy smile, confetti around,
-holding a gold star, eyes closed in joy
+큰 미소, 두 지느러미를 위로 들고 환호, 얼굴에 기쁨,
+주변에 작은 색종이 콘페티, 한 손에 작은 노란 별
 ```
 
 **생각 (think):**
 ```
-[BASE] + thoughtful expression, one fin on chin,
-small question mark or sparkle near head
+지느러미 하나를 턱에 살짝 대고 사색하는 표정,
+머리 옆에 작은 물음표 또는 반짝임, 눈을 살짝 옆으로
 ```
 
 **위로 (comfort):**
 ```
-[BASE] + gentle warm smile, soft eyes, slightly tilted head,
-holding small heart, supportive pose
+부드러운 따뜻한 미소, 살짝 고개를 기울임,
+한 지느러미에 작은 분홍 하트, 격려하는 자세
 ```
 
 **잠/대기 (sleep):**
 ```
-[BASE] + sleeping peacefully, closed eyes "Z" symbol,
-curled up small, peaceful expression
+편안하게 잠든 표정, 눈 감고 머리 옆에 작은 "Z" 표시,
+몸을 살짝 웅크리고 평화로운 자세
 ```
 
 **놀람 (surprise):**
 ```
-[BASE] + surprised expression, eyes wide,
-small exclamation mark near head, fin pointing
+크게 놀란 표정, 눈 동그랗게,
+머리 옆에 작은 느낌표, 한 지느러미로 가리키는 자세
 ```
 
-### 4.3 Midjourney 작업 팁 (Mike)
-
-- `--ar 1:1` 정사각형 비율 강제 (다른 사이즈로 출력되면 잘리거나 비율 깨짐)
-- `--style raw` 옵션은 prompt에 더 충실 (생략하면 Midjourney 스타일 강하게 적용됨)
-- `--v 6` (최신 버전, 2026년 5월 기준)
-- 4개 variant 한꺼번에 생성 → 가장 마음에 드는 1개를 U버튼으로 업스케일
-- **배경 제거**: Midjourney는 완전 투명 배경 어려움 → 결과를 `remove.bg` 또는 Canva의 "배경 제거" 기능으로 처리
-- **컬러 통일**: 6종 표정이 컬러가 미묘하게 다를 수 있음 → Canva에서 마지막에 컬러 통일
-
-### 4.4 6종 일괄 작업 워크플로우
+### 4.4 ChatGPT 세션 운영 워크플로우
 
 ```
-1. 응원(cheer) prompt 입력 → 4 variant 생성 → 1개 선택 → U버튼 업스케일
-2. 응원 결과를 reference로 사용 (--cref 옵션) → 다른 5개 표정 생성
-   예: /imagine prompt: [축하 prompt] --cref <응원_url> --cw 50
-   → 캐릭터 일관성 유지
-3. remove.bg 일괄 처리 → 투명 PNG 6장
-4. Canva에서 컬러 통일 + 사이즈 변형 (1024/512/256/128)
-5. apps/web/public/mascot/ 에 저장
+권장 1세션 흐름 (30-60분, 5종 일괄):
+
+1. ChatGPT(Plus, GPT-4o) 새 세션 열기
+2. main.png 첨부 + §4.2 base + §4.3 축하 변형부 → 생성
+3. 결과 OK면 다운로드(PNG). 안 들면 "왕관 더 작게", "민트 더 진하게" 등 1-2회 보정
+4. **같은 세션에서** 새 메시지로 main.png 재첨부 + 다음 표정(생각) → 생성
+   (재첨부 이유: 세션 길어지면 첨부 우선순위 떨어져 캐릭터 어긋남)
+5. 5종 모두 완료까지 반복
+6. 5장을 `docs/visual-assets/mascot-v0.2/` 폴더에 저장
+   파일명: soongong-celebrate.png, soongong-think.png, soongong-comfort.png,
+            soongong-sleep.png, soongong-surprise.png
+7. Mike → Claude에게 알림 → §4.5 투명화 후처리 진행
 ```
+
+### 4.5 투명화 슬롯 매트릭스 (생성 후 처리)
+
+GPT-4o 출력도 완전 투명 PNG는 불안정. **모든 슬롯이 투명화 필요한 건 아님**:
+
+| UI 슬롯 | 배경 | 투명화 |
+|---|---|---|
+| 홈 메인 일러스트 | 크림 | ❌ 불필요 (배경 색 일치) |
+| 온보딩 인트로 | 크림 | ❌ 불필요 |
+| 회독퀘스트 카드 썸네일 | 흰색/연민트 카드 | ✅ 필요 |
+| 뱃지/리워드 아이콘 | 다양 | ✅ 필요 |
+| 푸시 알림 아이콘 | 시스템 | ✅ 필요 |
+| 앱 아이콘 | 시스템 | ✅ 필요 |
+| 결과 화면 (콘페티 위) | 그라데이션 | ✅ 필요 |
+
+→ MVP 1차 기준 **5-7개 슬롯만 투명화**. 권장 도구:
+
+| 도구 | 비용 | Mike 적합도 | 비고 |
+|---|---|---|---|
+| **remove.bg** (무료) | 0원, 월 50회 | ⭐⭐⭐ 추천 | 가입 불필요, 드래그·다운로드 |
+| Canva BG Remover | Canva Pro $14.99/월 | ⭐⭐⭐ Pro 보유 시 | 인벤토리 §5 워크플로우 일치 |
+| Claude `rembg` 일괄 | 0원 | ⭐⭐⭐ 자동화 | Mike가 5장 다운만 끝내면 Claude가 폴더 일괄 처리 |
+
+### 4.6 작업 팁 (Mike)
+
+- **세션 끊지 말 것** — 다른 GPT 세션 갔다 오면 캐릭터 어긋남. 5종 한 세션에서 끝내기.
+- **첨부는 매번** — 한 번만 첨부하고 5장 생성하면 후반 갈수록 캐릭터 드리프트.
+- **재시도 3회 룰** — 한 표정에 3회 시도해도 안 맞으면 다음으로 넘어가고 마지막에 재도전. 무한 재시도 금지.
+- **PNG 원본 다운로드** — JPG로 받으면 알파 사라지고 압축 손실. 항상 "Download image" → PNG 확인.
+- **컬러 미세 차이는 마지막에 Canva 일괄 통일** — 5종이 미묘하게 다른 민트로 나올 수 있음.
+- **세션 막판에 캐릭터가 어긋나기 시작하면 새 세션** — 단, 새 세션에서도 §4.2 base + main.png 첨부 그대로.
 
 ---
 
@@ -270,7 +311,7 @@ agent가 코드로 직접 만드는 자산:
 | 풀이 캔버스 격자 | SVG pattern | dot-grid 또는 line-grid |
 | 그라디언트 배경 | Tailwind `bg-gradient-to-b` | - |
 
-**원칙**: 5분 안에 코드로 만들 수 있으면 코드. 그 이상이면 Midjourney/Canva.
+**원칙**: 5분 안에 코드로 만들 수 있으면 코드. 그 이상이면 GPT-4o/Canva.
 
 ---
 
@@ -306,15 +347,15 @@ apps/web/public/
 
 | 우선순위 | 자산 | 트랙 | 시점 |
 |---|---|---|---|
-| 🔥 1 | **마스코트 응원** | Midjourney | W1 시작 시 |
-| 🔥 2 | **마스코트 축하** | Midjourney | W1 시작 시 |
+| 🔥 1 | **마스코트 응원** | GPT-4o | W1 시작 시 |
+| 🔥 2 | **마스코트 축하** | GPT-4o | W1 시작 시 |
 | 🔥 3 | **앱 아이콘** | Canva | W1 |
 | 🔥 4 | Favicon | Canva | W1 |
-| ⭐ 5 | 마스코트 생각 | Midjourney | W2 |
-| ⭐ 6 | 마스코트 위로 | Midjourney | W2 |
+| ⭐ 5 | 마스코트 생각 | GPT-4o | W2 |
+| ⭐ 6 | 마스코트 위로 | GPT-4o | W2 |
 | ⭐ 7 | Open Graph | Canva | W2-3 |
-| 8 | 마스코트 잠 | Midjourney | W4 |
-| 9 | 마스코트 놀람 | Midjourney | W4 |
+| 8 | 마스코트 잠 | GPT-4o | W4 |
+| 9 | 마스코트 놀람 | GPT-4o | W4 |
 | 10 | 스토어 스크린샷 | Canva | 출시 직전 |
 | 11 | 랜딩 hero | Canva | 출시 직전 |
 
@@ -367,3 +408,4 @@ export function Mascot({ mood = "cheer", size = 128 }: { mood?: Mood; size?: num
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. 외주 트랙 폐기. Claude/Lucide/Midjourney/Canva 4트랙 분류. 마스코트 6종 + 앱 아이콘 + 푸시/OG/스토어 자산 inventory + Midjourney prompt 가이드 + Canva 작업 가이드.** |
 | **v1.1** | **2026-05-18** | **§3.x 입수 자산 v0.1 섹션 신설. Mike Midjourney 작업본 2종(`main.png` 풀바디 + `repeat_normal.png` 페이스 클로즈업, 1254×1254) 등재. 폴더 `charcter image/` → `docs/visual-assets/mascot-v0.1/`로 이동, `repeat_nomal.png` 오타 수정.** |
+| **v1.2** | **2026-05-18** | **§4 Midjourney 가이드 → GPT-4o(ChatGPT) 이미지 생성 가이드로 전면 재작성. §4.1 일관성 강제 프로토콜 + §4.2 한국어 base prompt + §4.3 표정 5종 변형부 + §4.4 ChatGPT 세션 운영 워크플로우 + §4.5 투명화 슬롯 매트릭스(remove.bg/Canva/rembg) + §4.6 작업 팁. §3 헤딩과 §3.x TODO도 GPT-4o 트랙으로 갱신.** |
