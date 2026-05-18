@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "lint:tokens": "tsx scripts/check-tokens.ts",
+    "lint:no-dark": "tsx scripts/check-no-dark.ts",
+    "test": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
@@ -43,6 +47,7 @@
     "eslint-plugin-tailwindcss": "^3.18.3",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
+    "tsx": "^4.22.1",
     "typescript": "^5",
     "vitest": "^4.1.6"
   }

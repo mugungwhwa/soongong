@@ -27,6 +27,7 @@
     --color-text-default: #2D3F2D;
     --color-text-muted: #6B7B6B;
     --color-text-inverse: #FFFFFF;
+    --color-text-on-warm: #3A2A10;
 
     /* Border */
     --color-border-default: #E1ECDF;

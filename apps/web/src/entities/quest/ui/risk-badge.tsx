@@ -1,9 +1,9 @@
 import type { QuestRiskLevel } from "@/shared/mocks/quests";
 
 const STYLE: Record<QuestRiskLevel, { bg: string; fg: string; label: string }> = {
-  low: { bg: "var(--color-risk-low)", fg: "#fff", label: "여유" },
-  mid: { bg: "var(--color-risk-mid)", fg: "#3a2a10", label: "주의" },
-  high: { bg: "var(--color-risk-high)", fg: "#fff", label: "위험" },
+  low: { bg: "var(--color-risk-low)", fg: "var(--color-text-inverse)", label: "여유" },
+  mid: { bg: "var(--color-risk-mid)", fg: "var(--color-text-on-warm)", label: "주의" },
+  high: { bg: "var(--color-risk-high)", fg: "var(--color-text-inverse)", label: "위험" },
 };
 
 export function RiskBadge({ level }: { level: QuestRiskLevel }) {
