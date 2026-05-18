@@ -21,6 +21,7 @@
 - Mathpix 키 (옵션) — P3 종료 시점 A/B 결과 따라 결정
 - Supabase Edge Function 배포 권한
 - P1 (Auth + users) + P2 (external_sources + compliance) 완료
+- **Curriculum RAG sub-plan 통과** ([2026-05-18-soongong-mvp1-p3-curriculum-rag.md](./2026-05-18-soongong-mvp1-p3-curriculum-rag.md)) — units/topics 테이블 + curriculum-lookup Edge Function. Task 4 라우팅 정확도의 base. 미통과 시 본 P3는 폴백 모드(Claude 일반 지식)로 진입.
 
 ---
 
