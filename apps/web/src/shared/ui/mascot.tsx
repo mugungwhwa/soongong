@@ -1,15 +1,13 @@
+import Image from "next/image";
 import { cn } from "@/shared/lib/cn";
 
-export type MascotMood = "cheer" | "celebrate" | "think" | "comfort" | "sleep" | "surprise";
-
-const MOOD_EMOJI: Record<MascotMood, string> = {
-  cheer: "😊",
-  celebrate: "🎉",
-  think: "💭",
-  comfort: "🥲",
-  sleep: "😴",
-  surprise: "😲",
-};
+export type MascotMood =
+  | "cheer"
+  | "celebrate"
+  | "think"
+  | "comfort"
+  | "sleep"
+  | "surprise";
 
 const SIZE = { sm: 32, md: 48, lg: 72, xl: 120 } as const;
 
@@ -26,14 +24,21 @@ export function Mascot({
   return (
     <div
       className={cn(
-        "inline-flex items-center justify-center rounded-full bg-[var(--color-mint-100)]",
+        "relative inline-flex items-center justify-center rounded-full bg-[var(--color-mint-100)] overflow-hidden",
         className,
       )}
-      style={{ width: px, height: px, fontSize: px * 0.55 }}
+      style={{ width: px, height: px }}
       role="img"
       aria-label={`순공이 ${mood}`}
     >
-      {MOOD_EMOJI[mood]}
+      <Image
+        src="/mascot/main.png"
+        alt=""
+        width={px}
+        height={px}
+        priority={size === "xl"}
+        style={{ objectFit: "cover" }}
+      />
     </div>
   );
 }
