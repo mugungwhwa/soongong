@@ -1,0 +1,63 @@
+@layer base {
+  :root {
+    /* Surface (Light Study Garden) */
+    --color-bg: #F8FBF7;
+    --color-bg-elevated: #FFFFFF;
+    --color-bg-sunken: #F1F5EF;
+
+    /* Brand mint */
+    --color-mint-50: #EFF9EF;
+    --color-mint-100: #D6F0D6;
+    --color-mint-300: #A8DDA8;
+    --color-mint-500: #7CC97C;
+    --color-mint-700: #4FA84F;
+    --color-mint-900: #2E6B2E;
+
+    /* Risk (soft) */
+    --color-risk-low: #6FB3FF;
+    --color-risk-mid: #FFB36E;
+    --color-risk-high: #FF7B7B;
+
+    /* Text */
+    --color-text-strong: #1A2A1A;
+    --color-text-default: #2D3F2D;
+    --color-text-muted: #6B7B6B;
+    --color-text-inverse: #FFFFFF;
+
+    /* Border */
+    --color-border-default: #E1ECDF;
+    --color-border-strong: #C5D9C2;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-pill: 9999px;
+
+    /* Spacing scale (4px base) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Shadow */
+    --shadow-card: 0 2px 8px rgba(46, 107, 46, 0.06);
+    --shadow-elevated: 0 8px 24px rgba(46, 107, 46, 0.10);
+
+    /* Motion */
+    --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --duration-fast: 160ms;
+    --duration-mid: 240ms;
+    --duration-slow: 380ms;
+
+    /* Typography */
+    --font-display: "Pretendard", system-ui, sans-serif;
+    --font-body: "Pretendard", system-ui, sans-serif;
+  }
+}
