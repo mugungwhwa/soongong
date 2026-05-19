@@ -46,7 +46,8 @@
 | 강조 컬러 | `#7CC97C` 민트 (primary) | tokens.css `--color-mint-500` |
 | 텍스트 컬러 | `#1A2A1A` (한글), `#2D3F2D` (영문) | tokens.css `--color-text-strong/default` |
 | XP/포인트 컬러 | `#F2C94C` (soft golden) | tokens.css `--color-xp` (Duolingo `#ffc800` 차별) |
-| 폰트 | Pretendard (한글+영문 단일 패밀리) | tokens.css 등록, P0 와꾸 코드 wiring 완료 |
+| 폰트 (로고·브랜드 헤딩) | **Rockon 둥근체 — 가장 두꺼운 weight 우선 (Heavy/Black > Ultra Bold)** | Mike 지정 (2026-05-19). 듀오링고/한국 학습앱 톤의 라운드 굵은 한글 디스플레이 폰트. 두께가 강할수록 좋음. |
+| 폰트 (본문·UI) | Pretendard (한글+영문) | tokens.css 등록, P0 와꾸 코드 wiring 완료. 로고에는 사용 X |
 | 자산 SSoT 파일명 | `master/logo-{variant}.png` 1024x1024 | 본 문서 §5 |
 
 ### 절대 금지 (회귀 시 즉시 거절)
@@ -56,7 +57,9 @@
 - **외주 발주**: Mike GPT-4o + Canva 직접 (feedback_no_outsourcing 룰)
 - **다른 마스코트 캐릭터**: 순공이(듀공) 단일
 - **회독마왕/Dark RPG**: 폐기된 방향 (CLAUDE.md §2 잠긴 결정)
-- **다른 폰트 패밀리**: Pretendard 단일 (Inter/Noto/Roboto 등 도입 X)
+- **로고에 Pretendard 사용**: 로고/브랜드 헤딩 = Rockon Ultra Bold 둥근체 단독. Pretendard는 본문·UI 전용.
+- **본문에 Rockon 사용**: 본문·UI = Pretendard 단독. Rockon은 로고/대형 헤딩 전용.
+- **그 외 폰트 패밀리 도입**: Inter/Noto/Roboto/G마켓산스 등 X
 
 ---
 
@@ -71,7 +74,7 @@
 - `apps/web/src/shared/styles/tokens.css` (컬러 21종, gradient 1종, shadow, radius)
 
 ### 3.3 톤 SSoT
-- `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.3, §1-3 톤·컬러·게임화)
+- `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.4) — §1-3 톤·컬러·게임화, **§"듀오링고 글로벌 톤 차용/변형/거절 매트릭스"** (15행, design-review 자동 판단 기준)
 - `docs/superpowers/specs/2026-05-18-ui-master-design.md` (UI master)
 
 ### 3.4 시안 reference
@@ -114,7 +117,9 @@
 요구사항:
 - 마스코트 "순공이"(첨부 이미지) + "순공대장"(한글 메인) + "Soongong"(영문 보조)
 - 톤: Light Study Garden — 크림 배경 #F8FBF7, 민트 강조 #7CC97C
-- 폰트: Pretendard SemiBold/Bold 한글 (영문도 같은 패밀리)
+- 폰트(한글): Rockon 둥근체 — 가능한 한 두꺼운 weight 시안 우선 (Heavy / Black / Ultra Bold 순). Pretendard ExtraBold보다 시각적으로 더 두꺼운 인상이어야 함.
+- 폰트(영문 보조 Soongong): Rockon 영문 지원 시 Rockon, 미지원 시 Pretendard ExtraBold (라운드 캡 권장)
+- 시안 단계에서 폰트 파일 불필요 — 시각 reference 흉내 OK
 - 텍스트 컬러: #1A2A1A (한글), #2D3F2D (영문)
 - 다크/네이비 톤 금지, 그라디언트 과용 금지, 다른 캐릭터 추가 금지
 
@@ -204,9 +209,12 @@ apps/web/public/
 
 ### 6.2 타이포 검수
 
-- [ ] Pretendard 폰트 패밀리 단일 사용
-- [ ] 한글 "순공대장" 가독성 — 작은 사이즈(favicon)에서 식별 가능
+- [ ] 한글 "순공대장" = **Rockon 둥근체 — 가장 두꺼운 weight 사용** (Heavy/Black > Ultra Bold)
+- [ ] 시각 두께가 Pretendard ExtraBold보다 명백히 두꺼움 (얇으면 재시도)
+- [ ] 영문 "Soongong" = Rockon 영문 지원 시 Rockon, 미지원 시 Pretendard ExtraBold (라운드 캡)
+- [ ] 작은 사이즈(favicon 32px)에서 한글 식별 가능 (두께 덕에 유리)
 - [ ] 영문 "Soongong" 줄바꿈/위치 자연스러움
+- [ ] 코드(`apps/web` UI)에 Rockon이 leak 되지 않음 — 본문/UI는 Pretendard 유지
 
 ### 6.3 마스코트 검수
 
@@ -284,7 +292,8 @@ Mike의 메시지에 "다크 로고", "다른 폰트", "외주", "회독마왕" 
 |---|---|---|---|
 | ChatGPT Plus | Mike 개인 | GPT-4o 시안 생성 | 월 $20 (캐릭터와 공용) |
 | Canva | Mike 개인 (Free) | vector trace + 사이즈 변형 + svg export | 무료 |
-| Pretendard | OFL 라이선스 | 한글+영문 폰트 | 무료 |
+| **Rockon 둥근체 (Heavy/Black/Ultra Bold)** | v0.1 시작 시 라이선스 불필요. P1+ 코드 폰트 임베드 시점에 확인 | 로고·브랜드 헤딩 단독, vector PNG/SVG로 export되므로 폰트 파일 X | TBD |
+| Pretendard | OFL 라이선스 | 본문·UI 한글+영문 | 무료 |
 | 이미지 변환 (rembg/Pillow) | 로컬 Python | 투명화 + 사이즈 변형 자동화 | 무료 |
 | Vercel | Mike mugungwhwa | OG image 호스팅 | 무료 (취미 플랜) |
 
@@ -307,6 +316,8 @@ Mike의 메시지에 "다크 로고", "다른 폰트", "외주", "회독마왕" 
 | 버전 | 일자 | 작성자 | 내용 |
 |---|---|---|---|
 | v0.0 | 2026-05-18 | Mike + Claude | 초안 SSoT 12 섹션 — 로고 + OG + favicon + 앱 아이콘 + 브랜드 가이드 통합 운영 룰. 캐릭터 에이전트 doc 패턴 동일 차용. |
+| **v0.1** | **2026-05-19** | **Mike + Claude** | **로고 폰트 정정: Pretendard 단일 → Rockon Ultra Bold 둥근체(로고·브랜드 헤딩) + Pretendard(본문·UI) 분리. §2 / §4.4 / §6.2 / §10 일괄 갱신. Mike 지적: v0.0의 Pretendard 단일 잠금이 잘못된 정보.** |
+| **v0.2** | **2026-05-19** | **Mike + Claude** | **로고 두께 잠금 표현 보강: "Rockon Ultra Bold 둥근체" → "Rockon 둥근체 — 가장 두꺼운 weight 우선 (Heavy/Black > Ultra Bold)". 시안 단계 폰트 파일 불필요 명시 (vector export). 라이선스 확인은 P1+ 폰트 임베드 시점으로 연기.** |
 
 ---
 
