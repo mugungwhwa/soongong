@@ -37,7 +37,7 @@ export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
           </div>
           <div>
             <div className="text-2xl">❤️</div>
-            <div className="font-semibold">{s.memoryHp}/100</div>
+            <div className="font-semibold">{s.memoryHp}/5</div>
             <div className="text-[var(--color-text-muted)]">기억 HP</div>
           </div>
           <div>
