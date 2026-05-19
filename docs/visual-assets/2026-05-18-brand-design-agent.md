@@ -74,7 +74,7 @@
 - `apps/web/src/shared/styles/tokens.css` (컬러 21종, gradient 1종, shadow, radius)
 
 ### 3.3 톤 SSoT
-- `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.3, §1-3 톤·컬러·게임화)
+- `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.4) — §1-3 톤·컬러·게임화, **§"듀오링고 글로벌 톤 차용/변형/거절 매트릭스"** (15행, design-review 자동 판단 기준)
 - `docs/superpowers/specs/2026-05-18-ui-master-design.md` (UI master)
 
 ### 3.4 시안 reference
