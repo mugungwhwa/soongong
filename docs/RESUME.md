@@ -1,13 +1,15 @@
 # 순공대장 — 다음 세션 진입점 (RESUME)
 
 > **이 문서를 먼저 읽으세요.** 5분 안에 현재 상태 + 다음 액션이 파악되도록 잠금.
-> 작성일: 2026-05-14 / 마지막 commit: `5d3d331`
+> 작성일: 2026-05-14 / **최종 갱신: 2026-05-19 (전략정리 v1.1 SSoT 정합)**
 
 ---
 
 ## 1. 현재 위치 (한 줄)
 
 순공대장 MVP 1차의 **문서 트랙은 100% 완료**. 환경 결정 + 마스코트 자산 + agent 실행만 남음.
+
+**2026-05-19 추가**: 게임화 SSoT v1.0 PR #4 main 머지 완료. 상위 사업/엔진/포지셔닝 SSoT 신규 잠금 (`2026-05-19-순공대장_전략_정리.md` v1.1) — 콴다 차이, 듀오링고 메커니즘 이식, 5티어 비즈모델, 데이터 아키텍처 하이브리드, 버티컬·글로벌 순서, SparkClaw 60일 우선순위 모두 명시. CLAUDE.md/핵심요약/SparkClaw 소개서/소스 인덱스/RESUME 5개 파일 정합 완료.
 
 ---
 
@@ -75,6 +77,8 @@ docs/
 
 ## 5. Mike님의 남은 액션 (우선순위)
 
+### 5.1 기술 트랙 (환경 + 마스코트 + agent 실행)
+
 | 우선순위 | 작업 | 시간 | 참조 |
 |---|---|---|---|
 | 🔥 1 | **환경 결정 4개** (Vercel/Supabase/Anthropic/OCR) | 25분 | `docs/setup/2026-05-14-environment-decisions.md` |
@@ -84,7 +88,23 @@ docs/
 | 5 | (P3 게이트 결과 보고) Mathpix 계정 | 10분 | P3 sub-plan T9 |
 | 6 | Midjourney 추가 4종 (생각/위로/잠/놀람) | W2-4 | asset-inventory §3 |
 
-**총 환경 셋업 ~1시간 + 마스코트 작업 ~2-4시간.**
+### 5.2 사업 트랙 — 다음 60일 우선순위 (전략정리 §10)
+
+| 우선순위 | 작업 | 비고 |
+|---|---|---|
+| 🔥 1 | **본인 학원 베타** (2주) — 종이/Notion 수준 OK, 학생 5~10명, **완전 무료** 운영 | 회독 메커니즘만 검증 |
+| 🔥 2 | **베타 데이터 hero slide 1장** | SparkClaw deck용 — "이미 쓰고 있어요" 단계 가능 |
+| 🔥 3 | **부모 5명 인터뷰** — 결제 선호 모델 (구독 vs IAP vs 학원 부담) | 가격 모델 확정 입력값 |
+| ⭐ 4 | **온톨로지 v0.1** — 수학 수열 단원 1개라도 끝까지 | 다른 단원의 reference |
+| ⭐ 5 | **P3 데이터 아키텍처 명시화** — Postgres truth + pgvector 검색 (전략정리 §3.9 vs P3 plan 충돌 — 본 RESUME §10 참조) | sub-plan 수정 필요 |
+| 6 | **Max 티어 AI 기능 prototype** — Claude API로 AI 회독 코치 1개 | 가격 인상 명분 검증 |
+| 7 | **SparkClaw 모집 일정 추적** — 알림 신청 + 역산 일정 | 부트캠프 진입 |
+| 8 | **공동창업자 후보 리스트업** — CTO 또는 운영 리드 (옵션 B) | 시리즈 A 대비 |
+
+### 5.3 Mike 결단 항목 (전략정리 §8)
+
+- **A 트랙 (VC)** vs **B 트랙 (Cash-flow)** 선택 — 누구한테 사업 얘기할지가 달라짐
+- 본업 + compass + 순공대장 중 정리할 1개 결정 (다음 6개월 내)
 
 ---
 
@@ -171,3 +191,28 @@ git config core.hooksPath          # 검증: scripts/hooks 출력되면 OK
 ---
 
 **한 줄 요약**: 문서 11 commits 완료, Mike 환경 결정 25분 + 마스코트 작업 후 P1 자동 실행 가능.
+
+---
+
+## 10. P3 데이터 아키텍처 점검 결과 (2026-05-19)
+
+전략정리 §3.9 "Postgres truth + pgvector 검색 하이브리드"가 P3 sub-plan에 반영되어 있는지 read-only로 점검한 결과:
+
+| 파일 | pgvector 명시? | 상태 |
+|---|---|---|
+| `master.md` | "Supabase 스택에 pgvector 포함" 1줄만 | 추상적 |
+| `p3-ai-pipeline.md` | 키워드 0건 | **누락** |
+| `p3-curriculum-rag.md` | **"pgvector 폐기, Postgres FTS + JSON 트리"로 잠금** (line 8). pgvector는 Top-1 < 50% 폴백 시점에만 (line 229) | **전략정리와 직접 충돌** |
+
+**해석**:
+- 전략정리 §3.9는 **장기 SSoT 아키텍처**: Postgres truth + pgvector 검색 하이브리드
+- p3-curriculum-rag.md는 **MVP 1차 단계적 구현**: 임베딩/벡터 폐기, FTS + JSON 트리로 시작, 정확도 미달 시 pgvector로 진화
+
+→ 모순이 아니라 **layer가 다름**. 단, **p3-curriculum-rag.md에 "장기는 전략정리 §3.9 하이브리드로 수렴, MVP 1차는 비용/복잡도 고려 FTS 우선" 한 줄 명시**가 필요. 본 정합 commit 범위 밖이므로 별건 plan 수정 권장.
+
+**Mike 결단 필요**:
+- (a) p3-curriculum-rag.md에 정합 한 줄 추가만 (10분)
+- (b) MVP 1차부터 pgvector 도입으로 plan 재작성 (1-2일 work)
+- (c) 보류, 베타 검증 후 결정
+
+추천: **(a)** — 가장 적은 work로 SSoT 충돌 해소.
