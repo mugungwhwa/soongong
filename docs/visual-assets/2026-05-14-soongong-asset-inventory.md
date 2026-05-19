@@ -144,14 +144,27 @@ MVP 1차에 필요한 표정 6종. 각각 PNG 1024×1024, 투명 배경.
 - 표정은 1종(평온/기본)만 보유. §3 표 6종 중 **#1 응원 변형** 또는 **#5 잠/대기**에 가장 가깝다고 판단 (별도 응원 포즈/표정 변형 필요).
 - 알파 채널 없음 → Canva BG Remover 또는 `rembg` 1회 처리 후 `apps/web/public/mascot/`에 배포.
 
+**v0.1-alpha (2026-05-18, Claude 자동 처리):**
+
+`docs/visual-assets/mascot-v0.1-alpha/`에 Pillow + 가장자리 floodfill로 알파 채널 추가 완료:
+
+| 파일 | 상태 |
+|---|---|
+| `main-alpha.png` | ✅ 완벽 — production 즉시 사용 가능 |
+| `repeat_normal-alpha.png` | ⚠️ 캐릭터·외곽 깔끔, belly 아래 1-2% 잔재 — reference 용도 OK, production 불가 |
+
+알고리즘 한계: 자산의 *belly 옅은 크림* 색과 *그림자 베이지* 색이 너무 가까워 thresh 기반 floodfill로 안전하게 구분 불가. 더 정교한 처리는 ML 기반(`rembg`) 또는 v0.2 단계에서 GPT-4o가 처음부터 투명·단색 배경으로 생성.
+
 **남은 TODO (다음 단계):**
-1. Mike — **GPT-4o(ChatGPT)** 이미지 생성으로 표정 5종 추가 (celebrate / think / comfort / sleep / surprise). 워크플로우는 §4 참조. *(2026-05-18 결정: Midjourney → GPT-4o 트랙 전환)*
-2. Mike (Canva) — 배경 투명화 + 1024 / 512 / 256 / 128 / 64 5단 다운스케일 export.
-3. Claude — `apps/web/src/shared/ui/mascot.tsx` placeholder를 v0.1 자산으로 1차 교체 (`#1 응원/기본` 슬롯에 `main.png` 임시 매핑).
+1. Mike — **GPT-4o(ChatGPT)** 이미지 생성으로 표정 5종 추가 (celebrate / think / comfort / sleep / surprise). **§4.2 base prompt에 "투명 배경 또는 정확히 `#F8FBF7` 단색" 명시 필수**. 워크플로우는 §4 참조. *(2026-05-18 결정: Midjourney → GPT-4o 트랙 전환)*
+2. Mike (Canva) — v0.2 자산 5단 다운스케일 export (1024 / 512 / 256 / 128 / 64).
+3. Claude — `apps/web/src/shared/ui/mascot.tsx` placeholder를 `mascot-v0.1-alpha/main-alpha.png` 으로 1차 교체 (`#1 응원/기본` 슬롯).
 
 ---
 
 ## 4. GPT-4o 이미지 생성 가이드 (Mike용)
+
+> **에이전트화 SSoT**: 본 §4 가이드 + §3/§5/§7/§9는 **`docs/visual-assets/2026-05-18-character-design-agent.md`** (순공이 캐릭터 디자인 에이전트)에 단일 진실로 통합됨. 다음 세션 팔로업·잠긴 결정 회귀 방지·진행 마일스톤 관리는 그쪽 문서 우선.
 
 > **2026-05-18 결정**: Midjourney → **GPT-4o(ChatGPT) 이미지 생성** 트랙으로 전환. 이유: 한국어 친화 / ChatGPT Plus 외 추가 비용 0 / Discord 없이 진입장벽 최저. Mike의 AI Provider 결정 매트릭스에 GPT가 추가된 흐름과도 정합. 일관성은 §4.1 강제 프로토콜로 보완.
 
@@ -173,7 +186,7 @@ GPT-4o image generation은 Midjourney `--cref`처럼 시드 기반 강제 메커
 **완전히 동일한 외형·컬러·스타일**로 새 일러스트를 만들어줘.
 
 - 표정/포즈: [표정별 변형부]
-- 배경: 단색 크림 #F8FBF7 (가능하면 투명 PNG)
+- 배경: **투명 PNG 우선**, 안 되면 정확히 `#F8FBF7` 단색 (앱 토큰과 일치 필수 — 미세 색차도 카드/그라데이션 위에서 사각형 노출됨)
 - 사이즈: 1254×1254 정사각형
 - 톤: Light Study Garden — 둥글고 친근한 카와이 스티커 스타일
 - 한국 학습앱(수능생 대상) 마스코트. 듀오링고/카카오 헤이바이브 톤 참고.
@@ -235,19 +248,19 @@ GPT-4o image generation은 Midjourney `--cref`처럼 시드 기반 강제 메커
 
 ### 4.5 투명화 슬롯 매트릭스 (생성 후 처리)
 
-GPT-4o 출력도 완전 투명 PNG는 불안정. **모든 슬롯이 투명화 필요한 건 아님**:
+GPT-4o 출력도 완전 투명 PNG는 불안정. 또한 **자산 배경이 앱 토큰과 정확히 일치하지 않으면 모든 슬롯에서 사각형이 미세하게 노출**됨 (v0.1 측정값: 자산 `#F7F4F2` vs 앱 토큰 `#F8FBF7` → G −7, B −4 차이로 시각 식별 가능). 그래서 **전 슬롯 투명화 권장**:
 
 | UI 슬롯 | 배경 | 투명화 |
 |---|---|---|
-| 홈 메인 일러스트 | 크림 | ❌ 불필요 (배경 색 일치) |
-| 온보딩 인트로 | 크림 | ❌ 불필요 |
-| 회독퀘스트 카드 썸네일 | 흰색/연민트 카드 | ✅ 필요 |
-| 뱃지/리워드 아이콘 | 다양 | ✅ 필요 |
-| 푸시 알림 아이콘 | 시스템 | ✅ 필요 |
-| 앱 아이콘 | 시스템 | ✅ 필요 |
-| 결과 화면 (콘페티 위) | 그라데이션 | ✅ 필요 |
+| 홈 메인 일러스트 | 크림 | 권장 (자산 배경과 미세 색차) |
+| 온보딩 인트로 | 크림 | 권장 (자산 배경과 미세 색차) |
+| 회독퀘스트 카드 썸네일 | 흰색/연민트 카드 | ✅ 필수 |
+| 뱃지/리워드 아이콘 | 다양 | ✅ 필수 |
+| 푸시 알림 아이콘 | 시스템 | ✅ 필수 |
+| 앱 아이콘 | 시스템 | ✅ 필수 |
+| 결과 화면 (콘페티 위) | 그라데이션 | ✅ 필수 |
 
-→ MVP 1차 기준 **5-7개 슬롯만 투명화**. 권장 도구:
+→ MVP 1차 기준 **전 슬롯 투명화 1회**. GPT-4o prompt에서 **"투명 배경 또는 정확히 `#F8FBF7` 단색 배경"**을 명시하면 후처리 부담이 감소. 권장 도구:
 
 | 도구 | 비용 | Mike 적합도 | 비고 |
 |---|---|---|---|
@@ -409,3 +422,4 @@ export function Mascot({ mood = "cheer", size = 128 }: { mood?: Mood; size?: num
 | **v1.0** | **2026-05-14** | **초안. 외주 트랙 폐기. Claude/Lucide/Midjourney/Canva 4트랙 분류. 마스코트 6종 + 앱 아이콘 + 푸시/OG/스토어 자산 inventory + Midjourney prompt 가이드 + Canva 작업 가이드.** |
 | **v1.1** | **2026-05-18** | **§3.x 입수 자산 v0.1 섹션 신설. Mike Midjourney 작업본 2종(`main.png` 풀바디 + `repeat_normal.png` 페이스 클로즈업, 1254×1254) 등재. 폴더 `charcter image/` → `docs/visual-assets/mascot-v0.1/`로 이동, `repeat_nomal.png` 오타 수정.** |
 | **v1.2** | **2026-05-18** | **§4 Midjourney 가이드 → GPT-4o(ChatGPT) 이미지 생성 가이드로 전면 재작성. §4.1 일관성 강제 프로토콜 + §4.2 한국어 base prompt + §4.3 표정 5종 변형부 + §4.4 ChatGPT 세션 운영 워크플로우 + §4.5 투명화 슬롯 매트릭스(remove.bg/Canva/rembg) + §4.6 작업 팁. §3 헤딩과 §3.x TODO도 GPT-4o 트랙으로 갱신.** |
+| **v1.3** | **2026-05-18** | **§3.x에 v0.1-alpha 자동 처리 결과 추가 (`mascot-v0.1-alpha/main-alpha.png` 완벽 + `repeat_normal-alpha.png` 부분 잔재). §4.2 base prompt에 투명 배경 우선 명시. §4.5 매트릭스 "❌ 불필요(배경 색 일치)" 행을 "권장"으로 강등 — 자산 #F7F4F2 vs 앱 토큰 #F8FBF7 미세 차이 측정값 근거.** |

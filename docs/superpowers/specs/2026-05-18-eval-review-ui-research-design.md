@@ -50,7 +50,7 @@ MVP 1차의 세 핵심 도메인 — **문제 평가** / **문제 리뷰** / **U
 - **런타임**: `problem` row 1건 + `meta: {ocr_text, type, difficulty, mistake_likelihood, source_tag}`
 
 ### 2.3 디스패치 순서 (sequential `→`, parallel `||`)
-1. **설계** — `vercel:ai-architect` (Claude SDK + tool definition + prompt 전략)
+1. **설계** — `vercel:ai-architect` (Claude SDK + tool definition + prompt 전략, **P0 `src/shared/lib/ai.ts` mock contract 준수**)
 2. **구현** — `oh-my-claudecode:executor` + `vercel:ai-sdk` skill 참조
 3. **정확도 측정** — `oh-my-claudecode:qa-tester` (eval suite 실행) || `oh-my-claudecode:verifier` (증거 기반 검증) — parallel
 4. **다각도 점검** — `oh-my-claudecode:critic` (Opus 비판, 1회)
@@ -77,6 +77,7 @@ evaluator 출력 schema는 P4 회독 큐가 consume.
 - `review_queue` row (`due_at`, `interval_step`, `mastery_score`)
 - `review_attempt` row (정답률, 풀이 시간, hint 사용 횟수)
 - **학생 뷰**: 오늘의 회독퀘스트 카드 N장
+- ※ schema는 P0 `src/shared/mocks/quests.ts` + `recovery-variants.ts`와 정합
 
 ### 3.3 디스패치 순서
 1. **설계** — `feature-dev:code-architect` (스케줄링 + SM-2 변형 알고리즘)
@@ -97,10 +98,12 @@ evaluator 출력 schema는 P4 회독 큐가 consume.
 
 ## §4. UI 리서치 — 듀오링고 follow-up mini-workflow
 
-### 4.1 진입 트리거
-P5 구현 시작 **1주 전 one-shot**. UI 토큰/패턴 lock 후 P5/P6 진입.
+> ⚠️ **DEPRECATED (v1.2)**: 본 §은 `docs/superpowers/specs/2026-05-18-ui-master-design.md` v1.0 §3으로 흡수 이관됨. 본 §은 history 보존용으로만 유지. 신규 작업은 UI master spec §3 참조.
 
-> ⚠️ **결정적 타이밍**: 이 트리거가 늦으면 P5에 들어가서 reference를 헤매다가 `design-review` 70점 게이트가 깨진다. 1주 사전 lock이 핵심.
+### 4.1 진입 트리거
+**P0 킥오프 직전 또는 P0 Day 0-1과 병행** (v1.0의 "P5 1주 전 one-shot"에서 앞당김 — P0가 Day 1에 `tokens.css` SSoT를 잠그므로). P0 Day 1 토큰 잠금 **직전**까지 reference deck + 디자인 토큰 lock PR 완료 **필수**.
+
+> ⚠️ **결정적 타이밍**: P0 Day 1 토큰 잠금이 시간 데드라인. UI 리서치가 늦으면 P0 Day 7 `design-review` 70점 게이트 + P5 진입 두 곳 모두 위협받는다.
 
 ### 4.2 산출물
 - `docs/ui-research/2026-MM-DD-duolingo-followup-deck.md` (MM-DD는 리서치 시작일에 확정)
@@ -142,7 +145,14 @@ P5 구현 시작 **1주 전 one-shot**. UI 토큰/패턴 lock 후 P5/P6 진입.
 - **P3** 행 "리뷰 / QA" 칸에 **`scientist`** 추가 (정확도 분포 분석)
 - **P4** 행 "리뷰 / QA" 칸에 **`scientist` + `silent-failure-hunter`** 추가
 - **P5** 행 "진입 시 (요구 발굴)" 칸에 **`external-context` + `ccg` + `document-specialist`** 추가
-- **P5** 행 메모 박기: *"UI 리서치 1주 전 one-shot trigger"*
+- **P5** 행 메모 박기: *"UI 리서치는 P0 킥오프 직전/병행으로 앞당겨짐 (v1.1)"*
+- **P0** 행 **신설** (현재 §3.2 매트릭스에 없음):
+  - 진입 시 = `superpowers:brainstorming` + UI 리서치 mini-workflow 병행
+  - 설계 = `feature-dev:code-architect` + `oh-my-claudecode:designer`
+  - 구현 = `oh-my-claudecode:executor` (mock-first FSD 2.1 + shadcn 9종)
+  - 디자인 = `design-system:design-system` 가이드 + `design-system:design-review` (Day 7 gate ≥ 70)
+  - 리뷰 / QA = `oh-my-claudecode:qa-tester` (Playwright E2E) + `pr-review-toolkit:silent-failure-hunter`
+  - 커밋 게이트 = `arch-guard:pre-commit` + `pnpm lint:tokens` + `check-no-dark`
 
 이 보강 PR은 spec 승인 → writing-plans → 첫 implementation milestone과 함께 묶거나, 메타 단독 PR로 분리. 결정은 writing-plans 단계에서.
 
@@ -153,6 +163,8 @@ P5 구현 시작 **1주 전 one-shot**. UI 토큰/패턴 lock 후 P5/P6 진입.
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-18** | **brainstorming 산출 초안. 3개 도메인 mini-workflow + 통합 게이트 + §3.2 보강 항목.** |
+| **v1.1** | **2026-05-18** | **P0 sub-plan(`2fc1821`) 신규 발견 반영. §4.1 UI 리서치 트리거를 "P5 1주 전" → "P0 킥오프 직전/병행"으로 앞당김. §2.3 / §3.2에 P0 contract 정합 단서. §6에 P0 행 신설.** |
+| **v1.2** | **2026-05-18** | **§4 UI 리서치 mini-workflow를 `ui-master-design.md` v1.0 §3으로 흡수 이관 + deprecate 마킹. 본 §은 history 보존용으로만 유지.** |
 
 ---
 
