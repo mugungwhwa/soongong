@@ -48,9 +48,9 @@ if [ -z "$STAGED" ]; then
     exit 0
 fi
 
-# scripts/ 는 hook 자체에 키워드 패턴을 포함하므로 검사 제외
-# (회귀는 docs/ 와 코드 영역에서 의미; hook 정의 자체는 self-reference)
-ADDED_LINES=$(git diff --cached -U0 --diff-filter=ACM -- ':!scripts/' | grep -E "^\+[^+]" || true)
+# scripts/ 와 CLAUDE.md 는 폐기 정책을 정의·등록하는 자리이므로 검사 제외
+# (회귀는 docs/ 와 코드 영역에서 의미; 정의 자체는 self-reference)
+ADDED_LINES=$(git diff --cached -U0 --diff-filter=ACM -- ':!scripts/' ':!CLAUDE.md' | grep -E "^\+[^+]" || true)
 
 # ─────────────────────────────────────────────
 # 3. 회귀 키워드 검사 (CLAUDE.md §8 폐기 정책)
