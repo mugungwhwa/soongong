@@ -124,16 +124,22 @@
 
 ### P7 — 게임 시스템 (예상 3-4일)
 
-**Goal**: XP / 스트릭 / 기억 HP / 뱃지 10개
+**Goal**: XP / 스트릭 / 기억 HP / 뱃지 10개 + 회독 완료 푸시 1종
+
+🔒 **SSoT**: 모든 룰은 `01_제품_UX_게임화/게임성_기획_구조.md` v1.0 참조 (XP §4-1, HP 0-5 §4-2, 뱃지 §5-1/§5-3, 등급 §6-1).
 
 **핵심 산출물:**
 - 테이블: `user_game_state`, `badges`
-- XP 누적 룰 (회독 완료 +20, 오답회수 +30, 망각방어 +40, 힌트없이 정답 +10, 7일 전 재정답 +20, 14일 망각방어 +50)
-- 스트릭 / 기억 HP 일일 cron 업데이트
-- 뱃지 10종 (게임성_기획_구조.md §5-1)
+- XP 누적 룰 (회독 완료 +20, 오답회수 +30, 망각방어 +40, 힌트없이 정답 +10, 7일 전 재정답 +20, 14일 망각방어 +50, 4점보스 +80 — SSoT §4-1)
+- 스트릭 / 기억 HP (0-5 정수) 일일 cron 업데이트
+- 뱃지 10종 + 희귀도 4단(common/rare/epic/legendary — SSoT §5-3)
+- 사용자 등급 6단 (순공입문→순공전설, 누적 XP 기반 — SSoT §6-1)
 - 결과 화면 보상 애니메이션 (Framer Motion)
+- 🔔 **회독 완료 푸시 1종** (Web Push API + Service Worker — SSoT §8-1 MVP 1차 한정, 시간대/제한은 §8-2/§8-3 적용)
 
-**Agents**: 설계 `code-architect` / 구현 `executor` / 리뷰 `code-reviewer`
+**MVP 1.5차로 분리**: 푸시 나머지 5종(망각위험/스트릭위기/리그위기/뱃지직전/복귀) + 순공리그 + 트로피 5종 → 별도 sub-plan `2026-XX-XX-soongong-mvp15-gamification-extension.md`로 신설 예정.
+
+**Agents**: 설계 `code-architect` / 구현 `executor` / 리뷰 `code-reviewer` + `type-design-analyzer` (rank/rarity enum)
 
 ---
 

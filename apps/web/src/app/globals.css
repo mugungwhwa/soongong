@@ -1,0 +1,23 @@
+@import "tailwindcss";
+@import "../shared/styles/tokens.css";
+
+@theme {
+  --color-bg: var(--color-bg);
+  --color-bg-elevated: var(--color-bg-elevated);
+  --color-mint-500: var(--color-mint-500);
+  --color-mint-700: var(--color-mint-700);
+  --color-risk-low: var(--color-risk-low);
+  --color-risk-mid: var(--color-risk-mid);
+  --color-risk-high: var(--color-risk-high);
+  --color-text-strong: var(--color-text-strong);
+  --color-text-default: var(--color-text-default);
+  --color-text-muted: var(--color-text-muted);
+  --color-border-default: var(--color-border-default);
+}
+
+html,
+body {
+  background: var(--color-bg);
+  color: var(--color-text-default);
+  font-family: var(--font-body);
+}

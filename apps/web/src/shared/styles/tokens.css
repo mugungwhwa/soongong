@@ -1,0 +1,71 @@
+@layer base {
+  :root {
+    /* Surface (Light Study Garden) */
+    --color-bg: #F8FBF7;
+    --color-bg-elevated: #FFFFFF;
+    --color-bg-sunken: #F1F5EF;
+
+    /* Brand mint */
+    --color-mint-50: #EFF9EF;
+    --color-mint-100: #D6F0D6;
+    --color-mint-300: #A8DDA8;
+    --color-mint-500: #7CC97C;
+    --color-mint-700: #4FA84F;
+    --color-mint-900: #2E6B2E;
+
+    /* Risk (soft, 채도 ≤60 — UI 설계.md §3) */
+    --color-risk-low: #A0BFDC;
+    --color-risk-mid: #E6B788;
+    --color-risk-high: #E29B9B;
+
+    /* Reward / XP (Duolingo #ffc800과 차별, soft golden) */
+    --color-xp: #F2C94C;
+    --color-xp-soft: #FBE7A6;
+
+    /* Text */
+    --color-text-strong: #1A2A1A;
+    --color-text-default: #2D3F2D;
+    --color-text-muted: #6B7B6B;
+    --color-text-inverse: #FFFFFF;
+    --color-text-on-warm: #3A2A10;
+
+    /* Gradients (registered, lint:tokens 통과 대상) */
+    --gradient-quest-map: linear-gradient(to bottom right, #EFF9EF, #F1F5EF);
+
+    /* Border */
+    --color-border-default: #E1ECDF;
+    --color-border-strong: #C5D9C2;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-pill: 9999px;
+
+    /* Spacing scale (4px base) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* Shadow */
+    --shadow-card: 0 2px 8px rgba(46, 107, 46, 0.06);
+    --shadow-elevated: 0 8px 24px rgba(46, 107, 46, 0.10);
+
+    /* Motion */
+    --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --duration-fast: 160ms;
+    --duration-mid: 240ms;
+    --duration-slow: 380ms;
+
+    /* Typography */
+    --font-display: "Pretendard", system-ui, sans-serif;
+    --font-body: "Pretendard", system-ui, sans-serif;
+  }
+}

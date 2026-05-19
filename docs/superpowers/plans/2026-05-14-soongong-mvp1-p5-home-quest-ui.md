@@ -57,17 +57,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
+> ⚠️ **MVP 1차 sidebar 갱신 (2026-05-19)**: 본 plan v1.0 작성 이후 P0 와꾸에서 sidebar 메뉴가 재설계됨. 실제 구현은 `apps/web/src/widgets/sidebar/ui/sidebar.tsx` 참조 (홈/캘린더/오답노트/그래프/순공일지 + admin). 아래 예시는 **plan 작성 시점 시안**이며, `/league` 메뉴는 게임화 SSoT(`게임성_기획_구조.md §7, §10`)에 따라 **MVP 1.5차 진입**이므로 MVP 1차 sidebar에서 제거하거나 잠금 표시(`disabled + 🔒 다음 시즌`)로 처리해야 한다.
+
 ```tsx
 // apps/web/src/widgets/sidebar/ui/sidebar.tsx
+// ⚠️ MVP 1차 시점에서 /league는 제거 또는 잠금 표시 (SSoT §7)
 import Link from "next/link";
-import { Home, Calendar, FileText, Target, User, Trophy } from "lucide-react";
+import { Home, Calendar, FileText, Target, User } from "lucide-react";
 const ITEMS = [
   { href: "/", icon: Home, label: "홈" },
   { href: "/quests", icon: Calendar, label: "오늘 회독퀘스트" },
   { href: "/sources", icon: FileText, label: "문제 기록" },
   { href: "/wrong", icon: Target, label: "오답 통계" },
   { href: "/profile", icon: User, label: "내 정보" },
-  { href: "/league", icon: Trophy, label: "순공리그" },
+  // MVP 1.5차에 활성화 — { href: "/league", icon: Trophy, label: "순공리그", locked: true } 패턴 권장
 ];
 export function Sidebar({ className = "" }: { className?: string }) {
   return (

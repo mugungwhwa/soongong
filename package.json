@@ -1,0 +1,22 @@
+{
+  "name": "soongong",
+  "private": true,
+  "packageManager": "pnpm@11.1.2",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "lint:tokens": "pnpm --filter web lint:tokens",
+    "lint:no-dark": "pnpm --filter web lint:no-dark",
+    "test": "pnpm --filter web test",
+    "test:e2e": "pnpm --filter web test:e2e"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "unrs-resolver",
+      "sharp",
+      "esbuild",
+      "@tailwindcss/oxide"
+    ]
+  }
+}

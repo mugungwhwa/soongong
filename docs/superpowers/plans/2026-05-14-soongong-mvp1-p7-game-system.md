@@ -2,6 +2,7 @@
 
 > **For agentic workers:** `superpowers:subagent-driven-development` + `superpowers:test-driven-development`. 룰이 명확한 시스템이라 TDD 적합.
 > **Pre-requisites**: P4 (review_quests) 완료.
+> 🔒 **SSoT 참조**: 모든 게임화 룰(XP/스트릭/HP/뱃지/등급)은 `01_제품_UX_게임화/게임성_기획_구조.md` v1.0이 단일 진실. 본 plan은 그 구현 사양일 뿐, 룰 수치 변경 시 먼저 SSoT 갱신 후 본 plan 재정합. 검증된 정합 항목: rank 6단(§6-1), rarity 4단(§5-3), 뱃지 색 매핑(§5-3), 기억 HP 0-5 (§4-2), XP 7가지 행동(§4-1).
 
 **Goal:** XP 누적 / 스트릭 / 기억 HP / 뱃지 10종 + 결과 화면 보상 애니메이션.
 
