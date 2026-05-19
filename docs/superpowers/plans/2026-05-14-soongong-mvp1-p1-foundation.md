@@ -3,6 +3,13 @@
 > **For agentic workers:** 실제 task-level 실행 문서. `superpowers:subagent-driven-development` (권장) 또는 `superpowers:executing-plans`로 진행. 각 task는 fresh subagent + 두 단계 리뷰.
 > **환경 트랙 보류 중**: Mike의 명시 OK 전에는 Task 4 (Supabase 프로젝트 생성), Task 5의 production 실행은 보류. 본 문서는 OK 시 즉시 실행할 수 있도록 잠금.
 
+> ⚠️ **v1.1 정합 메모 (2026-05-19)** — P0 와꾸 단계가 본 plan 일부를 선행 처리했고 **stack이 Tailwind v4 (CSS-first)로 굳어졌음**. 워크트리 진입 시 step별로 다음 적용 규칙 사용.
+> - **Task 1 Step 1** (`tailwind.config.ts` v3 syntax) — **폐기**. Tailwind v4는 config 파일 없이 `tokens.css`의 `:root --color-*`가 SoT.
+> - **Task 1 Step 2** (`tokens.css`) — **이미 P0가 진화 버전으로 생성** (`--color-mint-50..900`, `--color-risk-*`, `--color-xp`, `--gradient-quest-map` 등). 그대로 유지.
+> - **Task 1 Step 3** (`docs/design-tokens.md`) — **누락**. 본 SSoT 문서 신규 작성 필요 (실제 `tokens.css` 기준).
+> - **Task 2/3** (FSD scaffold + shadcn deps) — P0가 6레이어 디렉토리 + Next App Router + Radix/cva/clsx/tailwind-merge 의존성 선행 완료. plan은 누락분 보강 기준으로 재정렬.
+> - **Task 4/5** (Supabase / users RLS) — 환경 결정 잠금(2026-05-19) 후 Mike 키 발급 대기. 키 도착 시 그대로 실행.
+
 **Goal:** Next.js 15 + FSD 2.1 + Supabase + 디자인 토큰을 잠그는 프로젝트 골격. 다른 P의 기반.
 
 **Architecture:** monorepo 시작점은 단일 `apps/web/`. Sub-package(`packages/shared`, `packages/domain`)는 P2 진입 전 분리. 디자인 토큰을 `tailwind.config.ts` + `src/shared/styles/tokens.css`에 SSoT로 잠그고, `docs/design-tokens.md`에 보호 정책 명시.
@@ -802,3 +809,4 @@ git commit -m "feat(users): users 테이블 + RLS + 만 14세 미만 게이트"
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. 5개 task (Design Tokens / Next.js scaffolding / shadcn 9종 / Supabase Auth / users 테이블) + 체크포인트.** |
+| **v1.1** | **2026-05-19** | **헤드에 정합 메모 callout 추가. Task 1: P0 와꾸가 `tokens.css` 선행 완료 + Tailwind v4 stack 정합 → Step 1 폐기, Step 2 유지, Step 3(SSoT 문서) 신규. Task 2/3: P0 선행분 위 누락분 보강. Task 4/5: 환경 결정 잠금 후 Mike 키 도착 시 실행.** |

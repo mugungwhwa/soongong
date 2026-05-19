@@ -3,6 +3,13 @@
 > 환경 트랙 시작 전 결정해야 할 **5개 항목**. 각 항목에 옵션 비교 + 추천 + 근거 + 결정 후 액션. 모두 30분 안에 결정 가능.
 > 결정 후 P1 sub-plan의 Task 4 (Supabase Auth) / Task 5 (users 테이블)부터 즉시 실행 가능.
 
+> 🔒 **결정 잠금 (2026-05-19)** — Mike OK. 결정 1/2/3/4 모두 **추천 옵션 A** 채택.
+> - 결정 1: Vercel = mugungwhwa 개인 (Hobby $0)
+> - 결정 2: Supabase = 새 개인 org, project `soongong-mvp`, region **Northeast Asia (Seoul)**
+> - 결정 3: AI = Anthropic 단독 (MVP 1차), 중기 Vercel AI Gateway 검토 (옵션 C)
+> - 결정 4: OCR = Vision LLM only(Claude Sonnet), P3 게이트 후 Mathpix 토글 결정
+> - 다음 unblock: Mike가 위 3개 가입 + 키 발급 → Claude가 `docs/setup/.env.local.example`을 `apps/web/.env.local`로 복사 + 키 채움 → P1 워크트리 진입.
+
 ---
 
 ## 결정 1: Vercel 계정 / 프로젝트
@@ -271,3 +278,4 @@ Mike가 위 7개 결정 끝내고 환경 변수 준비 끝나면, Claude Code가
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-14** | **초안. 환경 트랙 5개 핵심 결정 + 2개 옵션 결정 + 추천 + 결정 후 액션 + 비용 추정 + 체크리스트.** |
+| **v1.1** | **2026-05-19** | **결정 1/2/3/4 Mike OK — 모두 추천 옵션 A 잠금. 헤드에 🔒 잠금 callout 추가. 다음 unblock 경로(키 발급 → `.env.local` 복사 → P1 워크트리) 명시.** |
