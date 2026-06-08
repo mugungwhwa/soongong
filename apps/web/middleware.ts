@@ -38,6 +38,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // 관리자/검수자 라우트 보호 (P8)
+  if (pathname.startsWith("/admin") && user) {
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+    if (!userRow || !["admin", "reviewer"].includes(userRow.role as string)) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+  }
+
   return response;
 }
 

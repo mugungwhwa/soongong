@@ -1,18 +1,50 @@
 "use client";
+
 import { useState } from "react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { MOCK_ADMIN_QUEUE } from "@/shared/mocks/admin-queue";
 import type { AdminReviewItem } from "@/shared/contracts";
+import { createClient } from "@/shared/lib/supabase/client";
+import { ErrorReportButton } from "@/features/admin-review";
+
+type Decision = "approved" | "modified" | "rejected";
+
+async function recordAuditLog(
+  itemId: string,
+  decision: Decision,
+): Promise<void> {
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const actionMap: Record<Decision, string> = {
+    approved: "approve",
+    rejected: "reject",
+    modified: "correct",
+  };
+
+  await supabase.from("audit_logs").insert({
+    actor_id: user?.id ?? null,
+    actor_role: "reviewer",
+    action: actionMap[decision],
+    target_table: "parsed_learning_objects",
+    target_id: itemId,
+    diff: { decision },
+  });
+}
 
 export function AdminReviewList() {
   const [items, setItems] = useState<AdminReviewItem[]>(MOCK_ADMIN_QUEUE);
 
-  function act(itemId: string, status: AdminReviewItem["status"]) {
+  async function act(itemId: string, decision: Decision) {
     setItems((prev) =>
-      prev.map((i) => (i.itemId === itemId ? { ...i, status } : i)),
+      prev.map((i) => (i.itemId === itemId ? { ...i, status: decision } : i)),
     );
+    // audit_logs 기록 — DB trigger 없이도 DoD 검증 가능
+    await recordAuditLog(itemId, decision);
   }
 
   return (
@@ -30,7 +62,7 @@ export function AdminReviewList() {
             </div>
           </div>
           {i.status === "pending" ? (
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-wrap">
               <Button
                 size="sm"
                 variant="outline"
@@ -48,9 +80,27 @@ export function AdminReviewList() {
               >
                 폐기
               </Button>
+              <ErrorReportButton
+                targetTable="parsed_learning_objects"
+                targetId={i.itemId}
+              />
             </div>
           ) : (
-            <Badge>{i.status}</Badge>
+            <Badge
+              variant={
+                i.status === "approved"
+                  ? "default"
+                  : i.status === "rejected"
+                    ? "destructive"
+                    : "secondary"
+              }
+            >
+              {i.status === "approved"
+                ? "승인됨"
+                : i.status === "rejected"
+                  ? "폐기됨"
+                  : "수정됨"}
+            </Badge>
           )}
         </Card>
       ))}
