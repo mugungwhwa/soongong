@@ -10,7 +10,8 @@
     "lint:tokens": "tsx scripts/check-tokens.ts",
     "lint:no-dark": "tsx scripts/check-no-dark.ts",
     "test": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "eval:p2": "tsx ../../eval/p2/runner.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
