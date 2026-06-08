@@ -22,6 +22,10 @@
     --color-xp: #F2C94C;
     --color-xp-soft: #FBE7A6;
 
+    /* Badge rarity — SSoT §5-3: 일반/희귀/영웅/전설 */
+    --color-epic-bg: #F5E0FC;
+    --color-epic-text: #8B5CF6;
+
     /* Text */
     --color-text-strong: #1A2A1A;
     --color-text-default: #2D3F2D;
