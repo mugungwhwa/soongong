@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/shared/ui/button";
-import { ResultRewards } from "@/widgets/result-rewards/ui/result-rewards";
+import { ResultRewards } from "@/widgets/result-rewards";
 import { ROUTES } from "@/shared/config/routes";
 
 export function ResultPage() {

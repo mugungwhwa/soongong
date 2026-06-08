@@ -1,4 +1,4 @@
-import { TodayPage } from "@/views/today/ui/today-page";
+import { TodayPage } from "@/views/today";
 
 export default function Page() {
   return <TodayPage />;

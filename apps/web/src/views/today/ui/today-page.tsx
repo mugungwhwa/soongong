@@ -1,10 +1,10 @@
 import { Mascot } from "@/shared/ui/mascot";
-import { StatsGrid } from "@/widgets/stats-grid/ui/stats-grid";
-import { QuestList } from "@/widgets/quest-list/ui/quest-list";
-import { ReviewMap } from "@/widgets/review-map/ui/review-map";
-import { SubjectProgress } from "@/widgets/subject-progress/ui/subject-progress";
-import { ForgettingTop3 } from "@/widgets/forgetting-top3/ui/forgetting-top3";
-import { UploadTrigger } from "@/features/upload-source/ui/upload-trigger";
+import { StatsGrid } from "@/widgets/stats-grid";
+import { QuestList } from "@/widgets/quest-list";
+import { ReviewMap } from "@/widgets/review-map";
+import { SubjectProgress } from "@/widgets/subject-progress";
+import { ForgettingTop3 } from "@/widgets/forgetting-top3";
+import { UploadTrigger } from "@/features/upload-source";
 
 export function TodayPage() {
   return (

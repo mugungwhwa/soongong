@@ -29,6 +29,9 @@
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
+    /* Scrim / Overlay (modal·sheet backdrop) */
+    --color-scrim: rgba(0, 0, 0, 0.8);
+
     /* Gradients (registered, lint:tokens 통과 대상) */
     --gradient-quest-map: linear-gradient(to bottom right, #EFF9EF, #F1F5EF);
 

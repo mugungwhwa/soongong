@@ -3,9 +3,8 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
-import { PadCanvas } from "@/widgets/pad-canvas/ui/pad-canvas";
-import { AnswerForm } from "@/features/quest-play/ui/answer-form";
-import { useQuestPlay } from "@/features/quest-play/model/use-quest-play";
+import { PadCanvas } from "@/widgets/pad-canvas";
+import { AnswerForm, useQuestPlay } from "@/features/quest-play";
 import { getQuestById } from "@/shared/mocks/quests";
 import { ROUTES } from "@/shared/config/routes";
 
