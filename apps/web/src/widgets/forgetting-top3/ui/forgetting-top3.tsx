@@ -1,19 +1,10 @@
+"use client";
 import { Card } from "@/shared/ui/card";
 import { RiskBadge } from "@/entities/quest";
-
-interface ForgettingItem {
-  subject: string;
-  topic: string;
-  risk: number;
-}
-
-const ITEMS: ForgettingItem[] = [
-  { subject: "수학", topic: "수열 점화식", risk: 78 },
-  { subject: "영어", topic: "혼동 어휘", risk: 72 },
-  { subject: "국어", topic: "비문학 추론", risk: 65 },
-];
+import { useForgettingTop } from "@/entities/forgetting";
 
 export function ForgettingTop3() {
+  const items = useForgettingTop();
   return (
     <Card className="p-4 shadow-[var(--shadow-card)] border-[var(--color-border-default)]">
       <div className="flex items-center justify-between mb-3">
@@ -21,7 +12,7 @@ export function ForgettingTop3() {
         <RiskBadge level="high" />
       </div>
       <div className="space-y-2">
-        {ITEMS.map((i, idx) => (
+        {items.map((i, idx) => (
           <div
             key={i.topic}
             className="flex items-center gap-2 text-sm py-1.5 border-b last:border-b-0 border-[var(--color-border-default)]"

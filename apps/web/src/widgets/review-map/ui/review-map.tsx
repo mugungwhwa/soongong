@@ -1,12 +1,11 @@
+"use client";
 import { Card } from "@/shared/ui/card";
 import { Mascot } from "@/shared/ui/mascot";
-
-const CURRENT_STEP = 8;
-const TOTAL_STEPS = 30;
-const NEXT_REWARD_XP = 100;
+import { useReviewProgress } from "@/entities/review-progress";
 
 export function ReviewMap() {
-  const percent = Math.round((CURRENT_STEP / TOTAL_STEPS) * 100);
+  const { currentDay, totalDays, nextRewardXp } = useReviewProgress();
+  const percent = Math.round((currentDay / totalDays) * 100);
 
   return (
     <Card className="p-5 shadow-[var(--shadow-card)] border-[var(--color-border-default)] bg-[image:var(--gradient-quest-map)]">
@@ -17,7 +16,7 @@ export function ReviewMap() {
             회독지도에서 안내해드릴게요
           </div>
           <p className="text-xs text-[var(--color-text-muted)] mt-0.5">
-            오늘 {CURRENT_STEP}일째 — 30일 완주까지 {TOTAL_STEPS - CURRENT_STEP}일
+            오늘 {currentDay}일째 — {totalDays}일 완주까지 {totalDays - currentDay}일
           </p>
           <div className="mt-3 flex items-center gap-2">
             <div className="flex-1 h-2 rounded-[var(--radius-pill)] bg-[var(--color-bg-sunken)] overflow-hidden">
@@ -27,7 +26,7 @@ export function ReviewMap() {
               />
             </div>
             <span className="text-xs font-semibold text-[var(--color-mint-700)] whitespace-nowrap">
-              +{NEXT_REWARD_XP} XP
+              +{nextRewardXp} XP
             </span>
           </div>
         </div>
