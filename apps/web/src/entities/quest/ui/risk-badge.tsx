@@ -1,4 +1,4 @@
-import type { QuestRiskLevel } from "@/shared/mocks/quests";
+import type { QuestRiskLevel } from "@/shared/contracts";
 
 const STYLE: Record<QuestRiskLevel, { bg: string; fg: string; label: string }> = {
   low: { bg: "var(--color-risk-low)", fg: "var(--color-text-inverse)", label: "여유" },

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { analyzeSource } from "@/shared/lib/ai";
-import type { AnalysisResult } from "@/shared/mocks/analysis";
+import type { AnalysisResult } from "@/shared/contracts";
 
 export type UploadStep = "select-type" | "pick-file" | "analyzing" | "result";
 export type SourceType = "photo" | "lecture-log" | "memo";

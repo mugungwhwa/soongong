@@ -1,6 +1,6 @@
 import { Card } from "@/shared/ui/card";
 import { Badge } from "@/shared/ui/badge";
-import type { AnalysisResult } from "@/shared/mocks/analysis";
+import type { AnalysisResult } from "@/shared/contracts";
 
 const STRATEGY_LABEL: Record<"numeric_swap" | "target_change", string> = {
   numeric_swap: "숫자 변형",

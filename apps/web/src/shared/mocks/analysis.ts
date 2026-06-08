@@ -1,28 +1,10 @@
-export interface AnalysisVariation {
-  level: "V1" | "V2";
-  strategy: "numeric_swap" | "target_change";
-  stem: string;
-  choices?: string[];
-  answerIndex?: number;
-  expectedCorrectRate: number;
-  validationRequired: boolean;
-}
+// 계약: @/shared/contracts (AnalysisResult / ClassifySubjectResult). 본 파일은 fixture 구현.
+import type {
+  AnalysisResult,
+  ClassifySubjectResult,
+} from "@/shared/contracts";
 
-export interface AnalysisResult {
-  objectId: string;
-  subject: string;
-  unit: string;
-  topic: string;
-  questionType: string;
-  difficultyLevel: 1 | 2 | 3 | 4 | 5;
-  detectedWrongReason?: string;
-  wrongReasonCandidates?: string[];
-  confidenceScore: number;
-  rawTextSnippet: string;
-  variation?: AnalysisVariation;
-}
-
-const MOCK_ANALYSIS: AnalysisResult = {
+const MOCK_ANALYSIS = {
   objectId: "obj-math-001",
   subject: "수학",
   unit: "수열",
@@ -40,14 +22,16 @@ const MOCK_ANALYSIS: AnalysisResult = {
     expectedCorrectRate: 0.62,
     validationRequired: false,
   },
-};
+} satisfies AnalysisResult;
 
 export async function mockAnalyze(_input: { sourceId: string }): Promise<AnalysisResult> {
   await new Promise((r) => setTimeout(r, 1200));
   return MOCK_ANALYSIS;
 }
 
-export async function mockClassifySubject(_input: { text: string }) {
+export async function mockClassifySubject(
+  _input: { text: string },
+): Promise<ClassifySubjectResult> {
   await new Promise((r) => setTimeout(r, 400));
-  return { detectedSubject: "수학" as const, subjectConfidence: 0.92 };
+  return { detectedSubject: "수학", subjectConfidence: 0.92 };
 }

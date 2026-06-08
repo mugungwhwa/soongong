@@ -1,17 +1,5 @@
-export type QuestRiskLevel = "low" | "mid" | "high";
-
-export interface Quest {
-  questId: string;
-  objectId: string;
-  subject: "수학" | "영어" | "국어";
-  unit: string;
-  topic: string;
-  questFormat: "회독" | "오답회수" | "변형";
-  riskLevel: QuestRiskLevel;
-  forgettingRisk: number;
-  rewardXp: number;
-  dueDate: string;
-}
+// 계약: @/shared/contracts (Quest). 본 파일은 fixture 구현.
+import type { Quest } from "@/shared/contracts";
 
 export const MOCK_QUESTS: Quest[] = [
   {

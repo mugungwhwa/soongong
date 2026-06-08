@@ -3,10 +3,8 @@ import { useState } from "react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
-import {
-  MOCK_ADMIN_QUEUE,
-  type AdminReviewItem,
-} from "@/shared/mocks/admin-queue";
+import { MOCK_ADMIN_QUEUE } from "@/shared/mocks/admin-queue";
+import type { AdminReviewItem } from "@/shared/contracts";
 
 export function AdminReviewList() {
   const [items, setItems] = useState<AdminReviewItem[]>(MOCK_ADMIN_QUEUE);
