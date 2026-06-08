@@ -5,10 +5,8 @@ import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Mascot } from "@/shared/ui/mascot";
-import {
-  MOCK_VARIANTS,
-  type VariantTier,
-} from "@/shared/mocks/recovery-variants";
+import { MOCK_VARIANTS } from "@/shared/mocks/recovery-variants";
+import type { VariantTier } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
 
 export function RecoveryPage({ objectId }: { objectId: string }) {

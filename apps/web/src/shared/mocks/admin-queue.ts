@@ -1,12 +1,5 @@
-export interface AdminReviewItem {
-  itemId: string;
-  studentMaskedId: string;
-  subject: string;
-  detectedTopic: string;
-  confidenceScore: number;
-  status: "pending" | "approved" | "modified" | "rejected";
-  thumbnailPlaceholder: string;
-}
+// 계약: @/shared/contracts (AdminReviewItem). 본 파일은 fixture 구현.
+import type { AdminReviewItem } from "@/shared/contracts";
 
 export const MOCK_ADMIN_QUEUE: AdminReviewItem[] = [
   {

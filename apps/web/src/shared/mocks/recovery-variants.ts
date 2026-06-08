@@ -1,10 +1,5 @@
-export type VariantTier = "V1" | "V2" | "V3" | "V4" | "V5";
-
-export interface RecoveryVariant {
-  tier: VariantTier;
-  description: string;
-  prompt: string;
-}
+// 계약: @/shared/contracts (RecoveryVariant). 본 파일은 fixture 구현.
+import type { RecoveryVariant } from "@/shared/contracts";
 
 export const MOCK_VARIANTS: RecoveryVariant[] = [
   { tier: "V1", description: "동일 유형 숫자만 변경", prompt: "a_1 = 2, a_{n+1} = 3a_n + 1 을 풀어보세요" },
