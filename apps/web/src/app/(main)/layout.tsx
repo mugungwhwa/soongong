@@ -1,5 +1,5 @@
-import { Sidebar } from "@/widgets/sidebar/ui/sidebar";
-import { BottomNav } from "@/widgets/bottom-nav/ui/bottom-nav";
+import { Sidebar } from "@/widgets/sidebar";
+import { BottomNav } from "@/widgets/bottom-nav";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (

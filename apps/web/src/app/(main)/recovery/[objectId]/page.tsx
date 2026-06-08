@@ -1,4 +1,4 @@
-import { RecoveryPage } from "@/views/recovery/ui/recovery-page";
+import { RecoveryPage } from "@/views/recovery";
 
 export default async function Page({
   params,

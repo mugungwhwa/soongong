@@ -1,4 +1,4 @@
-import { AdminReviewList } from "@/widgets/admin-review-list/ui/admin-review-list";
+import { AdminReviewList } from "@/widgets/admin-review-list";
 
 export function AdminPage() {
   return (
