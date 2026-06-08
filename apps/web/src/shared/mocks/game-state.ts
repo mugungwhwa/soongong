@@ -1,20 +1,6 @@
-// SSoT: 01_제품_UX_게임화/게임성_기획_구조.md v1.0 — §4-2(HP 0-5), §6-1(rank 6단)
-export type UserRank =
-  | "순공입문"
-  | "순공러"
-  | "순공대장"
-  | "순공도사"
-  | "순공마왕"
-  | "순공전설";
-
-export interface UserGameState {
-  streakDays: number;
-  memoryHp: number;
-  totalXp: number;
-  todayXp: number;
-  todayMinutes: number;
-  rank: UserRank;
-}
+// 계약: @/shared/contracts (UserGameState). 본 파일은 fixture 구현.
+// 값 규칙 SSoT: 01_제품_UX_게임화/게임성_기획_구조.md v1.0 — §4-2(HP 0-5), §6-1(rank 6단)
+import type { UserGameState } from "@/shared/contracts";
 
 export const MOCK_GAME_STATE: UserGameState = {
   streakDays: 12,

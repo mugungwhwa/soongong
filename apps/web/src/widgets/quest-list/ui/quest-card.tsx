@@ -3,7 +3,7 @@ import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { RiskBadge } from "@/entities/quest";
 import { ROUTES } from "@/shared/config/routes";
-import type { Quest } from "@/shared/mocks/quests";
+import type { Quest } from "@/shared/contracts";
 
 const NUMBER_GLYPH = ["①", "②", "③", "④", "⑤"];
 
