@@ -6,8 +6,8 @@
 create table public.review_quests (
   quest_id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.users(id) on delete cascade,
-  object_id uuid not null references public.parsed_learning_objects(object_id) on delete cascade,
-  memory_id uuid references public.student_memory_items(memory_id) on delete set null,
+  object_id uuid not null,  -- P3 도입 시 references public.parsed_learning_objects(object_id) 재연결
+  memory_id uuid,           -- P3 도입 시 references public.student_memory_items(memory_id) 재연결
   due_date date not null,
   quest_format text not null
     check (quest_format in ('original','number_variation','target_change','representation','condition','combo','concept_card','ox','fill_blank')),
@@ -28,9 +28,8 @@ create table public.review_quests (
 
 create index rq_user_due_idx on public.review_quests (user_id, due_date)
   where status = 'pending';
-create index rq_today_idx on public.review_quests (user_id, due_date, status)
-  where due_date = current_date;
 create index rq_object_idx on public.review_quests (object_id);
+-- (제거: rq_today_idx — where due_date = current_date 는 immutable 위반. 쿼리에서 due_date 필터로 대체)
 
 alter table public.review_quests enable row level security;
 create policy "rq: self read" on public.review_quests for select using (auth.uid() = user_id);
@@ -71,8 +70,12 @@ begin
 end;
 $$;
 
--- student_memory_items.forgetting_risk 자동 업데이트 trigger
--- 주의: student_memory_items 테이블은 P3에서 생성됨 (P3 완료 후 적용 가능)
+-- ──────────────────────────────────────────────
+-- T2/T2b: student_memory_items trigger + 회독결과 RPC
+-- ⚠️ P3 도입 후 적용 (student_memory_items 테이블이 P3에서 생성된 뒤 아래 블록 주석 해제)
+--    현재는 P3 제외 범위라 미적용 — review_quests + calculate_forgetting_risk 만 활성.
+-- ──────────────────────────────────────────────
+/*
 create or replace function public.update_forgetting_risk_trigger()
 returns trigger language plpgsql as $$
 begin
@@ -91,10 +94,6 @@ create trigger smi_update_risk
   before insert or update on public.student_memory_items
   for each row execute function public.update_forgetting_risk_trigger();
 
--- ──────────────────────────────────────────────
--- T2b: student_memory_items 회독 결과 업데이트 RPC
--- (schedule-next-review Edge Function에서 호출)
--- ──────────────────────────────────────────────
 create or replace function public.update_memory_after_review(
   p_memory_id uuid,
   p_accuracy_delta numeric,
@@ -120,3 +119,4 @@ begin
   where memory_id = p_memory_id;
 end;
 $$;
+*/
