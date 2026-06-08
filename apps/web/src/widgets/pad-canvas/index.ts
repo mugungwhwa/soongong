@@ -1,1 +1,1 @@
-export { PadCanvas } from "./ui/pad-canvas";
+export { PadCanvas, type PadCanvasHandle } from "./ui/pad-canvas";

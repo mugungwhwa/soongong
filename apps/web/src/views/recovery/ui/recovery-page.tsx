@@ -8,11 +8,18 @@ import { Mascot } from "@/shared/ui/mascot";
 import { MOCK_VARIANTS } from "@/shared/mocks/recovery-variants";
 import type { VariantTier } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
+import { recordGameProgress } from "@/features/quest-play";
 
 export function RecoveryPage({ objectId }: { objectId: string }) {
   const router = useRouter();
   const [activeTier, setActiveTier] = useState<VariantTier>("V1");
   const active = MOCK_VARIANTS.find((v) => v.tier === activeTier)!;
+
+  function completeRecovery() {
+    // 오답회수 성공 → 게임상태 갱신(P7, best-effort) 후 결과로
+    void recordGameProgress("wrong_recovery", true, false);
+    router.push(ROUTES.result);
+  }
 
   return (
     <div className="mx-auto max-w-2xl p-4 lg:p-8 space-y-4">
@@ -54,7 +61,7 @@ export function RecoveryPage({ objectId }: { objectId: string }) {
         <div className="flex gap-2">
           <Button
             className="flex-1 bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
-            onClick={() => router.push(ROUTES.result)}
+            onClick={completeRecovery}
           >
             풀기 완료 (+30 XP)
           </Button>
