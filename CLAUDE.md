@@ -59,6 +59,17 @@
 - Remote는 이미 SSH alias로 박힘: `git@github.com-mugung:mugungwhwa/soongong.git`. 그냥 `git push` 하면 mugungwhwa 계정으로 push, gh CLI active(`treenod-mike` 회사)는 그대로 유지.
 - Commit 메시지 형식: 짧은 제목 + 본문 불릿 + `Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>` 마지막에.
 
+### Multica 자율 실행 (관리 에이전트 플랫폼)
+- Multica 플랫폼 로그인 = mugungwhwa 개인 계정 (회사 treenod-mike X). 플랫폼 인증과 git push identity는 완전히 별개 — 플랫폼은 개인 계정으로 OK.
+- Multica 에이전트의 자율 커밋/푸시도 §3 Git/Commit 룰 100% 적용:
+  - git config user.* 수정 절대 금지 (전역이 회사 계정이어도 그대로 둠).
+  - 커밋은 일회용 -c 옵션으로 개인 identity 강제: `git -c user.name="Mike" -c user.email="mikeikhoonkim1208@gmail.com" commit ...`
+  - push는 SSH alias remote(`git@github.com-mugung:mugungwhwa/soongong.git`)로만 → mugungwhwa로 나감. gh active가 treenod-mike여도 alias라 영향 없음.
+- runtime(데몬) 시작 시 remote 확인: `git remote -v` → mugung alias 맞는지.
+- 초기 운영: 에이전트는 PR만 생성, 자동 머지 OFF. Mike 직접 리뷰 후 머지.
+- 각 이슈에 완료 기준(DoD) 명시 (예: design-review ≥ 91 / arch-audit ≥ 89) → 에이전트 자가 검증.
+- 폐기 방향(§8) 회귀 차단은 본 CLAUDE.md가 자동 가드레일 — Multica의 Claude Code 에이전트가 repo CLAUDE.md를 읽으므로 별도 설정 불필요.
+
 ### Agent 디스패치
 - 새 sub-project 시작: `superpowers:writing-plans` → `superpowers:subagent-driven-development`
 - 각 task: architect → executor → reviewer 3-stage
@@ -157,6 +168,7 @@ cd apps/web && pnpm dev
 | **v1.2** | **2026-05-18** | **§5에 UI master spec(`superpowers/specs/2026-05-18-ui-master-design.md`) 추가. 캐릭터 SSoT는 DEPRECATED 표시(ui-master §4로 흡수, stub만 유지).** |
 | **v1.3** | **2026-05-19** | **상위 사업/엔진/포지셔닝 SSoT(`2026-05-19-순공대장_전략_정리.md` v1.1) 등록. §1 "회독 리텐션 엔진" 격상 + 콴다 차이. §2 잠긴 결정사항 5행 추가(엔진 정체성/데이터 아키/온톨로지/비즈모델/버티컬·글로벌). §5 트리에 상위 SSoT 추가. §8 폐기 정책 9종 추가(컨텐츠 회사/IAP 단독/자동결제 무알림/fear 카피/카피캣/18개월 글로벌/K-12 미국/중국/정직원 2-3명).** |
 | **v1.4** | **2026-05-19** | **§2 잠긴 결정사항에 게임화 SSoT 5행 추가 (게임화 룰 / 기억 HP 단위 / 사용자 등급 6단 / 뱃지 희귀도 4단 / 순공리그 진입). §8 폐기 정책에 게임화 회귀 4종(식물 등급/HP 백분율/3단 희귀도/리그 MVP 1차) 추가. `게임성_기획_구조.md` v1.0 SSoT 잠금과 연동.** |
+| **v1.5** | **2026-06-08** | **§3에 'Multica 자율 실행' 하위 섹션 추가 — 플랫폼 로그인(개인 mugungwhwa 계정)과 git push identity 분리 명시, 자율 커밋 시 기존 Git/Commit 룰(config 수정 금지·일회용 -c·SSH alias push) 적용, 초기 PR-only(자동 머지 OFF) 운영, 이슈 DoD 명시 룰.** |
 
 ---
 
