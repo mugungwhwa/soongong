@@ -34,3 +34,7 @@ yarn-error.log*
 # 테스트 결과
 playwright-report/
 test-results/
+
+# Multica 런타임 산출물 (자동 생성 — repo 추적 안 함)
+.multica/
+.agent_context/
