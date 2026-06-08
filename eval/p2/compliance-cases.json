@@ -1,0 +1,32 @@
+[
+  {
+    "case_id": "p2-c-001-own-notes",
+    "input": { "source_type": "manual_text", "raw_text": "미분 공식 정리: (x^n)' = nx^(n-1). 내가 직접 정리한 노트." },
+    "expected": { "action": "pass", "copyright_risk": "low" },
+    "description": "학생 본인 작성 노트 — pass"
+  },
+  {
+    "case_id": "p2-c-002-paid-lecture",
+    "input": { "source_type": "capture_note", "raw_text": "메가스터디 현우진 미적분 강의 캡처 - 수열의 극한 파트" },
+    "expected": { "action": "derived_only", "contains_paid_lecture": true },
+    "description": "유료 인강 캡처 — derived_only"
+  },
+  {
+    "case_id": "p2-c-003-personal-info",
+    "input": { "source_type": "problem_photo", "raw_text": "홍길동 010-1234-5678 수학 시험지 3번 문제" },
+    "expected": { "action": "redact", "contains_personal_info": true },
+    "description": "개인정보(이름+전화) 노출 — redact"
+  },
+  {
+    "case_id": "p2-c-004-textbook-page",
+    "input": { "source_type": "problem_photo", "raw_text": "수학의 정석 p.142 전체 페이지 촬영본" },
+    "expected": { "action": "admin_review" },
+    "description": "문제집 페이지 전체 업로드 — admin_review"
+  },
+  {
+    "case_id": "p2-c-005-exam-original",
+    "input": { "source_type": "problem_photo", "raw_text": "2025학년도 대학수학능력시험 수학 영역 1번 문제 원문 그대로" },
+    "expected": { "action": "reject", "contains_exam_original": true },
+    "description": "수능 기출 원문 — reject"
+  }
+]

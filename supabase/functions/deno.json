@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
-    "lib": ["deno.window"]
+    "lib": ["deno.window"],
+    "strict": true
+  },
+  "imports": {
+    "npm:@anthropic-ai/sdk@0": "npm:@anthropic-ai/sdk@0",
+    "npm:@supabase/supabase-js@2": "npm:@supabase/supabase-js@2",
+    "npm:zod@3": "npm:zod@3",
+    "npm:zod-to-json-schema@3": "npm:zod-to-json-schema@3"
   }
 }
