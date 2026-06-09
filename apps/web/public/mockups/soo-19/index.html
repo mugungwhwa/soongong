@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SOO-19 — 듀오링고풍 비주얼 방향 리서치 + 핵심 화면 재목업</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-/* ── Design Tokens (mint-only palette) ── */
+/* ── Design Tokens (mint palette — default) ── */
 :root {
   --bg:#F8FBF7;--bg-el:#FFFFFF;--bg-sun:#F1F5EF;
   --m50:#EFF9EF;--m100:#D6F0D6;--m300:#A8DDA8;
@@ -16,11 +18,24 @@
   --bd:#E1ECDF;--bs:#C5D9C2;
   --rsm:8px;--rmd:12px;--rlg:16px;--rxl:24px;--rpill:9999px;
   --sc:0 2px 8px rgba(46,107,46,.06);--se:0 8px 24px rgba(46,107,46,.10);
+  --shd-a:rgba(46,107,46,.4);
+  --body-gs:#4A7A4A;--body-ge:#2A5A2A;
+}
+/* ── Ocean palette override (data-pal="ocean") ── */
+:root[data-pal="ocean"] {
+  --bg:#F2FAFB;--bg-el:#FFFFFF;--bg-sun:#E2F3F8;
+  --m50:#E8F8FB;--m100:#C2EDF5;--m300:#7DD8EA;
+  --m500:#2AB8D0;--m700:#1A8FAD;--m900:#0E5C82;
+  --ts:#0C2535;--td:#1C3848;--tm:#4A7585;
+  --bd:#B8DDE8;--bs:#85C3D5;
+  --sc:0 2px 8px rgba(14,92,130,.06);--se:0 8px 24px rgba(14,92,130,.10);
+  --shd-a:rgba(14,92,130,.4);
+  --body-gs:#1A8FAD;--body-ge:#0E5C82;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
-  background:linear-gradient(160deg,#4A7A4A 0%,#2A5A2A 100%);
-  min-height:100vh;padding:24px 20px 60px;}
+  background:linear-gradient(160deg,var(--body-gs) 0%,var(--body-ge) 100%);
+  min-height:100vh;padding:24px 20px 60px;transition:background .4s ease;}
 
 /* ── Page header ── */
 .page-hd{text-align:center;margin-bottom:22px;}
@@ -37,7 +52,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .tab-btn{flex-shrink:0;padding:8px 16px;border:none;border-radius:9px;font-size:13px;
   font-weight:600;cursor:pointer;transition:all 180ms;background:transparent;
   color:var(--tm);white-space:nowrap;}
-.tab-btn.active{background:var(--m900);color:#fff;box-shadow:0 2px 8px rgba(46,107,46,.4);}
+.tab-btn.active{background:var(--m900);color:#fff;box-shadow:0 2px 8px var(--shd-a);}
 .tab-btn:hover:not(.active){background:var(--m50);color:var(--m700);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
@@ -241,6 +256,33 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .tick{color:var(--m700);font-weight:700;}
 .cross{color:var(--tm);}
 @media(max-width:820px){.bp-grid{grid-template-columns:1fr;}.desk-grid2{grid-template-columns:1fr;}}
+
+/* ── SOONGONG Wordmark ── */
+.wordmark{font-family:'Bebas Neue','Impact','Arial Black',sans-serif;
+  letter-spacing:4px;font-size:17px;color:var(--m900);text-transform:uppercase;
+  line-height:1;transition:color .3s;}
+.wordmark-sm{font-size:11px;letter-spacing:3px;}
+.wordmark-lg{font-size:22px;letter-spacing:5px;}
+.wordmark-sub{font-size:9px;color:var(--tm);letter-spacing:.3px;
+  font-family:"Pretendard",-apple-system,sans-serif;margin-top:1px;transition:color .3s;}
+.wordmark-inv{color:#fff;}
+.wordmark-inv .wordmark-sub{color:rgba(255,255,255,.7);}
+
+/* ── Palette toggle ── */
+.pal-toggle{display:flex;gap:6px;justify-content:center;margin-top:14px;}
+.pal-btn{padding:7px 20px;border:2px solid rgba(255,255,255,.45);border-radius:20px;
+  font-size:12px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.12);
+  color:rgba(255,255,255,.8);transition:all 200ms;letter-spacing:.3px;}
+.pal-btn.active{background:rgba(255,255,255,.92);color:var(--m900);border-color:transparent;
+  box-shadow:0 2px 8px rgba(0,0,0,.18);}
+.pal-btn:hover:not(.active){background:rgba(255,255,255,.22);color:#fff;}
+
+/* ── Logo showcase card ── */
+.logo-row{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:10px;}
+.logo-swatch{background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);
+  padding:14px 20px;display:flex;flex-direction:column;align-items:center;gap:6px;
+  min-width:160px;text-align:center;}
+.logo-swatch.dark{background:var(--m900);border-color:var(--m700);}
 </style>
 </head>
 <body>
@@ -343,9 +385,13 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 </svg>
 
 <div class="page-hd">
-  <div class="badge">SOO-19 · 기획/목업 v2</div>
+  <div class="badge">SOO-19 · 기획/목업 v3</div>
   <h1>듀오링고풍 비주얼 방향 리서치<br>+ 핵심 화면 재목업</h1>
-  <p>밀도 · 게임성 · 캐릭터 배치 — 민트 단일 계열 + 플랫 아이콘</p>
+  <p>웹/앱 분리 · 반응형 흐름 · 민트↔바다 팔레트 비교 · SOONGONG 워드마크</p>
+  <div class="pal-toggle">
+    <button class="pal-btn active" id="btn-mint" onclick="setPal('mint')">🌿 초록 Mint</button>
+    <button class="pal-btn" id="btn-ocean" onclick="setPal('ocean')">🌊 바다 Ocean</button>
+  </div>
 </div>
 
 <div class="tab-nav">
@@ -1163,6 +1209,48 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   </div>
   <div class="sh-sub">web_ui.png 기준. 사이드바(220px 고정) + 유동 메인 그리드. 최대 너비 1440px.</div>
 
+  <!-- SOONGONG 워드마크 시안 -->
+  <div class="card">
+    <div class="card-title">
+      <svg class="ic" width="14" height="14" style="color:var(--m700)"><use href="#ic-star"/></svg>
+      SOONGONG 워드마크 시안
+      <span style="font-size:10px;font-weight:500;color:var(--tm);margin-left:4px;">폰트: Bebas Neue (Google Fonts, 무료) — Rockon Ultra 대체안</span>
+    </div>
+    <div class="logo-row">
+      <!-- 변형 A: 라이트 배경 + 마스코트 -->
+      <div class="logo-swatch">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="../../mascot/main.png" style="width:40px;height:40px;object-fit:contain;" alt="순공이">
+          <div style="text-align:left;">
+            <div class="wordmark wordmark-lg">SOONGONG</div>
+            <div class="wordmark-sub" style="font-size:11px;">순공대장</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--tm);margin-top:6px;">변형 A — 라이트 (사이드바용)</div>
+      </div>
+      <!-- 변형 B: 다크 배경 (게임바/앱 헤더용) -->
+      <div class="logo-swatch dark">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="../../mascot/main.png" style="width:40px;height:40px;object-fit:contain;" alt="순공이">
+          <div style="text-align:left;">
+            <div class="wordmark wordmark-lg wordmark-inv">SOONGONG</div>
+            <div class="wordmark-sub" style="font-size:11px;color:rgba(255,255,255,.65);">순공대장</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:6px;">변형 B — 다크 (게임바/스플래시용)</div>
+      </div>
+      <!-- 변형 C: 워드마크 단독 -->
+      <div class="logo-swatch" style="justify-content:center;">
+        <div class="wordmark" style="font-size:26px;letter-spacing:6px;">SOONGONG</div>
+        <div class="wordmark-sub" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;">순공대장</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:6px;">변형 C — 텍스트 단독 (파비콘/OG 배경용)</div>
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--tm);background:var(--bg-sun);border-radius:var(--rsm);padding:8px 12px;line-height:1.6;">
+      <strong style="color:var(--m700);">Bebas Neue</strong> — 무료(SIL OFL), Google Fonts 제공. 상업 사용 가능. 원안 Rockon Ultra는 한국 유료 폰트라 웹 사용 시 라이선스 필요. 최종 로고 확정 전까지 Bebas Neue로 작업 진행, 민트↔바다 팔레트 전환 시 자동 색 변환됨.
+    </div>
+  </div>
+
   <div class="card">
     <div class="card-title">
       <svg class="ic" width="14" height="14" style="color:var(--m700)"><use href="#ic-sort"/></svg>
@@ -1187,7 +1275,10 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
         <div class="desk-sb">
           <div class="desk-sb-logo">
             <img src="../../mascot/main.png" class="msm" alt="순공이">
-            <span style="font-size:14px;font-weight:800;color:var(--m900);">순공대장</span>
+            <div>
+              <div class="wordmark">SOONGONG</div>
+              <div class="wordmark-sub">순공대장</div>
+            </div>
           </div>
           <nav class="desk-sb-nav">
             <div class="desk-ni act">
@@ -1541,7 +1632,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
           <div style="width:95px;background:var(--bg-el);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:8px 6px;gap:2px;flex-shrink:0;">
             <div style="display:flex;align-items:center;gap:4px;padding:3px 4px;margin-bottom:5px;">
               <img src="../../mascot/main.png" style="width:16px;height:16px;object-fit:contain;" alt="순공이">
-              <span style="font-size:8px;font-weight:800;color:var(--m900);">순공대장</span>
+              <span class="wordmark wordmark-sm">SOONGONG</span>
             </div>
             <div style="background:var(--m100);border-radius:5px;padding:4px 5px;display:flex;align-items:center;gap:4px;">
               <svg class="ic" width="10" height="10" style="color:var(--m900);"><use href="#ic-home"/></svg>
@@ -1666,6 +1757,11 @@ function switchTab(id,btn){
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
+}
+function setPal(p){
+  document.documentElement.setAttribute('data-pal', p==='ocean'?'ocean':'');
+  document.getElementById('btn-mint').classList.toggle('active', p==='mint');
+  document.getElementById('btn-ocean').classList.toggle('active', p==='ocean');
 }
 </script>
 </body>
