@@ -7,11 +7,16 @@
  */
 import type { Subject } from "./common";
 
+/** 수식 저장 포맷. 기본 plaintext — latex면 MathRenderer로 렌더. */
+export type FormulaFormat = "latex" | "plaintext";
+
 /** 회복 변형 — MVP 1차 V1(숫자)·V2(요구값)만 잠금 (문제-리서치 SSoT). */
 export interface AnalysisVariation {
   level: "V1" | "V2";
   strategy: "numeric_swap" | "target_change";
   stem: string;
+  /** 수식 포맷. 미지정 시 plaintext 하위호환. */
+  formula_format?: FormulaFormat;
   choices?: string[];
   answerIndex?: number;
   expectedCorrectRate: number;
@@ -34,5 +39,7 @@ export interface AnalysisResult {
   /** 0–1 분류 신뢰도. < 게이트 시 manual 폴백 (CLAUDE.md §4 P3). */
   confidenceScore: number;
   rawTextSnippet: string;
+  /** 수식 포맷. 미지정 시 plaintext 하위호환. */
+  formula_format?: FormulaFormat;
   variation?: AnalysisVariation;
 }

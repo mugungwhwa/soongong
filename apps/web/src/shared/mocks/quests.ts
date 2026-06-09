@@ -38,6 +38,30 @@ export const MOCK_QUESTS: Quest[] = [
     rewardXp: 20,
     dueDate: new Date().toISOString(),
   },
+  {
+    questId: "q-004",
+    objectId: "obj-math-002",
+    subject: "수학",
+    unit: "수열",
+    topic: "등비수열의 합",
+    questFormat: "회독",
+    riskLevel: "mid",
+    forgettingRisk: 61,
+    rewardXp: 20,
+    dueDate: new Date().toISOString(),
+  },
+  {
+    questId: "q-005",
+    objectId: "obj-math-003",
+    subject: "수학",
+    unit: "지수·로그",
+    topic: "로그 성질",
+    questFormat: "회독",
+    riskLevel: "low",
+    forgettingRisk: 38,
+    rewardXp: 20,
+    dueDate: new Date().toISOString(),
+  },
 ];
 
 export function getTodayQuests(): Quest[] {

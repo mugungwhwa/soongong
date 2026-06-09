@@ -11,6 +11,7 @@ export type {
   AnalysisResult,
   AnalysisVariation,
   DifficultyLevel,
+  FormulaFormat,
 } from "./learning-object";
 
 export type { Quest, QuestRiskLevel, QuestFormat } from "./quest";
