@@ -200,6 +200,47 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   .phone{width:100%;max-width:390px;margin:0 auto;}
   .card-grid{grid-template-columns:1fr;}
 }
+
+/* ── Web dashboard layout ── */
+.desk-frame{background:#E8ECF0;border-radius:var(--rlg);overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,.25);margin-bottom:14px;}
+.desk-chrome{background:#3C3C3C;padding:8px 14px;display:flex;align-items:center;gap:8px;}
+.desk-dots{display:flex;gap:5px;}
+.desk-dot{width:10px;height:10px;border-radius:50%;}
+.desk-url{flex:1;background:rgba(255,255,255,.15);border-radius:4px;padding:3px 10px;font-size:11px;color:rgba(255,255,255,.6);text-align:center;}
+.desk-body{display:flex;min-height:520px;}
+.desk-sb{width:220px;background:var(--bg-el);border-right:1px solid var(--bd);display:flex;flex-direction:column;flex-shrink:0;}
+.desk-sb-logo{padding:16px 14px 10px;display:flex;align-items:center;gap:8px;}
+.desk-sb-nav{flex:1;padding:6px 8px;}
+.desk-ni{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rsm);font-size:13px;font-weight:500;color:var(--td);cursor:pointer;margin-bottom:2px;transition:background 150ms,color 150ms;}
+.desk-ni:hover{background:var(--m50);color:var(--m700);}
+.desk-ni.act{background:var(--m100);color:var(--m900);font-weight:700;}
+.desk-sb-prof{padding:12px 14px;border-top:1px solid var(--bd);display:flex;align-items:center;gap:10px;}
+.desk-main{flex:1;background:var(--bg);padding:16px;overflow:auto;}
+.desk-stats{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.desk-stat{background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);padding:10px 14px;display:flex;align-items:center;gap:8px;flex:1;min-width:110px;}
+.desk-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.desk-qrow{display:flex;align-items:center;gap:8px;padding:9px 10px;background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);margin-bottom:5px;transition:border-color 150ms,background 150ms;}
+.desk-qrow:hover{border-color:var(--m300);background:var(--m50);}
+.skill-bar{background:var(--bg-sun);border-radius:99px;height:6px;flex:1;}
+.skill-fill{height:100%;border-radius:99px;background:var(--m500);}
+.toast-demo{background:var(--m900);color:#fff;border-radius:var(--rmd);padding:10px 16px;display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;}
+
+/* ── Responsive tab ── */
+.bp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+.bp-card{background:rgba(255,255,255,.1);border-radius:var(--rlg);padding:14px;border:1px solid rgba(255,255,255,.15);}
+.bp-label{text-align:center;font-size:11px;font-weight:800;color:rgba(255,255,255,.9);margin-bottom:10px;letter-spacing:.4px;text-transform:uppercase;}
+.bp-frame{background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--bd);}
+.bp-mob{width:100%;display:flex;flex-direction:column;min-height:280px;}
+.bp-tab{width:100%;display:flex;min-height:200px;}
+.bp-desk{width:100%;display:flex;min-height:200px;}
+.bp-rules{background:rgba(255,255,255,.95);border-radius:var(--rlg);padding:16px;margin-bottom:14px;}
+.bp-rules h4{font-size:13px;font-weight:800;color:var(--m900);margin-bottom:10px;}
+.bp-rules table{width:100%;border-collapse:collapse;font-size:12px;}
+.bp-rules th{background:var(--m50);color:var(--m700);font-weight:700;padding:7px 10px;text-align:left;border-bottom:1px solid var(--m100);}
+.bp-rules td{padding:7px 10px;color:var(--td);border-bottom:1px solid var(--bd);vertical-align:top;}
+.tick{color:var(--m700);font-weight:700;}
+.cross{color:var(--tm);}
+@media(max-width:820px){.bp-grid{grid-template-columns:1fr;}.desk-grid2{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -313,6 +354,8 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   <button class="tab-btn" onclick="switchTab('home',this)">③ Home 재목업</button>
   <button class="tab-btn" onclick="switchTab('result',this)">④ 플레이 결과</button>
   <button class="tab-btn" onclick="switchTab('wrong',this)">⑤ 오답노트</button>
+  <button class="tab-btn" onclick="switchTab('web',this)">⑥ 웹 대시보드</button>
+  <button class="tab-btn" onclick="switchTab('responsive',this)">⑦ 반응형 흐름</button>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -1106,6 +1149,513 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
         <li><strong>오답 횟수 배지</strong> — 위험도 배경색 숫자 강조</li>
         <li><strong>카드 패딩</strong> — 14→9px, 화면당 5개+ 표시</li>
       </ul></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ⑥ 웹 대시보드
+══════════════════════════════════════════ -->
+<div id="tab-web" class="tab-content">
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-chart"/></svg>
+    웹 대시보드 — 데스크톱 레이아웃
+  </div>
+  <div class="sh-sub">web_ui.png 기준. 사이드바(220px 고정) + 유동 메인 그리드. 최대 너비 1440px.</div>
+
+  <div class="card">
+    <div class="card-title">
+      <svg class="ic" width="14" height="14" style="color:var(--m700)"><use href="#ic-sort"/></svg>
+      레이아웃 구조 — 브라우저 프레임 시뮬레이션
+    </div>
+    <div style="font-size:12px;color:var(--tm);margin-bottom:12px;">사이드바: 좌측 고정 220px · 아이콘+라벨 · active = 민트 fill. 메인: 카드 2~3열 반응형 그리드.</div>
+
+    <div class="desk-frame">
+      <!-- Browser chrome -->
+      <div class="desk-chrome">
+        <div class="desk-dots">
+          <div class="desk-dot" style="background:#FF5F57;"></div>
+          <div class="desk-dot" style="background:#FFBD2E;"></div>
+          <div class="desk-dot" style="background:#28CA41;"></div>
+        </div>
+        <div class="desk-url">localhost:3000 — 순공대장</div>
+      </div>
+
+      <!-- Dashboard body -->
+      <div class="desk-body">
+        <!-- Sidebar -->
+        <div class="desk-sb">
+          <div class="desk-sb-logo">
+            <img src="../../mascot/main.png" class="msm" alt="순공이">
+            <span style="font-size:14px;font-weight:800;color:var(--m900);">순공대장</span>
+          </div>
+          <nav class="desk-sb-nav">
+            <div class="desk-ni act">
+              <svg class="ic" width="15" height="15" style="color:var(--m900);"><use href="#ic-home"/></svg>홈
+            </div>
+            <div class="desk-ni" style="cursor:default;">
+              <svg class="ic" width="15" height="15" style="color:var(--tm);"><use href="#ic-cal"/></svg>회독퀘스트
+            </div>
+            <div class="desk-ni" style="cursor:default;">
+              <svg class="ic" width="15" height="15" style="color:var(--tm);"><use href="#ic-notes"/></svg>기록
+            </div>
+            <div class="desk-ni" style="cursor:default;">
+              <svg class="ic" width="15" height="15" style="color:var(--tm);"><use href="#ic-target"/></svg>오답
+            </div>
+            <div class="desk-ni" style="opacity:.4;cursor:not-allowed;">
+              <svg class="ic" width="15" height="15" style="color:var(--tm);"><use href="#ic-trophy"/></svg>
+              순공리그
+              <span style="font-size:9px;background:var(--m100);color:var(--m700);border-radius:20px;padding:1px 5px;margin-left:auto;">1.5차</span>
+            </div>
+          </nav>
+          <div class="desk-sb-prof">
+            <div style="width:30px;height:30px;border-radius:50%;background:var(--m300);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--m900);flex-shrink:0;">김</div>
+            <div>
+              <div style="font-size:12px;font-weight:700;color:var(--ts);">김순공</div>
+              <div style="font-size:10px;color:var(--tm);">순공러 · 1,240 XP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="desk-main">
+          <!-- Stats bar -->
+          <div class="desk-stats">
+            <div class="desk-stat">
+              <svg class="ic" width="16" height="16" style="color:var(--m700);"><use href="#ic-flame"/></svg>
+              <div><div style="font-size:18px;font-weight:900;color:var(--m900);">7</div><div style="font-size:10px;color:var(--tm);">연속 스트릭</div></div>
+            </div>
+            <div class="desk-stat">
+              <svg class="ic" width="16" height="16" style="color:var(--rh);"><use href="#ic-heart"/></svg>
+              <div><div style="font-size:18px;font-weight:900;color:var(--ts);">5/5</div><div style="font-size:10px;color:var(--tm);">기억 HP</div></div>
+            </div>
+            <div class="desk-stat">
+              <svg class="ic" width="16" height="16" style="color:var(--m500);"><use href="#ic-book"/></svg>
+              <div><div style="font-size:18px;font-weight:900;color:var(--ts);">32분</div><div style="font-size:10px;color:var(--tm);">오늘 순공</div></div>
+            </div>
+            <div class="desk-stat" style="background:var(--m50);border-color:var(--m300);">
+              <svg class="ic" width="16" height="16" style="color:var(--m700);"><use href="#ic-star"/></svg>
+              <div><div style="font-size:18px;font-weight:900;color:var(--m900);">1,240</div><div style="font-size:10px;color:var(--tm);">XP · 순공러</div></div>
+            </div>
+          </div>
+
+          <!-- 2-col: 퀘스트 + 숙련도 -->
+          <div class="desk-grid2">
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">
+                <svg class="ic" width="14" height="14" style="color:var(--m700);"><use href="#ic-cal"/></svg>
+                오늘의 회독퀘스트
+                <span style="margin-left:auto;font-size:10px;font-weight:600;color:var(--tm);">3개 남음</span>
+              </div>
+              <div class="desk-qrow" style="border-color:var(--rh);background:#FFF5F5;">
+                <span class="rb rh">망각위험</span>
+                <div style="flex:1;font-size:13px;font-weight:600;color:var(--ts);">수학 · 수열 점화식</div>
+                <div style="font-size:11px;color:var(--tm);">L3 · 4분</div>
+                <div style="font-size:11px;font-weight:700;color:var(--m700);">+40XP</div>
+                <button class="btn-play">시작</button>
+              </div>
+              <div class="desk-qrow" style="border-color:var(--rm);background:#FFFBF5;">
+                <span class="rb rm">오늘 권장</span>
+                <div style="flex:1;font-size:13px;font-weight:600;color:var(--ts);">영어 · 빈칸추론</div>
+                <div style="font-size:11px;color:var(--tm);">L2 · 3분</div>
+                <div style="font-size:11px;font-weight:700;color:var(--m700);">+30XP</div>
+                <button class="btn-play">시작</button>
+              </div>
+              <div class="desk-qrow">
+                <span class="rb rl">안정권</span>
+                <div style="flex:1;font-size:13px;font-weight:600;color:var(--ts);">사회 · 롤스/노직</div>
+                <div style="font-size:11px;color:var(--tm);">L1 · 2분</div>
+                <div style="font-size:11px;font-weight:700;color:var(--m700);">+20XP</div>
+                <button class="btn-play">시작</button>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">
+                <svg class="ic" width="14" height="14" style="color:var(--m700);"><use href="#ic-chart"/></svg>
+                과목별 숙련도
+              </div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--td);margin-bottom:5px;"><span>수학</span><span style="color:var(--m700);">70%</span></div><div class="skill-bar"><div class="skill-fill" style="width:70%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--td);margin-bottom:5px;"><span>영어</span><span style="color:var(--m700);">64%</span></div><div class="skill-bar"><div class="skill-fill" style="width:64%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--td);margin-bottom:5px;"><span>사회/윤리</span><span style="color:var(--m700);">56%</span></div><div class="skill-bar"><div class="skill-fill" style="width:56%;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:600;color:var(--td);margin-bottom:5px;"><span>과학탐구</span><span style="color:var(--rm);">49%</span></div><div class="skill-bar"><div class="skill-fill" style="width:49%;background:var(--rm);"></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: 망각방어 + 순공이+빠른시작 -->
+          <div class="desk-grid2">
+            <div class="card" style="margin-bottom:0;">
+              <div class="card-title">
+                <svg class="ic" width="14" height="14" style="color:var(--rh);"><use href="#ic-flame"/></svg>
+                망각방어 TOP 3
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg-sun);border-radius:var(--rsm);">
+                  <div style="width:20px;height:20px;background:var(--rh);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;">1</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--ts);flex:1;">수열 점화식</div>
+                  <span class="rb rh">7일 경과</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg-sun);border-radius:var(--rsm);">
+                  <div style="width:20px;height:20px;background:var(--rm);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;">2</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--ts);flex:1;">영어 빈칸추론</div>
+                  <span class="rb rm">3일 경과</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg-sun);border-radius:var(--rsm);">
+                  <div style="width:20px;height:20px;background:var(--rl);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;">3</div>
+                  <div style="font-size:13px;font-weight:600;color:var(--ts);flex:1;">정의론 (롤스)</div>
+                  <span class="rb rl">1일 경과</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="margin-bottom:0;display:flex;flex-direction:column;gap:12px;">
+              <div style="display:flex;align-items:flex-start;gap:12px;">
+                <img src="../../mascot/main.png" class="mmd" alt="순공이">
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:5px;">순공이 한마디</div>
+                  <div style="background:var(--m50);border-radius:var(--rmd);padding:9px 12px;font-size:12px;color:var(--td);line-height:1.55;border-left:3px solid var(--m300);">
+                    "7일 전 점화식, 지금 안 하면 기억 HP 깎여요. 4분만 투자해볼까요?"
+                  </div>
+                </div>
+              </div>
+              <div style="border-top:1px solid var(--bd);padding-top:10px;">
+                <div style="font-size:11px;font-weight:700;color:var(--tm);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">빠른 시작</div>
+                <div style="display:flex;gap:8px;">
+                  <button style="flex:1;background:var(--m50);border:1.5px solid var(--m300);border-radius:var(--rsm);padding:8px 4px;font-size:12px;font-weight:700;color:var(--m900);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                    <svg class="ic" width="14" height="14" style="color:var(--m700);"><use href="#ic-target"/></svg>문제사진
+                  </button>
+                  <button style="flex:1;background:var(--m50);border:1.5px solid var(--m300);border-radius:var(--rsm);padding:8px 4px;font-size:12px;font-weight:700;color:var(--m900);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                    <svg class="ic" width="14" height="14" style="color:var(--m700);"><use href="#ic-notes"/></svg>캡처+메모
+                  </button>
+                  <button style="flex:1;background:var(--m50);border:1.5px solid var(--m300);border-radius:var(--rsm);padding:8px 4px;font-size:12px;font-weight:700;color:var(--m900);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;">
+                    <svg class="ic" width="14" height="14" style="color:var(--m700);"><use href="#ic-chart"/></svg>인강기록
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Toast example -->
+          <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+            <div class="toast-demo">
+              <svg class="ic" width="16" height="16" style="color:var(--m300);"><use href="#ic-confetti"/></svg>
+              회독퀘스트 완료! <strong>+100 XP</strong>
+              <span style="font-size:10px;color:var(--m300);margin-left:6px;">← 우측 하단 슬라이드 인</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hover / interaction spec -->
+    <div class="ann">
+      <h5>호버 상태 정의 (웹 전용)</h5>
+      <p>사이드바 nav 항목 호버: <code>background:var(--m50); color:var(--m700)</code> 150ms ease. Active: <code>background:var(--m100); color:var(--m900); font-weight:700</code>. 퀘스트 row 호버: <code>border-color:var(--m300); background:var(--m50)</code>. 버튼 호버: <code>filter:brightness(0.93)</code>. 포커스 outline 제거 금지(a11y).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">웹 전용 정보 밀도 규칙</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;">
+      <div>
+        <div style="font-weight:700;color:var(--m900);margin-bottom:6px;">사이드바</div>
+        <div class="zone-b duo-zone">너비 220px 고정 (≥1280px)</div>
+        <div class="zone-b duo-zone">아이콘(15px) + 라벨 항상 노출</div>
+        <div class="zone-b duo-zone">하단 프로필 블록 고정</div>
+        <div class="zone-b duo-zone">순공리그 — MVP 1.5차 전 잠금 배지</div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--m900);margin-bottom:6px;">메인 그리드</div>
+        <div class="zone-a duo-zone">≥1280px: 2열 → 3열 그리드 자동 전환</div>
+        <div class="zone-a duo-zone">max-width: 1440px · padding: 0 24px</div>
+        <div class="zone-a duo-zone">카드 gap: 12px · 카드 padding: 16px</div>
+        <div class="zone-a duo-zone">토스트: 우측 하단 fixed · z-index 50</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ⑦ 반응형 흐름
+══════════════════════════════════════════ -->
+<div id="tab-responsive" class="tab-content">
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-sort"/></svg>
+    반응형 흐름 — 브레이크포인트 리플로우
+  </div>
+  <div class="sh-sub">모바일(≤767px) → 태블릿(768–1279px) → 데스크톱(≥1280px) 3단계 레이아웃 변화.</div>
+
+  <!-- 3-col breakpoint wireframes -->
+  <div class="bp-grid">
+
+    <!-- Mobile -->
+    <div class="bp-card">
+      <div class="bp-label">📱 모바일 — ≤ 767px</div>
+      <div class="bp-frame">
+        <div class="bp-mob">
+          <!-- status bar -->
+          <div style="background:var(--bg-el);padding:5px 10px;display:flex;justify-content:space-between;font-size:9px;color:var(--tm);border-bottom:1px solid var(--bd);">
+            <span>9:41</span><span>●●●</span>
+          </div>
+          <!-- game bar -->
+          <div style="background:var(--m900);padding:5px 10px;display:flex;gap:8px;align-items:center;">
+            <div style="display:flex;align-items:center;gap:2px;"><svg class="ic" width="10" height="10" style="color:var(--m300);"><use href="#ic-flame"/></svg><span style="font-size:9px;font-weight:800;color:#fff;">7</span></div>
+            <div style="flex:1;height:4px;background:rgba(255,255,255,.25);border-radius:99px;"><div style="width:68%;height:100%;background:var(--m300);border-radius:99px;"></div></div>
+            <div style="display:flex;align-items:center;gap:2px;"><svg class="ic" width="10" height="10" style="color:#fff;"><use href="#ic-heart"/></svg><span style="font-size:9px;color:#fff;">5/5</span></div>
+          </div>
+          <!-- mascot banner -->
+          <div style="padding:8px 10px;display:flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--m50) 0%,var(--bg) 100%);">
+            <img src="../../mascot/repeat_normal.png" style="width:36px;height:36px;object-fit:contain;flex-shrink:0;" alt="순공이">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--m900);">오늘 회독퀘스트 3개</div>
+              <div style="font-size:9px;color:var(--tm);">같이 가볼까?</div>
+            </div>
+          </div>
+          <!-- quest list (단일 컬럼) -->
+          <div style="flex:1;padding:6px 8px;overflow:hidden;">
+            <div style="font-size:9px;font-weight:700;color:var(--tm);margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">회독퀘스트</div>
+            <div style="background:var(--bg-el);border:1px solid var(--rh);border-radius:var(--rsm);padding:6px 8px;margin-bottom:4px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:8px;background:var(--rh);color:#7a2020;padding:1px 5px;border-radius:9999px;font-weight:700;flex-shrink:0;">망각위험</span>
+              <span style="font-size:10px;font-weight:600;color:var(--ts);flex:1;">수열 점화식</span>
+              <span style="font-size:9px;color:var(--m700);font-weight:700;">+40XP</span>
+            </div>
+            <div style="background:var(--bg-el);border:1px solid var(--rm);border-radius:var(--rsm);padding:6px 8px;margin-bottom:4px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:8px;background:var(--rm);color:#7a4a10;padding:1px 5px;border-radius:9999px;font-weight:700;flex-shrink:0;">오늘 권장</span>
+              <span style="font-size:10px;font-weight:600;color:var(--ts);flex:1;">영어 빈칸추론</span>
+              <span style="font-size:9px;color:var(--m700);font-weight:700;">+30XP</span>
+            </div>
+            <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:6px 8px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:8px;background:var(--rl);color:#1a3a5a;padding:1px 5px;border-radius:9999px;font-weight:700;flex-shrink:0;">안정권</span>
+              <span style="font-size:10px;font-weight:600;color:var(--ts);flex:1;">롤스/노직</span>
+              <span style="font-size:9px;color:var(--m700);font-weight:700;">+20XP</span>
+            </div>
+          </div>
+          <!-- bottom nav + FAB -->
+          <div style="background:var(--bg-el);border-top:1px solid var(--bd);padding:6px 0 4px;position:relative;">
+            <div style="display:flex;justify-content:space-around;align-items:center;">
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <svg class="ic" width="16" height="16" style="color:var(--m700);"><use href="#ic-home"/></svg>
+                <span style="font-size:8px;color:var(--m700);font-weight:700;">홈</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <svg class="ic" width="16" height="16" style="color:var(--tm);"><use href="#ic-cal"/></svg>
+                <span style="font-size:8px;color:var(--tm);">퀘스트</span>
+              </div>
+              <!-- Camera FAB -->
+              <div style="width:38px;height:38px;border-radius:50%;background:var(--m700);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(46,107,46,.45);margin-top:-16px;flex-shrink:0;">
+                <svg class="ic" width="16" height="16" style="color:#fff;"><use href="#ic-target"/></svg>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <svg class="ic" width="16" height="16" style="color:var(--tm);"><use href="#ic-notes"/></svg>
+                <span style="font-size:8px;color:var(--tm);">기록</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+                <svg class="ic" width="16" height="16" style="color:var(--tm);"><use href="#ic-chart"/></svg>
+                <span style="font-size:8px;color:var(--tm);">분석</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,.8);line-height:1.7;">
+        <strong style="color:#fff;">단일 컬럼 적층</strong><br>
+        하단 탭바(5탭) + 카메라 FAB 중앙 돌출<br>
+        엄지 도달 영역: 하단 72px 내 핵심 액션
+      </div>
+    </div>
+
+    <!-- Tablet -->
+    <div class="bp-card">
+      <div class="bp-label">📐 태블릿 — 768–1279px</div>
+      <div class="bp-frame">
+        <div class="bp-tab">
+          <!-- icon-only sidebar -->
+          <div style="width:52px;background:var(--bg-el);border-right:1px solid var(--bd);display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:10px;flex-shrink:0;">
+            <img src="../../mascot/main.png" style="width:26px;height:26px;object-fit:contain;" alt="순공이">
+            <div style="width:30px;height:30px;background:var(--m100);border-radius:6px;display:flex;align-items:center;justify-content:center;">
+              <svg class="ic" width="14" height="14" style="color:var(--m900);"><use href="#ic-home"/></svg>
+            </div>
+            <div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;">
+              <svg class="ic" width="14" height="14" style="color:var(--tm);"><use href="#ic-cal"/></svg>
+            </div>
+            <div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;">
+              <svg class="ic" width="14" height="14" style="color:var(--tm);"><use href="#ic-notes"/></svg>
+            </div>
+            <div style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;">
+              <svg class="ic" width="14" height="14" style="color:var(--tm);"><use href="#ic-target"/></svg>
+            </div>
+          </div>
+          <!-- 2-col content -->
+          <div style="flex:1;padding:8px;display:flex;flex-direction:column;gap:5px;overflow:hidden;">
+            <div style="display:flex;gap:5px;">
+              <div style="flex:1;background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 7px;display:flex;align-items:center;gap:4px;">
+                <svg class="ic" width="10" height="10" style="color:var(--m700);"><use href="#ic-flame"/></svg>
+                <span style="font-size:10px;font-weight:800;color:var(--m900);">7</span>
+              </div>
+              <div style="flex:1;background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:5px 7px;display:flex;align-items:center;gap:4px;">
+                <svg class="ic" width="10" height="10" style="color:var(--rh);"><use href="#ic-heart"/></svg>
+                <span style="font-size:10px;font-weight:700;color:var(--ts);">5/5</span>
+              </div>
+              <div style="flex:2;background:var(--m50);border:1px solid var(--m300);border-radius:var(--rsm);padding:5px 7px;display:flex;align-items:center;gap:4px;">
+                <svg class="ic" width="10" height="10" style="color:var(--m700);"><use href="#ic-star"/></svg>
+                <span style="font-size:10px;font-weight:800;color:var(--m900);">1,240 XP · 순공러</span>
+              </div>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px;overflow:hidden;">
+              <div style="display:flex;flex-direction:column;gap:4px;overflow:hidden;">
+                <div style="font-size:9px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.3px;">회독퀘스트</div>
+                <div style="background:var(--bg-el);border:1px solid var(--rh);border-radius:var(--rsm);padding:5px 7px;">
+                  <span style="font-size:8px;font-weight:700;color:#7a2020;">망각위험</span>
+                  <div style="font-size:10px;font-weight:600;color:var(--ts);">수열 점화식</div>
+                </div>
+                <div style="background:var(--bg-el);border:1px solid var(--rm);border-radius:var(--rsm);padding:5px 7px;">
+                  <span style="font-size:8px;font-weight:700;color:#7a4a10;">오늘 권장</span>
+                  <div style="font-size:10px;font-weight:600;color:var(--ts);">영어 빈칸추론</div>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <div style="font-size:9px;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:.3px;">숙련도</div>
+                <div><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tm);margin-bottom:2px;"><span>수학</span><span>70%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:70%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tm);margin-bottom:2px;"><span>영어</span><span>64%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:64%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:9px;color:var(--tm);margin-bottom:2px;"><span>사회</span><span>56%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:56%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,.8);line-height:1.7;">
+        <strong style="color:#fff;">아이콘 전용 사이드바(52px)</strong><br>
+        하단 탭바 → 좌측 사이드바로 전환<br>
+        콘텐츠: 2열 그리드 · FAB 제거
+      </div>
+    </div>
+
+    <!-- Desktop -->
+    <div class="bp-card">
+      <div class="bp-label">🖥 데스크톱 — ≥ 1280px</div>
+      <div class="bp-frame">
+        <div class="bp-desk">
+          <!-- full sidebar -->
+          <div style="width:95px;background:var(--bg-el);border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:8px 6px;gap:2px;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:4px;padding:3px 4px;margin-bottom:5px;">
+              <img src="../../mascot/main.png" style="width:16px;height:16px;object-fit:contain;" alt="순공이">
+              <span style="font-size:8px;font-weight:800;color:var(--m900);">순공대장</span>
+            </div>
+            <div style="background:var(--m100);border-radius:5px;padding:4px 5px;display:flex;align-items:center;gap:4px;">
+              <svg class="ic" width="10" height="10" style="color:var(--m900);"><use href="#ic-home"/></svg>
+              <span style="font-size:8px;font-weight:700;color:var(--m900);">홈</span>
+            </div>
+            <div style="padding:4px 5px;display:flex;align-items:center;gap:4px;">
+              <svg class="ic" width="10" height="10" style="color:var(--tm);"><use href="#ic-cal"/></svg>
+              <span style="font-size:8px;color:var(--tm);">회독퀘스트</span>
+            </div>
+            <div style="padding:4px 5px;display:flex;align-items:center;gap:4px;">
+              <svg class="ic" width="10" height="10" style="color:var(--tm);"><use href="#ic-notes"/></svg>
+              <span style="font-size:8px;color:var(--tm);">기록</span>
+            </div>
+            <div style="padding:4px 5px;display:flex;align-items:center;gap:4px;">
+              <svg class="ic" width="10" height="10" style="color:var(--tm);"><use href="#ic-target"/></svg>
+              <span style="font-size:8px;color:var(--tm);">오답</span>
+            </div>
+          </div>
+          <!-- main 2-col -->
+          <div style="flex:1;padding:6px;display:flex;flex-direction:column;gap:4px;overflow:hidden;">
+            <div style="display:flex;gap:4px;">
+              <div style="flex:1;background:var(--bg-el);border:1px solid var(--bd);border-radius:4px;padding:4px 6px;display:flex;align-items:center;gap:3px;"><svg class="ic" width="9" height="9" style="color:var(--m700);"><use href="#ic-flame"/></svg><span style="font-size:9px;font-weight:800;color:var(--m900);">7</span></div>
+              <div style="flex:1;background:var(--bg-el);border:1px solid var(--bd);border-radius:4px;padding:4px 6px;display:flex;align-items:center;gap:3px;"><svg class="ic" width="9" height="9" style="color:var(--rh);"><use href="#ic-heart"/></svg><span style="font-size:9px;font-weight:700;color:var(--ts);">5/5</span></div>
+              <div style="flex:2;background:var(--m50);border:1px solid var(--m300);border-radius:4px;padding:4px 6px;display:flex;align-items:center;gap:3px;"><svg class="ic" width="9" height="9" style="color:var(--m700);"><use href="#ic-star"/></svg><span style="font-size:9px;font-weight:800;color:var(--m900);">1,240 XP · 순공러</span></div>
+            </div>
+            <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:4px;overflow:hidden;">
+              <div style="display:flex;flex-direction:column;gap:3px;overflow:hidden;">
+                <div style="font-size:8px;font-weight:700;color:var(--tm);">오늘의 회독퀘스트</div>
+                <div style="background:var(--bg-el);border:1px solid var(--rh);border-radius:4px;padding:4px 5px;"><span style="font-size:7px;color:#7a2020;font-weight:700;">망각위험</span><div style="font-size:9px;font-weight:600;color:var(--ts);">수열 점화식</div><div style="font-size:8px;color:var(--m700);font-weight:600;">+40XP</div></div>
+                <div style="background:var(--bg-el);border:1px solid var(--rm);border-radius:4px;padding:4px 5px;"><span style="font-size:7px;color:#7a4a10;font-weight:700;">오늘 권장</span><div style="font-size:9px;font-weight:600;color:var(--ts);">영어 빈칸추론</div><div style="font-size:8px;color:var(--m700);font-weight:600;">+30XP</div></div>
+                <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:4px;padding:4px 5px;"><span style="font-size:7px;color:#1a3a5a;font-weight:700;">안정권</span><div style="font-size:9px;font-weight:600;color:var(--ts);">롤스/노직</div><div style="font-size:8px;color:var(--m700);font-weight:600;">+20XP</div></div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:4px;overflow:hidden;">
+                <div style="font-size:8px;font-weight:700;color:var(--tm);">과목별 숙련도</div>
+                <div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--tm);margin-bottom:2px;"><span>수학</span><span>70%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:70%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--tm);margin-bottom:2px;"><span>영어</span><span>64%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:64%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--tm);margin-bottom:2px;"><span>사회</span><span>56%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:56%;height:100%;background:var(--m500);border-radius:99px;"></div></div></div>
+                <div><div style="display:flex;justify-content:space-between;font-size:8px;color:var(--rm);margin-bottom:2px;"><span>과학</span><span>49%</span></div><div style="height:4px;background:var(--bg-sun);border-radius:99px;"><div style="width:49%;height:100%;background:var(--rm);border-radius:99px;"></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,.8);line-height:1.7;">
+        <strong style="color:#fff;">풀 레이블 사이드바(220px)</strong><br>
+        2~3열 그리드 · max-width 1440px<br>
+        정보 밀도 최대 · 토스트 우측 하단 fixed
+      </div>
+    </div>
+  </div>
+
+  <!-- Breakpoint rules table -->
+  <div class="bp-rules">
+    <h4>브레이크포인트 & 레이아웃 전환 규칙</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>폼팩터</th>
+          <th>브레이크포인트</th>
+          <th>내비게이션</th>
+          <th>콘텐츠 컬럼</th>
+          <th>카메라 FAB</th>
+          <th>사이드바</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>모바일</strong></td>
+          <td>≤ 767px</td>
+          <td>하단 탭바 5탭</td>
+          <td>1열 단일 컬럼</td>
+          <td><span class="tick">✓</span> 중앙 돌출 FAB</td>
+          <td>— 없음</td>
+        </tr>
+        <tr>
+          <td><strong>태블릿</strong></td>
+          <td>768–1279px</td>
+          <td>좌측 아이콘 사이드바</td>
+          <td>2열 그리드</td>
+          <td><span class="cross">✗</span></td>
+          <td>52px (아이콘만)</td>
+        </tr>
+        <tr>
+          <td><strong>데스크톱</strong></td>
+          <td>≥ 1280px</td>
+          <td>좌측 풀 레이블 사이드바</td>
+          <td>2~3열 그리드</td>
+          <td><span class="cross">✗</span></td>
+          <td>220px (아이콘+라벨)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Fixed vs fluid -->
+  <div class="card">
+    <div class="card-title">고정(Fixed) vs 유동(Fluid) 요소</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px;">
+      <div>
+        <div style="font-weight:700;color:var(--m900);margin-bottom:6px;">고정 — 폼팩터별 고정값</div>
+        <div class="zone-b duo-zone">사이드바 너비: 220px / 52px / 없음</div>
+        <div class="zone-b duo-zone">카드 border-radius: 16px (모든 폼팩터)</div>
+        <div class="zone-b duo-zone">버튼 최소 hit area: 44×44px</div>
+        <div class="zone-b duo-zone">게임바 높이: 36px</div>
+        <div class="zone-b duo-zone">하단 탭바: 64px + iOS safe-area</div>
+      </div>
+      <div>
+        <div style="font-weight:700;color:var(--m900);margin-bottom:6px;">유동 — 폭에 따라 자동 변환</div>
+        <div class="zone-a duo-zone">콘텐츠 컬럼: 1→2→3열 리플로우</div>
+        <div class="zone-a duo-zone">카드 너비: 컬럼 100% fill</div>
+        <div class="zone-a duo-zone">사이드바 레이블: 768px 미만 숨김</div>
+        <div class="zone-a duo-zone">마스코트 배너: flex-wrap 줄바꿈 허용</div>
+        <div class="zone-a duo-zone">통계 바: flex-wrap 2줄 허용 (태블릿)</div>
+      </div>
     </div>
   </div>
 </div>
