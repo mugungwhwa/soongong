@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SOO-19 — 듀오링고풍 비주얼 방향 리서치 + 핵심 화면 재목업</title>
 <style>
+/* ── Design Tokens (mint-only palette) ── */
 :root {
   --bg:#F8FBF7;--bg-el:#FFFFFF;--bg-sun:#F1F5EF;
   --m50:#EFF9EF;--m100:#D6F0D6;--m300:#A8DDA8;
   --m500:#7CC97C;--m700:#4FA84F;--m900:#2E6B2E;
+  /* risk colors: functional exception only */
   --rl:#A0BFDC;--rm:#E6B788;--rh:#E29B9B;
-  --xp:#F2C94C;--xps:#FBE7A6;
-  --str:#FF9500;--hp:#FF5A5A;
   --ts:#1A2A1A;--td:#2D3F2D;--tm:#6B7B6B;--ti:#FFFFFF;
   --bd:#E1ECDF;--bs:#C5D9C2;
   --rsm:8px;--rmd:12px;--rlg:16px;--rxl:24px;--rpill:9999px;
@@ -37,7 +37,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .tab-btn{flex-shrink:0;padding:8px 16px;border:none;border-radius:9px;font-size:13px;
   font-weight:600;cursor:pointer;transition:all 180ms;background:transparent;
   color:var(--tm);white-space:nowrap;}
-.tab-btn.active{background:var(--m500);color:#fff;box-shadow:0 2px 8px rgba(124,201,124,.45);}
+.tab-btn.active{background:var(--m900);color:#fff;box-shadow:0 2px 8px rgba(46,107,46,.4);}
 .tab-btn:hover:not(.active){background:var(--m50);color:var(--m700);}
 .tab-content{display:none;}
 .tab-content.active{display:block;}
@@ -58,7 +58,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .tag{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;
   font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
 .tag-b{background:rgba(0,0,0,.18);color:rgba(255,255,255,.8);}
-.tag-a{background:var(--m500);color:#fff;}
+.tag-a{background:var(--m900);color:#fff;}
 .phone{width:390px;background:var(--bg);border-radius:40px;overflow:hidden;
   box-shadow:0 24px 64px rgba(0,0,0,.32),inset 0 0 0 1.5px rgba(0,0,0,.12),inset 0 0 0 3px rgba(255,255,255,.08);
   display:flex;flex-direction:column;max-width:100%;}
@@ -70,16 +70,17 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .ni{display:flex;flex-direction:column;align-items:center;gap:2px;
   color:var(--tm);padding:2px 10px;}
 .ni.act{color:var(--m700);}
-.ni-ic{font-size:21px;line-height:1;}
+.ni-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
 .ni-lb{font-size:10px;font-weight:500;}
 .ca{overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .ca::-webkit-scrollbar{display:none;}
-
-/* caption */
 .caption{margin-top:10px;background:rgba(255,255,255,.9);border-radius:9px;
   padding:11px 13px;font-size:12px;color:var(--td);line-height:1.55;}
 .caption strong{color:var(--m700);}
 .caption li{margin-left:14px;margin-top:3px;}
+
+/* ── Flat icon base ── */
+.ic{display:inline-block;flex-shrink:0;}
 
 /* ── Risk badges ── */
 .rb{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;
@@ -88,7 +89,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .rm{background:var(--rm);color:#7a4a10;}
 .rl{background:var(--rl);color:#1a3a5a;}
 
-/* ── Before-screen styles (loose) ── */
+/* ── Before styles (loose) ── */
 .bef-hdr{background:var(--bg-el);padding:12px 16px;display:flex;
   align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);}
 .bef-area{padding:16px;}
@@ -100,12 +101,12 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .bef-sc{background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);
   padding:12px;text-align:center;}
 
-/* ── After-screen styles (dense + game) ── */
-.aft-gbar{background:var(--m700);padding:7px 14px;display:flex;
+/* ── After styles (dense + game) ── */
+.aft-gbar{background:var(--m900);padding:7px 14px;display:flex;
   justify-content:space-between;align-items:center;gap:6px;}
-.gst{display:flex;align-items:center;gap:3px;font-size:13px;font-weight:800;color:#fff;}
-.xp-tr{flex:1;height:7px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden;}
-.xp-fi{height:100%;background:var(--xp);border-radius:99px;width:68%;}
+.gst{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:800;color:#fff;}
+.xp-tr{flex:1;height:7px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden;}
+.xp-fi{height:100%;background:var(--m300);border-radius:99px;width:68%;}
 .aft-mban{background:linear-gradient(135deg,var(--m100) 0%,var(--m50) 100%);
   padding:10px 14px;display:flex;align-items:center;gap:9px;
   border-bottom:1px solid var(--bd);}
@@ -119,69 +120,78 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 .aft-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:6px 10px;}
 .aft-sc{background:var(--bg-el);border:1.5px solid var(--bd);border-radius:var(--rmd);
   padding:7px 5px;text-align:center;}
-.aft-league{margin:0 10px 6px;background:linear-gradient(135deg,#FFF3CD 0%,#FFE59A 100%);
-  border:1.5px solid var(--xp);border-radius:var(--rmd);padding:7px 11px;
+.aft-league{margin:0 10px 6px;background:var(--m50);
+  border:1.5px solid var(--m300);border-radius:var(--rmd);padding:7px 11px;
   display:flex;align-items:center;gap:7px;}
 
 /* ── Play result ── */
 .cel-ov{background:linear-gradient(160deg,var(--m700) 0%,var(--m900) 100%);
   padding:28px 20px 20px;text-align:center;position:relative;overflow:hidden;}
-.cel-dot{position:absolute;border-radius:50%;opacity:.6;}
-.cel-xp{background:linear-gradient(135deg,#FFE87A 0%,#F2C94C 100%);
+.cel-dot{position:absolute;border-radius:50%;opacity:.5;}
+.cel-xp{background:var(--m900);border:2px solid var(--m300);
   border-radius:var(--rxl);padding:12px 24px;display:inline-block;
-  font-size:28px;font-weight:900;color:#5A3A00;margin:10px 0;
-  box-shadow:0 4px 16px rgba(242,201,76,.5);}
-.cel-st{background:rgba(255,255,255,.15);border-radius:var(--rpill);
+  font-size:28px;font-weight:900;color:#fff;margin:10px 0;
+  box-shadow:0 4px 16px rgba(46,107,46,.4);}
+.cel-st{background:rgba(255,255,255,.18);border-radius:var(--rpill);
   padding:5px 14px;display:inline-flex;align-items:center;gap:5px;
   font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;}
-.res-cards{padding:12px;}
-.res-card{background:var(--bg-el);border-radius:var(--rmd);padding:12px;
-  margin-bottom:8px;display:flex;align-items:center;gap:10px;}
 
 /* ── Research tab ── */
 .principle{display:flex;gap:12px;align-items:flex-start;padding:12px;
   background:var(--bg-sun);border-radius:var(--rmd);margin-bottom:8px;}
-.pnum{width:26px;height:26px;background:var(--m500);color:#fff;border-radius:50%;
+.pnum{width:26px;height:26px;background:var(--m700);color:#fff;border-radius:50%;
   display:flex;align-items:center;justify-content:center;font-size:12px;
   font-weight:800;flex-shrink:0;}
-.pnum-b{background:var(--tm);}
 .pbody h4{font-size:13px;font-weight:700;color:var(--ts);margin-bottom:3px;}
 .pbody p{font-size:11.5px;color:var(--tm);line-height:1.5;}
 .ptag{display:inline-block;background:var(--m100);color:var(--m700);
   font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-bottom:3px;}
 .duo-zone{padding:7px 12px;border-radius:var(--rsm);font-size:11.5px;font-weight:600;
   margin-bottom:5px;display:flex;align-items:center;gap:8px;}
-.zone-a{background:#E8F5E8;border-left:3px solid var(--m500);}
-.zone-b{background:#FFF8E0;border-left:3px solid var(--xp);}
-.zone-c{background:#FFE8E8;border-left:3px solid var(--hp);}
-.zone-d{background:#E8EEFF;border-left:3px solid #5A7AE8;}
+.zone-a{background:var(--m50);border-left:3px solid var(--m700);}
+.zone-b{background:var(--m100);border-left:3px solid var(--m900);}
+.zone-c{background:var(--bg-sun);border-left:3px solid var(--m500);}
+.zone-d{background:var(--bg-el);border-left:3px solid var(--m300);}
 .metric-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:7px;}
 .mv{text-align:center;padding:7px;border-radius:var(--rsm);font-size:12px;font-weight:700;}
 .mv-b{background:#F0F0F0;color:var(--tm);}
 .mv-a{background:var(--m50);color:var(--m700);}
 .ma{font-size:14px;color:var(--m500);}
-.ml{font-size:10px;color:var(--tm);text-align:center;}
 
-/* ── Char placement table ── */
+/* ── Char placement ── */
 .ptbl{width:100%;border-collapse:collapse;font-size:12px;}
 .ptbl th{background:var(--m100);color:var(--m900);font-weight:700;padding:9px 11px;text-align:left;}
 .ptbl td{padding:9px 11px;color:var(--td);border-bottom:1px solid var(--bd);vertical-align:top;}
 .ptbl tr:hover td{background:var(--m50);}
 .state-chip{display:inline-block;padding:2px 8px;border-radius:var(--rpill);
   font-size:10px;font-weight:700;}
-.sc-cheer{background:#D6F0D6;color:var(--m700);}
-.sc-cel{background:#FBE7A6;color:#7A5A00;}
-.sc-study{background:#E8EEFF;color:#3A5AE8;}
-.sc-warn{background:#FFE5B4;color:#9A5A00;}
-.sc-zzz{background:#F0F0FF;color:#5A5AA0;}
+.sc-cheer{background:var(--m100);color:var(--m700);}
+.sc-cel{background:var(--m100);color:var(--m900);}
+.sc-study{background:var(--m50);color:var(--m700);}
+.sc-warn{background:var(--rh);color:#7a2020;}
+.sc-zzz{background:var(--bg-sun);color:var(--tm);}
 
-/* Mascot SVG sizes */
-.mxs{width:24px;height:24px;flex-shrink:0;}
-.msm{width:36px;height:36px;flex-shrink:0;}
-.mmd{width:52px;height:52px;flex-shrink:0;}
-.mlg{width:72px;height:72px;flex-shrink:0;}
-.mxl{width:100px;height:100px;flex-shrink:0;}
-.mxxl{width:130px;height:130px;flex-shrink:0;margin:0 auto;}
+/* ── Mascot placeholder sizes ── */
+.mxs{width:24px;height:24px;flex-shrink:0;object-fit:contain;}
+.msm{width:36px;height:36px;flex-shrink:0;object-fit:contain;}
+.mmd{width:52px;height:52px;flex-shrink:0;object-fit:contain;}
+.mlg{width:72px;height:72px;flex-shrink:0;object-fit:contain;}
+.mxl{width:100px;height:100px;flex-shrink:0;object-fit:contain;}
+.mxxl{width:130px;height:130px;object-fit:contain;display:block;margin:0 auto;}
+
+/* ── Buttons ── */
+.btn-play{background:var(--m700);color:white;border:none;border-radius:var(--rsm);
+  padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.btn-play-large{background:var(--m900);color:white;border:none;border-radius:var(--rmd);
+  padding:12px 24px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--bg-sun);
+  border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+
+/* ── Annotation box ── */
+.ann{background:white;border-left:3px solid var(--m500);border-radius:0 var(--rsm) var(--rsm) 0;
+  padding:10px 14px;margin-bottom:8px;}
+.ann h5{font-size:13px;font-weight:700;color:var(--ts);margin-bottom:3px;}
+.ann p{font-size:12px;color:var(--tm);line-height:1.5;}
 
 /* ── Responsive ── */
 @media(max-width:820px){
@@ -194,10 +204,107 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 </head>
 <body>
 
+<!-- ── Flat icon sprite ── -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- flame: streak -->
+    <symbol id="ic-flame" viewBox="0 0 12 16">
+      <path d="M6 0C6 0 10.5 5 10.5 9C10.5 12 8.5 14.5 6 14.5C3.5 14.5 1.5 12 1.5 9C1.5 7 2.8 5.5 3.8 6.8C3.5 8 4.2 9 5.3 9.5C5.6 8 5.2 3.8 6 0Z" fill="currentColor"/>
+    </symbol>
+    <!-- heart: HP -->
+    <symbol id="ic-heart" viewBox="0 0 16 14">
+      <path d="M8 13L1.5 6.5C.2 5.2.2 3 2 2C3.5 1.2 5.2 2 6.5 3.5L8 5L9.5 3.5C10.8 2 12.5 1.2 14 2C15.8 3 15.8 5.2 14.5 6.5L8 13Z" fill="currentColor"/>
+    </symbol>
+    <!-- star: XP -->
+    <symbol id="ic-star" viewBox="0 0 16 15">
+      <polygon points="8,0 10,5.5 16,5.5 11,9 13,14 8,10.5 3,14 5,9 0,5.5 6,5.5" fill="currentColor"/>
+    </symbol>
+    <!-- trophy: league -->
+    <symbol id="ic-trophy" viewBox="0 0 16 16">
+      <path d="M3 1h10v6c0 2.8-2.2 5-5 5s-5-2.2-5-5V1z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M1 2h2v4H1z" fill="currentColor" opacity=".6"/>
+      <path d="M13 2h2v4h-2z" fill="currentColor" opacity=".6"/>
+      <rect x="5" y="12" width="6" height="1.5" rx=".75" fill="currentColor"/>
+      <rect x="4" y="13.5" width="8" height="1.5" rx=".75" fill="currentColor"/>
+    </symbol>
+    <!-- bell: notification -->
+    <symbol id="ic-bell" viewBox="0 0 16 16">
+      <path d="M8 1.5C5.8 1.5 4 3.3 4 5.5v5.5H2.5v1h11v-1H12V5.5C12 3.3 10.2 1.5 8 1.5z" fill="currentColor"/>
+      <path d="M6.5 13.5a1.5 1.5 0 003 0" fill="currentColor" opacity=".7"/>
+    </symbol>
+    <!-- home -->
+    <symbol id="ic-home" viewBox="0 0 20 18">
+      <path d="M10 1L1 9h2.5v8h5v-5h3v5h5V9H19L10 1z" fill="currentColor"/>
+    </symbol>
+    <!-- calendar -->
+    <symbol id="ic-cal" viewBox="0 0 16 16">
+      <rect x="1" y="3" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="5" y1="1" x2="5" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="11" y1="1" x2="11" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+    <!-- notes -->
+    <symbol id="ic-notes" viewBox="0 0 14 16">
+      <rect x="1" y="1" width="12" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="4" y1="6" x2="10" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="4" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="4" y1="12" x2="7" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- chart -->
+    <symbol id="ic-chart" viewBox="0 0 16 14">
+      <rect x="1" y="9" width="3" height="5" rx="1" fill="currentColor"/>
+      <rect x="6.5" y="5" width="3" height="9" rx="1" fill="currentColor"/>
+      <rect x="12" y="2" width="3" height="12" rx="1" fill="currentColor"/>
+    </symbol>
+    <!-- book -->
+    <symbol id="ic-book" viewBox="0 0 16 16">
+      <path d="M2 2h5.5C9.5 2 10 2.9 10 4v10C10 13 9 13 8 13H2V2z" fill="currentColor" opacity=".4"/>
+      <path d="M14 2H8.5C6.5 2 6 2.9 6 4v10c0-.5 1-1 2-1h6V2z" fill="currentColor" opacity=".8"/>
+    </symbol>
+    <!-- target: accuracy -->
+    <symbol id="ic-target" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="1.5" fill="currentColor"/>
+    </symbol>
+    <!-- lock -->
+    <symbol id="ic-lock" viewBox="0 0 12 16">
+      <rect x="1" y="7" width="10" height="8" rx="2" fill="currentColor" opacity=".5"/>
+      <path d="M3 7V5a3 3 0 016 0v2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- checkmark -->
+    <symbol id="ic-check" viewBox="0 0 16 16">
+      <circle cx="8" cy="8" r="7" fill="currentColor" opacity=".15"/>
+      <polyline points="4,8.5 7,11.5 12,5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- share -->
+    <symbol id="ic-share" viewBox="0 0 16 16">
+      <circle cx="13" cy="3" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="3" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="13" cy="13" r="2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="4.8" y1="7" x2="11.2" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="4.8" y1="9" x2="11.2" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- sort -->
+    <symbol id="ic-sort" viewBox="0 0 16 12">
+      <line x1="1" y1="2" x2="15" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="3" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="5" y1="10" x2="11" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+    <!-- confetti shapes -->
+    <symbol id="ic-conf1" viewBox="0 0 8 8">
+      <rect x="1" y="1" width="6" height="6" rx="1" fill="currentColor" transform="rotate(20 4 4)"/>
+    </symbol>
+    <symbol id="ic-conf2" viewBox="0 0 8 8">
+      <polygon points="4,0 8,8 0,8" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
 <div class="page-hd">
-  <div class="badge">SOO-19 · 기획/목업</div>
+  <div class="badge">SOO-19 · 기획/목업 v2</div>
   <h1>듀오링고풍 비주얼 방향 리서치<br>+ 핵심 화면 재목업</h1>
-  <p>밀도 · 게임성 · 캐릭터 배치 — 순공대장 전체 비주얼 언어 격상 방향</p>
+  <p>밀도 · 게임성 · 캐릭터 배치 — 민트 단일 계열 + 플랫 아이콘</p>
 </div>
 
 <div class="tab-nav">
@@ -208,31 +315,52 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   <button class="tab-btn" onclick="switchTab('wrong',this)">⑤ 오답노트</button>
 </div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      ① 리서치 분석
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="tab-research" class="tab-content active">
 
-  <div class="sh">🔬 듀오링고가 "빽빽·게임답게" 보이는 4가지 이유</div>
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-target"/></svg>
+    듀오링고가 "빽빽·게임답게" 보이는 4가지 이유
+  </div>
   <div class="sh-sub">스크린샷 모음이 아니라 요소 분해. 순공대장에 바로 적용 가능한 원칙으로.</div>
 
   <div class="card-grid">
 
     <!-- 원인 1: 정보 밀도 -->
     <div class="card">
-      <div class="card-title">📐 원인 1 — 정보 밀도 (Info Density)</div>
+      <div class="card-title">
+        <svg class="ic" width="16" height="16" style="color:var(--m700)"><use href="#ic-sort"/></svg>
+        원인 1 — 정보 밀도 (Info Density)
+      </div>
       <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;">
         듀오링고 첫 화면엔 <strong>5개의 독립 구역</strong>이 스크롤 없이 보인다.
         각 구역 내부 패딩은 10-12px, 구역 간 갭은 8px.
         카드 한 장 대신 <em>카드 더미처럼</em> 보이는 시각적 밀도.
       </p>
-      <div class="zone-a duo-zone"><span>🔥 스트릭 + ❤️ HP + ⭐ XP bar</span><span style="font-size:10px;color:var(--m700);font-weight:700;">→ 상시 게임 상태 바</span></div>
-      <div class="zone-b duo-zone"><span>🏆 리그 순위 배너 (Today's Goal)</span><span style="font-size:10px;color:#7A5A00;font-weight:700;">→ 경쟁 동기 상시 노출</span></div>
-      <div class="zone-a duo-zone"><span>📚 오늘의 레슨 (빅 CTA)</span><span style="font-size:10px;color:var(--m700);font-weight:700;">→ 주 행동 유도</span></div>
-      <div class="zone-d duo-zone"><span>🗓 연습 섹션 (복습 추천)</span><span style="font-size:10px;color:#3A5AE8;font-weight:700;">→ 보조 행동</span></div>
-      <div class="zone-c duo-zone"><span>📣 소셜 / 친구 활동</span><span style="font-size:10px;color:#9A3A3A;font-weight:700;">→ 커뮤니티 훅</span></div>
+      <div class="zone-a duo-zone">
+        <svg class="ic" width="13" height="13" style="color:var(--m900)"><use href="#ic-flame"/></svg>
+        <span>스트릭 + HP + XP bar — 상시 게임 상태 바</span>
+      </div>
+      <div class="zone-b duo-zone">
+        <svg class="ic" width="13" height="13" style="color:var(--m900)"><use href="#ic-trophy"/></svg>
+        <span>리그 순위 배너 — 경쟁 동기 상시 노출</span>
+      </div>
+      <div class="zone-a duo-zone">
+        <svg class="ic" width="13" height="13" style="color:var(--m900)"><use href="#ic-book"/></svg>
+        <span>오늘의 레슨 (빅 CTA) — 주 행동 유도</span>
+      </div>
+      <div class="zone-d duo-zone">
+        <svg class="ic" width="13" height="13" style="color:var(--m700)"><use href="#ic-cal"/></svg>
+        <span>연습 섹션 — 복습 추천</span>
+      </div>
+      <div class="zone-c duo-zone">
+        <svg class="ic" width="13" height="13" style="color:var(--m500)"><use href="#ic-heart"/></svg>
+        <span>소셜 / 친구 활동 — 커뮤니티 훅</span>
+      </div>
       <div style="margin-top:12px;">
-        <div class="ml" style="text-align:left;margin-bottom:6px;">현재 → 목표 수치 비교</div>
+        <div style="font-size:10px;color:var(--tm);margin-bottom:6px;">현재 → 목표 수치 비교</div>
         <div class="metric-row"><div class="mv mv-b">카드 패딩 16px</div><div class="ma">→</div><div class="mv mv-a">카드 패딩 10px</div></div>
         <div class="metric-row"><div class="mv mv-b">카드 갭 24px</div><div class="ma">→</div><div class="mv mv-a">카드 갭 8px</div></div>
         <div class="metric-row"><div class="mv mv-b">화면 구역 2개</div><div class="ma">→</div><div class="mv mv-a">화면 구역 5개</div></div>
@@ -241,54 +369,70 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
 
     <!-- 원인 2: 게임 상태 상시 노출 -->
     <div class="card">
-      <div class="card-title">🎮 원인 2 — 게임 상태 상시 노출</div>
-      <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;">
-        듀오링고는 <strong>XP·스트릭·하트가 항상 헤더에 보인다</strong>.
-        탭을 바꿔도, 레슨 중에도, 결과 화면에도. 숫자가 항상 보여야
-        "오르고 싶다"는 욕구가 생긴다. 지금 순공대장은 XP가 퀘스트 카드 안에만 표시됨.
-      </p>
-      <div style="background:var(--m700);border-radius:var(--rmd);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <div class="gst"><span>🔥</span><span>7일</span></div>
-        <div class="gst" style="flex:1;justify-content:center;gap:6px;">
-          <div class="xp-tr" style="max-width:100px;"><div class="xp-fi"></div></div>
-          <span style="font-size:11px;">1,240 XP</span>
-        </div>
-        <div class="gst"><span style="color:#FF7777;">❤️</span><span>3</span></div>
+      <div class="card-title">
+        <svg class="ic" width="16" height="16" style="color:var(--m700)"><use href="#ic-star"/></svg>
+        원인 2 — 게임 상태 상시 노출
       </div>
-      <p style="font-size:11px;color:var(--tm);line-height:1.5;">
-        ↑ 이 7px 높이의 바 하나가 "게임" 체감을 만든다. 상시 게임 상태를 보여주는
-        스티키 헤더 바를 추가하는 것만으로 앱 전체 분위기가 달라짐.
+      <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;">
+        XP·스트릭·하트가 <strong>항상 헤더에 보인다</strong>.
+        탭을 바꿔도, 레슨 중에도, 결과 화면에도.
+        지금 순공대장은 XP가 퀘스트 카드 안에만 표시됨.
       </p>
-      <div style="margin-top:10px;padding:10px;background:var(--m50);border-radius:var(--rsm);">
+      <!-- GameBar 미리보기 -->
+      <div style="background:var(--m900);border-radius:var(--rmd);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;">
+        <div class="gst">
+          <svg class="ic" width="13" height="13"><use href="#ic-flame"/></svg>
+          <span>7일</span>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;gap:6px;">
+          <div class="xp-tr" style="max-width:90px;"><div class="xp-fi"></div></div>
+          <div style="display:flex;align-items:center;gap:3px;">
+            <svg class="ic" width="11" height="11" style="color:var(--m300)"><use href="#ic-star"/></svg>
+            <span style="font-size:10px;font-weight:700;color:var(--m300);">1,240</span>
+          </div>
+        </div>
+        <div class="gst">
+          <svg class="ic" width="13" height="13" style="color:var(--m300)"><use href="#ic-heart"/></svg>
+          <span>3</span>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--tm);line-height:1.5;margin-bottom:10px;">
+        ↑ 7px 높이의 XP 게이지 한 줄이 "게임" 체감을 만든다.
+        스티키 헤더 바 추가만으로 앱 전체 분위기가 달라짐.
+      </p>
+      <div style="padding:10px;background:var(--m50);border-radius:var(--rsm);">
         <div style="font-size:11px;font-weight:700;color:var(--m700);margin-bottom:4px;">순공대장 적용:</div>
         <div style="font-size:11px;color:var(--td);line-height:1.5;">
-          기존 StatsGrid 위에 <code style="background:#E8F0E8;padding:1px 4px;border-radius:3px;">GameBar</code> 컴포넌트 추가.
-          🔥 스트릭 · ❤️ 기억HP(0-5) · ⭐ XP 게이지 3종 상시 노출.
+          StatsGrid 위에 <code style="background:var(--m100);padding:1px 4px;border-radius:3px;">GameBar</code> 추가.
+          스트릭·기억HP(0-5)·XP 게이지 3종 상시 노출. 민트-900 배경에 민트-300 강조.
         </div>
       </div>
     </div>
 
     <!-- 원인 3: 마스코트 감정 경제 -->
     <div class="card">
-      <div class="card-title">🐾 원인 3 — 마스코트 감정 경제</div>
+      <div class="card-title">
+        <img src="../../mascot/main.png" style="width:18px;height:18px;object-fit:contain;" alt="">
+        원인 3 — 마스코트 감정 경제
+      </div>
       <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;">
         Duo(부엉이)는 <strong>8개 감정 상태</strong>로 등장. 항상 무표정이 아니라
         상황에 따라 기쁨·슬픔·기대·경고를 표현. "앱이 나를 보고 있다"는
-        감각 = 감정적 투자(emotional investment) = 이탈 방지.
+        감각 = 감정적 투자 = 이탈 방지.
       </p>
       <div class="principle">
         <div class="pnum">A</div>
         <div class="pbody">
           <div class="ptag">빈 상태</div>
-          <h4>슬프거나 졸린 Duo</h4>
-          <p>"연습 안 하면 Duo가 슬퍼요" — 죄책감 유도. 이탈 억제.</p>
+          <h4>슬프거나 졸린 마스코트</h4>
+          <p>"연습 안 하면 순공이가 슬퍼요" — 죄책감 유도. 이탈 억제.</p>
         </div>
       </div>
       <div class="principle">
         <div class="pnum">B</div>
         <div class="pbody">
           <div class="ptag">정답 / 레슨 완료</div>
-          <h4>점프·날개 펄럭 Duo</h4>
+          <h4>점프·날개 펄럭 마스코트</h4>
           <p>보상 순간에 최대 크기로 등장. XP 애니메이션과 동시 재생.</p>
         </div>
       </div>
@@ -296,456 +440,360 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
         <div class="pnum">C</div>
         <div class="pbody">
           <div class="ptag">오답</div>
-          <h4>고개 숙인 Duo</h4>
+          <h4>고개 숙인 마스코트</h4>
           <p>"그래도 괜찮아요" 위로 문구와 세트. 다음 도전 동기 유지.</p>
         </div>
       </div>
-      <div class="principle">
-        <div class="pnum" style="background:var(--str);">D</div>
+      <div class="principle" style="background:var(--m50);">
+        <div class="pnum" style="background:var(--rh);color:#7a2020;">D</div>
         <div class="pbody">
           <div class="ptag">스트릭 위험</div>
-          <h4>긴박한 Duo + 타이머</h4>
-          <p>"오늘 자정까지 3시간 남았어요!" — 불안 활용. 클릭률 최고.</p>
+          <h4>긴박한 마스코트 + 타이머</h4>
+          <p>"오늘 자정까지 3시간 남았어요!" — 클릭률 최고 순간.</p>
         </div>
       </div>
     </div>
 
-    <!-- 원인 4: 컬러 포화도 + 보상 순간 -->
+    <!-- 원인 4: 컬러 + 보상 순간 -->
     <div class="card">
-      <div class="card-title">🎨 원인 4 — 컬러 포화도 + 보상 순간</div>
+      <div class="card-title">
+        <svg class="ic" width="16" height="16" style="color:var(--m700)"><use href="#ic-check"/></svg>
+        원인 4 — 컬러 밀도 + 보상 순간
+      </div>
       <p style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;">
-        듀오링고 그린 <span style="background:#58CC02;color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;">#58CC02</span>은
-        채도 98%. 순공대장 민트 <span style="background:#7CC97C;color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;">#7CC97C</span>은
-        채도 45% — "편안함"의 색.
-        게임성은 포화도가 높은 액센트 컬러와 보상 순간의 골드에서 나온다.
+        게임성은 <strong>포화도 높은 액센트</strong>와 보상 순간의 대비에서 나온다.
+        순공대장은 민트 단일 계열 명도 대비로 같은 효과를 만든다.
       </p>
-      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+      <!-- Mint scale palette -->
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
         <div style="text-align:center;">
-          <div style="width:50px;height:50px;background:#58CC02;border-radius:var(--rsm);margin:0 auto 4px;"></div>
-          <div style="font-size:10px;color:var(--tm);">Duo 그린<br>채도 98%</div>
+          <div style="width:44px;height:44px;background:var(--m900);border-radius:var(--rsm);margin:0 auto 3px;"></div>
+          <div style="font-size:9px;color:var(--tm);">mint-900<br>#2E6B2E<br>메인 앵커</div>
         </div>
         <div style="text-align:center;">
-          <div style="width:50px;height:50px;background:#FF9600;border-radius:var(--rsm);margin:0 auto 4px;"></div>
-          <div style="font-size:10px;color:var(--tm);">보상 골드<br>강조 액센트</div>
+          <div style="width:44px;height:44px;background:var(--m700);border-radius:var(--rsm);margin:0 auto 3px;"></div>
+          <div style="font-size:9px;color:var(--tm);">mint-700<br>#4FA84F<br>강조·버튼</div>
         </div>
         <div style="text-align:center;">
-          <div style="width:50px;height:50px;background:#FF4B4B;border-radius:var(--rsm);margin:0 auto 4px;"></div>
-          <div style="font-size:10px;color:var(--tm);">HP 빨강<br>위기감 유발</div>
+          <div style="width:44px;height:44px;background:var(--m500);border-radius:var(--rsm);margin:0 auto 3px;"></div>
+          <div style="font-size:9px;color:var(--tm);">mint-500<br>#7CC97C<br>미드톤</div>
         </div>
         <div style="text-align:center;">
-          <div style="width:50px;height:50px;background:#7CC97C;border-radius:var(--rsm);margin:0 auto 4px;"></div>
-          <div style="font-size:10px;color:var(--tm);">순공 민트<br>채도 45%</div>
+          <div style="width:44px;height:44px;background:var(--m300);border-radius:var(--rsm);margin:0 auto 3px;"></div>
+          <div style="font-size:9px;color:var(--tm);">mint-300<br>#A8DDA8<br>XP 게이지</div>
         </div>
         <div style="text-align:center;">
-          <div style="width:50px;height:50px;background:#F2C94C;border-radius:var(--rsm);margin:0 auto 4px;"></div>
-          <div style="font-size:10px;color:var(--tm);">XP 골드<br>(기존 토큰 ✅)</div>
+          <div style="width:44px;height:44px;background:var(--m100);border-radius:var(--rsm);margin:0 auto 3px;border:1px solid var(--bd);"></div>
+          <div style="font-size:9px;color:var(--tm);">mint-100<br>#D6F0D6<br>배너 배경</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="width:44px;height:44px;background:var(--rh);border-radius:var(--rsm);margin:0 auto 3px;"></div>
+          <div style="font-size:9px;color:var(--tm);">risk-high<br>기능 예외</div>
         </div>
       </div>
       <div style="padding:10px;background:var(--m50);border-radius:var(--rsm);">
-        <div style="font-size:11px;font-weight:700;color:var(--m700);margin-bottom:4px;">순공대장 전략 (토큰 변경 없이):</div>
+        <div style="font-size:11px;font-weight:700;color:var(--m700);margin-bottom:4px;">원칙:</div>
         <div style="font-size:11px;color:var(--td);line-height:1.5;">
-          기존 <code style="background:#E8F0E8;padding:1px 4px;border-radius:3px;">--color-xp: #F2C94C</code>을 보상 골드로 적극 활용.
-          결과 화면·XP 표시·스트릭 배지에 집중 배치. 컬러 추가 없이 기존 토큰 재배치만으로
-          "보상 순간"의 드라마틱함을 만들 수 있음.
+          짙은 민트(900/700) = 강조·보상 순간. 밝은 민트(300/100/50) = 배경·서브 요소.
+          <br>명도 대비만으로 위계와 보상감을 동시에 만든다.
         </div>
       </div>
     </div>
-
-  </div><!-- /card-grid -->
-
-  <!-- 5 Principles -->
-  <div class="sh" style="margin-top:4px;">✅ 순공대장 적용 5대 원칙</div>
-  <div class="card">
-    <div class="principle"><div class="pnum">1</div><div class="pbody"><div class="ptag">즉시 적용 가능</div><h4>GameBar 추가 — 스트릭·HP·XP 상시 노출</h4><p>헤더 바로 아래 7px짜리 XP 게이지 + 🔥 스트릭 숫자 + ❤️ 기억HP. 기존 StatsGrid는 그 아래 유지. 코드 변경 최소, 비주얼 임팩트 최대.</p></div></div>
-    <div class="principle"><div class="pnum">2</div><div class="pbody"><div class="ptag">간격 조정</div><h4>Quest 카드 간격 축소: gap-6→gap-2, p-4→p-2.5</h4><p>Tailwind 클래스 2개 변경. padding 16px→10px, gap 24px→8px. 같은 화면에 퀘스트 카드가 2배 보이게 됨. "스크롤하면 계속 뭔가 나온다" 효과.</p></div></div>
-    <div class="principle"><div class="pnum">3</div><div class="pbody"><div class="ptag">마스코트 재배치</div><h4>순공이를 헤더 코너 → 배너 중심으로 이동</h4><p>현재: `Mascot mood="cheer" size="md"` 가 헤더 왼쪽 귀퉁이. 목표: 화면 상단 풀-위드 배너에 순공이가 크게, 오늘의 응원 문구와 함께. 캐릭터가 "배경"이 아닌 "앞"에 서야 함.</p></div></div>
-    <div class="principle"><div class="pnum">4</div><div class="pbody"><div class="ptag">보상 화면 강화</div><h4>플레이 완료 → 축하 오버레이로 교체</h4><p>현재 결과 화면은 텍스트 중심. 듀오링고처럼: 화면 전체를 민트 그라데이션으로, 순공이 크게, XP 골드 숫자 애니메이션, 컨페티. "이 화면 때문에 또 하고 싶다"는 보상 루프.</p></div></div>
-    <div class="principle"><div class="pnum">5</div><div class="pbody"><div class="ptag">위험도 색상 강화</div><h4>Risk 카드 테두리/배경 → 더 명확한 컬러 신호</h4><p>현재 RiskBadge는 작은 배지로만 표시. 목표: 고위험 퀘스트 카드는 빨간 테두리 + 연분홍 배경, 중위험은 주황 테두리 + 연노랑 배경. "이건 급해요"가 시각적으로 바로 보여야 함.</p></div></div>
   </div>
 
+  <!-- 5 Principles -->
+  <div class="sh" style="margin-top:4px;">
+    <svg class="ic" width="18" height="18"><use href="#ic-check"/></svg>
+    순공대장 적용 5대 원칙
+  </div>
+  <div class="card">
+    <div class="principle"><div class="pnum">1</div><div class="pbody"><div class="ptag">즉시 적용</div><h4>GameBar — 스트릭·HP·XP 상시 노출</h4><p>민트-900 배경 바. 스트릭 숫자 + 7px XP 게이지(민트-300 fill) + 기억HP(0-5). 모든 화면 최상단 고정.</p></div></div>
+    <div class="principle"><div class="pnum">2</div><div class="pbody"><div class="ptag">간격 조정</div><h4>Quest 카드 간격 축소: gap-6→gap-2, p-4→p-2.5</h4><p>Tailwind 클래스 2개 변경. 같은 화면에 퀘스트 카드가 2배 보이게 됨.</p></div></div>
+    <div class="principle"><div class="pnum">3</div><div class="pbody"><div class="ptag">마스코트 격상</div><h4>순공이를 헤더 귀퉁이 → 풀-위드 배너로</h4><p>현재 36px 귀퉁이 → 52px 풀-위드 배너. 응원 문구와 함께. Mike가 최종 이미지 교체 예정.</p></div></div>
+    <div class="principle"><div class="pnum">4</div><div class="pbody"><div class="ptag">보상 강화</div><h4>완료 화면 → 민트 그라데이션 축하 오버레이</h4><p>민트-700~900 그라데이션 전체 배경. 마스코트 130px. XP 배지는 민트-900 배경에 흰 텍스트.</p></div></div>
+    <div class="principle"><div class="pnum">5</div><div class="pbody"><div class="ptag">위험도 강화</div><h4>Risk 카드 테두리/배경 → 컬러 신호 명확화</h4><p>고위험 빨강 배경/테두리, 중위험 주황 배경/테두리. 위험도 컬러만 비민트 예외.</p></div></div>
+  </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      ② 캐릭터 배치
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="tab-char" class="tab-content">
 
-  <div class="sh">🐾 순공이(듀공) 등장 가이드 — 화면별 배치 맵</div>
+  <div class="sh">
+    <img src="../../mascot/main.png" style="width:20px;height:20px;object-fit:contain;" alt="">
+    순공이 등장 가이드 — 화면별 배치 맵
+  </div>
   <div class="sh-sub">어느 화면 / 어느 위치 / 어떤 상태 / 무슨 역할. 감정 없는 마스코트는 장식이다.</div>
+  <div class="sh-sub" style="margin-top:-10px;background:rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;font-size:11px;">
+    ⓘ 현재 이미지는 placeholder. Mike가 최종 캐릭터 시트 교체 예정 — 슬롯 위치만 잡아둠.
+  </div>
 
   <!-- State legend -->
   <div class="card" style="margin-bottom:14px;">
-    <div class="card-title">순공이 감정 상태 5종</div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;">
-      <div style="text-align:center;min-width:80px;">
-        <div style="display:flex;justify-content:center;margin-bottom:6px;">
-          <!-- 격려 mascot -->
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="25.3" cy="17" r=".9" fill="white"/>
-            <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="39.3" cy="17" r=".9" fill="white"/>
-            <path d="M25 29 Q30 34 35 29" stroke="#1A2A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <!-- flipper raised -->
-            <ellipse cx="10" cy="32" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-50 10 32)"/>
-            <ellipse cx="50" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(15 50 40)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <text x="4" y="16" font-size="9">✨</text>
-          </svg>
+    <div class="card-title">순공이 감정 상태 — 현재 에셋으로 슬롯 배치</div>
+    <div style="display:flex;flex-wrap:wrap;gap:16px;">
+
+      <div style="text-align:center;min-width:90px;">
+        <div style="display:flex;justify-content:center;margin-bottom:6px;height:52px;align-items:center;">
+          <img src="../../mascot/main.png" class="mmd" alt="격려 상태 순공이">
         </div>
         <div class="state-chip sc-cheer">격려</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:3px;">왼 지느러미 올림<br>밝은 눈 + 큰 미소</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:3px;">홈 배너<br>응원 문구</div>
       </div>
-      <div style="text-align:center;min-width:80px;">
-        <div style="display:flex;justify-content:center;margin-bottom:6px;">
-          <!-- 축하 mascot -->
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <!-- happy arc eyes -->
-            <circle cx="23" cy="18" r="4" fill="white"/>
-            <path d="M19.5 16.5 Q23 21 26.5 16.5" fill="#1A2A1A"/>
-            <circle cx="37" cy="18" r="4" fill="white"/>
-            <path d="M33.5 16.5 Q37 21 40.5 16.5" fill="#1A2A1A"/>
-            <!-- big smile -->
-            <path d="M23 29 Q30 35 37 29" stroke="#1A2A1A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-            <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <!-- both flippers up -->
-            <ellipse cx="9" cy="28" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-60 9 28)"/>
-            <ellipse cx="51" cy="28" rx="7" ry="4" fill="#6AA3BC" transform="rotate(60 51 28)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <text x="1" y="14" font-size="8">⭐</text><text x="50" y="14" font-size="8">⭐</text>
-          </svg>
+
+      <div style="text-align:center;min-width:90px;">
+        <div style="display:flex;justify-content:center;margin-bottom:6px;height:52px;align-items:center;position:relative;">
+          <img src="../../mascot/main.png" class="mmd" alt="축하 상태 순공이">
+          <!-- star overlay -->
+          <svg style="position:absolute;top:-4px;right:-4px;color:var(--m300);" width="14" height="14"><use href="#ic-star"/></svg>
         </div>
         <div class="state-chip sc-cel">축하</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:3px;">두 지느러미 올림<br>눈 초승달 + 별</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:3px;">정답 결과<br>130px 대형</div>
       </div>
-      <div style="text-align:center;min-width:80px;">
-        <div style="display:flex;justify-content:center;margin-bottom:6px;">
-          <!-- 집중 mascot -->
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="25.3" cy="17" r=".9" fill="white"/>
-            <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="39.3" cy="17" r=".9" fill="white"/>
-            <!-- focused brows -->
-            <path d="M20 14 Q23 12 26 14" stroke="#1A2A1A" stroke-width="1.3" fill="none"/>
-            <path d="M34 14 Q37 12 40 14" stroke="#1A2A1A" stroke-width="1.3" fill="none"/>
-            <path d="M25 30 Q30 32 35 30" stroke="#1A2A1A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-            <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <ellipse cx="11" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-10 11 40)"/>
-            <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(10 49 40)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <text x="38" y="50" font-size="9">📖</text>
-          </svg>
+
+      <div style="text-align:center;min-width:90px;">
+        <div style="display:flex;justify-content:center;margin-bottom:6px;height:52px;align-items:center;">
+          <img src="../../mascot/repeat_normal.png" class="mmd" alt="집중 상태 순공이">
         </div>
         <div class="state-chip sc-study">집중</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:3px;">미간 살짝 좁힘<br>책 prop 들고</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:3px;">오답노트<br>반복 학습</div>
       </div>
-      <div style="text-align:center;min-width:80px;">
-        <div style="display:flex;justify-content:center;margin-bottom:6px;">
-          <!-- 경고 mascot -->
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/>
-            <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/>
-            <!-- worried brows -->
-            <path d="M20 12.5 Q23 15 26 12.5" stroke="#1A2A1A" stroke-width="1.5" fill="none"/>
-            <path d="M34 12.5 Q37 15 40 12.5" stroke="#1A2A1A" stroke-width="1.5" fill="none"/>
-            <!-- frown -->
-            <path d="M25 31 Q30 28 35 31" stroke="#1A2A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <ellipse cx="11" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-10 11 40)"/>
-            <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(10 49 40)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <!-- sweat drop -->
-            <text x="42" y="16" font-size="8">💧</text>
-          </svg>
+
+      <div style="text-align:center;min-width:90px;">
+        <div style="display:flex;justify-content:center;margin-bottom:6px;height:52px;align-items:center;position:relative;">
+          <img src="../../mascot/main.png" class="mmd" alt="경고 상태 순공이" style="filter:hue-rotate(0deg) saturate(0.6) brightness(0.85);">
+          <div style="position:absolute;bottom:-2px;right:-2px;background:var(--rh);border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;font-size:8px;color:#7a2020;font-weight:800;">!</div>
         </div>
         <div class="state-chip sc-warn">경고</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:3px;">눈썹 내려감<br>입 뒤집힘</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:3px;">오답 결과<br>스트릭 위기</div>
       </div>
-      <div style="text-align:center;min-width:80px;">
-        <div style="display:flex;justify-content:center;margin-bottom:6px;">
-          <!-- 휴식 mascot -->
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <!-- half-closed eyes -->
-            <circle cx="23" cy="18" r="4" fill="white"/>
-            <path d="M19 18 Q23 22 27 18" fill="#7CACC4"/>
-            <circle cx="23" cy="19" r="2" fill="#1A2A1A"/>
-            <circle cx="37" cy="18" r="4" fill="white"/>
-            <path d="M33 18 Q37 22 41 18" fill="#7CACC4"/>
-            <circle cx="37" cy="19" r="2" fill="#1A2A1A"/>
-            <path d="M27 30 Q30 33 33 30" stroke="#1A2A1A" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-            <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-            <ellipse cx="11" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-10 11 40)"/>
-            <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(10 49 40)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <text x="42" y="14" font-size="9" fill="#8888CC">Zzz</text>
-          </svg>
+
+      <div style="text-align:center;min-width:90px;">
+        <div style="display:flex;justify-content:center;margin-bottom:6px;height:52px;align-items:center;">
+          <img src="../../mascot/repeat_normal-alpha.png" class="mmd" alt="휴식 상태 순공이" style="opacity:.7;">
         </div>
         <div class="state-chip sc-zzz">휴식</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:3px;">눈 반쯤 감김<br>Zzz 말풍선</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:3px;">빈 상태<br>캘린더 빈 날</div>
       </div>
+
+    </div>
+    <div style="margin-top:12px;padding:10px;background:var(--m50);border-radius:var(--rsm);font-size:11px;color:var(--td);line-height:1.5;">
+      <strong style="color:var(--m700);">에셋 안내:</strong> 현재 사용 중인 파일
+      <code style="background:var(--m100);padding:1px 4px;border-radius:3px;">public/mascot/main.png</code>·
+      <code style="background:var(--m100);padding:1px 4px;border-radius:3px;">repeat_normal.png</code>·
+      <code style="background:var(--m100);padding:1px 4px;border-radius:3px;">main-alpha.png</code>·
+      <code style="background:var(--m100);padding:1px 4px;border-radius:3px;">repeat_normal-alpha.png</code>.
+      Mike 최종 시트 교체 시 같은 파일명으로 덮어쓰면 전체 적용됨.
     </div>
   </div>
 
   <!-- Placement table -->
   <div class="card">
-    <div class="card-title">📍 화면별 등장 맵 (전체 앱 기준)</div>
+    <div class="card-title">
+      <svg class="ic" width="14" height="14" style="color:var(--m700)"><use href="#ic-target"/></svg>
+      화면별 등장 맵 (전체 앱 기준)
+    </div>
     <div style="overflow-x:auto;">
       <table class="ptbl">
         <thead>
-          <tr>
-            <th>화면</th>
-            <th>위치</th>
-            <th>크기</th>
-            <th>상태</th>
-            <th>역할 / 문구 예시</th>
-          </tr>
+          <tr><th>화면</th><th>위치</th><th>크기</th><th>상태</th><th>역할 / 문구 예시</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td><strong>홈 (오늘의 회독)</strong></td>
-            <td>상단 마스코트 배너 중앙</td>
-            <td>md (56px)</td>
-            <td><span class="state-chip sc-cheer">격려</span></td>
-            <td>"오늘 회독 3개로 망각 막아봐요! 🔥"<br><span style="font-size:10px;color:var(--tm);">퀘스트 수 기반 동적 문구</span></td>
-          </tr>
-          <tr>
-            <td><strong>플레이 중 (문제화면)</strong></td>
-            <td>문제 카드 오른쪽 하단 (작게)</td>
-            <td>xs (24px)</td>
-            <td><span class="state-chip sc-study">집중</span></td>
-            <td>시각 장식 (문구 없음). 집중감 조성.</td>
-          </tr>
-          <tr>
-            <td><strong>정답 결과</strong></td>
-            <td>결과 오버레이 중앙 최상단</td>
-            <td>xxl (130px)</td>
-            <td><span class="state-chip sc-cel">축하</span></td>
-            <td>"완벽해요! +20 XP 🎉" + 컨페티 배경<br><span style="font-size:10px;color:var(--tm);">스트릭 +1이면 "스트릭 8일차! 🔥" 추가</span></td>
-          </tr>
-          <tr>
-            <td><strong>오답 결과</strong></td>
-            <td>결과 오버레이 중앙</td>
-            <td>xl (100px)</td>
-            <td><span class="state-chip sc-warn">경고</span></td>
-            <td>"이번엔 아쉬웠어요. 오답노트에 담았어요 📝"<br><span style="font-size:10px;color:var(--tm);">기억HP -1 시각화와 함께</span></td>
-          </tr>
-          <tr>
-            <td><strong>오답노트</strong></td>
-            <td>섹션 헤더 왼쪽</td>
-            <td>sm (36px)</td>
-            <td><span class="state-chip sc-study">집중</span></td>
-            <td>"여기서 꼭 갚아요" — 위험도 높은 항목 섹션 상단</td>
-          </tr>
-          <tr>
-            <td><strong>회독 캘린더 빈 날</strong></td>
-            <td>빈 상태 (empty state) 중앙</td>
-            <td>xl (100px)</td>
-            <td><span class="state-chip sc-zzz">휴식</span></td>
-            <td>"오늘은 퀘스트가 없어요. 새로 추가해볼까요?"<br><span style="font-size:10px;color:var(--tm);">→ 업로드 CTA</span></td>
-          </tr>
-          <tr>
-            <td><strong>레벨업 / 보상 모먼트</strong></td>
-            <td>전체 화면 오버레이 중앙</td>
-            <td>xxl (130px) + 애니</td>
-            <td><span class="state-chip sc-cel">축하</span></td>
-            <td>"순공러 달성! 🎊" + 뱃지 표시 + 공유 CTA<br><span style="font-size:10px;color:var(--tm);">가장 강한 감정 포인트</span></td>
-          </tr>
-          <tr>
-            <td><strong>스트릭 위기 알림</strong></td>
-            <td>푸시 알림 / 배너</td>
-            <td>xs (24px)</td>
-            <td><span class="state-chip sc-warn">경고</span></td>
-            <td>"순공이가 기다리고 있어요… 오늘 자정까지!"<br><span style="font-size:10px;color:var(--tm);">이탈 방지 최강 카드</span></td>
-          </tr>
+          <tr><td><strong>홈 (오늘의 회독)</strong></td><td>상단 마스코트 배너 중앙</td><td>md (52px)</td><td><span class="state-chip sc-cheer">격려</span></td><td>"오늘 회독 3개로 망각 막아봐요!"<br><span style="font-size:10px;color:var(--tm);">퀘스트 수 기반 동적 문구</span></td></tr>
+          <tr><td><strong>플레이 중</strong></td><td>문제 카드 오른쪽 하단</td><td>xs (24px)</td><td><span class="state-chip sc-study">집중</span></td><td>시각 장식. 집중감 조성.</td></tr>
+          <tr><td><strong>정답 결과</strong></td><td>결과 오버레이 중앙</td><td>xxl (130px)</td><td><span class="state-chip sc-cel">축하</span></td><td>"완벽해요! +20 XP" + 스트릭 갱신 표시</td></tr>
+          <tr><td><strong>오답 결과</strong></td><td>결과 오버레이 중앙</td><td>xl (100px)</td><td><span class="state-chip sc-warn">경고</span></td><td>"이번엔 아쉬웠어요. 오답노트에 담았어요"</td></tr>
+          <tr><td><strong>오답노트</strong></td><td>섹션 헤더 왼쪽</td><td>sm (36px)</td><td><span class="state-chip sc-study">집중</span></td><td>"여기서 꼭 갚아요" — 고위험 섹션 상단</td></tr>
+          <tr><td><strong>캘린더 빈 날</strong></td><td>빈 상태(empty) 중앙</td><td>xl (100px)</td><td><span class="state-chip sc-zzz">휴식</span></td><td>"오늘 퀘스트 없어요. 새로 추가해볼까요?"</td></tr>
+          <tr><td><strong>레벨업 / 보상</strong></td><td>전체 화면 오버레이</td><td>xxl (130px)</td><td><span class="state-chip sc-cel">축하</span></td><td>"순공러 달성!" + 뱃지 + 공유 CTA</td></tr>
+          <tr><td><strong>스트릭 위기 알림</strong></td><td>푸시 알림</td><td>xs (24px)</td><td><span class="state-chip sc-warn">경고</span></td><td>"순공이가 기다리고 있어요… 오늘 자정까지!"</td></tr>
         </tbody>
       </table>
     </div>
   </div>
-
 </div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      ③ Home 재목업
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="tab-home" class="tab-content">
-
-  <div class="sh">🏠 Home / 오늘의 회독 — Before · After</div>
-  <div class="sh-sub">같은 데이터, 같은 컬러 토큰. 간격과 구조만 바꾼다.</div>
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-home"/></svg>
+    Home / 오늘의 회독 — Before · After
+  </div>
+  <div class="sh-sub">같은 데이터, 같은 민트 토큰. 간격과 구조만 바꾼다.</div>
 
   <div class="pair">
     <!-- BEFORE -->
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-b">BEFORE — 현재</span></div>
       <div class="phone">
-        <div class="sbar"><span>9:41</span><span>🔋📶</span></div>
-        <!-- header loose -->
+        <div class="sbar"><span>9:41</span><span>배터리 신호</span></div>
         <div class="bef-hdr">
-          <div class="bef-mascot-area">
-            <svg class="msm" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/><ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-              <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-              <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/>
-              <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/>
-              <path d="M25 29 Q30 34 35 29" stroke="#1A2A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-              <ellipse cx="11" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-10 11 40)"/>
-              <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(10 49 40)"/>
-              <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            </svg>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <img src="../../mascot/main.png" class="msm" alt="순공이">
             <div>
               <div style="font-size:14px;font-weight:700;color:var(--ts);">안녕하세요, 김순공님!</div>
               <div style="font-size:11px;color:var(--tm);">오늘 회독 3개로 망각을 막아볼까요?</div>
             </div>
           </div>
-          <div style="display:flex;gap:6px;">
-            <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-sun);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:15px;">🔔</div>
+          <div class="icon-btn">
+            <svg class="ic" width="15" height="15" style="color:var(--tm)"><use href="#ic-bell"/></svg>
           </div>
         </div>
-        <!-- stats loose -->
         <div class="bef-stats">
-          <div class="bef-sc"><div style="font-size:18px;margin-bottom:2px;">🔥</div><div style="font-size:15px;font-weight:800;color:var(--ts);">7</div><div style="font-size:10px;color:var(--tm);">연속일</div></div>
-          <div class="bef-sc"><div style="font-size:18px;margin-bottom:2px;">⭐</div><div style="font-size:15px;font-weight:800;color:var(--ts);">1,240</div><div style="font-size:10px;color:var(--tm);">XP</div></div>
-          <div class="bef-sc"><div style="font-size:18px;margin-bottom:2px;">❤️</div><div style="font-size:15px;font-weight:800;color:var(--ts);">3/5</div><div style="font-size:10px;color:var(--tm);">기억HP</div></div>
+          <div class="bef-sc">
+            <svg class="ic" width="16" height="16" style="color:var(--m700);margin-bottom:2px;"><use href="#ic-flame"/></svg>
+            <div style="font-size:15px;font-weight:800;color:var(--ts);">7</div>
+            <div style="font-size:10px;color:var(--tm);">연속일</div>
+          </div>
+          <div class="bef-sc">
+            <svg class="ic" width="16" height="16" style="color:var(--m700);margin-bottom:2px;"><use href="#ic-star"/></svg>
+            <div style="font-size:15px;font-weight:800;color:var(--ts);">1,240</div>
+            <div style="font-size:10px;color:var(--tm);">XP</div>
+          </div>
+          <div class="bef-sc">
+            <svg class="ic" width="16" height="16" style="color:var(--m700);margin-bottom:2px;"><use href="#ic-heart"/></svg>
+            <div style="font-size:15px;font-weight:800;color:var(--ts);">3/5</div>
+            <div style="font-size:10px;color:var(--tm);">기억HP</div>
+          </div>
         </div>
-        <!-- quest list loose -->
         <div class="bef-area" style="padding-top:4px;">
           <div class="bef-slbl">오늘의 회독 캠프</div>
           <div class="bef-qc">
-            <div style="font-size:22px;color:var(--m700);font-weight:800;">①</div>
+            <div style="font-size:20px;color:var(--m700);font-weight:800;">①</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;">수학 · 수열 <span class="rb rh">고위험</span></div>
-              <div style="font-size:13px;font-weight:600;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">등차수열의 합 공식</div>
+              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;display:flex;align-items:center;gap:4px;">수학 · 수열 <span class="rb rh">고위험</span></div>
+              <div style="font-size:13px;font-weight:600;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">등차수열의 합 공식</div>
               <div style="font-size:10px;color:var(--tm);margin-top:2px;">객관식 · <span style="color:var(--m700);font-weight:600;">+20 XP</span></div>
             </div>
             <button class="btn-play">풀기</button>
           </div>
           <div class="bef-qc">
-            <div style="font-size:22px;color:var(--m700);font-weight:800;">②</div>
+            <div style="font-size:20px;color:var(--m700);font-weight:800;">②</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;">수학 · 로그 <span class="rb rm">중위험</span></div>
-              <div style="font-size:13px;font-weight:600;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">로그의 성질 풀이전략</div>
+              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;display:flex;align-items:center;gap:4px;">수학 · 로그 <span class="rb rm">중위험</span></div>
+              <div style="font-size:13px;font-weight:600;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">로그의 성질 풀이전략</div>
               <div style="font-size:10px;color:var(--tm);margin-top:2px;">단답형 · <span style="color:var(--m700);font-weight:600;">+15 XP</span></div>
             </div>
             <button class="btn-play">풀기</button>
           </div>
           <div class="bef-qc">
-            <div style="font-size:22px;color:var(--m700);font-weight:800;">③</div>
+            <div style="font-size:20px;color:var(--m700);font-weight:800;">③</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;">수학 · 함수 <span class="rb rl">저위험</span></div>
-              <div style="font-size:13px;font-weight:600;color:var(--ts);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">이차함수 최댓값 최솟값</div>
+              <div style="font-size:10px;color:var(--tm);margin-bottom:2px;display:flex;align-items:center;gap:4px;">수학 · 함수 <span class="rb rl">저위험</span></div>
+              <div style="font-size:13px;font-weight:600;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">이차함수 최댓값 최솟값</div>
               <div style="font-size:10px;color:var(--tm);margin-top:2px;">서술형 · <span style="color:var(--m700);font-weight:600;">+10 XP</span></div>
             </div>
             <button class="btn-play">풀기</button>
           </div>
         </div>
         <div class="bnav">
-          <div class="ni act"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni act"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        문제점:<br>
-        <ul>
-          <li>스탯이 카드 안에 숨겨져 있음 → 게임 상태 안 보임</li>
-          <li>마스코트가 헤더 귀퉁이에 아이콘 크기로만 존재</li>
-          <li>카드 간격 10px로 여백 과다 — "텅 빈" 느낌</li>
-          <li>XP 게이지 없음 → 레벨업까지 얼마나 남았는지 불투명</li>
-        </ul>
-      </div>
+      <div class="caption">문제점:<ul>
+        <li>스탯이 카드 안에 숨겨짐 → 게임 상태 안 보임</li>
+        <li>마스코트가 헤더 귀퉁이에 작게만 존재</li>
+        <li>카드 간격 과다 — "텅 빈" 느낌</li>
+        <li>XP 게이지 없음 → 레벨업까지 얼마나 남았는지 불투명</li>
+      </ul></div>
     </div>
 
     <!-- AFTER -->
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-a">AFTER — 제안</span></div>
       <div class="phone">
-        <div class="sbar"><span>9:41</span><span>🔋📶</span></div>
+        <div class="sbar"><span>9:41</span><span>배터리 신호</span></div>
         <!-- GAME BAR -->
         <div class="aft-gbar">
-          <div class="gst"><span>🔥</span><span>7일</span></div>
+          <div class="gst">
+            <svg class="ic" width="13" height="14"><use href="#ic-flame"/></svg>
+            <span>7일</span>
+          </div>
           <div style="flex:1;display:flex;align-items:center;gap:5px;justify-content:center;">
             <div class="xp-tr"><div class="xp-fi"></div></div>
-            <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.85);">1,240 XP</span>
+            <svg class="ic" width="10" height="10" style="color:var(--m300)"><use href="#ic-star"/></svg>
+            <span style="font-size:10px;font-weight:700;color:var(--m300);">1,240</span>
           </div>
-          <div class="gst"><span style="color:#FF9999;">❤️</span><span>3</span></div>
+          <div class="gst">
+            <svg class="ic" width="13" height="13" style="color:var(--m300)"><use href="#ic-heart"/></svg>
+            <span>3</span>
+          </div>
         </div>
         <!-- MASCOT BANNER -->
         <div class="aft-mban">
-          <svg class="mmd" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-            <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/><ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-            <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-            <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="25.3" cy="17" r=".9" fill="white"/>
-            <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/><circle cx="39.3" cy="17" r=".9" fill="white"/>
-            <path d="M25 29 Q30 34 35 29" stroke="#1A2A1A" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-            <ellipse cx="10" cy="32" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-50 10 32)"/>
-            <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(15 49 40)"/>
-            <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <text x="4" y="16" font-size="9">✨</text>
-          </svg>
+          <img src="../../mascot/main.png" class="mmd" alt="격려 중인 순공이">
           <div style="flex:1;">
-            <div style="font-size:13px;font-weight:800;color:var(--m900);">오늘 3개 회독으로<br>망각을 막아요! 🔥</div>
-            <div style="font-size:10px;color:var(--m700);margin-top:2px;">스트릭 7일째 — 대단해요!</div>
+            <div style="font-size:13px;font-weight:800;color:var(--m900);">오늘 3개 회독으로<br>망각을 막아요!</div>
+            <div style="font-size:10px;color:var(--m700);margin-top:2px;display:flex;align-items:center;gap:3px;">
+              <svg class="ic" width="10" height="11"><use href="#ic-flame"/></svg>
+              스트릭 7일째 — 대단해요!
+            </div>
           </div>
-          <div style="width:36px;height:36px;border-radius:50%;background:var(--bg-el);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;">🔔</div>
+          <div class="icon-btn">
+            <svg class="ic" width="15" height="15" style="color:var(--tm)"><use href="#ic-bell"/></svg>
+          </div>
         </div>
         <!-- LEAGUE BADGE -->
         <div class="aft-league">
-          <span style="font-size:20px;">🏆</span>
+          <svg class="ic" width="18" height="18" style="color:var(--m700)"><use href="#ic-trophy"/></svg>
           <div>
-            <div style="font-size:11px;font-weight:800;color:#7A5A00;">순공리그 브론즈 · 3위</div>
-            <div style="font-size:10px;color:#9A7A20;">이번 주 마감 D-2 — 2위까지 120 XP</div>
+            <div style="font-size:11px;font-weight:800;color:var(--m900);">순공리그 브론즈 · 3위</div>
+            <div style="font-size:10px;color:var(--m700);">이번 주 D-2 — 2위까지 120 XP</div>
           </div>
-          <span style="font-size:10px;color:var(--xp);font-weight:700;margin-left:auto;">잠금 🔒</span>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:3px;">
+            <svg class="ic" width="11" height="12" style="color:var(--m500)"><use href="#ic-lock"/></svg>
+            <span style="font-size:10px;color:var(--m700);font-weight:700;">MVP 1.5</span>
+          </div>
         </div>
         <!-- STATS dense -->
         <div class="aft-stats">
-          <div class="aft-sc"><div style="font-size:16px;margin-bottom:1px;">🔥</div><div style="font-size:14px;font-weight:800;color:var(--ts);">7</div><div style="font-size:9px;color:var(--tm);">연속일</div></div>
-          <div class="aft-sc"><div style="font-size:16px;margin-bottom:1px;">📚</div><div style="font-size:14px;font-weight:800;color:var(--ts);">48</div><div style="font-size:9px;color:var(--tm);">총 회독</div></div>
-          <div class="aft-sc"><div style="font-size:16px;margin-bottom:1px;">🎯</div><div style="font-size:14px;font-weight:800;color:var(--ts);">87%</div><div style="font-size:9px;color:var(--tm);">정확도</div></div>
+          <div class="aft-sc">
+            <svg class="ic" width="14" height="15" style="color:var(--m700);margin-bottom:1px;"><use href="#ic-flame"/></svg>
+            <div style="font-size:14px;font-weight:800;color:var(--ts);">7</div>
+            <div style="font-size:9px;color:var(--tm);">연속일</div>
+          </div>
+          <div class="aft-sc">
+            <svg class="ic" width="14" height="14" style="color:var(--m700);margin-bottom:1px;"><use href="#ic-book"/></svg>
+            <div style="font-size:14px;font-weight:800;color:var(--ts);">48</div>
+            <div style="font-size:9px;color:var(--tm);">총 회독</div>
+          </div>
+          <div class="aft-sc">
+            <svg class="ic" width="14" height="14" style="color:var(--m700);margin-bottom:1px;"><use href="#ic-target"/></svg>
+            <div style="font-size:14px;font-weight:800;color:var(--ts);">87%</div>
+            <div style="font-size:9px;color:var(--tm);">정확도</div>
+          </div>
         </div>
         <!-- QUEST LIST dense -->
         <div class="aft-area">
           <div class="aft-slbl"><span>오늘의 회독 캠프</span><span style="font-size:10px;color:var(--m500);font-weight:600;">3개 남음</span></div>
           <div class="aft-qc qh">
-            <div style="font-size:18px;color:var(--m700);font-weight:800;">①</div>
+            <div style="font-size:17px;color:var(--m700);font-weight:800;">①</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:4px;">수학 · 수열 <span class="rb rh">고위험</span></div>
+              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:3px;">수학 · 수열 <span class="rb rh">고위험</span></div>
               <div style="font-size:12px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">등차수열의 합 공식</div>
               <div style="font-size:9px;color:var(--tm);">객관식 · <span style="color:var(--m700);font-weight:700;">+20 XP</span></div>
             </div>
             <button class="btn-play" style="font-size:11px;padding:5px 11px;">풀기</button>
           </div>
           <div class="aft-qc qm">
-            <div style="font-size:18px;color:var(--m700);font-weight:800;">②</div>
+            <div style="font-size:17px;color:var(--m700);font-weight:800;">②</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:4px;">수학 · 로그 <span class="rb rm">중위험</span></div>
+              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:3px;">수학 · 로그 <span class="rb rm">중위험</span></div>
               <div style="font-size:12px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">로그의 성질 풀이전략</div>
               <div style="font-size:9px;color:var(--tm);">단답형 · <span style="color:var(--m700);font-weight:700;">+15 XP</span></div>
             </div>
             <button class="btn-play" style="font-size:11px;padding:5px 11px;">풀기</button>
           </div>
           <div class="aft-qc">
-            <div style="font-size:18px;color:var(--m700);font-weight:800;">③</div>
+            <div style="font-size:17px;color:var(--m700);font-weight:800;">③</div>
             <div style="flex:1;min-width:0;">
-              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:4px;">수학 · 함수 <span class="rb rl">저위험</span></div>
+              <div style="font-size:9px;color:var(--tm);display:flex;align-items:center;gap:3px;">수학 · 함수 <span class="rb rl">저위험</span></div>
               <div style="font-size:12px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">이차함수 최댓값 최솟값</div>
               <div style="font-size:9px;color:var(--tm);">서술형 · <span style="color:var(--m700);font-weight:700;">+10 XP</span></div>
             </div>
@@ -753,32 +801,31 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
           </div>
         </div>
         <div class="bnav">
-          <div class="ni act"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni act"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        변경 포인트:<br>
-        <ul>
-          <li><strong>GameBar 추가</strong> — 스트릭·XP게이지·HP 상시 노출</li>
-          <li><strong>마스코트 배너</strong> — 헤더 귀퉁이→풀 위드 배너로 격상</li>
-          <li><strong>리그 뱃지</strong> — 경쟁 동기 상시 노출 (잠금 상태로 미리 보기)</li>
-          <li><strong>퀘스트 카드</strong> — padding 16→10px, gap 10→5px, 위험도 배경색 추가</li>
-        </ul>
-      </div>
+      <div class="caption">변경 포인트:<ul>
+        <li><strong>GameBar</strong> — 스트릭·XP게이지·HP 민트-900 배경 상시 노출</li>
+        <li><strong>마스코트 배너</strong> — 귀퉁이 → 풀-위드 배너, 52px</li>
+        <li><strong>리그 배지</strong> — 민트-50 배경, 잠금 상태 미리 보기</li>
+        <li><strong>퀘스트 카드</strong> — padding 16→10px, gap 10→5px, 위험도 배경색</li>
+        <li><strong>전 아이콘</strong> — 플랫 라인 SVG, 민트 계열 단일</li>
+      </ul></div>
     </div>
   </div>
-
 </div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      ④ 플레이 결과
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="tab-result" class="tab-content">
-
-  <div class="sh">🎯 플레이 결과 / 보상 — Before · After</div>
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-check"/></svg>
+    플레이 결과 / 보상 — Before · After
+  </div>
   <div class="sh-sub">결과 화면이 "보상 순간"이 되어야 다시 하고 싶어진다.</div>
 
   <div class="pair">
@@ -786,13 +833,11 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-b">BEFORE — 현재</span></div>
       <div class="phone">
-        <div class="sbar"><span>9:41</span><span>🔋📶</span></div>
+        <div class="sbar"><span>9:41</span><span>배터리 신호</span></div>
         <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;gap:16px;">
-          <div style="font-size:48px;">✅</div>
+          <svg class="ic" width="52" height="52" style="color:var(--m500)"><use href="#ic-check"/></svg>
           <div style="font-size:20px;font-weight:800;color:var(--ts);">퀘스트 완료!</div>
-          <div style="font-size:14px;color:var(--tm);text-align:center;line-height:1.5;">
-            등차수열의 합 공식<br>을 회독했어요
-          </div>
+          <div style="font-size:14px;color:var(--tm);text-align:center;line-height:1.5;">등차수열의 합 공식을<br>회독했어요</div>
           <div style="background:var(--m50);border:1.5px solid var(--m300);border-radius:var(--rmd);padding:14px 24px;text-align:center;">
             <div style="font-size:12px;color:var(--tm);margin-bottom:4px;">획득 XP</div>
             <div style="font-size:28px;font-weight:900;color:var(--m700);">+20 XP</div>
@@ -802,115 +847,104 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
           <button style="background:none;border:none;color:var(--tm);font-size:13px;cursor:pointer;">홈으로</button>
         </div>
         <div class="bnav">
-          <div class="ni act"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni act"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        문제점:<br>
-        <ul>
-          <li>보상 순간의 드라마틱함 제로 — 텍스트와 체크박스뿐</li>
-          <li>마스코트 없음 — "앱이 나를 축하해주는" 느낌 없음</li>
-          <li>XP 숫자가 크지 않음 → 보상감 약함</li>
-          <li>스트릭 변화 안 보임</li>
-        </ul>
-      </div>
+      <div class="caption">문제점:<ul>
+        <li>보상 순간의 드라마틱함 없음 — 텍스트만</li>
+        <li>마스코트 없음 — "앱이 축하해주는" 느낌 없음</li>
+        <li>XP 숫자 작음 → 보상감 약함</li>
+      </ul></div>
     </div>
 
     <!-- AFTER -->
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-a">AFTER — 제안</span></div>
       <div class="phone">
-        <div class="sbar" style="background:var(--m700);color:rgba(255,255,255,.9);"><span>9:41</span><span>🔋📶</span></div>
+        <div class="sbar" style="background:var(--m900);color:rgba(255,255,255,.85);"><span>9:41</span><span>배터리 신호</span></div>
         <!-- CELEBRATION OVERLAY -->
         <div class="cel-ov" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:0;">
-          <!-- confetti dots -->
-          <div class="cel-dot" style="width:12px;height:12px;background:var(--xp);top:8%;left:10%;"></div>
-          <div class="cel-dot" style="width:8px;height:8px;background:#FF9999;top:6%;left:30%;"></div>
-          <div class="cel-dot" style="width:10px;height:10px;background:var(--m300);top:10%;right:20%;"></div>
-          <div class="cel-dot" style="width:6px;height:6px;background:white;top:15%;right:8%;"></div>
-          <div class="cel-dot" style="width:14px;height:14px;background:var(--xp);top:4%;right:35%;"></div>
+          <!-- mint confetti dots -->
+          <div class="cel-dot" style="width:11px;height:11px;background:var(--m300);top:7%;left:10%;"></div>
+          <div class="cel-dot" style="width:7px;height:7px;background:var(--m100);top:5%;left:30%;border-radius:2px;transform:rotate(20deg);"></div>
+          <div class="cel-dot" style="width:9px;height:9px;background:var(--m300);top:9%;right:20%;"></div>
+          <div class="cel-dot" style="width:6px;height:6px;background:rgba(255,255,255,.6);top:13%;right:8%;"></div>
+          <div class="cel-dot" style="width:13px;height:13px;background:var(--m300);top:4%;right:33%;border-radius:2px;transform:rotate(15deg);"></div>
+          <div class="cel-dot" style="width:8px;height:8px;background:var(--m100);top:18%;left:8%;border-radius:0;transform:rotate(45deg);"></div>
 
           <!-- streak badge -->
-          <div class="cel-st" style="margin-bottom:6px;margin-top:16px;">🔥 스트릭 <strong style="color:var(--xp);">8일째</strong> 유지!</div>
-
-          <!-- mascot big celebrate -->
-          <div style="display:flex;justify-content:center;margin-bottom:6px;">
-            <svg class="mxxl" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/><ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-              <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-              <circle cx="23" cy="18" r="4" fill="white"/>
-              <path d="M19.5 16.5 Q23 21 26.5 16.5" fill="#1A2A1A"/>
-              <circle cx="37" cy="18" r="4" fill="white"/>
-              <path d="M33.5 16.5 Q37 21 40.5 16.5" fill="#1A2A1A"/>
-              <path d="M23 29 Q30 35 37 29" stroke="#1A2A1A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-              <line x1="20" y1="29" x2="14" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="20" y1="31" x2="14" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-              <line x1="40" y1="29" x2="46" y2="27" stroke="#5A8EA8" stroke-width="1"/><line x1="40" y1="31" x2="46" y2="31" stroke="#5A8EA8" stroke-width="1"/>
-              <ellipse cx="9" cy="28" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-60 9 28)"/>
-              <ellipse cx="51" cy="28" rx="7" ry="4" fill="#6AA3BC" transform="rotate(60 51 28)"/>
-              <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <text x="1" y="14" font-size="8">⭐</text><text x="50" y="14" font-size="8">⭐</text>
-            </svg>
+          <div class="cel-st" style="margin-bottom:6px;margin-top:16px;">
+            <svg class="ic" width="13" height="14"><use href="#ic-flame"/></svg>
+            스트릭 <strong style="color:var(--m300);">8일째</strong> 유지!
           </div>
 
-          <div style="font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.3);margin-bottom:4px;">완벽해요! 🎉</div>
+          <!-- mascot xxl -->
+          <img src="../../mascot/main-alpha.png" class="mxxl" alt="축하 중인 순공이" style="margin-bottom:6px;">
+
+          <div style="font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.25);margin-bottom:4px;">완벽해요!</div>
           <div style="font-size:12px;color:rgba(255,255,255,.8);margin-bottom:10px;">등차수열의 합 공식 회독 완료</div>
 
-          <!-- XP earned big -->
-          <div class="cel-xp">+20 XP 획득!</div>
+          <!-- XP earned badge (mint-900 bg, white text) -->
+          <div class="cel-xp">
+            <div style="display:flex;align-items:center;gap:8px;justify-content:center;">
+              <svg class="ic" width="20" height="19" style="color:var(--m300)"><use href="#ic-star"/></svg>
+              +20 XP 획득!
+            </div>
+          </div>
 
           <!-- score breakdown -->
-          <div style="display:flex;gap:10px;margin-top:6px;">
-            <div style="background:rgba(255,255,255,.2);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <div style="background:rgba(255,255,255,.18);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
               <div style="font-size:18px;font-weight:900;color:#fff;">85%</div>
               <div style="font-size:10px;color:rgba(255,255,255,.7);">정확도</div>
             </div>
-            <div style="background:rgba(255,255,255,.2);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
+            <div style="background:rgba(255,255,255,.18);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
               <div style="font-size:18px;font-weight:900;color:#fff;">42초</div>
               <div style="font-size:10px;color:rgba(255,255,255,.7);">풀이시간</div>
             </div>
-            <div style="background:rgba(255,255,255,.2);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
-              <div style="font-size:18px;font-weight:900;color:var(--xp);">4/5</div>
+            <div style="background:rgba(255,255,255,.18);border-radius:var(--rmd);padding:8px 14px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:var(--m300);">4/5</div>
               <div style="font-size:10px;color:rgba(255,255,255,.7);">기억HP</div>
             </div>
           </div>
         </div>
-
         <!-- CTAs -->
         <div style="background:var(--bg-el);padding:12px 16px 6px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;">
           <button class="btn-play-large" style="padding:13px;font-size:14px;">다음 퀘스트 →</button>
-          <button style="background:none;border:none;color:var(--tm);font-size:12px;cursor:pointer;padding:6px;">결과 공유 · 홈으로</button>
+          <button style="background:none;border:none;color:var(--tm);font-size:12px;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;gap:5px;">
+            <svg class="ic" width="13" height="13"><use href="#ic-share"/></svg>
+            결과 공유 · 홈으로
+          </button>
         </div>
         <div class="bnav">
-          <div class="ni"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        변경 포인트:<br>
-        <ul>
-          <li><strong>전체 배경</strong> — 민트 그라데이션 오버레이로 "축하 공간" 전환</li>
-          <li><strong>순공이 대형 등장</strong> — 130px, 양 지느러미 올림, 별 이펙트</li>
-          <li><strong>XP 골드 배지</strong> — 크고 눈에 띄게. 보상감 극대화</li>
-          <li><strong>스트릭 배지</strong> — 상단에 즉시 표시. 연속 기록 확인 만족감</li>
-          <li><strong>컨페티 도트</strong> — 배경에 색점 배치. 애니메이션으로 강화 예정</li>
-        </ul>
-      </div>
+      <div class="caption">변경 포인트:<ul>
+        <li><strong>민트 그라데이션 오버레이</strong> — 900→700, "보상 공간" 전환</li>
+        <li><strong>순공이 130px</strong> — main-alpha.png (투명 배경), 중앙 배치</li>
+        <li><strong>XP 배지</strong> — 민트-900 배경 + 흰 텍스트 + 민트-300 별 아이콘</li>
+        <li><strong>민트 컨페티 도트</strong> — 300/100/반투명 흰색 배색</li>
+        <li><strong>플랫 아이콘</strong> — 전 아이콘 라인 SVG</li>
+      </ul></div>
     </div>
   </div>
-
 </div>
 
-<!-- ═══════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      ⑤ 오답노트
-═══════════════════════════════════════════════ -->
+══════════════════════════════════════════ -->
 <div id="tab-wrong" class="tab-content">
-
-  <div class="sh">📝 오답노트 — Before · After</div>
+  <div class="sh">
+    <svg class="ic" width="18" height="18"><use href="#ic-notes"/></svg>
+    오답노트 — Before · After
+  </div>
   <div class="sh-sub">위험도 색상 + 밀도 + 마스코트로 "여기서 만회해야 해" 긴박감 주입.</div>
 
   <div class="pair">
@@ -918,131 +952,122 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-b">BEFORE — 현재 (준비 중 플레이스홀더)</span></div>
       <div class="phone">
-        <div class="sbar"><span>9:41</span><span>🔋📶</span></div>
+        <div class="sbar"><span>9:41</span><span>배터리 신호</span></div>
         <div style="background:var(--bg-el);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);">
           <div style="font-size:18px;font-weight:800;color:var(--ts);">오답노트</div>
           <div style="font-size:13px;color:var(--tm);">총 24개</div>
         </div>
-        <!-- filter chips -->
         <div style="display:flex;gap:7px;padding:10px 16px;overflow-x:auto;border-bottom:1px solid var(--bd);">
-          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;background:var(--m500);color:#fff;font-size:12px;font-weight:600;">전체</div>
-          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;font-weight:500;color:var(--tm);">수학</div>
-          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;font-weight:500;color:var(--tm);">영어</div>
-          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;font-weight:500;color:var(--tm);">국어</div>
+          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;background:var(--m700);color:#fff;font-size:12px;font-weight:600;">전체</div>
+          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;color:var(--tm);">수학</div>
+          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;color:var(--tm);">영어</div>
+          <div style="flex-shrink:0;padding:5px 13px;border-radius:99px;border:1.5px solid var(--bd);font-size:12px;color:var(--tm);">국어</div>
         </div>
         <div class="ca" style="padding:16px;padding-bottom:80px;">
-          <!-- items loose -->
           <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);padding:14px;margin-bottom:10px;">
-            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;">수학 · 수열 <span class="rb rh">고위험</span></div>
+            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;display:flex;align-items:center;gap:4px;">수학 · 수열 <span class="rb rh">고위험</span></div>
             <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:6px;">등차수열의 합 공식</div>
             <div style="font-size:11px;color:var(--tm);">오답 횟수: 3회 · 최근 오답: 2일 전</div>
           </div>
           <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);padding:14px;margin-bottom:10px;">
-            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;">수학 · 로그 <span class="rb rm">중위험</span></div>
+            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;display:flex;align-items:center;gap:4px;">수학 · 로그 <span class="rb rm">중위험</span></div>
             <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:6px;">로그의 성질 풀이전략</div>
             <div style="font-size:11px;color:var(--tm);">오답 횟수: 2회 · 최근 오답: 1일 전</div>
           </div>
           <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rmd);padding:14px;margin-bottom:10px;">
-            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;">국어 · 비문학 <span class="rb rl">저위험</span></div>
+            <div style="font-size:10px;color:var(--tm);margin-bottom:4px;display:flex;align-items:center;gap:4px;">국어 · 비문학 <span class="rb rl">저위험</span></div>
             <div style="font-size:13px;font-weight:700;color:var(--ts);margin-bottom:6px;">주제 찾기 — 사회계열</div>
             <div style="font-size:11px;color:var(--tm);">오답 횟수: 1회 · 최근 오답: 5일 전</div>
           </div>
         </div>
         <div class="bnav">
-          <div class="ni"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni act"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni act"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        문제점:<br>
-        <ul>
-          <li>카드 모두 같은 흰 배경 — 위험도 긴박감 안 느껴짐</li>
-          <li>마스코트 없음 — "여기서 반드시 갚아야 해"는 분위기 없음</li>
-          <li>카드 패딩 과다, 화면에 2-3개밖에 안 보임</li>
-          <li>오답 횟수가 강조 안 됨 → 우선순위 불분명</li>
-        </ul>
-      </div>
+      <div class="caption">문제점:<ul>
+        <li>모든 카드 흰 배경 — 위험도 긴박감 없음</li>
+        <li>마스코트 없음 — "반드시 갚아야 해" 분위기 없음</li>
+        <li>카드 패딩 과다, 2-3개밖에 안 보임</li>
+      </ul></div>
     </div>
 
     <!-- AFTER -->
     <div class="pair-col">
       <div class="pair-label"><span class="tag tag-a">AFTER — 제안</span></div>
       <div class="phone">
-        <div class="sbar"><span>9:41</span><span>🔋📶</span></div>
+        <div class="sbar"><span>9:41</span><span>배터리 신호</span></div>
         <!-- GAME BAR -->
         <div class="aft-gbar">
-          <div class="gst"><span>🔥</span><span>7일</span></div>
+          <div class="gst">
+            <svg class="ic" width="13" height="14"><use href="#ic-flame"/></svg>
+            <span>7일</span>
+          </div>
           <div style="flex:1;display:flex;align-items:center;gap:5px;justify-content:center;">
             <div class="xp-tr"><div class="xp-fi"></div></div>
-            <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.85);">1,240 XP</span>
+            <svg class="ic" width="10" height="10" style="color:var(--m300)"><use href="#ic-star"/></svg>
+            <span style="font-size:10px;font-weight:700;color:var(--m300);">1,240</span>
           </div>
-          <div class="gst"><span style="color:#FF9999;">❤️</span><span>3</span></div>
+          <div class="gst">
+            <svg class="ic" width="13" height="13" style="color:var(--m300)"><use href="#ic-heart"/></svg>
+            <span>3</span>
+          </div>
         </div>
         <!-- header -->
         <div style="background:var(--bg-el);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd);">
           <div style="font-size:17px;font-weight:800;color:var(--ts);">오답노트</div>
           <div style="display:flex;align-items:center;gap:6px;">
             <span style="font-size:11px;color:var(--tm);">24개</span>
-            <div style="background:var(--bg-sun);border-radius:var(--rsm);padding:4px 8px;font-size:11px;color:var(--tm);">정렬 ↕</div>
+            <div style="background:var(--bg-sun);border-radius:var(--rsm);padding:4px 7px;display:flex;align-items:center;gap:4px;">
+              <svg class="ic" width="13" height="11" style="color:var(--tm)"><use href="#ic-sort"/></svg>
+              <span style="font-size:10px;color:var(--tm);">정렬</span>
+            </div>
           </div>
         </div>
-        <!-- filter chips dense -->
+        <!-- filter chips -->
         <div style="display:flex;gap:5px;padding:7px 12px;overflow-x:auto;border-bottom:1px solid var(--bd);">
-          <div style="flex-shrink:0;padding:4px 11px;border-radius:99px;background:var(--m500);color:#fff;font-size:11px;font-weight:700;">전체 24</div>
-          <div style="flex-shrink:0;padding:4px 11px;border-radius:99px;border:1.5px solid var(--rh);background:#FFF5F5;font-size:11px;font-weight:600;color:#9A2020;">고위험 8</div>
-          <div style="flex-shrink:0;padding:4px 11px;border-radius:99px;border:1.5px solid var(--rm);background:#FFFBF5;font-size:11px;font-weight:600;color:#7A4A10;">중위험 11</div>
-          <div style="flex-shrink:0;padding:4px 11px;border-radius:99px;border:1.5px solid var(--bd);font-size:11px;font-weight:500;color:var(--tm);">저위험 5</div>
+          <div style="flex-shrink:0;padding:4px 10px;border-radius:99px;background:var(--m900);color:#fff;font-size:11px;font-weight:700;">전체 24</div>
+          <div style="flex-shrink:0;padding:4px 10px;border-radius:99px;border:1.5px solid var(--rh);background:#FFF5F5;font-size:11px;font-weight:600;color:#9A2020;">고위험 8</div>
+          <div style="flex-shrink:0;padding:4px 10px;border-radius:99px;border:1.5px solid var(--rm);background:#FFFBF5;font-size:11px;font-weight:600;color:#7A4A10;">중위험 11</div>
+          <div style="flex-shrink:0;padding:4px 10px;border-radius:99px;border:1.5px solid var(--bd);font-size:11px;font-weight:500;color:var(--tm);">저위험 5</div>
         </div>
         <div class="ca" style="padding-bottom:70px;">
-          <!-- SECTION: 고위험 -->
+          <!-- 고위험 section -->
           <div style="padding:7px 12px 4px;display:flex;align-items:center;gap:7px;">
-            <svg class="msm" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="30" cy="38" rx="19" ry="15" fill="#7CACC4"/><ellipse cx="30" cy="22" rx="17" ry="15" fill="#7CACC4"/>
-              <ellipse cx="30" cy="31" rx="10" ry="7" fill="#8EBDD4"/>
-              <circle cx="23" cy="18" r="4" fill="white"/><circle cx="24.5" cy="18" r="2.5" fill="#1A2A1A"/>
-              <circle cx="37" cy="18" r="4" fill="white"/><circle cx="38.5" cy="18" r="2.5" fill="#1A2A1A"/>
-              <path d="M20 14 Q23 12 26 14" stroke="#1A2A1A" stroke-width="1.3" fill="none"/>
-              <path d="M34 14 Q37 12 40 14" stroke="#1A2A1A" stroke-width="1.3" fill="none"/>
-              <path d="M25 30 Q30 32 35 30" stroke="#1A2A1A" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-              <ellipse cx="10" cy="32" rx="7" ry="4" fill="#6AA3BC" transform="rotate(-50 10 32)"/>
-              <ellipse cx="49" cy="40" rx="7" ry="4" fill="#6AA3BC" transform="rotate(10 49 40)"/>
-              <path d="M18 50 Q30 58 42 50" stroke="#6AA3BC" stroke-width="5" fill="none" stroke-linecap="round"/>
-              <text x="38" y="50" font-size="9">📖</text>
-            </svg>
+            <img src="../../mascot/repeat_normal.png" class="msm" alt="집중 중인 순공이">
             <div>
-              <div style="font-size:11px;font-weight:800;color:#9A2020;">🔴 고위험 — 먼저 갚아요!</div>
+              <div style="font-size:11px;font-weight:800;color:#9A2020;">고위험 — 먼저 갚아요!</div>
               <div style="font-size:10px;color:var(--tm);">8개 · 기억HP 소모 위험</div>
             </div>
           </div>
-          <!-- high risk items dense -->
           <div style="padding:0 10px;">
             <div style="background:#FFF5F5;border:1.5px solid var(--rh);border-radius:var(--rmd);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
-              <div style="background:var(--rh);border-radius:var(--rsm);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a2020;flex-shrink:0;">3</div>
+              <div style="background:var(--rh);border-radius:var(--rsm);width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a2020;flex-shrink:0;">3</div>
               <div style="flex:1;min-width:0;">
                 <div style="font-size:11px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">등차수열의 합 공식</div>
                 <div style="font-size:9px;color:var(--tm);">수학 · 수열 · 오답 3회 · 2일 전</div>
               </div>
-              <button class="btn-play" style="font-size:10px;padding:4px 9px;background:#E29B9B;color:#7a2020;">회독</button>
+              <button class="btn-play" style="font-size:10px;padding:4px 9px;background:var(--rh);color:#7a2020;">회독</button>
             </div>
             <div style="background:#FFF5F5;border:1.5px solid var(--rh);border-radius:var(--rmd);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
-              <div style="background:var(--rh);border-radius:var(--rsm);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a2020;flex-shrink:0;">2</div>
+              <div style="background:var(--rh);border-radius:var(--rsm);width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a2020;flex-shrink:0;">2</div>
               <div style="flex:1;min-width:0;">
                 <div style="font-size:11px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">극한값 계산 — ∞/∞ 형태</div>
                 <div style="font-size:9px;color:var(--tm);">수학 · 극한 · 오답 2회 · 1일 전</div>
               </div>
-              <button class="btn-play" style="font-size:10px;padding:4px 9px;background:#E29B9B;color:#7a2020;">회독</button>
+              <button class="btn-play" style="font-size:10px;padding:4px 9px;background:var(--rh);color:#7a2020;">회독</button>
             </div>
           </div>
-          <!-- SECTION: 중위험 -->
-          <div style="padding:7px 12px 4px;display:flex;align-items:center;gap:7px;">
-            <div style="font-size:11px;font-weight:700;color:#7A4A10;">🟡 중위험</div>
+          <!-- 중위험 section -->
+          <div style="padding:7px 12px 4px;display:flex;align-items:center;gap:6px;">
+            <div style="font-size:11px;font-weight:700;color:#7A4A10;">중위험</div>
             <div style="font-size:10px;color:var(--tm);">11개</div>
           </div>
           <div style="padding:0 10px;">
             <div style="background:#FFFBF5;border:1.5px solid var(--rm);border-radius:var(--rmd);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
-              <div style="background:var(--rm);border-radius:var(--rsm);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">2</div>
+              <div style="background:var(--rm);border-radius:var(--rsm);width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">2</div>
               <div style="flex:1;min-width:0;">
                 <div style="font-size:11px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">로그의 성질 풀이전략</div>
                 <div style="font-size:9px;color:var(--tm);">수학 · 로그 · 오답 2회 · 1일 전</div>
@@ -1050,7 +1075,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
               <button class="btn-play" style="font-size:10px;padding:4px 9px;background:var(--rm);color:#7a4a10;">회독</button>
             </div>
             <div style="background:#FFFBF5;border:1.5px solid var(--rm);border-radius:var(--rmd);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
-              <div style="background:var(--rm);border-radius:var(--rsm);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">2</div>
+              <div style="background:var(--rm);border-radius:var(--rsm);width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">2</div>
               <div style="flex:1;min-width:0;">
                 <div style="font-size:11px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">수열의 귀납적 정의</div>
                 <div style="font-size:9px;color:var(--tm);">수학 · 수열 · 오답 2회 · 3일 전</div>
@@ -1058,7 +1083,7 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
               <button class="btn-play" style="font-size:10px;padding:4px 9px;background:var(--rm);color:#7a4a10;">회독</button>
             </div>
             <div style="background:#FFFBF5;border:1.5px solid var(--rm);border-radius:var(--rmd);padding:9px 11px;margin-bottom:5px;display:flex;align-items:center;gap:8px;">
-              <div style="background:var(--rm);border-radius:var(--rsm);width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">1</div>
+              <div style="background:var(--rm);border-radius:var(--rsm);width:27px;height:27px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#7a4a10;flex-shrink:0;">1</div>
               <div style="flex:1;min-width:0;">
                 <div style="font-size:11px;font-weight:700;color:var(--ts);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">영어 빈칸추론 — 주제 파악형</div>
                 <div style="font-size:9px;color:var(--tm);">영어 · 독해 · 오답 1회 · 4일 전</div>
@@ -1068,33 +1093,28 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
           </div>
         </div>
         <div class="bnav">
-          <div class="ni"><div class="ni-ic">🏠</div><div class="ni-lb">홈</div></div>
-          <div class="ni"><div class="ni-ic">📅</div><div class="ni-lb">캘린더</div></div>
-          <div class="ni act"><div class="ni-ic">📝</div><div class="ni-lb">오답노트</div></div>
-          <div class="ni"><div class="ni-ic">📊</div><div class="ni-lb">그래프</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-home"/></svg></div><div class="ni-lb">홈</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-cal"/></svg></div><div class="ni-lb">캘린더</div></div>
+          <div class="ni act"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-notes"/></svg></div><div class="ni-lb">오답노트</div></div>
+          <div class="ni"><div class="ni-ic"><svg width="20" height="20"><use href="#ic-chart"/></svg></div><div class="ni-lb">그래프</div></div>
         </div>
       </div>
-      <div class="caption">
-        변경 포인트:<br>
-        <ul>
-          <li><strong>GameBar 상단 고정</strong> — 모든 화면 일관 적용</li>
-          <li><strong>필터 칩에 위험도 수량</strong> 표시 — "고위험 8" 즉시 파악</li>
-          <li><strong>섹션 상단 마스코트</strong> — 집중 상태, "먼저 갚아요!" 문구</li>
-          <li><strong>오답 횟수 숫자 배지</strong> — 크고 색상 강조. 우선순위 즉각 파악</li>
-          <li><strong>카드 패딩 14→9px</strong> — 화면당 카드 5개+ 표시</li>
-          <li><strong>위험도별 배경/테두리 색</strong> — 빨강/주황/흰색 구간 분리</li>
-        </ul>
-      </div>
+      <div class="caption">변경 포인트:<ul>
+        <li><strong>GameBar</strong> — 모든 화면 일관 적용</li>
+        <li><strong>필터 칩</strong> — 위험도별 수량 표시</li>
+        <li><strong>마스코트</strong> — repeat_normal.png, "먼저 갚아요!" 문구</li>
+        <li><strong>오답 횟수 배지</strong> — 위험도 배경색 숫자 강조</li>
+        <li><strong>카드 패딩</strong> — 14→9px, 화면당 5개+ 표시</li>
+      </ul></div>
     </div>
   </div>
-
 </div>
 
 <script>
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
   btn.classList.add('active');
 }
 </script>
