@@ -103,6 +103,21 @@ if [ -n "$ENV_FILES" ]; then
 fi
 
 # ─────────────────────────────────────────────
+# 4.5 이미지 폐기어 OCR 검사 (텍스트 grep 사각 보강, SOO-22)
+# ─────────────────────────────────────────────
+# 텍스트 검사는 PNG/JPG 안에 박힌 글자를 못 본다(Day7 0건 오판 원인).
+# staged된 시각 자산 이미지만 OCR로 스캔. tesseract/kor 미설치 시 graceful skip.
+ROOT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+if [ -x "$ROOT_DIR/scripts/check-image-deprecated.sh" ]; then
+    if ! bash "$ROOT_DIR/scripts/check-image-deprecated.sh" --staged; then
+        echo "${RED}✗ 이미지 폐기어 검출 — commit 차단${RST}"
+        echo "  근거: CLAUDE.md §8 폐기 정책 (시각 자산 회귀)"
+        echo "  의도된 변경이면: SKIP_PRECOMMIT=1 git commit ..."
+        exit 1
+    fi
+fi
+
+# ─────────────────────────────────────────────
 # 5. 최종 판정
 # ─────────────────────────────────────────────
 if [ $VIOLATIONS -gt 0 ]; then
@@ -112,5 +127,5 @@ if [ $VIOLATIONS -gt 0 ]; then
     exit 1
 fi
 
-echo "${GRN}✓ pre-commit 통과${RST} (패턴 ${#PATTERNS[@]}종 + 계정 + .env 검사)"
+echo "${GRN}✓ pre-commit 통과${RST} (패턴 ${#PATTERNS[@]}종 + 이미지 OCR + 계정 + .env 검사)"
 exit 0
