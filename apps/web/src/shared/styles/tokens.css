@@ -33,6 +33,10 @@
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
+    /* State backgrounds (soft tint) */
+    --color-risk-bg: #FCECEA;
+    --color-info-bg: #E8F2FB;
+
     /* Scrim / Overlay (modal·sheet backdrop) */
     --color-scrim: rgba(0, 0, 0, 0.8);
 

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOO-23 · 개인 학습 현황판 목업</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+  <style>
+    /* ── 디자인 토큰 (tokens.css 그대로 복사, 하드코딩 없음) ── */
+    :root {
+      --color-bg: #F8FBF7;
+      --color-bg-elevated: #FFFFFF;
+      --color-bg-sunken: #F1F5EF;
+      --color-mint-50: #EFF9EF;
+      --color-mint-100: #D6F0D6;
+      --color-mint-300: #A8DDA8;
+      --color-mint-500: #7CC97C;
+      --color-mint-700: #4FA84F;
+      --color-mint-900: #2E6B2E;
+      --color-risk-low: #A0BFDC;
+      --color-risk-mid: #E6B788;
+      --color-risk-high: #E29B9B;
+      --color-xp: #F2C94C;
+      --color-xp-soft: #FBE7A6;
+      --color-epic-bg: #F5E0FC;
+      --color-epic-text: #8B5CF6;
+      --color-text-strong: #1A2A1A;
+      --color-text-default: #2D3F2D;
+      --color-text-muted: #6B7B6B;
+      --color-text-inverse: #FFFFFF;
+      --color-text-on-warm: #3A2A10;
+      --color-scrim: rgba(0, 0, 0, 0.8);
+      --color-risk-bg: #FCECEA;
+      --color-info-bg: #E8F2FB;
+      --gradient-quest-map: linear-gradient(to bottom right, #EFF9EF, #F1F5EF);
+      --color-border-default: #E1ECDF;
+      --color-border-strong: #C5D9C2;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --shadow-card: 0 2px 8px rgba(46, 107, 46, 0.06);
+      --shadow-elevated: 0 8px 24px rgba(46, 107, 46, 0.10);
+      --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+      --duration-fast: 160ms;
+      --duration-mid: 240ms;
+      --duration-slow: 380ms;
+      --font-display: "Pretendard", system-ui, sans-serif;
+      --font-body: "Pretendard", system-ui, sans-serif;
+    }
+
+    /* ── 리셋 & 베이스 ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text-default);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── 레이아웃 ── */
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-4) var(--space-12);
+    }
+
+    /* ── 헤더 ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-5) 0 var(--space-6);
+    }
+    .mascot-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-pill);
+      background: var(--color-mint-100);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mascot-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .header-text { flex: 1; }
+    .header-greeting {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-text-strong);
+      line-height: 1.3;
+    }
+    .header-date {
+      font-size: 13px;
+      color: var(--color-text-muted);
+      margin-top: var(--space-1);
+    }
+
+    /* ── 카드 그리드 ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    @media (min-width: 480px) {
+      .cards-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+    }
+
+    /* ── 카드 공통 ── */
+    .card {
+      background: var(--color-bg-elevated);
+      border: 1.5px solid var(--color-border-default);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      cursor: pointer;
+      transition: box-shadow var(--duration-fast) var(--ease-out-soft),
+                  transform var(--duration-fast) var(--ease-out-soft);
+    }
+    .card:hover {
+      box-shadow: var(--shadow-elevated);
+      transform: translateY(-2px);
+    }
+    .card:active { transform: translateY(0); }
+
+    /* 카드 — 오늘 달성 강조 변형 */
+    .card.achieved {
+      border-color: var(--color-mint-500);
+      background: var(--color-mint-50);
+    }
+
+    /* 카드 — 위험 상태 변형 */
+    .card.danger {
+      border-color: var(--color-risk-high);
+    }
+
+    /* ── 카드 내부 요소 ── */
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card-icon svg { width: 20px; height: 20px; }
+
+    .card-icon.mint  { background: var(--color-mint-100); }
+    .card-icon.warm  { background: var(--color-xp-soft); }
+    .card-icon.risk  { background: var(--color-risk-bg); }
+    .card-icon.info  { background: var(--color-info-bg); }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .card-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--color-text-strong);
+      line-height: 1.1;
+    }
+    .card-value.mint { color: var(--color-mint-700); }
+    .card-value.risk { color: var(--color-risk-high); }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      line-height: 1.4;
+    }
+    .card-sub.achieved { color: var(--color-mint-700); font-weight: 600; }
+    .card-sub.danger   { color: var(--color-risk-high); font-weight: 600; }
+
+    /* ── 진행 바 ── */
+    .progress-wrap {
+      height: 6px;
+      background: var(--color-bg-sunken);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: var(--space-1);
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--color-mint-500);
+      border-radius: var(--radius-pill);
+      transition: width var(--duration-slow) var(--ease-out-soft);
+    }
+    .progress-fill.done { background: var(--color-mint-700); }
+
+    /* ── HP 도트 ── */
+    .hp-dots {
+      display: flex;
+      gap: var(--space-1);
+      align-items: center;
+      margin-top: var(--space-1);
+    }
+    .hp-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--color-border-strong);
+      background: var(--color-bg-sunken);
+      transition: background var(--duration-fast);
+    }
+    .hp-dot.filled-5 { background: var(--color-mint-500); border-color: var(--color-mint-700); }
+    .hp-dot.filled-4 { background: var(--color-mint-300); border-color: var(--color-mint-500); }
+    .hp-dot.filled-3 { background: var(--color-risk-mid); border-color: var(--color-risk-mid); }
+    .hp-dot.filled-2 { background: var(--color-risk-high); border-color: var(--color-risk-high); }
+    .hp-dot.filled-1 {
+      background: var(--color-risk-high);
+      border-color: var(--color-risk-high);
+      animation: hp-blink 0.9s ease-in-out infinite;
+    }
+    @keyframes hp-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    /* ── 뱃지 칩 ── */
+    .badge-chips { display: flex; flex-wrap: wrap; gap: var(--space-1); margin-top: var(--space-1); }
+    .badge-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      line-height: 1.6;
+    }
+    .badge-chip.common    { background: var(--color-mint-100); color: var(--color-mint-900); }
+    .badge-chip.rare      { background: var(--color-mint-50); color: var(--color-mint-700); border: 1px solid var(--color-mint-300); }
+    .badge-chip.epic      { background: var(--color-epic-bg); color: var(--color-epic-text); }
+    .badge-chip.legendary { background: var(--color-xp-soft); color: var(--color-text-on-warm); border: 1px solid var(--color-xp); }
+
+    /* ── 등급 배지 ── */
+    .rank-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-xp-soft);
+      color: var(--color-text-on-warm);
+      border: 1px solid var(--color-xp);
+    }
+
+    /* ── 빠른 액션 버튼 ── */
+    .action-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      width: 100%;
+      margin-top: var(--space-6);
+      padding: var(--space-4) var(--space-6);
+      background: var(--color-mint-500);
+      color: var(--color-text-inverse);
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      border: none;
+      border-radius: var(--radius-xl);
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(76, 168, 79, 0.28);
+      transition: background var(--duration-fast) var(--ease-out-soft),
+                  transform var(--duration-fast) var(--ease-out-soft),
+                  box-shadow var(--duration-fast) var(--ease-out-soft);
+    }
+    .action-btn:hover {
+      background: var(--color-mint-700);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(76, 168, 79, 0.36);
+    }
+    .action-btn:active { transform: translateY(0); }
+    .action-btn svg { width: 20px; height: 20px; }
+
+    /* ── 섹션 구분선 ── */
+    .section-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-3);
+      margin-top: var(--space-5);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── 빈 상태 ── */
+    .empty-state {
+      font-size: 12px;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* ── 스켈레톤 (로딩 상태 예시) ── */
+    .skeleton {
+      background: var(--color-bg-sunken);
+      border-radius: var(--radius-sm);
+      animation: skeleton-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.45; } }
+
+    /* ── 상태 탭 (데모 전환) ── */
+    .demo-tabs {
+      display: flex;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+    }
+    .demo-tab {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--color-border-strong);
+      background: var(--color-bg-elevated);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all var(--duration-fast);
+    }
+    .demo-tab.active {
+      background: var(--color-mint-500);
+      border-color: var(--color-mint-500);
+      color: var(--color-text-inverse);
+    }
+
+    /* ── 뷰 패널 ── */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ── 에러 상태 ── */
+    .error-state {
+      font-size: 12px;
+      color: var(--color-risk-high);
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .error-state svg { width: 13px; height: 13px; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- 헤더 -->
+    <header class="header" role="banner">
+      <div class="mascot-circle" role="img" aria-label="순공이 응원">
+        <!-- 실제 Next.js 앱에서는 /mascot/main.png 사용 -->
+        <img src="../../../mascot/main.png" alt="" onerror="this.style.display='none'" />
+      </div>
+      <div class="header-text">
+        <div class="header-greeting">안녕하세요, 민준님! 👋</div>
+        <div class="header-date">2026년 6월 9일 월요일</div>
+      </div>
+    </header>
+
+    <!-- 데모 상태 전환 탭 (목업 전용) -->
+    <div class="demo-tabs" role="tablist" aria-label="목업 상태 전환">
+      <button class="demo-tab active" role="tab" aria-selected="true" onclick="switchView('normal')">일반 상태</button>
+      <button class="demo-tab" role="tab" aria-selected="false" onclick="switchView('achieved')">오늘 달성</button>
+      <button class="demo-tab" role="tab" aria-selected="false" onclick="switchView('danger')">HP 위험</button>
+      <button class="demo-tab" role="tab" aria-selected="false" onclick="switchView('empty')">빈 상태</button>
+      <button class="demo-tab" role="tab" aria-selected="false" onclick="switchView('loading')">로딩</button>
+    </div>
+
+    <!-- ── 일반 상태 ── -->
+    <div id="view-normal" class="view active" aria-label="일반 상태">
+      <p class="section-label">오늘의 현황</p>
+      <div class="cards-grid">
+
+        <!-- 카드 1: 스트릭 -->
+        <article class="card" tabindex="0" role="button" aria-label="스트릭 — 7일, 오늘 학습 완료">
+          <div class="card-icon mint" aria-hidden="true">
+            <!-- 불꽃 SVG (flat) -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C12 2 7 7 7 12a5 5 0 0010 0c0-2.5-2-5-2-5s-.5 2-2 2c-1 0-2-1-2-3z" fill="var(--color-mint-700)" opacity="0.7"/>
+              <path d="M12 8c0 0 3 3 3 6a3 3 0 01-6 0c0-2 1.5-3.5 1.5-3.5S11 12 12 12c.7 0 1-.7 1-1.5z" fill="var(--color-mint-500)"/>
+            </svg>
+          </div>
+          <div class="card-label">스트릭</div>
+          <div class="card-value mint">7일</div>
+          <div class="card-sub">연속 학습 중 🔥</div>
+        </article>
+
+        <!-- 카드 2: 오늘 진척 -->
+        <article class="card" tabindex="0" role="button" aria-label="오늘 진척 — 3 / 5 완료">
+          <div class="card-icon mint" aria-hidden="true">
+            <!-- 체크리스트 SVG -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="5" width="16" height="14" rx="3" stroke="var(--color-mint-700)" stroke-width="1.8" fill="none"/>
+              <path d="M8 10l2.5 2.5L16 8" stroke="var(--color-mint-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 15h5" stroke="var(--color-mint-300)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">오늘 진척</div>
+          <div class="card-value mint">3<span style="font-size:16px;font-weight:600;color:var(--color-text-muted)"> / 5</span></div>
+          <div class="progress-wrap" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-fill" style="width: 60%"></div>
+          </div>
+          <div class="card-sub">남은 2개 · 도전하기 →</div>
+        </article>
+
+        <!-- 카드 3: 기억 HP -->
+        <article class="card" tabindex="0" role="button" aria-label="기억 HP — 3 / 5, 위험 항목 4개">
+          <div class="card-icon mint" aria-hidden="true">
+            <!-- 방패 SVG -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" fill="var(--color-mint-100)" stroke="var(--color-mint-700)" stroke-width="1.8"/>
+              <path d="M9 12l2 2 4-4" stroke="var(--color-mint-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-label">기억 HP</div>
+          <div class="card-value">3<span style="font-size:14px;font-weight:500;color:var(--color-text-muted)">/5</span></div>
+          <div class="hp-dots" role="meter" aria-valuenow="3" aria-valuemin="0" aria-valuemax="5" aria-label="기억 HP 3/5">
+            <div class="hp-dot filled-3" title="HP 1"></div>
+            <div class="hp-dot filled-3" title="HP 2"></div>
+            <div class="hp-dot filled-3" title="HP 3"></div>
+            <div class="hp-dot" title="HP 4 (빈칸)"></div>
+            <div class="hp-dot" title="HP 5 (빈칸)"></div>
+          </div>
+          <div class="card-sub">까먹기 직전 4개 · D-2 복습</div>
+        </article>
+
+        <!-- 카드 4: 등급/뱃지 -->
+        <article class="card" tabindex="0" role="button" aria-label="등급 순공러, 뱃지 2개">
+          <div class="card-icon warm" aria-hidden="true">
+            <!-- 메달 SVG -->
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="14" r="6" fill="var(--color-xp-soft)" stroke="var(--color-xp)" stroke-width="1.8"/>
+              <path d="M9 7l-2-4h10l-2 4" stroke="var(--color-xp)" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M10 7h4" stroke="var(--color-xp)" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M12 11v3l1.5 1.5" stroke="var(--color-text-on-warm)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-label">등급</div>
+          <div class="card-value" style="font-size:20px;">순공러</div>
+          <div class="badge-chips" aria-label="최근 획득 뱃지">
+            <span class="badge-chip rare">streak_7 · 희귀</span>
+            <span class="badge-chip common">첫 회독 · 일반</span>
+          </div>
+          <div class="card-sub" style="margin-top:var(--space-1)">총 620 XP</div>
+        </article>
+
+      </div>
+
+      <!-- 빠른 액션 버튼 -->
+      <button class="action-btn" type="button" aria-label="오늘 퀘스트 시작하기">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        오늘 퀘스트 시작하기
+      </button>
+    </div>
+
+    <!-- ── 오늘 달성 상태 ── -->
+    <div id="view-achieved" class="view" aria-label="오늘 달성 상태">
+      <p class="section-label">오늘의 현황</p>
+      <div class="cards-grid">
+        <article class="card achieved" tabindex="0" aria-label="스트릭 — 8일, 오늘 달성!">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C12 2 7 7 7 12a5 5 0 0010 0c0-2.5-2-5-2-5s-.5 2-2 2c-1 0-2-1-2-3z" fill="var(--color-mint-700)" opacity="0.7"/>
+              <path d="M12 8c0 0 3 3 3 6a3 3 0 01-6 0c0-2 1.5-3.5 1.5-3.5S11 12 12 12c.7 0 1-.7 1-1.5z" fill="var(--color-mint-500)"/>
+            </svg>
+          </div>
+          <div class="card-label">스트릭</div>
+          <div class="card-value mint">8일</div>
+          <div class="card-sub achieved">오늘도 달성! 🎉</div>
+        </article>
+
+        <article class="card achieved" tabindex="0" aria-label="오늘 진척 — 5 / 5 완료">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="5" width="16" height="14" rx="3" stroke="var(--color-mint-700)" stroke-width="1.8" fill="none"/>
+              <path d="M8 10l2.5 2.5L16 8" stroke="var(--color-mint-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-label">오늘 진척</div>
+          <div class="card-value mint">5<span style="font-size:16px;font-weight:600;color:var(--color-text-muted)"> / 5</span></div>
+          <div class="progress-wrap">
+            <div class="progress-fill done" style="width:100%"></div>
+          </div>
+          <div class="card-sub achieved">오늘 목표 달성! 🎉</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" fill="var(--color-mint-100)" stroke="var(--color-mint-700)" stroke-width="1.8"/>
+              <path d="M9 12l2 2 4-4" stroke="var(--color-mint-700)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-label">기억 HP</div>
+          <div class="card-value">4<span style="font-size:14px;font-weight:500;color:var(--color-text-muted)">/5</span></div>
+          <div class="hp-dots">
+            <div class="hp-dot filled-4"></div>
+            <div class="hp-dot filled-4"></div>
+            <div class="hp-dot filled-4"></div>
+            <div class="hp-dot filled-4"></div>
+            <div class="hp-dot"></div>
+          </div>
+          <div class="card-sub">까먹기 직전 1개 · D-5 복습</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon warm" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="14" r="6" fill="var(--color-xp-soft)" stroke="var(--color-xp)" stroke-width="1.8"/>
+              <path d="M9 7l-2-4h10l-2 4" stroke="var(--color-xp)" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M10 7h4" stroke="var(--color-xp)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">등급</div>
+          <div class="card-value" style="font-size:20px;">순공러</div>
+          <div class="badge-chips">
+            <span class="badge-chip rare">streak_7 · 희귀</span>
+          </div>
+          <div class="card-sub" style="margin-top:var(--space-1)">총 640 XP (+20 오늘)</div>
+        </article>
+      </div>
+
+      <button class="action-btn" type="button" style="background:var(--color-mint-700);">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        오늘 목표 달성 완료!
+      </button>
+    </div>
+
+    <!-- ── HP 위험 상태 ── -->
+    <div id="view-danger" class="view" aria-label="HP 위험 상태">
+      <p class="section-label">오늘의 현황</p>
+      <div class="cards-grid">
+        <article class="card" tabindex="0">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C12 2 7 7 7 12a5 5 0 0010 0c0-2.5-2-5-2-5s-.5 2-2 2c-1 0-2-1-2-3z" fill="var(--color-mint-700)" opacity="0.7"/>
+              <path d="M12 8c0 0 3 3 3 6a3 3 0 01-6 0c0-2 1.5-3.5 1.5-3.5S11 12 12 12c.7 0 1-.7 1-1.5z" fill="var(--color-mint-500)"/>
+            </svg>
+          </div>
+          <div class="card-label">스트릭</div>
+          <div class="card-value mint">3일</div>
+          <div class="card-sub">연속 학습 중</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="5" width="16" height="14" rx="3" stroke="var(--color-mint-700)" stroke-width="1.8" fill="none"/>
+              <path d="M8 15h8M8 10h5" stroke="var(--color-mint-300)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">오늘 진척</div>
+          <div class="card-value mint">1<span style="font-size:16px;font-weight:600;color:var(--color-text-muted)"> / 5</span></div>
+          <div class="progress-wrap">
+            <div class="progress-fill" style="width:20%"></div>
+          </div>
+          <div class="card-sub">남은 4개 · 도전하기 →</div>
+        </article>
+
+        <!-- HP 위험 카드 강조 -->
+        <article class="card danger" tabindex="0" aria-label="기억 HP 위험 — 1 / 5">
+          <div class="card-icon risk" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" fill="var(--color-risk-bg)" stroke="var(--color-risk-high)" stroke-width="1.8"/>
+              <path d="M12 9v4M12 15v.5" stroke="var(--color-risk-high)" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">기억 HP</div>
+          <div class="card-value risk">1<span style="font-size:14px;font-weight:500;color:var(--color-text-muted)">/5</span></div>
+          <div class="hp-dots">
+            <div class="hp-dot filled-1" title="HP 1 (위험, 깜빡임)"></div>
+            <div class="hp-dot"></div>
+            <div class="hp-dot"></div>
+            <div class="hp-dot"></div>
+            <div class="hp-dot"></div>
+          </div>
+          <div class="card-sub danger">위험! 복습 즉시 필요 ⚠️</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon warm" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="14" r="6" fill="var(--color-xp-soft)" stroke="var(--color-xp)" stroke-width="1.8"/>
+              <path d="M9 7l-2-4h10l-2 4" stroke="var(--color-xp)" stroke-width="1.8" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="card-label">등급</div>
+          <div class="card-value" style="font-size:20px;">순공입문</div>
+          <div class="badge-chips">
+            <span class="badge-chip common">첫 회독 · 일반</span>
+          </div>
+          <div class="card-sub" style="margin-top:var(--space-1)">총 80 XP</div>
+        </article>
+      </div>
+
+      <button class="action-btn" type="button" style="background:var(--color-risk-high);box-shadow:0 4px 16px rgba(226,155,155,0.4);">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" stroke="currentColor" stroke-width="2" fill="none"/>
+        </svg>
+        망각방어 지금 하기
+      </button>
+    </div>
+
+    <!-- ── 빈 상태 ── -->
+    <div id="view-empty" class="view" aria-label="빈 상태">
+      <p class="section-label">오늘의 현황</p>
+      <div class="cards-grid">
+        <article class="card" tabindex="0">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C12 2 7 7 7 12a5 5 0 0010 0c0-2.5-2-5-2-5s-.5 2-2 2c-1 0-2-1-2-3z" fill="var(--color-mint-300)" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="card-label">스트릭</div>
+          <div class="card-value" style="font-size:18px;color:var(--color-text-muted);">0일</div>
+          <div class="card-sub">첫 도전, 오늘부터 시작!</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon mint" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <rect x="4" y="5" width="16" height="14" rx="3" stroke="var(--color-border-strong)" stroke-width="1.8" fill="none"/>
+              <path d="M8 15h8M8 10h5" stroke="var(--color-border-default)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="card-label">오늘 진척</div>
+          <div class="card-value" style="font-size:16px;color:var(--color-text-muted);">—</div>
+          <div class="card-sub empty-state">오늘 퀘스트가 없어요</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon info" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" fill="var(--color-info-bg)" stroke="var(--color-risk-low)" stroke-width="1.8"/>
+            </svg>
+          </div>
+          <div class="card-label">기억 HP</div>
+          <div class="card-value" style="color:var(--color-text-muted);">—</div>
+          <div class="card-sub empty-state">아직 까먹은 항목이 없어요 👍</div>
+        </article>
+
+        <article class="card" tabindex="0">
+          <div class="card-icon warm" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="14" r="6" fill="var(--color-xp-soft)" stroke="var(--color-xp)" stroke-width="1.8" opacity="0.5"/>
+            </svg>
+          </div>
+          <div class="card-label">등급</div>
+          <div class="card-value" style="font-size:18px;color:var(--color-text-muted);">순공입문</div>
+          <div class="card-sub empty-state">아직 뱃지가 없어요</div>
+        </article>
+      </div>
+
+      <button class="action-btn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        첫 퀘스트 시작하기
+      </button>
+    </div>
+
+    <!-- ── 로딩 상태 ── -->
+    <div id="view-loading" class="view" aria-label="로딩 상태">
+      <p class="section-label">오늘의 현황</p>
+      <div class="cards-grid">
+        <article class="card" aria-busy="true" aria-label="로딩 중">
+          <div class="skeleton" style="width:32px;height:32px;border-radius:var(--radius-sm)"></div>
+          <div class="skeleton" style="width:40%;height:11px;border-radius:var(--radius-pill);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:55%;height:26px;border-radius:var(--radius-sm);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:80%;height:12px;border-radius:var(--radius-pill);margin-top:var(--space-1)"></div>
+        </article>
+        <article class="card" aria-busy="true">
+          <div class="skeleton" style="width:32px;height:32px;border-radius:var(--radius-sm)"></div>
+          <div class="skeleton" style="width:50%;height:11px;border-radius:var(--radius-pill);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:45%;height:26px;border-radius:var(--radius-sm);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:100%;height:6px;border-radius:var(--radius-pill);margin-top:var(--space-2)"></div>
+        </article>
+        <article class="card" aria-busy="true">
+          <div class="skeleton" style="width:32px;height:32px;border-radius:var(--radius-sm)"></div>
+          <div class="skeleton" style="width:45%;height:11px;border-radius:var(--radius-pill);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:35%;height:26px;border-radius:var(--radius-sm);margin-top:var(--space-1)"></div>
+          <div style="display:flex;gap:4px;margin-top:6px">
+            <div class="skeleton" style="width:14px;height:14px;border-radius:9999px"></div>
+            <div class="skeleton" style="width:14px;height:14px;border-radius:9999px"></div>
+            <div class="skeleton" style="width:14px;height:14px;border-radius:9999px"></div>
+            <div class="skeleton" style="width:14px;height:14px;border-radius:9999px"></div>
+            <div class="skeleton" style="width:14px;height:14px;border-radius:9999px"></div>
+          </div>
+        </article>
+        <article class="card" aria-busy="true">
+          <div class="skeleton" style="width:32px;height:32px;border-radius:var(--radius-sm)"></div>
+          <div class="skeleton" style="width:40%;height:11px;border-radius:var(--radius-pill);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:60%;height:20px;border-radius:var(--radius-sm);margin-top:var(--space-1)"></div>
+          <div class="skeleton" style="width:70%;height:22px;border-radius:var(--radius-pill);margin-top:6px"></div>
+        </article>
+      </div>
+
+      <div class="skeleton" style="width:100%;height:56px;border-radius:var(--radius-xl);margin-top:var(--space-6)"></div>
+    </div>
+
+  </div>
+
+  <script>
+    function switchView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.demo-tab').forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      document.getElementById('view-' + name).classList.add('active');
+      const tabs = document.querySelectorAll('.demo-tab');
+      const names = ['normal', 'achieved', 'danger', 'empty', 'loading'];
+      const idx = names.indexOf(name);
+      if (tabs[idx]) {
+        tabs[idx].classList.add('active');
+        tabs[idx].setAttribute('aria-selected', 'true');
+      }
+    }
+  </script>
+</body>
+</html>
