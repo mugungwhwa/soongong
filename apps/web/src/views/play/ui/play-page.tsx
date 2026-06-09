@@ -1,10 +1,11 @@
 "use client";
+import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
-import { PadCanvas } from "@/widgets/pad-canvas";
-import { AnswerForm, useQuestPlay } from "@/features/quest-play";
+import { PadCanvas, type PadCanvasHandle } from "@/widgets/pad-canvas";
+import { AnswerForm, useQuestPlay, persistPlaySubmission } from "@/features/quest-play";
 import { getQuestById } from "@/shared/mocks/quests";
 import { ROUTES } from "@/shared/config/routes";
 
@@ -12,6 +13,39 @@ export function PlayPage({ questId }: { questId: string }) {
   const router = useRouter();
   const quest = getQuestById(questId);
   const play = useQuestPlay();
+  const canvasRef = useRef<PadCanvasHandle | null>(null);
+  const startedAtRef = useRef<number>(Date.now());
+
+  async function handleSubmit() {
+    const elapsed = Math.max(
+      0,
+      Math.floor((Date.now() - startedAtRef.current) / 1000),
+    );
+    // 캔버스 데이터는 view 에서 추출(레이어 분리) → plain 값으로 feature 에 전달
+    let strokeJSON: unknown;
+    let pngBlob: Blob | null = null;
+    if (canvasRef.current) {
+      try {
+        strokeJSON = canvasRef.current.getStrokeJSON();
+        pngBlob = await canvasRef.current.exportPNG();
+      } catch {
+        /* 캔버스 추출 실패해도 진행 */
+      }
+    }
+    const isCorrect = play.submit();
+    if (!quest) return;
+    // best-effort 영속화 — 데모 흐름을 막지 않음
+    void persistPlaySubmission({
+      questId: quest.questId,
+      isCorrect,
+      answer: play.answer,
+      elapsedSeconds: elapsed,
+      hintUsed: false,
+      mode: "today",
+      strokeJSON,
+      pngBlob,
+    });
+  }
 
   if (!quest) {
     return (
@@ -40,8 +74,8 @@ export function PlayPage({ questId }: { questId: string }) {
               수열 {`{a_n}`}이 a₁ = 1, a_{`{n+1}`} = 2a_n + 3 을 만족할 때 a₃ 의 값은?
             </p>
           </Card>
-          <PadCanvas />
-          <AnswerForm answer={play.answer} setAnswer={play.setAnswer} onSubmit={play.submit} />
+          <PadCanvas onReady={(h) => (canvasRef.current = h)} />
+          <AnswerForm answer={play.answer} setAnswer={play.setAnswer} onSubmit={handleSubmit} />
           <p className="text-xs text-[var(--color-text-muted)] text-center">
             힌트: 점화식을 한 단계씩 풀어 a₂, a₃을 구해 보세요.
           </p>
