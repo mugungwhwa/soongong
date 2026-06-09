@@ -52,6 +52,9 @@
       --space-12: 48px;
       --shadow-card: 0 2px 8px rgba(46, 107, 46, 0.06);
       --shadow-elevated: 0 8px 24px rgba(46, 107, 46, 0.10);
+      --shadow-cta-mint: 0 4px 16px rgba(76, 168, 79, 0.28);
+      --shadow-cta-mint-hover: 0 6px 20px rgba(76, 168, 79, 0.36);
+      --shadow-cta-danger: 0 4px 16px rgba(226, 155, 155, 0.40);
       --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
       --duration-fast: 160ms;
       --duration-mid: 240ms;
@@ -279,7 +282,7 @@
       border: none;
       border-radius: var(--radius-xl);
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(76, 168, 79, 0.28);
+      box-shadow: var(--shadow-cta-mint);
       transition: background var(--duration-fast) var(--ease-out-soft),
                   transform var(--duration-fast) var(--ease-out-soft),
                   box-shadow var(--duration-fast) var(--ease-out-soft);
@@ -287,7 +290,7 @@
     .action-btn:hover {
       background: var(--color-mint-700);
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(76, 168, 79, 0.36);
+      box-shadow: var(--shadow-cta-mint-hover);
     }
     .action-btn:active { transform: translateY(0); }
     .action-btn svg { width: 20px; height: 20px; }
@@ -612,7 +615,7 @@
         </article>
       </div>
 
-      <button class="action-btn" type="button" style="background:var(--color-risk-high);box-shadow:0 4px 16px rgba(226,155,155,0.4);">
+      <button class="action-btn" type="button" style="background:var(--color-risk-high);box-shadow:var(--shadow-cta-danger);">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M12 3L4 7v5c0 4.42 3.4 8.56 8 9.54C16.6 20.56 20 16.42 20 12V7l-8-4z" stroke="currentColor" stroke-width="2" fill="none"/>
         </svg>
