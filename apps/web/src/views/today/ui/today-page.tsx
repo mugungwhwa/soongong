@@ -6,9 +6,23 @@ import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { UploadTrigger } from "@/features/upload-source";
 
-export function TodayPage() {
+export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) {
   return (
     <div className="p-4 lg:p-6 max-w-[1400px] mx-auto">
+      {isFirstEntry && (
+        <div className="mb-6 flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
+          <Mascot mood="celebrate" size="md" />
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-[var(--color-mint-700)]">
+              회독 퀘스트가 준비됐어요! 🎉
+            </p>
+            <p className="text-sm text-[var(--color-text-muted)]">
+              아래 퀘스트를 풀고 첫 XP를 획득해봐요
+            </p>
+          </div>
+        </div>
+      )}
+
       <header className="flex items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <Mascot mood="cheer" size="md" />
@@ -17,7 +31,9 @@ export function TodayPage() {
               안녕하세요, 김순공님!
             </h1>
             <p className="text-xs text-[var(--color-text-muted)]">
-              오늘 회독 3개로 망각을 막아볼까요?
+              {isFirstEntry
+                ? "첫 회독 퀘스트를 시작해봐요 👇"
+                : "오늘 회독 3개로 망각을 막아볼까요?"}
             </p>
           </div>
         </div>
