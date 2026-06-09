@@ -17,7 +17,7 @@ const ADMIN_ITEMS = [
 
 export function Sidebar() {
   return (
-    <aside className="hidden lg:flex w-60 flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
+    <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
       <div className="flex items-center gap-3 mb-6">
         <Mascot mood="cheer" size="md" />
         <div className="font-bold text-[var(--color-text-strong)]">순공대장</div>

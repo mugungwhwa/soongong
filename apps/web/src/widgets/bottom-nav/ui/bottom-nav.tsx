@@ -1,26 +1,56 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
 
 const ITEMS = [
   { href: ROUTES.today, label: "오늘", icon: "🏠" },
   { href: ROUTES.calendar, label: "캘린더", icon: "📅" },
+  null, // camera FAB placeholder
   { href: ROUTES.wrongNotes, label: "오답", icon: "📝" },
-  { href: ROUTES.diary, label: "일지", icon: "📔" },
+  { href: ROUTES.graph, label: "그래프", icon: "📊" },
 ];
 
 export function BottomNav() {
+  const pathname = usePathname();
+
   return (
-    <nav className="lg:hidden fixed bottom-0 inset-x-0 border-t border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] flex justify-around py-2 z-50">
-      {ITEMS.map((i) => (
-        <Link
-          key={i.href}
-          href={i.href}
-          className="flex flex-col items-center gap-1 px-3 py-1 text-xs text-[var(--color-text-muted)]"
-        >
-          <span className="text-lg">{i.icon}</span>
-          <span>{i.label}</span>
-        </Link>
-      ))}
+    <nav
+      className="lg:hidden fixed bottom-0 inset-x-0 border-t border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] flex justify-around items-center z-50"
+      style={{ height: "calc(64px + env(safe-area-inset-bottom))", paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      {ITEMS.map((item, idx) => {
+        if (item === null) {
+          // 중앙 카메라 FAB
+          return (
+            <button
+              key="camera-fab"
+              type="button"
+              className="flex items-center justify-center w-14 h-14 rounded-full -mt-5 shadow-lg"
+              style={{ background: "var(--color-mint-900)" }}
+              aria-label="카메라"
+            >
+              <span className="text-2xl">📷</span>
+            </button>
+          );
+        }
+        const isActive = pathname === item.href;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="flex flex-col items-center gap-1 px-3 py-1 text-xs rounded-lg"
+            style={
+              isActive
+                ? { background: "var(--color-mint-100)", color: "var(--color-mint-900)", fontWeight: 700 }
+                : { color: "var(--color-text-muted)" }
+            }
+          >
+            <span className="text-lg">{item.icon}</span>
+            <span>{item.label}</span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }
