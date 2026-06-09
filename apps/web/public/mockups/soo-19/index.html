@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-pal="ocean">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>SOO-19 — 듀오링고풍 비주얼 방향 리서치 + 핵심 화면 재목업</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Lilita+One&family=Fredoka:wght@600;700&family=Bowlby+One&display=swap" rel="stylesheet">
 <style>
 /* ── Design Tokens (mint palette — default) ── */
 :root {
@@ -389,8 +389,8 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   <h1>듀오링고풍 비주얼 방향 리서치<br>+ 핵심 화면 재목업</h1>
   <p>웹/앱 분리 · 반응형 흐름 · 민트↔바다 팔레트 비교 · SOONGONG 워드마크</p>
   <div class="pal-toggle">
-    <button class="pal-btn active" id="btn-mint" onclick="setPal('mint')">🌿 초록 Mint</button>
-    <button class="pal-btn" id="btn-ocean" onclick="setPal('ocean')">🌊 바다 Ocean</button>
+    <button class="pal-btn" id="btn-mint" onclick="setPal('mint')">🌿 초록 Mint</button>
+    <button class="pal-btn active" id="btn-ocean" onclick="setPal('ocean')">🌊 바다 Ocean</button>
   </div>
 </div>
 
@@ -1210,44 +1210,103 @@ body{font-family:"Pretendard",-apple-system,BlinkMacSystemFont,sans-serif;
   <div class="sh-sub">web_ui.png 기준. 사이드바(220px 고정) + 유동 메인 그리드. 최대 너비 1440px.</div>
 
   <!-- SOONGONG 워드마크 시안 -->
+  <!-- SOONGONG 로고 A vs B 비교 -->
   <div class="card">
     <div class="card-title">
       <svg class="ic" width="14" height="14" style="color:var(--m700)"><use href="#ic-star"/></svg>
-      SOONGONG 워드마크 시안
-      <span style="font-size:10px;font-weight:500;color:var(--tm);margin-left:4px;">폰트: Bebas Neue (Google Fonts, 무료) — Rockon Ultra 대체안</span>
+      SOONGONG 워드마크 — A안 vs B안 비교
     </div>
-    <div class="logo-row">
-      <!-- 변형 A: 라이트 배경 + 마스코트 -->
-      <div class="logo-swatch">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <img src="../../mascot/main.png" style="width:40px;height:40px;object-fit:contain;" alt="순공이">
-          <div style="text-align:left;">
-            <div class="wordmark wordmark-lg">SOONGONG</div>
-            <div class="wordmark-sub" style="font-size:11px;">순공대장</div>
+
+    <!-- A안 / B안 2열 비교 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+
+      <!-- ── A안: 통통 아웃라인 SVG ── -->
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--m900);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--m900);color:#fff;padding:1px 7px;border-radius:20px;font-size:10px;">A안</span>
+          통통 아웃라인 (커스텀 벡터 시안)
+        </div>
+        <!-- 라이트 -->
+        <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:16px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+          <img src="../../mascot/main.png" style="width:36px;height:36px;object-fit:contain;flex-shrink:0;" alt="순공이">
+          <div>
+            <svg viewBox="0 0 220 42" style="width:100%;max-width:220px;display:block;overflow:visible;">
+              <text x="4" y="34"
+                font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+                font-size="34" font-weight="900" letter-spacing="1.5"
+                fill="var(--m900)" stroke="var(--m900)" stroke-width="8"
+                stroke-linejoin="round" stroke-linecap="round"
+                paint-order="stroke fill">SOONGONG</text>
+            </svg>
+            <div style="font-size:9px;color:var(--tm);letter-spacing:.5px;margin-top:2px;">순공대장</div>
           </div>
         </div>
-        <div style="font-size:10px;color:var(--tm);margin-top:6px;">변형 A — 라이트 (사이드바용)</div>
-      </div>
-      <!-- 변형 B: 다크 배경 (게임바/앱 헤더용) -->
-      <div class="logo-swatch dark">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <img src="../../mascot/main.png" style="width:40px;height:40px;object-fit:contain;" alt="순공이">
-          <div style="text-align:left;">
-            <div class="wordmark wordmark-lg wordmark-inv">SOONGONG</div>
-            <div class="wordmark-sub" style="font-size:11px;color:rgba(255,255,255,.65);">순공대장</div>
+        <!-- 다크 -->
+        <div style="background:var(--m900);border-radius:var(--rsm);padding:16px 12px;display:flex;align-items:center;gap:10px;">
+          <img src="../../mascot/main.png" style="width:36px;height:36px;object-fit:contain;flex-shrink:0;" alt="순공이">
+          <div>
+            <svg viewBox="0 0 220 42" style="width:100%;max-width:220px;display:block;overflow:visible;">
+              <text x="4" y="34"
+                font-family="'Arial Black','Helvetica Neue',Arial,sans-serif"
+                font-size="34" font-weight="900" letter-spacing="1.5"
+                fill="#fff" stroke="#fff" stroke-width="8"
+                stroke-linejoin="round" stroke-linecap="round"
+                paint-order="stroke fill">SOONGONG</text>
+            </svg>
+            <div style="font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.5px;margin-top:2px;">순공대장</div>
           </div>
         </div>
-        <div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:6px;">변형 B — 다크 (게임바/스플래시용)</div>
+        <div style="font-size:10px;color:var(--tm);margin-top:8px;line-height:1.5;">
+          SVG stroke + <code>stroke-linejoin:round</code> + <code>paint-order:stroke fill</code>. 폰트 파일 임베드 없음 — 시스템 폰트 + SVG 렌더링 처리로 통통한 외곽선 구현. 실제 로고 제작 시 Illustrator 아웃라인화 방향.
+        </div>
       </div>
-      <!-- 변형 C: 워드마크 단독 -->
-      <div class="logo-swatch" style="justify-content:center;">
-        <div class="wordmark" style="font-size:26px;letter-spacing:6px;">SOONGONG</div>
-        <div class="wordmark-sub" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;">순공대장</div>
-        <div style="font-size:10px;color:var(--tm);margin-top:6px;">변형 C — 텍스트 단독 (파비콘/OG 배경용)</div>
+
+      <!-- ── B안: Google Fonts 3종 ── -->
+      <div>
+        <div style="font-size:12px;font-weight:800;color:var(--m900);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--m700);color:#fff;padding:1px 7px;border-radius:20px;font-size:10px;">B안</span>
+          Google Fonts 3종 (SIL OFL 무료·상업)
+        </div>
+
+        <!-- Lilita One -->
+        <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px 14px;margin-bottom:6px;">
+          <div style="font-family:'Lilita One',cursive;font-size:26px;color:var(--m900);letter-spacing:2px;line-height:1;">SOONGONG</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <div style="font-size:9px;color:var(--tm);">순공대장</div>
+            <div style="font-size:9px;font-weight:700;color:var(--m700);background:var(--m50);padding:2px 7px;border-radius:9999px;">Lilita One — 굵고 둥근, 듀오링고 유사</div>
+          </div>
+        </div>
+
+        <!-- Fredoka -->
+        <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px 14px;margin-bottom:6px;">
+          <div style="font-family:'Fredoka',sans-serif;font-weight:700;font-size:26px;color:var(--m900);letter-spacing:2px;line-height:1;">SOONGONG</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <div style="font-size:9px;color:var(--tm);">순공대장</div>
+            <div style="font-size:9px;font-weight:700;color:var(--m700);background:var(--m50);padding:2px 7px;border-radius:9999px;">Fredoka 700 — 친근·부드러운</div>
+          </div>
+        </div>
+
+        <!-- Bowlby One -->
+        <div style="background:var(--bg-el);border:1px solid var(--bd);border-radius:var(--rsm);padding:12px 14px;margin-bottom:8px;">
+          <div style="font-family:'Bowlby One',cursive;font-size:26px;color:var(--m900);letter-spacing:2px;line-height:1;">SOONGONG</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+            <div style="font-size:9px;color:var(--tm);">순공대장</div>
+            <div style="font-size:9px;font-weight:700;color:var(--m700);background:var(--m50);padding:2px 7px;border-radius:9999px;">Bowlby One — 두껍고 힘있는</div>
+          </div>
+        </div>
+
+        <div style="font-size:10px;color:var(--tm);line-height:1.5;">
+          전부 Google Fonts, SIL OFL — 상업 사용 가능. 팔레트 전환 시 색 자동 변환.
+        </div>
       </div>
     </div>
-    <div style="font-size:11px;color:var(--tm);background:var(--bg-sun);border-radius:var(--rsm);padding:8px 12px;line-height:1.6;">
-      <strong style="color:var(--m700);">Bebas Neue</strong> — 무료(SIL OFL), Google Fonts 제공. 상업 사용 가능. 원안 Rockon Ultra는 한국 유료 폰트라 웹 사용 시 라이선스 필요. 최종 로고 확정 전까지 Bebas Neue로 작업 진행, 민트↔바다 팔레트 전환 시 자동 색 변환됨.
+
+    <!-- 라이선스 요약 -->
+    <div style="background:var(--bg-sun);border-radius:var(--rsm);padding:10px 14px;font-size:11px;color:var(--td);line-height:1.7;border-left:3px solid var(--m300);">
+      <strong style="color:var(--m900);">라이선스 요약</strong> —
+      <span style="color:#b54">RockoUltraFLF</span>: "No License Available" (fontsgeek), 1992 Software Complement 저작권, 상업 사용 불가 → <strong>임베드 금지</strong>.
+      A안은 폰트 파일 미사용(SVG 렌더링). B안 3종은 SIL OFL, 무료 상업 가능.
+      최종 로고는 A안 방향으로 Illustrator 아웃라인화 or B안 중 선택 후 잠금.
     </div>
   </div>
 
