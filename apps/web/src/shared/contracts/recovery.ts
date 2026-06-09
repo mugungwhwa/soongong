@@ -12,4 +12,6 @@ export interface RecoveryVariant {
   tier: VariantTier;
   description: string;
   prompt: string;
+  /** 수식 포맷. 미지정 시 plaintext 하위호환. */
+  formula_format?: "latex" | "plaintext";
 }

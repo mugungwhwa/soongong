@@ -7,6 +7,8 @@ import { Mascot } from "@/shared/ui/mascot";
 import { PadCanvas, type PadCanvasHandle } from "@/widgets/pad-canvas";
 import { AnswerForm, useQuestPlay, persistPlaySubmission } from "@/features/quest-play";
 import { getQuestById } from "@/shared/mocks/quests";
+import { getAnalysisResultByObjectId } from "@/shared/mocks/analysis-results";
+import { MathRenderer } from "@/shared/ui/math-renderer";
 import { ROUTES } from "@/shared/config/routes";
 
 export function PlayPage({ questId }: { questId: string }) {
@@ -58,6 +60,8 @@ export function PlayPage({ questId }: { questId: string }) {
     );
   }
 
+  const analysis = getAnalysisResultByObjectId(quest.objectId);
+
   return (
     <div className="mx-auto max-w-2xl p-4 lg:p-8 space-y-4">
       <header>
@@ -71,14 +75,19 @@ export function PlayPage({ questId }: { questId: string }) {
         <>
           <Card className="p-4 bg-[var(--color-bg-sunken)] border-[var(--color-border-default)]">
             <p className="text-sm text-[var(--color-text-default)] leading-relaxed">
-              수열 {`{a_n}`}이 a₁ = 1, a_{`{n+1}`} = 2a_n + 3 을 만족할 때 a₃ 의 값은?
+              <MathRenderer
+                content={analysis?.rawTextSnippet ?? quest.topic}
+                format={analysis?.formula_format}
+              />
             </p>
           </Card>
           <PadCanvas onReady={(h) => (canvasRef.current = h)} />
           <AnswerForm answer={play.answer} setAnswer={play.setAnswer} onSubmit={handleSubmit} />
-          <p className="text-xs text-[var(--color-text-muted)] text-center">
-            힌트: 점화식을 한 단계씩 풀어 a₂, a₃을 구해 보세요.
-          </p>
+          {analysis?.formula_format === "latex" && (
+            <p className="text-xs text-[var(--color-text-muted)] text-center">
+              힌트: 점화식을 한 단계씩 풀어 보세요.
+            </p>
+          )}
         </>
       )}
 

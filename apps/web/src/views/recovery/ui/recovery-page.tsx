@@ -6,6 +6,7 @@ import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Mascot } from "@/shared/ui/mascot";
 import { MOCK_VARIANTS } from "@/shared/mocks/recovery-variants";
+import { MathRenderer } from "@/shared/ui/math-renderer";
 import type { VariantTier } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
 import { recordGameProgress } from "@/features/quest-play";
@@ -56,7 +57,7 @@ export function RecoveryPage({ objectId }: { objectId: string }) {
           {active.description}
         </div>
         <p className="text-base text-[var(--color-text-default)]">
-          {active.prompt}
+          <MathRenderer content={active.prompt} format={active.formula_format} />
         </p>
         <div className="flex gap-2">
           <Button
