@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mascot } from "@/shared/ui/mascot";
 import { ROUTES } from "@/shared/config/routes";
+import { signOut } from "@/app/actions/auth";
 
 const MAIN_ITEMS = [
   { href: ROUTES.today, label: "오늘의 회독", icon: "🏠" },
@@ -46,6 +47,15 @@ export function Sidebar() {
               <span>{i.label}</span>
             </Link>
           ))}
+          <form action={signOut}>
+            <button
+              type="submit"
+              className="w-full flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 hover:bg-[var(--color-mint-50)] transition text-[var(--color-text-muted)] text-sm text-left"
+            >
+              <span>🚪</span>
+              <span>로그아웃</span>
+            </button>
+          </form>
         </nav>
       </div>
     </aside>
