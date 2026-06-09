@@ -22,8 +22,8 @@
 |---|---|---|
 | 마스코트 | "순공이" (가안, **듀공** 모티프) | UI 설계.md §6 |
 | UI 라벨 | "회독퀘스트" / 백서 = "회독" | 핵심요약.md |
-| 톤 | Light Study Garden | UI 설계.md §1 |
-| 컬러 | 크림 `#F8FBF7` + 민트 `#7CC97C` + 위험도(소프트) | UI 설계.md §3 |
+| 톤 | Light Study Garden — **바다(Ocean) 컨셉** | UI 설계.md §1 |
+| 컬러 | 크림 `#F8FBF7` + 오션 `#2AB8D0`/`#1A8FAD`/`#0E5C82` + 위험도(소프트) | docs/design-system/2026-06-09-design-system-lock.md |
 | 시안 | `app_UI.png` / `web_ui.png` | repo root |
 | 시각 자산 | Midjourney + Canva (Mike 직접, **외주 없음**) | docs/visual-assets/...asset-inventory.md |
 | 디자인 reference | 듀오링고 + 카카오 헤이바이브 + 클래스101 + Pretendard (토스 차용 X) | UI 설계.md §1-2 비교 레퍼런스 |
@@ -100,6 +100,7 @@ docs/
 ├── visual-assets/2026-05-18-character-design-agent.md  ← DEPRECATED, ui-master §4로 이관 (stub만 유지)
 ├── superpowers/specs/2026-05-18-ui-master-design.md  ← UI master SSoT (디자인 시스템 + 캐릭터 production + 에이전트 dispatch + 리서치 + 모션 + 6게이트)
 ├── visual-assets/mascot-v0.1/                         ← Mike 작업본 reference (main.png, repeat_normal.png)
+├── design-system/2026-06-09-design-system-lock.md    ← 디자인 시스템 잠금 v1.0 (Ocean 팔레트·로고 A·레이아웃·반응형·마스코트 SSoT)
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
 app_UI.png / web_ui.png (이미지 SSoT)
@@ -140,7 +141,8 @@ cd apps/web && pnpm dev
 ## 8. 폐기 정책 (회귀 금지)
 
 다음을 다시 도입하려는 어떤 제안도 거절하고 Mike에게 확인 받기:
-- Dark RPG 톤 / 다크 네이비 / 회독마왕 (web_ui.png/app_UI.png 시안에 잔존 — SOO-20에서 자산 교체 추적)
+- Dark RPG 톤 / 다크 네이비 / 회독마왕 (web_ui.png/app_UI.png 시안에 잔존 — SOO-20에서 자산 교체 추적) ← 오션 틸(#2AB8D0)은 다크 네이비 아님, 별개 컬러
+- **민트 그린(`#7CC97C`) 단일 컬러 고수** — 오션 팔레트로 확정(SOO-17). 민트 기반 제안은 오션으로 대체.
 - 외주 발주 (작가/디자이너)
 - 토스 단일 reference 차용
 - git config user.* 수정
@@ -170,6 +172,7 @@ cd apps/web && pnpm dev
 | **v1.4** | **2026-05-19** | **§2 잠긴 결정사항에 게임화 SSoT 5행 추가 (게임화 룰 / 기억 HP 단위 / 사용자 등급 6단 / 뱃지 희귀도 4단 / 순공리그 진입). §8 폐기 정책에 게임화 회귀 4종(식물 등급/HP 백분율/3단 희귀도/리그 MVP 1차) 추가. `게임성_기획_구조.md` v1.0 SSoT 잠금과 연동.** |
 | **v1.5** | **2026-06-08** | **§3에 'Multica 자율 실행' 하위 섹션 추가 — 플랫폼 로그인(개인 mugungwhwa 계정)과 git push identity 분리 명시, 자율 커밋 시 기존 Git/Commit 룰(config 수정 금지·일회용 -c·SSH alias push) 적용, 초기 PR-only(자동 머지 OFF) 운영, 이슈 DoD 명시 룰.** |
 | **v1.6** | **2026-06-09** | **§2 헤더 충돌 규칙에 폐기정책 예외 단서 추가 — 시안이 §8 폐기 정책 위반 시 텍스트(정책) 우선. §8 'Dark RPG 톤 / 다크 네이비 / 회독마왕' 항목에 시안 잔존 + SOO-20 자산 교체 추적 크로스링크 주석. (SOO-21·A2, 텍스트 편집만 — 시안 PNG 미변경)** |
+| **v1.7** | **2026-06-09** | **§2 컬러 행 민트 → 오션 확정(`#2AB8D0`/`#1A8FAD`/`#0E5C82`) + 톤명에 바다(Ocean) 컨셉 반영. §5 트리에 디자인 시스템 잠금 문서(`docs/design-system/2026-06-09-design-system-lock.md`) 추가. §8 민트 그린 단일 컬러 고수 폐기 추가. (SOO-17 와꾸 최종 잠금)** |
 
 ---
 
