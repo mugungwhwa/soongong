@@ -5,10 +5,13 @@ import { ReviewMap } from "@/widgets/review-map";
 import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { UploadTrigger } from "@/features/upload-source";
+import { TierJourneyHero } from "@/widgets/tier-journey-hero";
 
 export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) {
   return (
     <div className="p-4 lg:p-6 max-w-[1400px] mx-auto">
+      <TierJourneyHero />
+
       {isFirstEntry && (
         <div className="mb-6 flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
           <Mascot mood="celebrate" size="md" />
@@ -52,7 +55,7 @@ export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) 
         <div className="space-y-6 min-w-0">
           <StatsGrid />
 
-          <section className="space-y-3">
+          <section id="today-quests" className="space-y-3">
             <h2 className="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wide">
               오늘의 회독 캠프
             </h2>
