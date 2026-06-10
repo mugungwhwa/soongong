@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
 import {
   Home,
-  Calendar,
   Camera,
   NotebookPen,
   BarChart3,
+  Compass,
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -20,7 +20,7 @@ type NavItem = {
 
 const ITEMS: NavItem[] = [
   { href: ROUTES.today, label: "오늘", Icon: Home },
-  { href: ROUTES.calendar, label: "캘린더", Icon: Calendar },
+  { href: ROUTES.journey, label: "내 여정", Icon: Compass },
   null, // camera FAB placeholder
   { href: ROUTES.wrongNotes, label: "오답", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
@@ -41,7 +41,7 @@ export function BottomNav() {
       className="lg:hidden fixed bottom-0 inset-x-0 border-t border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] flex justify-around items-center z-50"
       style={{ height: "calc(64px + env(safe-area-inset-bottom))", paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {ITEMS.map((item, idx) => {
+      {ITEMS.map((item) => {
         if (item === null) {
           // 중앙 카메라 FAB
           return (
