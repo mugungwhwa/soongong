@@ -26,7 +26,7 @@ export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) 
         </div>
       )}
 
-      <header className="flex items-center justify-between gap-3 mb-6">
+      <header className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
           <Mascot mood="cheer" size="md" />
           <div>
@@ -51,8 +51,8 @@ export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) 
         </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
-        <div className="space-y-6 min-w-0">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 lg:gap-6">
+        <div className="space-y-4 lg:space-y-6 min-w-0">
           <StatsGrid />
 
           <section id="today-quests" className="space-y-3">
