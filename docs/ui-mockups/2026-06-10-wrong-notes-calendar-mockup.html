@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>순공대장 — 오답노트 + 캘린더 목업</title>
+<style>
+  :root {
+    --color-bg:#F2FAFB;
+    --color-bg-elevated:#FFFFFF;
+    --color-bg-sunken:#E2F3F8;
+    --color-mint-50:#E8F8FB;
+    --color-mint-100:#C2EDF5;
+    --color-mint-300:#7DD8EA;
+    --color-mint-500:#2AB8D0;
+    --color-mint-700:#1A8FAD;
+    --color-mint-900:#0E5C82;
+    --color-risk-low:#A0BFDC;
+    --color-risk-mid:#E6B788;
+    --color-risk-high:#E29B9B;
+    --color-xp:#F2C94C;
+    --color-xp-soft:#FBE7A6;
+    --color-epic-bg:#F5E0FC;
+    --color-epic-text:#8B5CF6;
+    --color-text-strong:#0C2535;
+    --color-text-default:#1C3848;
+    --color-text-muted:#4A7585;
+    --color-text-inverse:#FFFFFF;
+    --color-border-default:#B8DDE8;
+    --color-border-strong:#85C3D5;
+    --color-risk-bg:#FCECEA;
+    --color-info-bg:#E8F2FB;
+    --radius-sm:8px;
+    --radius-md:12px;
+    --radius-lg:16px;
+    --radius-xl:24px;
+    --radius-pill:9999px;
+    --shadow-card:0 2px 8px rgba(14,92,130,0.06);
+    --shadow-elevated:0 8px 24px rgba(14,92,130,0.10);
+    --font:"Pretendard", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: #D4EEF5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 40px;
+    gap: 16px;
+  }
+
+  /* ── 데스크톱 레이블 ── */
+  .desktop-label {
+    font-size: 13px;
+    color: var(--color-mint-900);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  /* ── 상단 화면 탭 (목업 전환) ── */
+  .screen-tabs {
+    display: flex;
+    gap: 8px;
+    background: rgba(255,255,255,0.7);
+    border-radius: var(--radius-pill);
+    padding: 4px;
+    box-shadow: var(--shadow-card);
+  }
+  .screen-tab {
+    padding: 8px 20px;
+    border-radius: var(--radius-pill);
+    border: none;
+    background: transparent;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .screen-tab.active {
+    background: var(--color-mint-900);
+    color: var(--color-text-inverse);
+    box-shadow: 0 2px 8px rgba(14,92,130,0.25);
+  }
+
+  /* ── 모바일 프레임 ── */
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: var(--color-bg);
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(14,92,130,0.18), 0 0 0 10px rgba(255,255,255,0.5);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── 화면 전환 래퍼 ── */
+  .screen { display: none; flex-direction: column; flex: 1; }
+  .screen.active { display: flex; }
+
+  /* ── 공통 헤더 ── */
+  .header {
+    background: var(--color-bg-elevated);
+    padding: 52px 20px 16px;
+    border-bottom: 1px solid var(--color-border-default);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+  }
+  .header-mascot {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--color-mint-100);
+    flex-shrink: 0;
+  }
+  .header-mascot-fallback {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-mint-100);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+  }
+  .header-text { flex: 1; }
+  .header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-text-strong);
+    line-height: 1.2;
+  }
+  .header-sub {
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+  .header-bell {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--color-bg-sunken);
+    border: none;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-muted);
+  }
+
+  /* ── 스크롤 영역 ── */
+  .scroll-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 16px 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .scroll-body::-webkit-scrollbar { width: 3px; }
+  .scroll-body::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 2px; }
+
+  /* ── 섹션 라벨 ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+  }
+
+  /* ── 카드 ── */
+  .card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 16px;
+  }
+
+  /* ═══════════════════════════════
+     오답노트 화면
+  ═══════════════════════════════ */
+
+  /* 정렬 드롭다운 */
+  .sort-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sort-select {
+    font-family: var(--font);
+    font-size: 13px;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-sm);
+    padding: 5px 10px;
+    background: var(--color-bg-elevated);
+    cursor: pointer;
+    outline: none;
+  }
+  .total-badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-mint-700);
+    background: var(--color-mint-100);
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+  }
+
+  /* 필터 칩 */
+  .filter-row {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 5px 13px;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid var(--color-border-default);
+    background: var(--color-bg-elevated);
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+  }
+  .chip.active {
+    background: var(--color-mint-900);
+    border-color: var(--color-mint-900);
+    color: var(--color-text-inverse);
+  }
+  .chip.risk-high.active { background: var(--color-risk-high); border-color: var(--color-risk-high); color: #5c1a1a; }
+  .chip.risk-mid.active  { background: var(--color-risk-mid); border-color: var(--color-risk-mid); color: #5c3a0a; }
+  .chip.risk-low.active  { background: var(--color-risk-low); border-color: var(--color-risk-low); color: #1a3050; }
+
+  /* 오답 카드 */
+  .wrong-card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    position: relative;
+    transition: box-shadow 0.18s, transform 0.18s;
+    cursor: pointer;
+  }
+  .wrong-card:hover { box-shadow: var(--shadow-elevated); transform: translateY(-1px); }
+  .wrong-card.risk-high { border-left: 3px solid var(--color-risk-high); }
+  .wrong-card.risk-mid  { border-left: 3px solid var(--color-risk-mid); }
+  .wrong-card.risk-low  { border-left: 3px solid var(--color-risk-low); }
+
+  .thumb {
+    width: 52px; height: 52px;
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-sunken);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    overflow: hidden;
+    position: relative;
+  }
+  .thumb-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 34px;
+  }
+  .thumb-line {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--color-border-default);
+  }
+  .thumb-line:nth-child(1) { width: 100%; }
+  .thumb-line:nth-child(2) { width: 75%; }
+  .thumb-line:nth-child(3) { width: 90%; }
+  .thumb-line:nth-child(4) { width: 60%; }
+  .thumb-line-math {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--color-mint-300);
+    width: 100%;
+  }
+
+  .wrong-info { flex: 1; min-width: 0; }
+  .wrong-unit {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-mint-700);
+    background: var(--color-mint-50);
+    border: 1px solid var(--color-mint-100);
+    border-radius: var(--radius-pill);
+    padding: 2px 8px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
+  .wrong-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-strong);
+    line-height: 1.4;
+    margin-bottom: 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .wrong-meta {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .wrong-meta-item {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .wrong-meta-item svg { opacity: 0.65; }
+
+  .risk-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+    margin-right: 3px;
+  }
+  .risk-dot.high { background: var(--color-risk-high); }
+  .risk-dot.mid  { background: var(--color-risk-mid); }
+  .risk-dot.low  { background: var(--color-risk-low); }
+
+  .hp-bar {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+  }
+  .hp-pip {
+    width: 6px; height: 6px;
+    border-radius: 2px;
+    background: var(--color-border-default);
+  }
+  .hp-pip.filled { background: var(--color-xp); }
+
+  .retry-btn {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-mint-900);
+    background: var(--color-mint-50);
+    border: 1.5px solid var(--color-mint-300);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .retry-btn:hover { background: var(--color-mint-100); }
+  .retry-btn.queued {
+    color: var(--color-text-muted);
+    background: var(--color-bg-sunken);
+    border-color: var(--color-border-default);
+    pointer-events: none;
+  }
+
+  /* 빈 상태 */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    text-align: center;
+    gap: 12px;
+  }
+  .empty-mascot {
+    width: 80px; height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    opacity: 0.8;
+    background: var(--color-mint-100);
+  }
+  .empty-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-text-strong);
+  }
+  .empty-sub {
+    font-size: 13px;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+  }
+
+  /* 빈 상태 토글 버튼 */
+  .demo-toggle-btn {
+    margin: 0 auto;
+    display: block;
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background: var(--color-bg-sunken);
+    border: 1px dashed var(--color-border-default);
+    border-radius: var(--radius-pill);
+    padding: 5px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .demo-toggle-btn:hover { background: var(--color-mint-50); color: var(--color-mint-700); }
+
+  /* ═══════════════════════════════
+     캘린더 화면
+  ═══════════════════════════════ */
+
+  /* 이번 주 스탯 바 */
+  .stat-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-item {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-default);
+    border-radius: var(--radius-md);
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-mint-900);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+  .stat-item.streak .stat-value { color: var(--color-xp); }
+  .stat-item.streak { background: var(--color-xp-soft); border-color: var(--color-xp); }
+
+  /* 캘린더 헤더 */
+  .cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+  }
+  .cal-month-label {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--color-text-strong);
+  }
+  .cal-nav-btn {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border-default);
+    background: var(--color-bg-elevated);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--color-text-muted);
+    transition: all 0.15s;
+  }
+  .cal-nav-btn:hover { background: var(--color-mint-50); border-color: var(--color-mint-300); }
+  .today-jump-btn {
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-mint-700);
+    background: var(--color-mint-50);
+    border: 1.5px solid var(--color-mint-300);
+    border-radius: var(--radius-pill);
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .today-jump-btn:hover { background: var(--color-mint-100); }
+
+  /* 요일 헤더 */
+  .cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .cal-weekday {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    padding: 4px 0;
+    letter-spacing: 0.04em;
+  }
+  .cal-weekday:first-child { color: #E29B9B; }
+  .cal-weekday:last-child  { color: var(--color-mint-700); }
+
+  /* 날짜 그리드 */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-cell {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 4px 2px 2px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+    min-height: 44px;
+  }
+  .cal-cell:hover { background: var(--color-mint-50); }
+  .cal-cell.other-month .cal-date { opacity: 0.3; }
+  .cal-cell.today {
+    background: var(--color-mint-50);
+  }
+  .cal-cell.today .cal-date {
+    background: var(--color-mint-900);
+    color: var(--color-text-inverse);
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-cell.selected {
+    background: var(--color-info-bg);
+    border: 1.5px solid var(--color-mint-300);
+  }
+  .cal-date {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-text-default);
+    line-height: 1;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-cell:first-child .cal-date { color: #E29B9B; }
+  .cal-cell:nth-child(7n) .cal-date { color: var(--color-mint-700); }
+
+  /* 점 배지 */
+  .dots {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 32px;
+    margin-top: 2px;
+  }
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.r1d  { background: var(--color-mint-300); }
+  .dot.r3d  { background: var(--color-mint-500); }
+  .dot.r7d  { background: var(--color-mint-700); }
+  .dot.r14d { background: var(--color-mint-900); }
+  .dot.done { opacity: 0.35; }
+  .dot.overdue { box-shadow: 0 0 0 1.5px var(--color-risk-high); }
+  .dots-more {
+    font-size: 8px;
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  /* 범례 */
+  .cal-legend {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 4px 0;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--color-text-muted);
+    font-weight: 500;
+  }
+
+  /* ── 하단 시트 ── */
+  .sheet-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(12,37,53,0.35);
+    z-index: 10;
+    border-radius: 40px;
+  }
+  .sheet-overlay.open { display: block; }
+  .sheet {
+    position: absolute;
+    bottom: 0;
+    left: 0; right: 0;
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 12px 20px 100px;
+    box-shadow: 0 -4px 24px rgba(14,92,130,0.12);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    max-height: 60%;
+    overflow-y: auto;
+  }
+  .sheet.open { transform: translateY(0); }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: var(--color-border-default);
+    border-radius: var(--radius-pill);
+    margin: 0 auto 14px;
+  }
+  .sheet-date-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--color-text-strong);
+    margin-bottom: 12px;
+  }
+  .sheet-quest-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-bg-sunken);
+  }
+  .sheet-quest-item:last-child { border-bottom: none; }
+  .quest-round-badge {
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: var(--radius-pill);
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .quest-round-badge.r1d  { background: var(--color-mint-100); color: var(--color-mint-700); }
+  .quest-round-badge.r3d  { background: var(--color-mint-300); color: var(--color-mint-900); }
+  .quest-round-badge.r7d  { background: var(--color-mint-500); color: var(--color-text-inverse); }
+  .quest-round-badge.r14d { background: var(--color-mint-900); color: var(--color-text-inverse); }
+  .quest-info { flex: 1; min-width: 0; }
+  .quest-subject {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    margin-bottom: 2px;
+  }
+  .quest-unit {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-text-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .quest-time {
+    font-size: 11px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+  .start-btn {
+    font-family: var(--font);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-inverse);
+    background: var(--color-mint-700);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+  }
+  .start-btn:hover { background: var(--color-mint-900); }
+  .start-btn.done-btn {
+    background: var(--color-bg-sunken);
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  /* ── 하단 네비 ── */
+  .bottom-nav {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-border-default);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px 16px;
+    z-index: 5;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    flex: 1;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    transition: opacity 0.15s;
+  }
+  .nav-item:hover { opacity: 0.75; }
+  .nav-icon {
+    color: var(--color-text-muted);
+  }
+  .nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: -0.01em;
+  }
+  .nav-item.active .nav-icon { color: var(--color-mint-900); }
+  .nav-item.active .nav-label { color: var(--color-mint-900); }
+
+  /* FAB (카메라) */
+  .nav-fab-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+  }
+  .nav-fab {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--color-mint-900);
+    border: 3px solid var(--color-bg-elevated);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(14,92,130,0.35);
+    position: absolute;
+    bottom: 12px;
+    transition: transform 0.15s;
+    cursor: pointer;
+  }
+  .nav-fab:hover { transform: scale(1.07); }
+</style>
+</head>
+<body>
+
+<span class="desktop-label">순공대장 MVP1 — UI 목업</span>
+
+<!-- 화면 전환 탭 -->
+<div class="screen-tabs">
+  <button class="screen-tab active" onclick="switchScreen('wrong')">오답노트</button>
+  <button class="screen-tab" onclick="switchScreen('calendar')">캘린더</button>
+</div>
+
+<!-- 모바일 프레임 -->
+<div class="phone">
+
+  <!-- ───────────────────────────────
+       화면 1: 오답노트
+  ─────────────────────────────────── -->
+  <div id="screen-wrong" class="screen active">
+    <!-- 헤더 -->
+    <div class="header">
+      <img class="header-mascot" src="../visual-assets/mascot-v0.1/main.png"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+           alt="순공이">
+      <div class="header-mascot-fallback" style="display:none;">🐳</div>
+      <div class="header-text">
+        <div class="header-title">오답노트</div>
+        <div class="header-sub">틀린 문제를 다시 잡아봐요</div>
+      </div>
+      <button class="header-bell" aria-label="알림">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- 스크롤 본문 -->
+    <div class="scroll-body">
+
+      <!-- 정렬 + 총 개수 -->
+      <div class="sort-row">
+        <span class="total-badge">총 8문제</span>
+        <select class="sort-select" onchange="">
+          <option>최신순</option>
+          <option>위험도 높은순</option>
+          <option>틀린 횟수 많은순</option>
+        </select>
+      </div>
+
+      <!-- 필터 칩 -->
+      <div>
+        <div class="section-label">단원 필터</div>
+        <div class="filter-row" id="unit-chips">
+          <button class="chip active" onclick="toggleChip(this)">전체</button>
+          <button class="chip" onclick="toggleChip(this)">수열의 극한</button>
+          <button class="chip" onclick="toggleChip(this)">함수의 극한</button>
+          <button class="chip" onclick="toggleChip(this)">적분</button>
+          <button class="chip" onclick="toggleChip(this)">확률과 통계</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">위험도 필터</div>
+        <div class="filter-row">
+          <button class="chip risk-high" onclick="toggleChip(this)">🔴 높음</button>
+          <button class="chip risk-mid" onclick="toggleChip(this)">🟠 중간</button>
+          <button class="chip risk-low" onclick="toggleChip(this)">🔵 낮음</button>
+        </div>
+      </div>
+
+      <!-- 빈 상태 데모 토글 -->
+      <button class="demo-toggle-btn" onclick="toggleEmpty()">빈 상태 보기 (데모)</button>
+
+      <!-- 오답 리스트 -->
+      <div id="wrong-list">
+        <div class="section-label">오답 목록</div>
+
+        <!-- 카드 1: high -->
+        <div class="wrong-card risk-high">
+          <div class="thumb">
+            <div class="thumb-lines">
+              <div class="thumb-line"></div>
+              <div class="thumb-line-math"></div>
+              <div class="thumb-line"></div>
+              <div class="thumb-line" style="width:80%"></div>
+            </div>
+          </div>
+          <div class="wrong-info">
+            <span class="wrong-unit">수열의 극한</span>
+            <div class="wrong-title">2025학년도 수능 수학 30번 — 점화식 응용</div>
+            <div class="wrong-meta">
+              <span class="wrong-meta-item">
+                <span class="risk-dot high"></span>위험 높음
+              </span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                3회 틀림
+              </span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                6월 8일
+              </span>
+            </div>
+            <div class="wrong-meta" style="margin-top:5px;">
+              <span class="wrong-meta-item">기억 HP:</span>
+              <div class="hp-bar">
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+              </div>
+            </div>
+          </div>
+          <button class="retry-btn" onclick="queueRetry(this)" style="position:static; margin-top:auto; align-self:flex-end;">재도전 →</button>
+        </div>
+
+        <!-- 카드 2: high -->
+        <div class="wrong-card risk-high" style="margin-top:8px;">
+          <div class="thumb">
+            <div class="thumb-lines">
+              <div class="thumb-line"></div>
+              <div class="thumb-line-math" style="height:5px;"></div>
+              <div class="thumb-line" style="width:65%;"></div>
+              <div class="thumb-line-math" style="width:80%;"></div>
+            </div>
+          </div>
+          <div class="wrong-info">
+            <span class="wrong-unit">함수의 극한</span>
+            <div class="wrong-title">함수의 연속 — 불연속점 판별 유형</div>
+            <div class="wrong-meta">
+              <span class="wrong-meta-item"><span class="risk-dot high"></span>위험 높음</span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                2회 틀림
+              </span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                6월 9일
+              </span>
+            </div>
+            <div class="wrong-meta" style="margin-top:5px;">
+              <span class="wrong-meta-item">기억 HP:</span>
+              <div class="hp-bar">
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+              </div>
+            </div>
+          </div>
+          <button class="retry-btn" onclick="queueRetry(this)" style="position:static; margin-top:auto; align-self:flex-end;">재도전 →</button>
+        </div>
+
+        <!-- 카드 3: mid -->
+        <div class="wrong-card risk-mid" style="margin-top:8px;">
+          <div class="thumb">
+            <div class="thumb-lines">
+              <div class="thumb-line"></div>
+              <div class="thumb-line"></div>
+              <div class="thumb-line-math" style="background: var(--color-risk-mid);"></div>
+              <div class="thumb-line" style="width:70%;"></div>
+            </div>
+          </div>
+          <div class="wrong-info">
+            <span class="wrong-unit">적분</span>
+            <div class="wrong-title">넓이 계산 — 두 곡선 사이 영역</div>
+            <div class="wrong-meta">
+              <span class="wrong-meta-item"><span class="risk-dot mid"></span>위험 중간</span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                1회 틀림
+              </span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                6월 7일
+              </span>
+            </div>
+            <div class="wrong-meta" style="margin-top:5px;">
+              <span class="wrong-meta-item">기억 HP:</span>
+              <div class="hp-bar">
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip"></div>
+                <div class="hp-pip"></div>
+              </div>
+            </div>
+          </div>
+          <button class="retry-btn queued" style="position:static; margin-top:auto; align-self:flex-end;">추가됨 ✓</button>
+        </div>
+
+        <!-- 카드 4: low -->
+        <div class="wrong-card risk-low" style="margin-top:8px;">
+          <div class="thumb">
+            <div class="thumb-lines">
+              <div class="thumb-line"></div>
+              <div class="thumb-line" style="width:85%;"></div>
+              <div class="thumb-line-math" style="background: var(--color-risk-low);"></div>
+              <div class="thumb-line" style="width:55%;"></div>
+            </div>
+          </div>
+          <div class="wrong-info">
+            <span class="wrong-unit">확률과 통계</span>
+            <div class="wrong-title">조합론 — 중복 조합 응용 문제</div>
+            <div class="wrong-meta">
+              <span class="wrong-meta-item"><span class="risk-dot low"></span>위험 낮음</span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                1회 틀림
+              </span>
+              <span class="wrong-meta-item">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                6월 5일
+              </span>
+            </div>
+            <div class="wrong-meta" style="margin-top:5px;">
+              <span class="wrong-meta-item">기억 HP:</span>
+              <div class="hp-bar">
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip filled"></div>
+                <div class="hp-pip"></div>
+              </div>
+            </div>
+          </div>
+          <button class="retry-btn" onclick="queueRetry(this)" style="position:static; margin-top:auto; align-self:flex-end;">재도전 →</button>
+        </div>
+
+      </div><!-- /wrong-list -->
+
+      <!-- 빈 상태 (기본 숨김) -->
+      <div id="wrong-empty" style="display:none;">
+        <div class="empty-state">
+          <img class="empty-mascot" src="../visual-assets/mascot-v0.1/main.png"
+               onerror="this.style.display='none'; this.insertAdjacentHTML('afterend','<div style=\'font-size:48px;\'>🐳</div>')"
+               alt="순공이">
+          <div class="empty-title">아직 틀린 문제가 없어요!</div>
+          <div class="empty-sub">잘 하고 있어요 🎉<br>문제를 풀면 여기서 복습할 수 있어요.</div>
+        </div>
+        <button class="demo-toggle-btn" onclick="toggleEmpty()">목록으로 돌아가기</button>
+      </div>
+
+    </div><!-- /scroll-body -->
+
+    <!-- 하단 네비 — 오답 탭 활성 -->
+    <div class="bottom-nav">
+      <button class="nav-item" aria-label="오늘">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        <span class="nav-label">오늘</span>
+      </button>
+      <button class="nav-item" aria-label="내 여정">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
+        <span class="nav-label">내 여정</span>
+      </button>
+      <div class="nav-fab-wrapper" aria-label="문제 올리기">
+        <div class="nav-fab">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+      </div>
+      <button class="nav-item active" aria-label="오답">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+        <span class="nav-label">오답</span>
+      </button>
+      <button class="nav-item" aria-label="그래프">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+        <span class="nav-label">그래프</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ───────────────────────────────
+       화면 2: 캘린더
+  ─────────────────────────────────── -->
+  <div id="screen-calendar" class="screen">
+    <!-- 헤더 -->
+    <div class="header">
+      <img class="header-mascot" src="../visual-assets/mascot-v0.1/repeat_normal.png"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+           alt="순공이 회독">
+      <div class="header-mascot-fallback" style="display:none;">🐳</div>
+      <div class="header-text">
+        <div class="header-title">회독 캘린더</div>
+        <div class="header-sub">잊기 전에 다시 보는 게 핵심이에요</div>
+      </div>
+      <button class="header-bell" aria-label="알림">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="scroll-body">
+
+      <!-- 이번 주 스탯 -->
+      <div>
+        <div class="section-label">이번 주 회독 현황</div>
+        <div class="stat-bar">
+          <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">완료</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3</div>
+            <div class="stat-label">오늘 예정</div>
+          </div>
+          <div class="stat-item streak">
+            <div class="stat-value">🔥 7</div>
+            <div class="stat-label">연속 일수</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 캘린더 카드 -->
+      <div class="card" style="padding:14px;">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="changeMonth(-1)" aria-label="이전 달">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span class="cal-month-label" id="cal-month-label">2026년 6월</span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="today-jump-btn" onclick="jumpToday()">오늘</button>
+            <button class="cal-nav-btn" onclick="changeMonth(1)" aria-label="다음 달">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 요일 -->
+        <div class="cal-weekdays">
+          <div class="cal-weekday">일</div>
+          <div class="cal-weekday">월</div>
+          <div class="cal-weekday">화</div>
+          <div class="cal-weekday">수</div>
+          <div class="cal-weekday">목</div>
+          <div class="cal-weekday">금</div>
+          <div class="cal-weekday">토</div>
+        </div>
+
+        <!-- 날짜 그리드 (JS로 생성) -->
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+
+      <!-- 범례 -->
+      <div class="card" style="padding:12px 14px;">
+        <div class="section-label" style="margin-bottom:8px;">회독 차수 범례</div>
+        <div class="cal-legend">
+          <div class="legend-item"><div class="dot r1d"></div><span>1일 회독</span></div>
+          <div class="legend-item"><div class="dot r3d"></div><span>3일 회독</span></div>
+          <div class="legend-item"><div class="dot r7d"></div><span>7일 회독</span></div>
+          <div class="legend-item"><div class="dot r14d"></div><span>14일 회독</span></div>
+          <div class="legend-item">
+            <div class="dot r1d" style="box-shadow:0 0 0 1.5px var(--color-risk-high);"></div>
+            <span>기한 초과</span>
+          </div>
+          <div class="legend-item">
+            <div class="dot r3d" style="opacity:0.35;"></div>
+            <span>완료</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /scroll-body -->
+
+    <!-- 하단 시트 -->
+    <div class="sheet-overlay" id="cal-overlay" onclick="closeSheet()"></div>
+    <div class="sheet" id="cal-sheet">
+      <div class="sheet-handle" onclick="closeSheet()" style="cursor:pointer;"></div>
+      <div class="sheet-date-label" id="sheet-date-label">6월 10일 (오늘)</div>
+      <div id="sheet-quest-list"></div>
+    </div>
+
+    <!-- 하단 네비 — 오늘 탭 활성 (캘린더는 오늘 진입경로) -->
+    <div class="bottom-nav">
+      <button class="nav-item active" aria-label="오늘">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        <span class="nav-label">오늘</span>
+      </button>
+      <button class="nav-item" aria-label="내 여정">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></span>
+        <span class="nav-label">내 여정</span>
+      </button>
+      <div class="nav-fab-wrapper" aria-label="문제 올리기">
+        <div class="nav-fab">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+      </div>
+      <button class="nav-item" aria-label="오답">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+        <span class="nav-label">오답</span>
+      </button>
+      <button class="nav-item" aria-label="그래프">
+        <span class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+        <span class="nav-label">그래프</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+/* ── 화면 전환 ── */
+function switchScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+/* ── 필터 칩 토글 ── */
+function toggleChip(el) {
+  el.classList.toggle('active');
+}
+
+/* ── 재도전 버튼 → 회독 큐 추가 ── */
+function queueRetry(btn) {
+  btn.textContent = '추가됨 ✓';
+  btn.classList.add('queued');
+}
+
+/* ── 빈 상태 토글 ── */
+function toggleEmpty() {
+  const list = document.getElementById('wrong-list');
+  const empty = document.getElementById('wrong-empty');
+  const isShowingEmpty = empty.style.display !== 'none';
+  list.style.display = isShowingEmpty ? 'block' : 'none';
+  empty.style.display = isShowingEmpty ? 'none' : 'block';
+}
+
+/* ─────────────────────────────────
+   캘린더 로직
+───────────────────────────────── */
+
+// 더미 퀘스트 데이터 (날짜 → 퀘스트 배열)
+const TODAY = new Date(2026, 5, 10); // 2026-06-10
+let calYear = 2026, calMonth = 5; // 0-indexed
+
+const quests = {
+  // 형식: "YYYY-MM-DD": [{round, subject, unit, minutes, done}]
+  "2026-06-01": [{round:"r3d", subject:"수학", unit:"함수의 극한 — 연속 판별", minutes:20, done:true}],
+  "2026-06-02": [{round:"r1d", subject:"수학", unit:"적분 응용 — 곡선 넓이", minutes:15, done:true},{round:"r7d",subject:"국어",unit:"독서 지문 독해 전략",minutes:25,done:true}],
+  "2026-06-03": [{round:"r14d", subject:"영어", unit:"빈칸 추론 유형 정리", minutes:30, done:true}],
+  "2026-06-04": [{round:"r1d", subject:"수학", unit:"수열의 극한 — 점화식", minutes:20, done:true}],
+  "2026-06-05": [{round:"r3d", subject:"국어", unit:"문학 표현기법 분류", minutes:20, done:true},{round:"r1d",subject:"영어",unit:"어휘 — 혼동 빈출 50선",minutes:15,done:true}],
+  "2026-06-07": [{round:"r7d", subject:"수학", unit:"확률분포 — 정규분포", minutes:25, done:true},{round:"r1d",subject:"수학",unit:"이항정리 응용",minutes:15,done:false, overdue:true}],
+  "2026-06-08": [{round:"r1d", subject:"수학", unit:"수열의 극한 복습 2회차", minutes:20, done:true},{round:"r3d",subject:"영어",unit:"장문 독해 시간 단축",minutes:30,done:true}],
+  "2026-06-09": [{round:"r1d", subject:"국어", unit:"화법·작문 기출 분석", minutes:20, done:false, overdue:true}],
+  "2026-06-10": [{round:"r1d", subject:"수학", unit:"미분 — 접선의 방정식", minutes:15, done:false},{round:"r3d",subject:"수학",unit:"수열의 극한 — 점화식 3회",minutes:20,done:false},{round:"r7d",subject:"영어",unit:"듣기 유형별 전략",minutes:25,done:false}],
+  "2026-06-12": [{round:"r1d", subject:"수학", unit:"적분 — 치환적분", minutes:20, done:false}],
+  "2026-06-13": [{round:"r3d", subject:"국어", unit:"화법 — 협상 유형", minutes:20, done:false},{round:"r14d",subject:"수학",unit:"함수의 극한 14일 회독",minutes:30,done:false}],
+  "2026-06-15": [{round:"r7d", subject:"수학", unit:"확률 — 조건부 확률", minutes:25, done:false},{round:"r1d",subject:"영어",unit:"영작 — 어순 교정",minutes:15,done:false}],
+  "2026-06-17": [{round:"r1d", subject:"수학", unit:"지수·로그 응용", minutes:20, done:false},{round:"r3d",subject:"수학",unit:"미분 복습 3회차",minutes:25,done:false}],
+  "2026-06-20": [{round:"r14d", subject:"국어", unit:"문학 — 현대시 감상법 14일", minutes:30, done:false}],
+  "2026-06-21": [{round:"r7d", subject:"영어", unit:"문법 — 관계사 심화", minutes:20, done:false}],
+  "2026-06-24": [{round:"r1d", subject:"수학", unit:"삼각함수 미분", minutes:15, done:false},{round:"r3d",subject:"영어",unit:"독해 3회차 — 주제 파악",minutes:20,done:false}],
+};
+
+function dateKey(y, m, d) {
+  return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+}
+
+function buildCalendar() {
+  const grid = document.getElementById('cal-grid');
+  const label = document.getElementById('cal-month-label');
+
+  const monthNames = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
+  label.textContent = `${calYear}년 ${monthNames[calMonth]}`;
+
+  grid.innerHTML = '';
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+
+  // 이전 달 빈 칸
+  for (let i = 0; i < firstDay; i++) {
+    const d = prevDays - firstDay + 1 + i;
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell other-month';
+    cell.innerHTML = `<div class="cal-date">${d}</div><div class="dots"></div>`;
+    grid.appendChild(cell);
+  }
+
+  // 현재 달
+  for (let d = 1; d <= daysInMonth; d++) {
+    const key = dateKey(calYear, calMonth, d);
+    const isToday = (calYear === TODAY.getFullYear() && calMonth === TODAY.getMonth() && d === TODAY.getDate());
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell' + (isToday ? ' today' : '');
+    cell.dataset.key = key;
+    cell.dataset.day = d;
+
+    const dateDiv = document.createElement('div');
+    dateDiv.className = 'cal-date';
+    dateDiv.textContent = d;
+
+    const dotsDiv = document.createElement('div');
+    dotsDiv.className = 'dots';
+
+    const dayQuests = quests[key] || [];
+    const visible = dayQuests.slice(0, 3);
+    visible.forEach(q => {
+      const dot = document.createElement('div');
+      dot.className = 'dot ' + q.round + (q.done ? ' done' : '') + (q.overdue ? ' overdue' : '');
+      dotsDiv.appendChild(dot);
+    });
+    if (dayQuests.length > 3) {
+      const more = document.createElement('span');
+      more.className = 'dots-more';
+      more.textContent = '+' + (dayQuests.length - 3);
+      dotsDiv.appendChild(more);
+    }
+
+    cell.appendChild(dateDiv);
+    cell.appendChild(dotsDiv);
+
+    cell.addEventListener('click', () => openSheet(key, d));
+    grid.appendChild(cell);
+  }
+
+  // 다음 달 빈 칸
+  const totalCells = firstDay + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let i = 1; i <= remaining; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell other-month';
+    cell.innerHTML = `<div class="cal-date">${i}</div><div class="dots"></div>`;
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  buildCalendar();
+  closeSheet();
+}
+
+function jumpToday() {
+  calYear = TODAY.getFullYear();
+  calMonth = TODAY.getMonth();
+  buildCalendar();
+  const todayKey = dateKey(calYear, calMonth, TODAY.getDate());
+  openSheet(todayKey, TODAY.getDate());
+}
+
+// 선택 상태
+let selectedCell = null;
+function openSheet(key, day) {
+  // 이전 선택 해제
+  if (selectedCell) selectedCell.classList.remove('selected');
+  const cellEl = document.querySelector(`.cal-cell[data-key="${key}"]`);
+  if (cellEl) { cellEl.classList.add('selected'); selectedCell = cellEl; }
+
+  const monthNames = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
+  const isToday = (key === dateKey(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()));
+  document.getElementById('sheet-date-label').textContent =
+    `${monthNames[calMonth]} ${day}일${isToday ? ' (오늘)' : ''}`;
+
+  const dayQuests = quests[key] || [];
+  const listEl = document.getElementById('sheet-quest-list');
+
+  if (dayQuests.length === 0) {
+    listEl.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px 0;text-align:center;">
+        <div style="font-size:36px;opacity:0.5;">☁️</div>
+        <div style="font-size:14px;font-weight:700;color:var(--color-text-strong);">오늘은 쉬는 날이에요</div>
+        <div style="font-size:12px;color:var(--color-text-muted);">충분한 휴식도 공부의 일부예요!</div>
+      </div>`;
+  } else {
+    const roundLabel = {r1d:"1일 회독", r3d:"3일 회독", r7d:"7일 회독", r14d:"14일 회독"};
+    listEl.innerHTML = dayQuests.map((q, i) => `
+      <div class="sheet-quest-item">
+        <span class="quest-round-badge ${q.round}">${roundLabel[q.round]}</span>
+        <div class="quest-info">
+          <div class="quest-subject">${q.subject}</div>
+          <div class="quest-unit">${q.unit}</div>
+          <div class="quest-time">예상 ${q.minutes}분</div>
+        </div>
+        <button class="start-btn${q.done ? ' done-btn' : ''}" onclick="markDone(this, '${key}', ${i})">
+          ${q.done ? '완료 ✓' : '시작 →'}
+        </button>
+      </div>`).join('');
+  }
+
+  document.getElementById('cal-overlay').classList.add('open');
+  document.getElementById('cal-sheet').classList.add('open');
+}
+
+function closeSheet() {
+  document.getElementById('cal-overlay').classList.remove('open');
+  document.getElementById('cal-sheet').classList.remove('open');
+  if (selectedCell) { selectedCell.classList.remove('selected'); selectedCell = null; }
+}
+
+function markDone(btn, key, idx) {
+  if (quests[key] && quests[key][idx]) {
+    quests[key][idx].done = true;
+    btn.textContent = '완료 ✓';
+    btn.classList.add('done-btn');
+    buildCalendar(); // 점 배지 갱신
+  }
+}
+
+// 초기화
+buildCalendar();
+</script>
+</body>
+</html>
