@@ -15,7 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="antialiased">{children}</body>
+      {/* suppressHydrationWarning: Grammarly 등 브라우저 확장이 <body>에 주입하는
+          속성(data-gr-ext-installed 등)으로 인한 하이드레이션 경고 무시 */}
+      <body className="antialiased" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }
