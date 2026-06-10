@@ -33,9 +33,14 @@ function mapToContractQuest(db: DbQuest): Quest {
   };
 }
 
-export function useTodayQuests(): { quests: Quest[]; loading: boolean } {
+export function useTodayQuests(): {
+  quests: Quest[];
+  loading: boolean;
+  error: string | null;
+} {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -48,7 +53,7 @@ export function useTodayQuests(): { quests: Quest[]; loading: boolean } {
         const rows = await getTodayQuestsFromDb(user.id);
         setQuests(rows.map(mapToContractQuest));
       } catch (e) {
-        console.error("[useTodayQuests]", e);
+        setError(e instanceof Error ? e.message : "퀘스트를 불러오지 못했습니다.");
       } finally {
         setLoading(false);
       }
@@ -56,5 +61,5 @@ export function useTodayQuests(): { quests: Quest[]; loading: boolean } {
     load();
   }, []);
 
-  return { quests, loading };
+  return { quests, loading, error };
 }
