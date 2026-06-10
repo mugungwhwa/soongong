@@ -12,9 +12,11 @@
 ## 1. 톤 잠금 (Light Study Garden)
 
 순공대장 UI는 **Light Study Garden** 단일 톤. 다크모드 도입 / 어두운 RPG 톤 회귀 금지 (구체 폐기 목록은 CLAUDE.md §8에 잠금 — 본 문서는 참조).
-- 베이스: `#F8FBF7` 크림
-- 강조: 민트 `#7CC97C` (Duolingo 노랑/형광 회피 — `--color-xp`도 soft golden `#F2C94C`로 차별)
+- 베이스: 크림 계열 (`--color-bg` 등 — 코드 SoT `tokens.css` 기준)
+- 강조: **오션 `#2AB8D0`** (메인 브랜드 기본색, `design-system-lock.md` v1.0 Ocean 팔레트) — `--color-xp`는 soft golden `#F2C94C`로 차별
 - 위험도: 채도 ≤60 soft 톤 (UI 설계.md §3)
+
+> **색 팔레트 = Ocean** (2026-06-09 SOO-17 잠금, SOO-16에서 `tokens.css` 실적용). 구 민트 `#7CC97C`는 폐기. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 Ocean**(`500`=`#2AB8D0` / `700`=`#1A8FAD` / `900`=`#0E5C82`). 전체 스케일은 `docs/design-system/2026-06-09-design-system-lock.md` §1.
 
 ---
 
@@ -25,7 +27,7 @@
 | 카테고리 | 변수 prefix | 비고 |
 |---|---|---|
 | Surface | `--color-bg`, `--color-bg-elevated`, `--color-bg-sunken` | Light Study Garden 베이스 |
-| Brand Mint | `--color-mint-{50,100,300,500,700,900}` | 6단계 scale, `500`이 primary |
+| Brand (Ocean) | `--color-mint-{50,100,300,500,700,900}` | 변수명은 호환 위해 `mint` 유지, **값 = Ocean 팔레트** (`500`=`#2AB8D0` primary). lock v1.0 |
 | Risk | `--color-risk-{low,mid,high}` | 회독 위험도, soft (채도 ≤60) |
 | Reward / XP | `--color-xp`, `--color-xp-soft` | Duolingo `#ffc800`과 차별 |
 | Text | `--color-text-{strong,default,muted,inverse,on-warm}` | 5단계 |
@@ -33,7 +35,7 @@
 | Gradient | `--gradient-quest-map` | 등록 gradient만 사용 (lint 통과 대상) |
 | Radius | `--radius-{sm,md,lg,xl,pill}` | 8/12/16/24/9999px |
 | Spacing | `--space-{1..12}` | 4px base, scale 1=4 / 2=8 / 4=16 / 6=24 / 12=48 |
-| Shadow | `--shadow-{card,elevated}` | 민트톤 alpha 기반 (rgba(46,107,46,…)) |
+| Shadow | `--shadow-{card,elevated}` | 오션톤 alpha 기반 (rgba(14,92,130,…)) |
 | Motion | `--ease-out-soft`, `--duration-{fast,mid,slow}` | 160/240/380ms |
 | Typography | `--font-{display,body}` | Pretendard 단일 (v1.3.9 webfont) |
 

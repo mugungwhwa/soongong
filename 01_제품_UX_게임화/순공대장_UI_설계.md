@@ -78,7 +78,7 @@ PRIMARY 레퍼런스 = 듀오링고. 단일 차용은 "베끼기"가 되고, 단
 | 듀오링고 글로벌 패턴 | 우리 결정 | 이유 / 적용처 |
 |---|---|---|
 | 마스코트 전 화면 노출 | **차용** | 이미 10/10 적용 (Day 7 design synthesis 검증 완료). 듀공 "순공이"가 학습 동반자 역할. |
-| Primary green #58cc02 + 액센트 노랑 #ffc800 | **변형** | 우리 = 민트 #7CC97C + soft golden #F2C94C. 저채도 light-saturation, "Light Study Garden" 톤 합치. |
+| Primary green #58cc02 + 액센트 노랑 #ffc800 | **변형** | 우리 = 오션 #2AB8D0 + soft golden #F2C94C. 저채도 light-saturation, "Light Study Garden" 톤 합치. (색 SSoT = lock v1.0) |
 | Feather Bold (표제) + DIN Round (본문) — 표제/본문 폰트 분리 | **차용 (한글 적용)** | 표제 = Rockon 둥근체 (Heavy/Black/Ultra Bold), 본문 = Pretendard. 분리 원칙 동일, 패밀리는 한국화. |
 | Bouncy spring 애니메이션 전반 | **부분 차용** | 마스코트 등장 (framer-motion spring, result-rewards Day 5 적용) 한정. 과한 bouncing button/card 거절 — 게이미피케이션 -20dB. |
 | 빨강 하트(생명, 5개 한정) | **변형** | 우리 = 위험도 데사처드 (#E29B9B 등) + 기억 HP (0-100 점수형). 손실 회피 자극 부드럽게. |
@@ -124,7 +124,7 @@ Light Study Garden
 |---|---|
 | 배경 | 크림 / 화이트 |
 | 카드 | 순백 + 16~20px 라운드 + 부드러운 그림자 |
-| 포인트 | 소프트 민트 그린 |
+| 포인트 | 소프트 오션 (틸 `#2AB8D0`) |
 | 캐릭터 | **순공이 (가안, 듀공 형태)** — 친근 100%, 압박 0% |
 | 버튼 | 큰 라운드 CTA, 풍선 그림자 |
 | 텍스트 | Pretendard 한글, 친근하고 짧은 문장 |
@@ -135,7 +135,9 @@ Light Study Garden
 
 # 3. 컬러 팔레트
 
-이미지 시안에서 추출한 팔레트. **이게 SSoT.** 본 문서가 우선이 아니라 `app_UI.png` / `web_ui.png` 픽셀 값이 최종 기준.
+> ⚠️ **색 팔레트 최종 권위 = `docs/design-system/2026-06-09-design-system-lock.md` v1.0 (Ocean).** 2026-06-09 SOO-17에서 색=바다(Ocean)로 확정되었고 SOO-16에서 `tokens.css`에 실적용 완료. **아래 코드블록의 `#7CC97C` 그린 계열 값은 v2.3 당시 기록(폐기) — 신규 작업은 Ocean(`#2AB8D0`/`#1A8FAD`/`#0E5C82`)을 쓴다.** 본 §3 그린 hex 전면 재기록은 별도 작업으로 보류 중.
+
+이미지 시안에서 추출한 팔레트. 단, **색은 위 Ocean lock이 우선** (CLAUDE.md §2 폐기정책 예외: 시안이 폐기정책 위반 시 정책 우선). 레이아웃/형태는 `app_UI.png` / `web_ui.png` 참조.
 
 ```text
 Background Primary:  #F8FBF7   /* 크림, 메인 배경 */
@@ -166,7 +168,7 @@ Text Disabled:       #BBBBBB
 
 | 색 | 의미 |
 |---|---|
-| 민트 그린 | 회독퀘스트 완료, XP, 성공, 메인 CTA |
+| 오션 (틸) | 회독퀘스트 완료, XP, 성공, 메인 CTA |
 | 골드 | 보상, 뱃지, 별, 레벨 |
 | 빨강 (소프트) | 망각위험 높음, 오답 |
 | 주황 | 오늘 회독퀘스트 권장, 중간 위험 |
@@ -247,7 +249,7 @@ Text Disabled:       #BBBBBB
 ```
 
 웹 구조는 **사이드바 + 메인 12-그리드**.
-- 사이드바: 좌측 고정, 아이콘 + 라벨, active 시 민트 fill
+- 사이드바: 좌측 고정, 아이콘 + 라벨, active 시 오션 fill
 - 메인: 카드 그리드 2~3열 반응형
 - 토스트는 우측 하단에서 부드럽게 슬라이드 인
 
@@ -325,7 +327,7 @@ Text Disabled:       #BBBBBB
 | 카드 배경 | `#FFFFFF` |
 | 카드 라운드 | 20px |
 | 그림자 | `0 2px 8px rgba(0,0,0,0.06)` |
-| 번호 동그라미 | 민트 fill, 흰 숫자, 32x32 |
+| 번호 동그라미 | 오션 fill, 흰 숫자, 32x32 |
 | 배지 | radius 999px (pill), 텍스트 12px, 패딩 4/10 |
 | 난이도 칩 | 흰 fill + 옅은 그린 테두리 |
 | CTA | 메인 그린 fill, radius 16, 높이 48 |
@@ -360,7 +362,7 @@ D1 D3 D7 D14
 완료 완료 오늘 예정
 ```
 
-- 완료 노드: 민트 fill
+- 완료 노드: 오션 fill
 - 오늘 노드: 골드 ring + 라임 fill
 - 예정 노드: 회색 outline
 
@@ -589,7 +591,7 @@ strong: 0 8px 24px rgba(0,0,0,0.12)
 | 상태 | 규칙 |
 |---|---|
 | Hover (웹) | 배경 5% 어둡게 또는 그림자 medium |
-| Focus | 민트 outline 2px + offset 2px |
+| Focus | 오션 outline (`#1A8FAD`) 2px + offset 2px |
 | Active/Pressed | 배경 8% 어둡게, scale 0.98 |
 | Disabled | 텍스트/아이콘 `#BBBBBB`, 배경 `#F0F5EE` |
 | Loading | Skeleton: 옅은 그린 shimmer |
@@ -612,7 +614,7 @@ strong: 0 8px 24px rgba(0,0,0,0.12)
 # 15. 접근성 (a11y) 가이드
 
 - 모든 텍스트는 배경 대비 WCAG AA(4.5:1) 이상
-- 민트 그린 단독으로 정보 전달 금지 — 항상 텍스트/아이콘 동반
+- 오션(틸) 단독으로 정보 전달 금지 — 항상 텍스트/아이콘 동반
 - 위험도 배지는 색만이 아니라 텍스트("높음/권장/안정")로도 구분
 - 버튼 최소 hit area 44x44 (모바일)
 - 키보드 포커스 outline 절대 제거 금지
@@ -626,7 +628,7 @@ strong: 0 8px 24px rgba(0,0,0,0.12)
 캐릭터: 순공이 (가안 — 듀공 모티프, 추후 확정)
 톤: Light Study Garden — 듀오링고 리텐션 + 한국 학습앱 카드 메타 + 친근 마스코트 + 연두 정원
 핵심 화면: 오늘의 회독퀘스트 3개
-핵심 색: 크림 + 민트 그린 + 골드 / 위험도 빨강·주황·파랑 (소프트)
+핵심 색: 크림 + 오션(틸) + 골드 / 위험도 빨강·주황·파랑 (소프트)
 핵심 UI: 흰 카드 + 20px 라운드 + 부드러운 그림자
 핵심 감정: 응원감 + 매일 들어오는 가벼운 루틴
 용어: 회독(백서) = 회독퀘스트(UI 라벨)
@@ -657,8 +659,8 @@ Brand:
 - UI label: 회독퀘스트 (= 회독, internal term)
 
 Color tokens:
-bg #F8FBF7, surface #FFFFFF, primary #7CC97C, primary-strong #5BAE6E,
-accent-lime #B8E5A4, danger #E85C5C / danger-bg #FCE8E8,
+bg #F8FBF7, surface #FFFFFF, primary #2AB8D0, primary-strong #1A8FAD,  /* Ocean — lock v1.0 */
+accent #7DD8EA, danger #E85C5C / danger-bg #FCE8E8,
 warning #F5A85E / warning-bg #FFF1DF, info #6FA9E8 / info-bg #E6F0FC,
 reward-gold #F5C242, text #2E2E2E, text-sub #6E6E6E.
 
