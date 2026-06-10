@@ -3,11 +3,31 @@ import type { CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Supabase 미설정 처리.
+  // - 프로덕션: env 누락은 설정 오류다. 인증을 우회하면 보호 라우트가 노출되므로
+  //   조용히 통과시키지 않고 fail-closed로 차단(503).
+  // - 개발/프리뷰: 백엔드 없이도 화면이 보이도록 인증을 건너뛰고 그대로 렌더.
+  //   (이전엔 빈 env로 createServerClient가 throw해 전 라우트가 500이었음.)
+  if (!supabaseUrl || !supabaseAnonKey) {
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        "[middleware] Supabase 환경변수 누락 (production) — 요청을 차단합니다. 환경 설정을 확인하세요.",
+      );
+      return new NextResponse("Service temporarily unavailable", {
+        status: 503,
+      });
+    }
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
