@@ -20,6 +20,8 @@ create table public.parsed_learning_objects (
     check (review_priority in ('low','medium','high')),
   confidence_score real
     check (confidence_score >= 0 and confidence_score <= 1),
+  reviewer_status text not null default 'pending'
+    check (reviewer_status in ('pending','approved','rejected')),
   created_at timestamptz not null default now()
 );
 
@@ -34,11 +36,33 @@ create index plo_subject_unit_idx
 
 alter table public.parsed_learning_objects enable row level security;
 
+create index plo_reviewer_status_idx
+  on public.parsed_learning_objects (reviewer_status)
+  where reviewer_status = 'pending';
+
 create policy "plo: self read"
   on public.parsed_learning_objects for select
   using (auth.uid() = user_id);
 
--- insert/update는 service_role(Edge Function)만
+create policy "plo: admin read"
+  on public.parsed_learning_objects for select
+  using (exists (
+    select 1 from public.users
+    where id = auth.uid() and role in ('admin','reviewer')
+  ));
+
+create policy "plo: reviewer update"
+  on public.parsed_learning_objects for update
+  using (
+    auth.uid() = user_id or
+    exists (select 1 from public.users where id = auth.uid() and role in ('reviewer','admin'))
+  )
+  with check (
+    auth.uid() = user_id or
+    exists (select 1 from public.users where id = auth.uid() and role in ('reviewer','admin'))
+  );
+
+-- insert는 service_role(Edge Function)만
 
 -- audit trigger (0012_audit_logs.sql의 DO 블록은 이 테이블이 없을 때 skip됨 → 여기서 생성)
 create or replace function public.audit_plo_changes()
