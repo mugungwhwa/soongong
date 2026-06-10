@@ -1,15 +1,21 @@
 # 순공대장 — 다음 세션 진입점 (RESUME)
 
 > **이 문서를 먼저 읽으세요.** 5분 안에 현재 상태 + 다음 액션이 파악되도록 잠금.
-> 작성일: 2026-05-14 / **최종 갱신: 2026-05-19 (전략정리 v1.1 SSoT 정합)**
+> 작성일: 2026-05-14 / **최종 갱신: 2026-06-10 (코드 트랙 P0~P8 main 통합 + Ocean 디자인 적용 + Multica 운영 반영)**
 
 ---
 
 ## 1. 현재 위치 (한 줄)
 
-순공대장 MVP 1차의 **문서 트랙은 100% 완료**. 환경 결정 + 마스코트 자산 + agent 실행만 남음.
+순공대장 MVP 1차의 **문서 트랙 100% 완료 + 코드 트랙이 P0~P8 전부 main에 통합되어 가동 중**. 이제 Multica 에이전트 플랫폼 위에서 이슈 단위(SOO-XX)로 기능을 다듬는 단계.
 
-**2026-05-19 추가**: 게임화 SSoT v1.0 PR #4 main 머지 완료. 상위 사업/엔진/포지셔닝 SSoT 신규 잠금 (`2026-05-19-순공대장_전략_정리.md` v1.1) — 콴다 차이, 듀오링고 메커니즘 이식, 5티어 비즈모델, 데이터 아키텍처 하이브리드, 버티컬·글로벌 순서, SparkClaw 60일 우선순위 모두 명시. CLAUDE.md/핵심요약/SparkClaw 소개서/소스 인덱스/RESUME 5개 파일 정합 완료.
+**2026-06-10 현재 상태 (5/19 이후 큰 변화):**
+- **코드 트랙 점화** — P0 와꾸 스켈레톤 → P1~P8 sub-plan이 전부 실제 코드로 main 머지됨 (Supabase 인증·DB·Edge Functions·홈/플레이/게임/관리자 UI). 더 이상 "문서만 있는" 상태가 아님.
+- **디자인 시스템 잠금 + 적용** — SOO-17로 Ocean 팔레트·로고 A·레이아웃 v3 스펙 잠금(`design-system-lock.md` v1.0) → SOO-16(PR #22)으로 `tokens.css` 민트→**오션 실적용 완료**. 구 민트 hex 0건.
+- **모바일 카메라 직행** — SOO-26(PR #23) "문제사진" 버튼이 모바일에서 후면 카메라 바로 호출(`capture="environment"`).
+- **Multica 운영 체계** — Orchestration Lead 중심 스쿼드 구조 v6 잠금(`2026-06-08-multica-squad-structure.md`). 에이전트가 이슈를 받아 PR 생성, Mike 승인 후 머지하는 루프 가동.
+
+> ⚠️ **주의**: 본 §3은 마일스톤 요약이라 개별 커밋 해시는 생략. 정확한 최신 커밋은 항상 `git log --oneline -10` 로 확인.
 
 ---
 
@@ -17,124 +23,120 @@
 
 | 항목 | 값 |
 |---|---|
-| 프로젝트 | 순공대장 — 수능생 듀오링고형 AI 회독 앱 |
+| 프로젝트 | 순공대장 — 수능생 듀오링고형 AI **회독 리텐션 엔진** |
 | 트랙 | SparkClaw 1인 창업 |
-| 마스코트 | **"순공이" (가안, 듀공 모티프)** — Midjourney+Canva 직접 작업 |
+| 한 줄 차별 | 콴다는 학생의 '막힘'을 풀고, 순공대장은 학생의 '까먹음'을 푼다 |
+| 마스코트 | **"순공이" (가안, 듀공 모티프)** — Midjourney/GPT-4o + Canva 직접 작업 |
 | UI 라벨 | 사용자 노출 = **"회독퀘스트"** / 백서 = "회독" |
-| 톤 | **Light Study Garden** (Dark RPG 폐기됨) |
-| 시안 SSoT | `app_UI.png` / `web_ui.png` (텍스트와 충돌 시 이미지 우선) |
-| 컬러 | 크림 `#F8FBF7` + 민트 `#7CC97C` + 위험도(소프트 빨강·주황·파랑) |
+| 톤 | **Light Study Garden — 바다(Ocean) 컨셉** (Dark RPG 폐기됨) |
+| 시안 SSoT | `app_UI.png` / `web_ui.png` (텍스트와 충돌 시 이미지 우선, 단 §8 폐기정책 위반 시 정책 우선) |
+| 컬러 | 크림 `#F8FBF7` + **오션 `#2AB8D0`/`#1A8FAD`/`#0E5C82`** + 위험도(소프트) — 민트 `#7CC97C` 폐기 |
+| 사업 정체성 | **엔진 회사** (콘텐츠 회사 X) |
+| 데이터 아키텍처 | Postgres = truth (온톨로지 트리) + pgvector = 검색 (장기 SSoT) / MVP 1차는 FTS 우선 (§10) |
+| 비즈니스 모델 | 듀오링고형 5티어 하이브리드 (Free/Super/Max/가족/B2B2C + 시즌 IAP) |
 | 스택 | Next.js 15 + FSD 2.1 + Tailwind + shadcn + Supabase + Anthropic API |
-| 기간 | 8주 (W1-W8) |
+| 운영 플랫폼 | Multica 에이전트 (Orchestration Lead 라우팅, mugungwhwa 개인 계정) |
+| 기간 | 8주 (W1-W8) MVP 1차 |
 
 ---
 
-## 3. 11 Commits 요약 (`mugungwhwa/soongong` main)
+## 3. 코드 트랙 진척 (마일스톤 요약, `mugungwhwa/soongong` main)
 
-| # | Commit | 내용 |
+> 5/19까지: 기획/플랜 문서 11 commits. 이후 P0~P8 코드가 트랙별로 main에 통합됨. (개별 해시는 `git log`로)
+
+| 트랙 | 내용 | 상태 |
 |---|---|---|
-| 1 | `296d5b2` | UI 시안 SSoT + 순공이/회독퀘스트 + Dark RPG 폐기 |
-| 2 | `c04b00b` | 마스터 플랜 (8 sub-project + DB 9테이블 + agent matrix) |
-| 3 | `d2ce2fc` | P1 Foundation sub-plan |
-| 4 | `69f3c4b` | P3 AI Pipeline sub-plan ⚠️ |
-| 5 | `22ecb3b` | UI v2.3 토스 정밀화 + 비교 레퍼런스 |
-| 6 | `4d26dd3` | 외주 폐기 → Midjourney+Canva 자산 inventory |
-| 7 | `113218f` | Agent 듀얼 트랙 + SparkClaw §10 |
-| 8 | `ee17bca` | 환경 결정 + .env.local 템플릿 |
-| 9 | `35113a6` | P2 Source Intake sub-plan |
-| 10 | `2709c27` | P4/P7/P8 BE sub-plan 묶음 |
-| 11 | `5d3d331` | P5/P6 UI sub-plan — P1-P8 트리오 완성 |
+| **P0 와꾸** | Day1-7 데모 스켈레톤 + main docs + 게임화 SSoT v1.0 | ✅ main |
+| **P1 Foundation** | Supabase SSR 인증 + users 테이블 + 디자인 토큰 게이트(`lint:tokens`) | ✅ main |
+| **P2 Source Intake** | DB 마이그레이션 3종 + Edge Functions(compliance-gate/cleanup-raw) + source 슬라이스 + upload 4-옵션 시트 + compliance eval 게이트 | ✅ main |
+| **P4 Review Scheduling** | review_quests 테이블 + RLS + 망각위험 함수 + schedule-next-review/daily-quest-builder Edge Functions + quest entity | ✅ main |
+| **P5 Home Quest UI** | 홈 위젯 실데이터 계약 연결 (SOO-6) | ✅ main |
+| **P6 Play/Recovery** | 회독 플레이 실데이터 배선 + 풀이 캔버스 + 오답회수 (SOO-7, PR #14) | ✅ main |
+| **P7 Game System** | XP/스트릭/기억HP/뱃지/등급/결과보상 | ✅ main |
+| **P8 Admin** | audit_logs/error_reports + 관리자 라우트 보호 + 검수 리스트·오류 신고 UI | ✅ main |
+| **SOO-10** | ai.ts mock 계약 + shared 타입 contracts 슬라이스 | ✅ main |
+| **SOO-16** | KaTeX 수식 렌더링 + formula_format 계약 + Ocean tokens.css 적용 (PR #22) | ✅ main |
+| **SOO-17** | 디자인 시스템 잠금 v1.0 + 인터랙션 스펙 (PR #20, #21) | ✅ main |
+| **SOO-19/23** | 듀오링고풍 비주얼 방향 목업 / 개인 학습 현황판 기획서·목업 | ✅ main |
+| **SOO-26** | 모바일 카메라 직행 `capture="environment"` (PR #23) | ✅ main |
+
+**P3 (AI 파이프라인/OCR)** — 핵심 모트. sub-plan 잠금됨(`p3-ai-pipeline.md`, `p3-curriculum-rag.md`). OCR 스파이크 PR #5는 **Draft로 파킹 중** (현재 트랙 아님). §10 데이터 아키텍처 정합 메모 참조.
 
 ---
 
 ## 4. 핵심 문서 (자주 열어볼 것)
 
 ```
+2026-05-19-순공대장_전략_정리.md (root)                 ← 사업/엔진/포지셔닝 상위 SSoT (v1.1)
 docs/
-├── RESUME.md                                          ← 지금 이 파일
-├── superpowers/plans/
-│   ├── 2026-05-14-soongong-mvp1-master.md            ← 전체 로드맵
-│   ├── 2026-05-14-soongong-mvp1-p1-foundation.md     ← W1 시작
-│   ├── 2026-05-14-soongong-mvp1-p2-source-intake.md
-│   ├── 2026-05-14-soongong-mvp1-p3-ai-pipeline.md    ← 게이트 ≥90%
-│   ├── 2026-05-14-soongong-mvp1-p4-review-scheduling.md
-│   ├── 2026-05-14-soongong-mvp1-p5-home-quest-ui.md
-│   ├── 2026-05-14-soongong-mvp1-p6-play-recovery-canvas.md
-│   ├── 2026-05-14-soongong-mvp1-p7-game-system.md
-│   └── 2026-05-14-soongong-mvp1-p8-admin.md
-├── setup/
-│   ├── 2026-05-14-environment-decisions.md           ← Mike 결정 25분
-│   └── .env.local.example
-├── visual-assets/
-│   └── 2026-05-14-soongong-asset-inventory.md        ← Midjourney+Canva 가이드
+├── RESUME.md                                          ← 지금 이 파일 (첫 진입점)
+├── design-system/2026-06-09-design-system-lock.md     ← Ocean 팔레트·로고 A·레이아웃 v3 잠금 v1.0
+├── design-system/2026-06-09-interaction-spec.md        ← 전 화면 인터랙션 + 수식 표시 규칙 v1.0
+├── design-tokens.md                                    ← 디자인 토큰 SSoT (lint:tokens 근거)
+├── superpowers/plans/2026-05-14-soongong-mvp1-{master,p1..p8}.md  ← 9개 plan
+├── superpowers/plans/2026-05-18-soongong-mvp1-p0-demo-skeleton.md ← 와꾸 7일 트랙
+├── superpowers/plans/2026-05-18-soongong-mvp1-p3-curriculum-rag.md ← P3 RAG (FTS 우선)
+├── setup/2026-05-14-environment-decisions.md           ← Mike 환경 결정
+├── visual-assets/2026-05-14-soongong-asset-inventory.md ← 시각 자산 가이드
+├── visual-assets/mascot-v0.1/                           ← Mike 마스코트 작업본
+├── mockups/soo-23-dashboard-spec.md                    ← 개인 학습 현황판 기획서
 └── agent-strategy/
-    └── 2026-05-14-agent-tracks.md                    ← 듀얼 Agent + 하네스
+    ├── 2026-05-14-agent-tracks.md                      ← 듀얼 Agent + 하네스
+    └── 2026-06-08-multica-squad-structure.md           ← Multica 스쿼드 구조 v6
 ```
 
-기획 SSoT: `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.3)
+기획 SSoT: `01_제품_UX_게임화/순공대장_UI_설계.md` (v2.4) / 게임화 SSoT: `01_제품_UX_게임화/게임성_기획_구조.md` (v1.0)
 
 ---
 
-## 5. Mike님의 남은 액션 (우선순위)
+## 5. 남은 액션 (우선순위)
 
-### 5.1 기술 트랙 (환경 + 마스코트 + agent 실행)
-
-| 우선순위 | 작업 | 시간 | 참조 |
-|---|---|---|---|
-| 🔥 1 | **환경 결정 4개** (Vercel/Supabase/Anthropic/OCR) | 25분 | `docs/setup/2026-05-14-environment-decisions.md` |
-| 🔥 2 | Vercel + Supabase 프로젝트 생성 + `.env.local` 채우기 | 30분 | 위 문서 §결정 1-3 후 액션 |
-| ⭐ 3 | Midjourney 마스코트 응원/축하 2종 | 30-60분 | `docs/visual-assets/...asset-inventory.md` §4 |
-| ⭐ 4 | Canva 앱 아이콘 + Favicon | 30분 | 위 문서 §5 |
-| 5 | (P3 게이트 결과 보고) Mathpix 계정 | 10분 | P3 sub-plan T9 |
-| 6 | Midjourney 추가 4종 (생각/위로/잠/놀람) | W2-4 | asset-inventory §3 |
-
-### 5.2 사업 트랙 — 다음 60일 우선순위 (전략정리 §10)
+### 5.1 제품/코드 트랙
 
 | 우선순위 | 작업 | 비고 |
 |---|---|---|
-| 🔥 1 | **본인 학원 베타** (2주) — 종이/Notion 수준 OK, 학생 5~10명, **완전 무료** 운영 | 회독 메커니즘만 검증 |
-| 🔥 2 | **베타 데이터 hero slide 1장** | SparkClaw deck용 — "이미 쓰고 있어요" 단계 가능 |
-| 🔥 3 | **부모 5명 인터뷰** — 결제 선호 모델 (구독 vs IAP vs 학원 부담) | 가격 모델 확정 입력값 |
-| ⭐ 4 | **온톨로지 v0.1** — 수학 수열 단원 1개라도 끝까지 | 다른 단원의 reference |
-| ⭐ 5 | **P3 데이터 아키텍처 명시화** — Postgres truth + pgvector 검색 (전략정리 §3.9 vs P3 plan 충돌 — 본 RESUME §10 참조) | sub-plan 수정 필요 |
-| 6 | **Max 티어 AI 기능 prototype** — Claude API로 AI 회독 코치 1개 | 가격 인상 명분 검증 |
-| 7 | **SparkClaw 모집 일정 추적** — 알림 신청 + 역산 일정 | 부트캠프 진입 |
-| 8 | **공동창업자 후보 리스트업** — CTO 또는 운영 리드 (옵션 B) | 시리즈 A 대비 |
+| 🔥 1 | **SOO-26 ⓑ — 카메라 FAB → 업로드 시트 전역 배선** | Track C UI Lead 진행 중. lint:tokens + design-review ≥ 70 + 전체 플로우 검증 후 PR |
+| 🔥 2 | **SOO-24 — 로그인 게이트 수정** | 비로그인 `/today` 접근 시 200 반환 버그 (미들웨어 보강) |
+| ⭐ 3 | **P3 데이터 아키텍처 정합 한 줄** (§10 (a)안) | p3-curriculum-rag.md에 "장기는 §3.9 하이브리드 수렴" 명시 (10분) |
+| 4 | **P3 OCR 스파이크 재개 시점 판단** (PR #5 Draft) | 카메라 트랙 안정화 후 P3 정식 착수 |
+
+### 5.2 사업 트랙 — 다음 60일 (전략정리 §10)
+
+| 우선순위 | 작업 | 비고 |
+|---|---|---|
+| 🔥 1 | **본인 학원 베타** (2주) — 학생 5~10명, 완전 무료 | 회독 메커니즘 검증 |
+| 🔥 2 | **베타 데이터 hero slide 1장** | SparkClaw deck용 |
+| 🔥 3 | **부모 5명 인터뷰** — 결제 선호 모델 | 가격 모델 확정 입력값 |
+| ⭐ 4 | **온톨로지 v0.1** — 수학 수열 단원 1개 끝까지 | 다른 단원 reference |
+| 5 | **SparkClaw 모집 일정 추적** | 부트캠프 진입 |
 
 ### 5.3 Mike 결단 항목 (전략정리 §8)
 
-- **A 트랙 (VC)** vs **B 트랙 (Cash-flow)** 선택 — 누구한테 사업 얘기할지가 달라짐
+- **A 트랙(VC)** vs **B 트랙(Cash-flow)** 선택
 - 본업 + compass + 순공대장 중 정리할 1개 결정 (다음 6개월 내)
 
 ---
 
-## 6. 다음 세션 첫 명령 (agent 실행 패턴)
+## 6. 다음 세션 첫 명령 (운영 패턴)
 
-### A. Mike 환경 결정 진행 중인 경우
-
-```
-> docs/setup/2026-05-14-environment-decisions.md 읽고 결정 1-3 진행 상태 확인.
-> 결정 1-2 끝났으면 P1 Task 1 (Design Tokens)부터 자동 실행.
-```
-
-→ Claude는 [[reference-soongong-repo]] 메모리에서 sub-plan 경로 자동 회상 후 `superpowers:subagent-driven-development`로 P1 진입.
-
-### B. 환경 셋업 끝나고 실행만 남은 경우
+### A. 진행 현황 점검
 
 ```
-> P1 sub-plan 실행 시작. subagent-driven-development 패턴 사용.
+> git log --oneline -10 으로 최근 머지 확인 + 열린 PR 목록(gh pr list) 확인.
+> Multica SOO 이슈 현황(in_progress / todo) 확인 후 다음 액션 추천.
 ```
 
-### C. Sub-plan 추가 보강 필요한 경우
+### B. 신규 이슈 실행
 
 ```
-> 마스터 플랜 + Mike의 변경 지시 반영해서 [P#] sub-plan 업데이트.
+> [SOO-XX] 이슈를 담당 리드 에이전트에 위임. architect → executor → reviewer 3-stage.
+> DoD(lint:tokens / design-review ≥ 70 / arch-audit) 자가검증 후 PR. 자동 머지 OFF.
 ```
 
-### D. SparkClaw 서류 제출 자료 작성
+### C. Sub-plan 보강
 
 ```
-> docs/agent-strategy/2026-05-14-agent-tracks.md + SparkClaw 사업소개서.md §10 기반으로 제출 자료 PDF 초안 작성.
+> 마스터 플랜 + Mike 변경 지시 반영해서 [P#] sub-plan 업데이트.
 ```
 
 ---
@@ -147,20 +149,23 @@ docs/
 | P5 design-review | ≥ 70점 (8대 패턴) | UI 보강 |
 | P6 E2E 7개 시나리오 | 모두 통과 | qa-tester 재실행 |
 | tldraw 라이선스 | 상용 시 trial → commercial | Konva로 교체 (1-2일 spike) |
+| 디자인 토큰 lint | `pnpm lint:tokens` 통과 | 등록 외 hex 차단 |
 
 ---
 
-## 8. 빠른 git 작업
+## 8. 빠른 git 작업 (Multica 워크스페이스 기준)
 
 ```bash
-cd /Users/mike/Downloads/soongong
+# 워크스페이스 내 체크아웃 (워크트리 + 전용 브랜치 자동 생성)
+multica repo checkout https://github.com/mugungwhwa/soongong.git
+
 git status
-git log --oneline -5
+git log --oneline -10
 
 # Commit 시 일회용 author (절대 git config 수정 금지)
 git -c user.name="Mike" -c user.email="mikeikhoonkim1208@gmail.com" commit -m "..."
 
-# Push (SSH alias로 mugungwhwa 식별 — gh CLI active는 회사 그대로)
+# Push — mugungwhwa 개인 계정으로 (gh CLI active가 회사여도 영향 없음)
 git push
 ```
 
@@ -168,51 +173,41 @@ git push
 
 ```bash
 bash scripts/setup-hooks.sh        # core.hooksPath = scripts/hooks 등록
-git config core.hooksPath          # 검증: scripts/hooks 출력되면 OK
+git config core.hooksPath          # 검증
 ```
 
-검사 항목 (CLAUDE.md §8 폐기 정책 + 글로벌 §6 기반):
-- 잠긴 결정사항 회귀 키워드 9종 — 구체 목록은 `scripts/hooks/pre-commit`의 `PATTERNS` 배열 참조
-- 회사 계정 commit 차단 (`treenod` / `company` 패턴)
-- `.env` 파일 commit 차단 (`.env.local.example` 같은 템플릿만 허용)
-
-우회: `SKIP_PRECOMMIT=1 git commit ...` (의도된 회귀 변경 시 only)
+검사: 폐기 결정 회귀 키워드 / 회사 계정 commit 차단 / `.env` commit 차단.
+우회: `SKIP_PRECOMMIT=1 git commit ...` (의도된 회귀 변경 only)
 
 ---
 
 ## 9. 휴식 후 재개 체크리스트
 
-- [ ] `git log --oneline -3` 으로 마지막 commit 확인
+- [ ] `git log --oneline -10` 으로 최근 머지 확인
 - [ ] 본 RESUME.md 읽기 (5분)
-- [ ] Mike 환경 결정 진행 상태 확인 (`.env.local` 존재 여부)
-- [ ] 마스코트 자산 진행 상태 확인 (`apps/web/public/mascot/` 폴더 존재 여부)
-- [ ] 다음 액션 결정 (위 §6 패턴 선택)
+- [ ] 열린 PR 목록 확인 (`gh pr list`) — 머지 대기 / Draft 파킹 구분
+- [ ] Multica SOO 이슈 현황 확인 (in_progress 무엇이 도는 중인지)
+- [ ] 다음 액션 결정 (§5 우선순위 또는 §6 패턴)
 
 ---
 
-**한 줄 요약**: 문서 11 commits 완료, Mike 환경 결정 25분 + 마스코트 작업 후 P1 자동 실행 가능.
+**한 줄 요약**: 문서 + 코드(P0~P8) 모두 main 통합 완료, Ocean 디자인 적용·모바일 카메라까지 라이브. 지금은 Multica에서 이슈 단위(SOO-26 ⓑ, SOO-24 등) 다듬기 + 학원 베타 검증 단계.
 
 ---
 
-## 10. P3 데이터 아키텍처 점검 결과 (2026-05-19)
+## 10. P3 데이터 아키텍처 점검 결과 (2026-05-19, 유효)
 
-전략정리 §3.9 "Postgres truth + pgvector 검색 하이브리드"가 P3 sub-plan에 반영되어 있는지 read-only로 점검한 결과:
+전략정리 §3.9 "Postgres truth + pgvector 검색 하이브리드"가 P3 sub-plan에 반영됐는지 점검:
 
 | 파일 | pgvector 명시? | 상태 |
 |---|---|---|
 | `master.md` | "Supabase 스택에 pgvector 포함" 1줄만 | 추상적 |
 | `p3-ai-pipeline.md` | 키워드 0건 | **누락** |
-| `p3-curriculum-rag.md` | **"pgvector 폐기, Postgres FTS + JSON 트리"로 잠금** (line 8). pgvector는 Top-1 < 50% 폴백 시점에만 (line 229) | **전략정리와 직접 충돌** |
+| `p3-curriculum-rag.md` | **"pgvector 폐기, Postgres FTS + JSON 트리"로 잠금** (line 8). pgvector는 Top-1 < 50% 폴백 시점에만 | **전략정리와 직접 충돌처럼 보이나 layer가 다름** |
 
-**해석**:
-- 전략정리 §3.9는 **장기 SSoT 아키텍처**: Postgres truth + pgvector 검색 하이브리드
-- p3-curriculum-rag.md는 **MVP 1차 단계적 구현**: 임베딩/벡터 폐기, FTS + JSON 트리로 시작, 정확도 미달 시 pgvector로 진화
+**해석**: 전략정리 §3.9는 **장기 SSoT 아키텍처**, p3-curriculum-rag.md는 **MVP 1차 단계적 구현**(FTS 우선, 정확도 미달 시 pgvector 진화). 모순 아님 — layer 차이. 단 p3-curriculum-rag.md에 "장기는 §3.9 하이브리드로 수렴" 한 줄 명시 필요.
 
-→ 모순이 아니라 **layer가 다름**. 단, **p3-curriculum-rag.md에 "장기는 전략정리 §3.9 하이브리드로 수렴, MVP 1차는 비용/복잡도 고려 FTS 우선" 한 줄 명시**가 필요. 본 정합 commit 범위 밖이므로 별건 plan 수정 권장.
-
-**Mike 결단 필요**:
-- (a) p3-curriculum-rag.md에 정합 한 줄 추가만 (10분)
-- (b) MVP 1차부터 pgvector 도입으로 plan 재작성 (1-2일 work)
+**Mike 결단 필요** (미해결, §5.1 ⭐3로 이월):
+- (a) p3-curriculum-rag.md에 정합 한 줄 추가만 (10분) ← **추천**
+- (b) MVP 1차부터 pgvector 도입으로 plan 재작성 (1-2일)
 - (c) 보류, 베타 검증 후 결정
-
-추천: **(a)** — 가장 적은 work로 SSoT 충돌 해소.
