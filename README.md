@@ -1,10 +1,10 @@
 # 순공대장 (Soongong)
 
-> **수능생을 위한 듀오링고형 AI 회독 앱.**
-> 문제를 풀어주는 AI가 아니라, **다시 풀게 만드는 AI**.
+> **콴다는 학생의 막힘을 풀고, 순공대장은 학생의 까먹음을 푼다.**
+> 문제를 풀어주는 AI가 아니라, **다시 풀게 만드는 AI** — 한국 수능에서 시작하는 학습 리텐션 엔진.
 
 <sub>한국 수능생 · 인강 중심 독학재수생 · 오답관리가 약한 학생 대상 B2C 구독 SaaS.
-1인 창업자가 **50+ Development Agent**와 **16개 Product Agent**를 듀얼 운용해 8주 안에 동작시키는 AI-native 제품.</sub>
+1인 창업자가 **둥지(Soongong Nest) 에이전트 조직**(도메인 리드 8 + Orchestration/Tech Lead 통제 구조)을 운용해 8주 안에 동작시키는 AI-native 제품.</sub>
 
 ---
 
@@ -36,16 +36,23 @@
 
 ---
 
-## AI Agent 듀얼 트랙
+## AI Agent 운용 — 둥지 (Soongong Nest)
 
-| 트랙 | 구성 | 역할 |
-|---|---|---|
-| **Product Agents** | 16개 백서 / MVP 1차 9개 | 학생 학습 분석 엔진 (Input Router → OCR → Subject Routing → Learning Object Builder → Review Scheduling → Quest → Game) |
-| **Development Agents** | 50+ subagent / skill | 1인 창업자가 운용하는 가상 개발 팀 (Architect → Executor → Designer → Reviewer → QA → Security) |
+1인 창업자가 에이전트를 "많이" 쓰는 게 아니라 **통제 구조로** 운용한다.
 
-> **"AI Agent가 AI Agent를 만든다."** — SparkClaw 1인 창업 트랙의 메타-레벨 차별점.
+| 구성 | 역할 |
+|---|---|
+| **Orchestration Lead** | Mike의 단일 접점. 멀티도메인 작업을 분해·배분, 비가역/모트/비용 결정만 Mike에게 상신 |
+| **Tech Lead** | acting CTO. 모든 머지 전 기술 리뷰 필수 게이트 |
+| **도메인 리드 6** | AI 파이프라인 · 회독/망각 엔진 · 게임화 · UI/디자인 · 플랫폼/인프라 · 유형 리서치 |
+| **Product Agents (16)** | 제품 내부에서 학생에게 작동하는 학습 분석 엔진 (백서 16 / MVP 1차 9) |
 
-자세한 매트릭스: [`docs/agent-strategy/2026-05-14-agent-tracks.md`](docs/agent-strategy/2026-05-14-agent-tracks.md)
+핵심 운용 원칙:
+- **MOAT 영역(온톨로지 구조 · 베이지안 prior · retention 지표)은 에이전트 실행 0회** — 창업자가 직접 설계하는 비위임 레이어. 이것이 AI 래퍼와의 구조적 차이.
+- 머지 플로우: 도메인 리드 빌드 → Tech Lead 리뷰 → Orchestration 보고 → **Mike 승인 머지** (PR-only, auto-merge OFF)
+- 유형 리서치 에이전트는 제안만 출력, 온톨로지 자율 변경 금지
+
+상세: [`2026-06-08-multica-squad-structure.md`](docs/agent-strategy/2026-06-08-multica-squad-structure.md)
 
 ---
 
@@ -129,8 +136,9 @@ soongong/
 
 ## 마스코트
 
-작업명: **순공이** (가안, 듀공 모티프) — Mike가 Midjourney + Canva로 직접 제작 (외주 없음).
-이름·외형은 가안이며 추후 확정 가능.
+**순공이 — 듀공(dugong), 확정.**
+온화하고 끈질긴 평생 학습 동반자. 듀오링고의 부엉이(권위/위협)와 대비되는 브랜드 축.
+Mike가 Midjourney + Canva로 직접 제작 (외주 없음).
 
 작업 가이드: [`docs/visual-assets/2026-05-14-soongong-asset-inventory.md`](docs/visual-assets/2026-05-14-soongong-asset-inventory.md)
 
@@ -141,8 +149,8 @@ soongong/
 | Plan | 가격 | 기능 |
 |---|---|---|
 | Free | 무료 | 문제사진 제한 / 오늘의 회독 일부 / 스트릭 |
-| Plus | 월 9,900원 | 무제한 회독 / 오답던전 / 망각방어전 |
-| Pro | 월 19,900원 | AI 유사문항 / 고급 리포트 / 4점보스 / 학부모 공유 |
+| Super | 월 9,900원 | 무제한 회독 / 오답던전 / 망각방어전 |
+| Max | 월 19,900원 | AI 유사문항 / 고급 리포트 / 4점보스 / 학부모 공유 |
 | B2B/B2B2C | 별도 견적 | 독학재수학원·관리형 스터디센터 대시보드 |
 
 **시장**: 사교육비 27.5조 / 고등학생 7.8조 / 2026학년도 수능 응시자 55.4만명.
@@ -164,6 +172,8 @@ soongong/
 ---
 
 ## SparkClaw
+
+> 5/14자 제출자료·슬라이드는 구버전 — `2026-06-08-순공대장_SparkClaw_1기_포지셔닝_보강.md` 기준으로 재작성 예정 (6/28 마감).
 
 SparkClaw 1인 창업 트랙 제출 자료: [`docs/sparkclaw/2026-05-14-sparkclaw-submission.md`](docs/sparkclaw/2026-05-14-sparkclaw-submission.md)
 Marp 슬라이드 draft (11p): [`docs/sparkclaw/slide-deck-draft.md`](docs/sparkclaw/slide-deck-draft.md)
