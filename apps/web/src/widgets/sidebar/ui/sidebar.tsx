@@ -1,21 +1,49 @@
+"use client";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mascot } from "@/shared/ui/mascot";
 import { ROUTES } from "@/shared/config/routes";
 import { signOut } from "@/app/actions/auth";
+import {
+  Home,
+  Calendar,
+  NotebookPen,
+  BarChart3,
+  BookOpen,
+  ShieldCheck,
+  LogOut,
+  type LucideProps,
+} from "lucide-react";
+import type { ComponentType } from "react";
 
-const MAIN_ITEMS = [
-  { href: ROUTES.today, label: "오늘의 회독", icon: "🏠" },
-  { href: ROUTES.calendar, label: "회독 캘린더", icon: "📅" },
-  { href: ROUTES.wrongNotes, label: "오답노트", icon: "📝" },
-  { href: ROUTES.graph, label: "그래프", icon: "📊" },
-  { href: ROUTES.diary, label: "순공일지", icon: "📔" },
+const ICON_STYLE: LucideProps = {
+  size: 18,
+  strokeWidth: 1.5,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
+
+type NavItem = {
+  href: string;
+  label: string;
+  Icon: ComponentType<LucideProps>;
+};
+
+const MAIN_ITEMS: NavItem[] = [
+  { href: ROUTES.today, label: "오늘의 회독", Icon: Home },
+  { href: ROUTES.calendar, label: "회독 캘린더", Icon: Calendar },
+  { href: ROUTES.wrongNotes, label: "오답노트", Icon: NotebookPen },
+  { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
+  { href: ROUTES.diary, label: "순공일지", Icon: BookOpen },
 ];
 
-const ADMIN_ITEMS = [
-  { href: ROUTES.admin, label: "검수", icon: "🛡️" },
+const ADMIN_ITEMS: NavItem[] = [
+  { href: ROUTES.admin, label: "검수", Icon: ShieldCheck },
 ];
 
 export function Sidebar() {
+  const pathname = usePathname();
+
   return (
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
       <div className="flex items-center gap-3 mb-6">
@@ -23,7 +51,7 @@ export function Sidebar() {
         <div aria-label="SOONGONG 순공대장">
           <svg
             viewBox="0 0 270 42"
-            style={{ width: "100%", maxWidth: 155, overflow: "visible" }}
+            style={{ width: "100%", maxWidth: 205, overflow: "visible" }}
             role="img"
             aria-label="SOONGONG 순공대장"
           >
@@ -57,36 +85,72 @@ export function Sidebar() {
         </div>
       </div>
       <nav className="flex flex-col gap-1">
-        {MAIN_ITEMS.map((i) => (
-          <Link
-            key={i.href}
-            href={i.href}
-            className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 hover:bg-[var(--color-mint-50)] transition text-[var(--color-text-default)]"
-          >
-            <span>{i.icon}</span>
-            <span>{i.label}</span>
-          </Link>
-        ))}
+        {MAIN_ITEMS.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 transition text-sm"
+              style={
+                isActive
+                  ? {
+                      background: "var(--color-mint-100)",
+                      color: "var(--color-mint-900)",
+                      fontWeight: 700,
+                    }
+                  : {
+                      color: "var(--color-text-default)",
+                    }
+              }
+              aria-current={isActive ? "page" : undefined}
+            >
+              <item.Icon
+                {...ICON_STYLE}
+                color={isActive ? "var(--color-mint-700)" : "var(--color-text-muted)"}
+              />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
       <div className="mt-auto pt-4 border-t border-[var(--color-border-default)]">
         <div className="text-xs text-[var(--color-text-muted)] mb-2 px-3">관리</div>
         <nav className="flex flex-col gap-1">
-          {ADMIN_ITEMS.map((i) => (
-            <Link
-              key={i.href}
-              href={i.href}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 hover:bg-[var(--color-mint-50)] transition text-[var(--color-text-muted)] text-sm"
-            >
-              <span>{i.icon}</span>
-              <span>{i.label}</span>
-            </Link>
-          ))}
+          {ADMIN_ITEMS.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 transition text-sm"
+                style={
+                  isActive
+                    ? {
+                        background: "var(--color-mint-100)",
+                        color: "var(--color-mint-900)",
+                        fontWeight: 700,
+                      }
+                    : {
+                        color: "var(--color-text-muted)",
+                      }
+                }
+                aria-current={isActive ? "page" : undefined}
+              >
+                <item.Icon
+                  {...ICON_STYLE}
+                  color={isActive ? "var(--color-mint-700)" : "var(--color-text-muted)"}
+                />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
           <form action={signOut}>
             <button
               type="submit"
               className="w-full flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 hover:bg-[var(--color-mint-50)] transition text-[var(--color-text-muted)] text-sm text-left"
             >
-              <span>🚪</span>
+              <LogOut {...ICON_STYLE} color="var(--color-text-muted)" />
               <span>로그아웃</span>
             </button>
           </form>

@@ -2,14 +2,36 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
+import {
+  Home,
+  Calendar,
+  Camera,
+  NotebookPen,
+  BarChart3,
+  type LucideProps,
+} from "lucide-react";
+import type { ComponentType } from "react";
 
-const ITEMS = [
-  { href: ROUTES.today, label: "오늘", icon: "🏠" },
-  { href: ROUTES.calendar, label: "캘린더", icon: "📅" },
+type NavItem = {
+  href: string;
+  label: string;
+  Icon: ComponentType<LucideProps>;
+} | null;
+
+const ITEMS: NavItem[] = [
+  { href: ROUTES.today, label: "오늘", Icon: Home },
+  { href: ROUTES.calendar, label: "캘린더", Icon: Calendar },
   null, // camera FAB placeholder
-  { href: ROUTES.wrongNotes, label: "오답", icon: "📝" },
-  { href: ROUTES.graph, label: "그래프", icon: "📊" },
+  { href: ROUTES.wrongNotes, label: "오답", Icon: NotebookPen },
+  { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
 ];
+
+const ICON_BASE: LucideProps = {
+  size: 22,
+  strokeWidth: 1.5,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+};
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -30,7 +52,13 @@ export function BottomNav() {
               style={{ background: "var(--color-mint-900)" }}
               aria-label="카메라"
             >
-              <span className="text-2xl">📷</span>
+              <Camera
+                size={22}
+                strokeWidth={1.5}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                color="white"
+              />
             </button>
           );
         }
@@ -46,7 +74,10 @@ export function BottomNav() {
                 : { color: "var(--color-text-muted)" }
             }
           >
-            <span className="text-lg">{item.icon}</span>
+            <item.Icon
+              {...ICON_BASE}
+              color={isActive ? "var(--color-mint-700)" : "var(--color-text-muted)"}
+            />
             <span>{item.label}</span>
           </Link>
         );
