@@ -3,11 +3,21 @@ import type { CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Supabase 미설정(프리뷰/UI 작업 환경) — 인증을 건너뛰고 페이지를 그대로 렌더.
+  // 이전엔 빈 env로 createServerClient가 throw해 전 라우트가 500이었음.
+  // 프로덕션처럼 env가 있으면 아래 인증 로직이 정상 동작.
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll: () => request.cookies.getAll(),
