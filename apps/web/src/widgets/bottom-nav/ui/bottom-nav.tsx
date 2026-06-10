@@ -11,6 +11,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import { useUploadSheetStore } from "@/features/upload-source";
 
 type NavItem = {
   href: string;
@@ -35,6 +36,7 @@ const ICON_BASE: LucideProps = {
 
 export function BottomNav() {
   const pathname = usePathname();
+  const openSheet = useUploadSheetStore((s) => s.openSheet);
 
   return (
     <nav
@@ -51,6 +53,7 @@ export function BottomNav() {
               className="flex items-center justify-center w-14 h-14 rounded-full -mt-5 shadow-lg"
               style={{ background: "var(--color-mint-900)" }}
               aria-label="카메라"
+              onClick={openSheet}
             >
               <Camera
                 size={22}
