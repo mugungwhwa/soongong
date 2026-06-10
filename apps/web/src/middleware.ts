@@ -10,6 +10,12 @@ export async function middleware(request: NextRequest) {
   // 이전엔 빈 env로 createServerClient가 throw해 전 라우트가 500이었음.
   // 프로덕션처럼 env가 있으면 아래 인증 로직이 정상 동작.
   if (!supabaseUrl || !supabaseAnonKey) {
+    // 프로덕션에서 env 누락은 설정 오류 — 인증 우회가 보호 라우트를 노출할 수 있으므로 표면화.
+    if (process.env.NODE_ENV === "production") {
+      console.error(
+        "[middleware] Supabase 환경변수 누락 — 인증을 건너뜁니다. 프로덕션 설정을 확인하세요.",
+      );
+    }
     return NextResponse.next({ request });
   }
 
