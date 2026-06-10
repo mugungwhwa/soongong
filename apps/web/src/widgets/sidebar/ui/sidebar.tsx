@@ -20,7 +20,41 @@ export function Sidebar() {
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
       <div className="flex items-center gap-3 mb-6">
         <Mascot mood="cheer" size="md" />
-        <div className="font-bold text-[var(--color-text-strong)]">순공대장</div>
+        <div aria-label="SOONGONG 순공대장">
+          <svg
+            viewBox="0 0 270 42"
+            style={{ width: "100%", maxWidth: 155, overflow: "visible" }}
+            role="img"
+            aria-label="SOONGONG 순공대장"
+          >
+            <text
+              x="2"
+              y="34"
+              fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
+              fontSize="34"
+              fontWeight={900}
+              letterSpacing="4"
+              fill="var(--color-mint-900)"
+              stroke="var(--color-mint-900)"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              style={{ paintOrder: "stroke" }}
+            >
+              SOONGONG
+            </text>
+            <text
+              x="2"
+              y="55"
+              fontFamily="'Pretendard',system-ui,sans-serif"
+              fontSize="9"
+              fill="var(--color-text-muted)"
+              letterSpacing="1.5"
+            >
+              순공대장
+            </text>
+          </svg>
+        </div>
       </div>
       <nav className="flex flex-col gap-1">
         {MAIN_ITEMS.map((i) => (
