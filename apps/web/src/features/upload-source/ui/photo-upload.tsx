@@ -66,6 +66,8 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
           ref={inputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/heic"
+          // 모바일: 후면 카메라 직행(SOO-26 촬영 1단계). 데스크톱은 capture를 무시 → 기존 파일 선택 유지.
+          capture="environment"
           className="hidden"
           onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
         />
