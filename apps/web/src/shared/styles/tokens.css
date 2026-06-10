@@ -1,17 +1,19 @@
 @layer base {
   :root {
-    /* Surface (Light Study Garden) */
-    --color-bg: #F8FBF7;
-    --color-bg-elevated: #FFFFFF;
-    --color-bg-sunken: #F1F5EF;
+    /* Palette = Ocean per design-system-lock v1.0 (2026-06-09). 변수명은 호환 위해 mint 유지, 값은 Ocean. */
 
-    /* Brand mint */
-    --color-mint-50: #EFF9EF;
-    --color-mint-100: #D6F0D6;
-    --color-mint-300: #A8DDA8;
-    --color-mint-500: #7CC97C;
-    --color-mint-700: #4FA84F;
-    --color-mint-900: #2E6B2E;
+    /* Surface (Ocean) */
+    --color-bg: #F2FAFB;
+    --color-bg-elevated: #FFFFFF;
+    --color-bg-sunken: #E2F3F8;
+
+    /* Brand mint (값 = Ocean 팔레트, 변수명 호환 유지) */
+    --color-mint-50: #E8F8FB;
+    --color-mint-100: #C2EDF5;
+    --color-mint-300: #7DD8EA;
+    --color-mint-500: #2AB8D0;
+    --color-mint-700: #1A8FAD;
+    --color-mint-900: #0E5C82;
 
     /* Risk (soft, 채도 ≤60 — UI 설계.md §3) */
     --color-risk-low: #A0BFDC;
@@ -27,9 +29,9 @@
     --color-epic-text: #8B5CF6;
 
     /* Text */
-    --color-text-strong: #1A2A1A;
-    --color-text-default: #2D3F2D;
-    --color-text-muted: #6B7B6B;
+    --color-text-strong: #0C2535;
+    --color-text-default: #1C3848;
+    --color-text-muted: #4A7585;
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
@@ -41,11 +43,11 @@
     --color-scrim: rgba(0, 0, 0, 0.8);
 
     /* Gradients (registered, lint:tokens 통과 대상) */
-    --gradient-quest-map: linear-gradient(to bottom right, #EFF9EF, #F1F5EF);
+    --gradient-quest-map: linear-gradient(to bottom right, #E8F8FB, #E2F3F8);
 
     /* Border */
-    --color-border-default: #E1ECDF;
-    --color-border-strong: #C5D9C2;
+    --color-border-default: #B8DDE8;
+    --color-border-strong: #85C3D5;
 
     /* Radius */
     --radius-sm: 8px;
@@ -66,8 +68,8 @@
     --space-12: 48px;
 
     /* Shadow */
-    --shadow-card: 0 2px 8px rgba(46, 107, 46, 0.06);
-    --shadow-elevated: 0 8px 24px rgba(46, 107, 46, 0.10);
+    --shadow-card: 0 2px 8px rgba(14, 92, 130, 0.06);
+    --shadow-elevated: 0 8px 24px rgba(14, 92, 130, 0.10);
 
     /* Motion */
     --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
