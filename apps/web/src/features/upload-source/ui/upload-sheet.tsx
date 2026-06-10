@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { type LucideIcon, Camera, Clapperboard, PenLine, Keyboard } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/shared/ui/sheet";
 import { PhotoUpload } from "./photo-upload";
 import { LectureLogForm } from "./lecture-log-form";
@@ -8,11 +9,11 @@ import { ManualTextForm } from "./manual-text-form";
 
 type Mode = "menu" | "photo" | "lecture" | "capture" | "manual";
 
-const OPTIONS: { mode: Mode; icon: string; label: string; hint: string; muted?: boolean }[] = [
-  { mode: "photo",   icon: "📸", label: "문제사진 업로드",           hint: "풀었던 문제 사진" },
-  { mode: "lecture", icon: "🎬", label: "인강 시청 기록",            hint: "강의명 + 단원 입력" },
-  { mode: "capture", icon: "📝", label: "캡처 + 메모",               hint: "헷갈린 장면 1장" },
-  { mode: "manual",  icon: "⌨️", label: "직접 입력 (사진 어려울 때)", hint: "텍스트로 문제 입력", muted: true },
+const OPTIONS: { mode: Mode; icon: LucideIcon; label: string; hint: string; muted?: boolean }[] = [
+  { mode: "photo",   icon: Camera,      label: "문제사진 업로드",           hint: "풀었던 문제 사진" },
+  { mode: "lecture", icon: Clapperboard, label: "인강 시청 기록",            hint: "강의명 + 단원 입력" },
+  { mode: "capture", icon: PenLine,     label: "캡처 + 메모",               hint: "헷갈린 장면 1장" },
+  { mode: "manual",  icon: Keyboard,    label: "직접 입력 (사진 어려울 때)", hint: "텍스트로 문제 입력", muted: true },
 ];
 
 export function UploadSheet({
@@ -44,7 +45,7 @@ export function UploadSheet({
                 onClick={() => setMode(o.mode)}
                 className={`w-full flex items-center gap-3 p-4 rounded-[var(--radius-lg)] border border-[var(--color-border-default)] hover:bg-[var(--color-mint-50)] text-left transition${o.muted ? " opacity-60" : ""}`}
               >
-                <span className="text-2xl">{o.icon}</span>
+                <o.icon size={20} strokeWidth={1.5} className="text-[var(--color-mint-700)] shrink-0" />
                 <div>
                   <div className="font-semibold">{o.label}</div>
                   <div className="text-sm text-[var(--color-text-muted)]">{o.hint}</div>

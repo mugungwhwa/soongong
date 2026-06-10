@@ -1,5 +1,6 @@
 export const ROUTES = {
   today: "/today",
+  journey: "/journey",
   calendar: "/calendar",
   wrongNotes: "/wrong-notes",
   graph: "/graph",

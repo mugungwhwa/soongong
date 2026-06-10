@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       // 기존/신규 분기: 온보딩 완료(birth_year 채워짐) 유무로 판별.
-      // 기존 유저 → /today(티어 여정 hero), 신규 → /onboarding.
+      // 기존 유저 → /journey(순공 여정 랜딩), 신규 → /onboarding.
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
           .eq("id", user.id)
           .maybeSingle();
         if (profile?.birth_year != null) {
-          destination = "/today";
+          destination = "/journey";
         }
       }
       return NextResponse.redirect(`${origin}${destination}`);

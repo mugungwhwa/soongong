@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import confetti from "canvas-confetti";
+import { PartyPopper, Flame, Heart } from "lucide-react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
@@ -43,17 +44,22 @@ export function RewardScreen({ xpDelta, streak, hpAfter, message, onNext, onHome
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="text-display"
+          className="text-display flex items-center justify-center gap-2"
         >
-          🎉 회독퀘스트 성공!
+          <PartyPopper size={36} strokeWidth={1.5} style={{ color: "var(--color-mint-700)" }} />
+          회독퀘스트 성공!
         </motion.h1>
 
         <div className="space-y-md">
           <div className="text-h2 text-primary">
             +<span ref={xpDisplayRef}>0</span> XP
           </div>
-          <div className="text-body text-text-secondary">
-            🔥 {streak}일 스트릭 · ❤️ {hpAfter}/5
+          <div className="text-body text-text-secondary flex items-center justify-center gap-1">
+            <Flame size={16} strokeWidth={1.5} style={{ color: "var(--color-mint-700)" }} />
+            {streak}일 스트릭
+            <span className="mx-1">·</span>
+            <Heart size={16} strokeWidth={1.5} style={{ color: "var(--color-mint-700)" }} />
+            {hpAfter}/5
           </div>
         </div>
 
