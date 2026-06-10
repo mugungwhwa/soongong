@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mascot } from "@/shared/ui/mascot";
 import { ROUTES } from "@/shared/config/routes";
 import { signOut } from "@/app/actions/auth";
 import {
@@ -46,43 +45,30 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Mascot mood="cheer" size="md" />
-        <div aria-label="SOONGONG 순공대장">
-          <svg
-            viewBox="0 0 270 42"
-            style={{ width: "100%", maxWidth: 205, overflow: "visible" }}
-            role="img"
-            aria-label="SOONGONG 순공대장"
+      <div className="mb-6">
+        <svg
+          viewBox="0 0 245 44"
+          style={{ width: "100%", maxWidth: 240, overflow: "visible" }}
+          role="img"
+          aria-label="SOONGONG"
+        >
+          <text
+            x="2"
+            y="35"
+            fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
+            fontSize="36"
+            fontWeight={900}
+            letterSpacing="3"
+            fill="var(--color-mint-900)"
+            stroke="var(--color-mint-900)"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            style={{ paintOrder: "stroke" }}
           >
-            <text
-              x="2"
-              y="34"
-              fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
-              fontSize="34"
-              fontWeight={900}
-              letterSpacing="4"
-              fill="var(--color-mint-900)"
-              stroke="var(--color-mint-900)"
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              style={{ paintOrder: "stroke" }}
-            >
-              SOONGONG
-            </text>
-            <text
-              x="2"
-              y="55"
-              fontFamily="'Pretendard',system-ui,sans-serif"
-              fontSize="9"
-              fill="var(--color-text-muted)"
-              letterSpacing="1.5"
-            >
-              순공대장
-            </text>
-          </svg>
-        </div>
+            SOONGONG
+          </text>
+        </svg>
       </div>
       <nav className="flex flex-col gap-1">
         {MAIN_ITEMS.map((item) => {
