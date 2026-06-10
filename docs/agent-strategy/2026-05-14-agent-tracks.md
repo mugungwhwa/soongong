@@ -1,5 +1,9 @@
 # 순공대장 Agent Strategy — 듀얼 트랙
 
+> 📌 **부분 갱신 (2026-06-10)**: Development Agents "50+" 운용 프레임은
+> `2026-06-08-multica-squad-구조.md` (둥지 hub-spoke v6)로 대체됨.
+> Product Agents 16개 명세(§2)는 계속 유효.
+
 > **핵심 원칙**: 순공대장은 두 개의 독립된 Agent 트랙으로 운용된다. **Product Agents**(제품 안, 사용자에게 작동)와 **Development Agents**(개발 운용, Mike + Claude Code 팀). 이 분리가 SparkClaw 차별점의 정확한 표현이다.
 > SSoT: SparkClaw 사업소개서.md §5 (16개 Agent 백서), 외부_데이터_유입_엔진.md §6 (Source-to-Quest 6개), 문제_생성_Agent.md §9 (베리에이션 파이프라인 8개)
 
