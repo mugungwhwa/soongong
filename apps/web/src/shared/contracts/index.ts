@@ -22,6 +22,8 @@ export type { RecoveryVariant, VariantTier } from "./recovery";
 
 export type { AdminReviewItem, AdminReviewStatus } from "./admin";
 
+export type { WrongNote } from "./wrong-note";
+
 export type {
   AiClient,
   AnalyzeSourceInput,
