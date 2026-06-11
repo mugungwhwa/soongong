@@ -17,8 +17,16 @@ const RANKS: { name: UserRank; minXp: number; emoji: string }[] = [
 })) as { name: UserRank; minXp: number; emoji: string }[];
 
 function computeTierInfo(xp: number) {
-  const reverseIdx = [...RANKS].reverse().findIndex((r) => xp >= r.minXp);
-  const idx = RANKS.length - 1 - reverseIdx;
+  // 음수/NaN 방어: 하한 0 정규화. (RANKS[0].minXp=0 이라 정규화 후엔 항상 매칭)
+  const normalizedXp = Number.isFinite(xp) ? Math.max(0, xp) : 0;
+  const reverseIdx = [...RANKS]
+    .reverse()
+    .findIndex((r) => normalizedXp >= r.minXp);
+  // findIndex 가 -1 이어도 idx 가 배열 범위를 벗어나지 않도록 클램프.
+  const idx =
+    reverseIdx === -1
+      ? 0
+      : Math.min(RANKS.length - 1, RANKS.length - 1 - reverseIdx);
   const current = RANKS[idx];
   const isMax = idx === RANKS.length - 1;
 
@@ -28,9 +36,9 @@ function computeTierInfo(xp: number) {
 
   const next = RANKS[idx + 1];
   const span = next.minXp - current.minXp;
-  const earned = xp - current.minXp;
+  const earned = normalizedXp - current.minXp;
   const progressPct = Math.min(100, Math.round((earned / span) * 100));
-  const remaining = next.minXp - xp;
+  const remaining = next.minXp - normalizedXp;
 
   return { current, next, remaining, progressPct, isMax: false };
 }
