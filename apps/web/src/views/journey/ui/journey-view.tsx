@@ -449,6 +449,11 @@ export function JourneyView() {
         display: "flex",
         flexDirection: "column",
         minHeight: "100%",
+        // 웹 데스크톱에서 단일 컬럼 여정이 전폭으로 늘어지지 않도록 중앙 정렬.
+        // 다른 단일 컬럼 화면(캘린더·오답·회독)의 max-w-2xl 컨벤션과 통일.
+        width: "100%",
+        maxWidth: "42rem",
+        marginInline: "auto",
       }}
     >
       {/* ── 여정 헤더 (딥 오션 그라데이션) ── */}

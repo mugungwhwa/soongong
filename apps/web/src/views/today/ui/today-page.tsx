@@ -1,4 +1,5 @@
 import { Mascot } from "@/shared/ui/mascot";
+import { TierJourneyHero } from "@/widgets/tier-journey-hero";
 import { StatsGrid } from "@/widgets/stats-grid";
 import { QuestList } from "@/widgets/quest-list";
 import { ReviewMap } from "@/widgets/review-map";
@@ -64,6 +65,7 @@ export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) 
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 lg:gap-6">
         <div className="space-y-4 lg:space-y-6 min-w-0">
+          <TierJourneyHero />
           <StatsGrid />
 
           <section id="today-quests" className="space-y-3">
