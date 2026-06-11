@@ -9,7 +9,9 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      // SOO-36: 블록(카드)은 항상 흰색 surface 고정. bg-card 토큰이 미정의여서
+      // 카드가 투명 → 오션 배경이 비쳐 '오션 틴트' 로 보이던 문제 해결.
+      "rounded-lg border border-[var(--color-border-default)] bg-[var(--color-surface)] text-[var(--color-surface-foreground)] shadow-sm",
       className
     )}
     {...props}
