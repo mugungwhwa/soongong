@@ -1,19 +1,15 @@
 "use client";
-import { useState } from "react";
 import { Button } from "@/shared/ui/button";
-import { UploadSheet } from "./upload-sheet";
+import { useUploadSheetStore } from "../model/upload-sheet-store";
 
 export function UploadTrigger() {
-  const [open, setOpen] = useState(false);
+  const openSheet = useUploadSheetStore((s) => s.openSheet);
   return (
-    <>
-      <Button
-        className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
-        onClick={() => setOpen(true)}
-      >
-        + 문제 출제하기
-      </Button>
-      <UploadSheet open={open} onOpenChange={setOpen} />
-    </>
+    <Button
+      className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
+      onClick={openSheet}
+    >
+      + 문제 출제하기
+    </Button>
   );
 }

@@ -14,8 +14,8 @@ export async function getTodayQuestsFromDb(userId: string): Promise<Quest[]> {
     .limit(3);
 
   if (error) {
-    console.error("[quest/api] getTodayQuests error:", error.message);
-    return [];
+    console.error("[quest/api] getTodayQuestsFromDb:", error.message);
+    throw new Error("퀘스트를 불러오지 못했습니다.");
   }
   return (data ?? []) as Quest[];
 }
