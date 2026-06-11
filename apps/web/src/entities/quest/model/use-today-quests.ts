@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/shared/lib/supabase/client";
-import { getTodayQuestsFromDb } from "../api";
+import { getTodayQuestsEnriched } from "../api";
 import type { Quest, QuestFormat, QuestRiskLevel, Subject } from "@/shared/contracts";
-import type { Quest as DbQuest, QuestFormat as DbQuestFormat } from "../model";
+import type { QuestFormat as DbQuestFormat } from "../model";
 
 const VARIATION_FORMATS = new Set<DbQuestFormat>([
   "number_variation",
@@ -17,20 +17,12 @@ function mapFormat(dbFormat: DbQuestFormat): QuestFormat {
   return VARIATION_FORMATS.has(dbFormat) ? "변형" : "회독";
 }
 
-// P3 미연결 — object_id join 후 subject/unit/topic 실값으로 교체
-function mapToContractQuest(db: DbQuest): Quest {
-  return {
-    questId: db.quest_id,
-    objectId: db.object_id,
-    subject: "수학" as Subject,
-    unit: "—",
-    topic: "회독 문제",
-    questFormat: mapFormat(db.quest_format),
-    riskLevel: "mid" as QuestRiskLevel,
-    forgettingRisk: 50,
-    rewardXp: db.reward_xp,
-    dueDate: db.due_date,
-  };
+function mapRiskLevel(risk: "low" | "medium" | "high"): QuestRiskLevel {
+  return risk === "medium" ? "mid" : risk;
+}
+
+function mapForgettingRisk(risk: "low" | "medium" | "high"): number {
+  return risk === "low" ? 20 : risk === "medium" ? 50 : 80;
 }
 
 export function useTodayQuests(): {
@@ -50,8 +42,21 @@ export function useTodayQuests(): {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) return;
-        const rows = await getTodayQuestsFromDb(user.id);
-        setQuests(rows.map(mapToContractQuest));
+        const rows = await getTodayQuestsEnriched(user.id);
+        setQuests(
+          rows.map(({ quest, subject, unit, topic, forgetting_risk }) => ({
+            questId: quest.quest_id,
+            objectId: quest.object_id,
+            subject: subject as Subject,
+            unit,
+            topic,
+            questFormat: mapFormat(quest.quest_format),
+            riskLevel: mapRiskLevel(forgetting_risk),
+            forgettingRisk: mapForgettingRisk(forgetting_risk),
+            rewardXp: quest.reward_xp,
+            dueDate: quest.due_date,
+          })),
+        );
       } catch (e) {
         setError(e instanceof Error ? e.message : "퀘스트를 불러오지 못했습니다.");
       } finally {

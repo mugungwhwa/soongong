@@ -5,3 +5,9 @@ export type {
   ReviewPriority,
   ReviewerStatus,
 } from "./model";
+
+export {
+  getLearningObjectById,
+  getLearningObjectsByIds,
+  getLearningObjectsByUser,
+} from "./api";
