@@ -77,6 +77,16 @@
 - PR/머지 전: `pr-review-toolkit:*` + `arch-guard:pre-commit`
 - 자세한 디스패치 매트릭스: `docs/agent-strategy/2026-05-14-agent-tracks.md` §3-4
 
+## 코드래빗 운영 패턴 (2026-06-11 확정)
+
+- 코드래빗이 지적 0건 + COMMENTED로 끝나 승인이 안 찍히면:
+  "@coderabbitai approve" 코멘트로 verdict 제출 요청 (1차 레버).
+  안 먹히면 "@coderabbitai full review" (2차). 정책 변경·우회 아님.
+- 코멘트가 달린 PR은 resolve 완료 후 자동 승인 대기가 정상 경로.
+- 백그라운드 폴링 금지 — 샌드박스에서 detach 프로세스는 죽는다.
+  "지금 확인 → 분기 실행 → 종료"의 단발 완결형으로만 작업한다.
+- admin/강제 머지 시도 금지 (차터 규칙 7, #43에서 위반 1회 기록됨).
+
 ## 4. 위험 게이트 (잊지 말 것)
 
 | 게이트 | 기준 | 미달 시 |
