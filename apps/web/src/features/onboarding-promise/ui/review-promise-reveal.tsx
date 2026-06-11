@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { CalendarHeart, Sparkles } from "lucide-react";
@@ -45,8 +45,8 @@ export function ReviewPromiseReveal({
   previewUrl: string | null;
   onStart: () => void;
 }) {
-  // 기준일은 마운트 시점 1회 고정 (렌더마다 흔들리지 않도록).
-  const base = new Date();
+  // 기준일은 마운트 시점 1회 고정 (렌더마다 회독 일정 날짜가 흔들리지 않도록).
+  const [base] = useState(() => new Date());
 
   useEffect(() => {
     confetti({

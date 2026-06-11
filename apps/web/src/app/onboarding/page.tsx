@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/client";
 import { Button } from "@/shared/ui/button";
@@ -33,7 +33,6 @@ function ProgressBar({ current }: { current: Step }) {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<Step>("birth");
   const [birthYear, setBirthYear] = useState<number | "">("");
@@ -43,6 +42,12 @@ export default function OnboardingPage() {
   const [uploadPhase, setUploadPhase] = useState<UploadPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // 미리보기 blob URL 해제 — 파일 변경 시 이전 URL, 언마운트 시 현재 URL을 revoke (메모리 누수 방지).
+  useEffect(() => {
+    if (!uploadPreview) return;
+    return () => URL.revokeObjectURL(uploadPreview);
+  }, [uploadPreview]);
 
   async function handleBirthSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -230,13 +235,10 @@ export default function OnboardingPage() {
           </div>
 
           <div className="w-full max-w-xs space-y-3">
-            <div
-              role="button"
-              tabIndex={0}
+            <label
+              htmlFor="onboarding-upload"
               aria-label="사진 선택"
-              className="block border-2 border-dashed border-[var(--color-mint-500)] rounded-xl p-8 text-center cursor-pointer hover:bg-[var(--color-mint-50)] transition"
-              onClick={() => fileInputRef.current?.click()}
-              onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
+              className="block border-2 border-dashed border-[var(--color-mint-500)] rounded-xl p-8 text-center cursor-pointer hover:bg-[var(--color-mint-50)] transition focus-within:ring-2 focus-within:ring-[var(--color-mint-500)]"
             >
               {uploadPreview ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -253,12 +255,12 @@ export default function OnboardingPage() {
                   </p>
                 </div>
               )}
-            </div>
+            </label>
             <input
-              ref={fileInputRef}
+              id="onboarding-upload"
               type="file"
               accept="image/jpeg,image/png,image/webp,image/heic"
-              className="hidden"
+              className="sr-only"
               onChange={handleFileChange}
             />
 
