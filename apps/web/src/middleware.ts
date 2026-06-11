@@ -74,6 +74,10 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
+  // Node.js 런타임으로 실행 — Edge 번들에서 @supabase/realtime-js가 브라우저 전역
+  // `self`를 참조해 "self is not defined"로 크래시하던 문제를 원천 제거.
+  // (BannerPlugin 폴리필은 Vercel Edge 미들웨어 아티팩트에 안정적으로 주입되지 않아 재발했음 — 두 번째.)
+  runtime: "nodejs",
   matcher: [
     "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
