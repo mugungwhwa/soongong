@@ -4,6 +4,11 @@
 @theme {
   --color-bg: var(--color-bg);
   --color-bg-elevated: var(--color-bg-elevated);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-foreground: var(--color-surface-foreground);
+  --color-card: var(--color-card);
+  --color-card-foreground: var(--color-card-foreground);
   --color-mint-500: var(--color-mint-500);
   --color-mint-700: var(--color-mint-700);
   --color-risk-low: var(--color-risk-low);
@@ -17,7 +22,7 @@
 
 html,
 body {
-  background: var(--color-bg);
+  background: var(--color-background);
   color: var(--color-text-default);
   font-family: var(--font-body);
 }

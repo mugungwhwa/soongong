@@ -7,6 +7,17 @@
     --color-bg-elevated: #FFFFFF;
     --color-bg-sunken: #E2F3F8;
 
+    /* Surface roles — SOO-36: 배경=오션 캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
+       기존 --color-bg* 는 호환 위해 값 유지, 의미는 아래 semantic alias 가 SSoT.
+       규칙: 일반 콘텐츠 블록은 항상 surface(흰색). 틴트(bg-sunken)는 디자인락이 허용한
+       인용/원칙 블록·진행바 트랙·아이콘 칩 등 accent 역할에만 opt-in. */
+    --color-background: var(--color-bg); /* 페이지 캔버스 (오션 틴트) */
+    --color-surface: var(--color-bg-elevated); /* 카드·패널·텍스트 블록 표면 (흰색 #FFFFFF) */
+    --color-surface-foreground: var(--color-text-default);
+    /* shadcn Card 호환: bg-card / text-card-foreground → surface 로 매핑 */
+    --color-card: var(--color-surface);
+    --color-card-foreground: var(--color-surface-foreground);
+
     /* Brand mint (값 = Ocean 팔레트, 변수명 호환 유지) */
     --color-mint-50: #E8F8FB;
     --color-mint-100: #C2EDF5;
