@@ -51,6 +51,15 @@ export async function getTodayQuestsEnriched(userId: string): Promise<QuestEnric
       : Promise.resolve({ data: [], error: null }),
   ]);
 
+  if (ploResult.error) {
+    console.error("[quest/api] getTodayQuestsEnriched(plo):", ploResult.error.message);
+    throw new Error("퀘스트를 불러오지 못했습니다.");
+  }
+  if (smiResult.error) {
+    console.error("[quest/api] getTodayQuestsEnriched(smi):", smiResult.error.message);
+    throw new Error("퀘스트를 불러오지 못했습니다.");
+  }
+
   type PloRow = { object_id: string; subject: string; unit: string | null; topic: string | null };
   type SmiRow = { memory_id: string; forgetting_risk: string; mastery_score: number };
 

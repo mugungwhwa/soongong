@@ -21,13 +21,15 @@ export async function getPendingConfirmations(
 
 export async function confirmSubjectRouting(
   routingId: string,
+  userId: string,
   correctedSubject: string,
 ): Promise<boolean> {
   const supabase = createClient();
   const { error } = await supabase
     .from("subject_routing_results")
     .update({ user_corrected_subject: correctedSubject, final_subject: correctedSubject })
-    .eq("routing_id", routingId);
+    .eq("routing_id", routingId)
+    .eq("user_id", userId);
   if (error) {
     console.error("[subject-routing/api] confirmSubjectRouting:", error.message);
     return false;
