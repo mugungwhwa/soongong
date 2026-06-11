@@ -20,7 +20,7 @@ export function AnalysisCard({ result }: { result: AnalysisResult }) {
           {result.unit} · {result.topic}
         </span>
       </div>
-      <p className="text-sm text-[var(--color-text-default)] bg-[var(--color-bg-sunken)] p-3 rounded-[var(--radius-md)]">
+      <p className="text-sm text-[var(--color-text-default)] bg-[var(--color-surface)] border border-[var(--color-border-default)] p-3 rounded-[var(--radius-md)]">
         {result.rawTextSnippet}
       </p>
       <div className="flex flex-wrap gap-4 text-sm">
@@ -61,7 +61,7 @@ export function AnalysisCard({ result }: { result: AnalysisResult }) {
               {STRATEGY_LABEL[result.variation.strategy]}
             </span>
           </div>
-          <p className="text-sm text-[var(--color-text-default)] bg-[var(--color-bg-sunken)] p-3 rounded-[var(--radius-md)]">
+          <p className="text-sm text-[var(--color-text-default)] bg-[var(--color-surface)] border border-[var(--color-border-default)] p-3 rounded-[var(--radius-md)]">
             {result.variation.stem}
           </p>
           <div className="text-sm">

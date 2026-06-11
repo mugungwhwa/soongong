@@ -73,7 +73,7 @@ export function PlayPage({ questId }: { questId: string }) {
 
       {play.state === "playing" && (
         <>
-          <Card className="p-4 bg-[var(--color-bg-sunken)] border-[var(--color-border-default)]">
+          <Card className="p-4 border-[var(--color-border-default)]">
             <p className="text-sm text-[var(--color-text-default)] leading-relaxed">
               <MathRenderer
                 content={analysis?.rawTextSnippet ?? quest.topic}
