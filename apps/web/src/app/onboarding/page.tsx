@@ -4,10 +4,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/client";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
+import { ReviewPromiseReveal } from "@/features/onboarding-promise";
 import { SUBJECTS } from "@/shared/contracts";
 import type { Subject } from "@/shared/contracts";
 
 type Step = "birth" | "subjects" | "upload";
+/** 업로드 스텝 내부 연출 단계 — 3스텝 구조는 유지, 마지막 스텝 안에서만 전환. */
+type UploadPhase = "idle" | "analyzing" | "reveal";
 
 const STEP_INDEX: Record<Step, number> = { birth: 0, subjects: 1, upload: 2 };
 const SUBJECT_ICONS: Record<Subject, string> = { 수학: "📐", 영어: "📖", 국어: "📚" };
@@ -37,7 +40,7 @@ export default function OnboardingPage() {
   const [selectedSubjects, setSelectedSubjects] = useState<Subject[]>([]);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [hasFile, setHasFile] = useState(false);
-  const [analyzing, setAnalyzing] = useState(false);
+  const [uploadPhase, setUploadPhase] = useState<UploadPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -87,10 +90,10 @@ export default function OnboardingPage() {
 
   async function handleAnalyze() {
     if (!hasFile) return;
-    setAnalyzing(true);
-    // mock: 1.5s 분석 시뮬레이션 (실제 OCR은 P3)
-    await new Promise((r) => setTimeout(r, 1500));
-    router.push("/today?first=1");
+    setUploadPhase("analyzing");
+    // mock: 1.6s 분석 시뮬레이션 (실제 OCR은 P3). 끝나면 "복습 스케줄 약속" 클라이맥스로.
+    await new Promise((r) => setTimeout(r, 1600));
+    setUploadPhase("reveal");
   }
 
   // ── Step 1: birth ──────────────────────────────────────
@@ -180,73 +183,107 @@ export default function OnboardingPage() {
     );
   }
 
-  // ── Step 3: upload ─────────────────────────────────────
+  // ── Step 3: upload (idle → analyzing → reveal) ─────────
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-8">
       <ProgressBar current="upload" />
-      <Mascot mood="cheer" size="xl" />
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-[var(--color-text-strong)]">
-          첫 문제를 찍어봐요! 📸
-        </h1>
-        <p className="text-sm text-[var(--color-text-muted)] mt-2">
-          풀었던 문제 사진을 올리면 회독 퀘스트로 바꿔드려요
-        </p>
-      </div>
 
-      <div className="w-full max-w-xs space-y-3">
-        <div
-          role="button"
-          tabIndex={0}
-          aria-label="사진 선택"
-          className="block border-2 border-dashed border-[var(--color-mint-500)] rounded-xl p-8 text-center cursor-pointer hover:bg-[var(--color-mint-50)] transition"
-          onClick={() => fileInputRef.current?.click()}
-          onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
-        >
-          {uploadPreview ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={uploadPreview}
-              alt="preview"
-              className="max-h-48 mx-auto rounded-lg object-contain"
-            />
-          ) : (
-            <div className="space-y-2">
-              <div className="text-4xl">📷</div>
-              <p className="text-sm text-[var(--color-text-muted)]">
-                사진을 탭해서 선택하세요
-              </p>
-            </div>
-          )}
-        </div>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/heic"
-          className="hidden"
-          onChange={handleFileChange}
+      {uploadPhase === "reveal" ? (
+        // 클라이맥스 — "복습 스케줄 약속" 연출
+        <ReviewPromiseReveal
+          previewUrl={uploadPreview}
+          onStart={() => router.push("/today?first=1")}
         />
+      ) : uploadPhase === "analyzing" ? (
+        // 변환 중 — 사진 → 1·3·7·14일 회독으로 나누는 순간
+        <div className="w-full max-w-xs flex flex-col items-center gap-5 text-center">
+          <Mascot mood="think" size="xl" className="animate-pulse" />
+          <div>
+            <h1 className="text-2xl font-bold text-[var(--color-text-strong)]">
+              순공이가 회독 퀘스트를 짜는 중…
+            </h1>
+            <p className="text-sm text-[var(--color-text-muted)] mt-2">
+              이 문제를 1·3·7·14일 복습으로 나누고 있어요
+            </p>
+          </div>
+          <div className="flex gap-1.5" role="status" aria-label="분석 중">
+            {[0, 1, 2, 3].map((i) => (
+              <span
+                key={i}
+                className="h-2.5 w-2.5 rounded-full bg-[var(--color-mint-500)] animate-bounce"
+                style={{ animationDelay: `${i * 120}ms` }}
+              />
+            ))}
+          </div>
+        </div>
+      ) : (
+        // idle — 첫 사진 업로드
+        <>
+          <Mascot mood="cheer" size="xl" />
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-[var(--color-text-strong)]">
+              첫 문제를 찍어봐요! 📸
+            </h1>
+            <p className="text-sm text-[var(--color-text-muted)] mt-2">
+              풀었던 문제 사진을 올리면 순공이가 복습 일정으로 약속해줄게요
+            </p>
+          </div>
 
-        {error && (
-          <p className="text-xs text-[var(--color-risk-high)]">{error}</p>
-        )}
+          <div className="w-full max-w-xs space-y-3">
+            <div
+              role="button"
+              tabIndex={0}
+              aria-label="사진 선택"
+              className="block border-2 border-dashed border-[var(--color-mint-500)] rounded-xl p-8 text-center cursor-pointer hover:bg-[var(--color-mint-50)] transition"
+              onClick={() => fileInputRef.current?.click()}
+              onKeyDown={(e) => e.key === "Enter" && fileInputRef.current?.click()}
+            >
+              {uploadPreview ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={uploadPreview}
+                  alt="preview"
+                  className="max-h-48 mx-auto rounded-lg object-contain"
+                />
+              ) : (
+                <div className="space-y-2">
+                  <div className="text-4xl">📷</div>
+                  <p className="text-sm text-[var(--color-text-muted)]">
+                    사진을 탭해서 선택하세요
+                  </p>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/heic"
+              className="hidden"
+              onChange={handleFileChange}
+            />
 
-        <Button
-          className="w-full bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)] disabled:opacity-40"
-          disabled={!hasFile || analyzing}
-          onClick={handleAnalyze}
-        >
-          {analyzing ? "분석 중…" : "분석하고 퀘스트 시작하기"}
-        </Button>
+            {error && (
+              <p className="text-xs text-[var(--color-risk-high)]">{error}</p>
+            )}
 
-        <button
-          type="button"
-          className="w-full text-sm text-[var(--color-text-muted)] underline underline-offset-2 py-2 hover:text-[var(--color-text-default)] transition"
-          onClick={() => router.push("/today?first=1")}
-        >
-          나중에 하기
-        </button>
-      </div>
+            <Button
+              className="w-full bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)] disabled:opacity-40"
+              disabled={!hasFile}
+              onClick={handleAnalyze}
+            >
+              복습 일정 만들기
+            </Button>
+
+            <button
+              type="button"
+              className="w-full text-sm text-[var(--color-text-muted)] underline underline-offset-2 py-2 hover:text-[var(--color-text-default)] transition"
+              onClick={() => router.push("/today?first=1")}
+            >
+              나중에 하기
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
