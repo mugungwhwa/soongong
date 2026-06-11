@@ -84,6 +84,26 @@ describe("solveRecurrence — 단일 공유 풀이법(반복 대입)", () => {
   it("target=초항이면 초항을 그대로 반환한다", () => {
     expect(solveRecurrence({ form: "linear", p: 3, q: 1 }, 9, 1)).toBe(9);
   });
+
+  // 경계값 가드 — 잘못된 입력은 조용히 틀린 답을 내지 않고 명확히 실패한다.
+  it("targetIndex < 1 이면 RangeError (a_1 조용히 반환 금지)", () => {
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, 5, 0)).toThrow(RangeError);
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, 5, -3)).toThrow(RangeError);
+  });
+
+  it("targetIndex 가 비정수면 RangeError", () => {
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, 5, 2.5)).toThrow(RangeError);
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, 5, NaN)).toThrow(RangeError);
+  });
+
+  it("targetIndex 가 상한을 초과하면 RangeError (런어웨이 루프 차단)", () => {
+    expect(() => solveRecurrence({ form: "linear", p: 1, q: 1 }, 1, 1_000_001)).toThrow(RangeError);
+  });
+
+  it("initial 이 유한수가 아니면 RangeError", () => {
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, NaN, 3)).toThrow(RangeError);
+    expect(() => solveRecurrence({ form: "linear", p: 3, q: 1 }, Infinity, 3)).toThrow(RangeError);
+  });
 });
 
 describe("generateV1Variation — 숫자 변형 + 풀이 보존", () => {

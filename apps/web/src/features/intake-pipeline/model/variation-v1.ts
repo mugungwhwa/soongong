@@ -164,15 +164,39 @@ export function parseRecurrenceDNA(text: string): QuestionDNA | null {
 
 // ─── 단일 공유 풀이법: 반복 대입 ─────────────────────────────────────────────
 
+/** 다룰 수 있는 항 인덱스 상한 — 비정상 입력의 런어웨이 루프 방지.
+ *  실제 수능 점화식 요구값은 한 자리~두 자리 수준이라 넉넉한 여유. */
+const MAX_TERM_INDEX = 1000;
+
 /**
  * 점화식을 반복 대입으로 푼다 (SSoT §1 풀이전략 "반복 대입 후 패턴 추론").
  * 원본·변형 모두 이 함수 하나로 풀린다 → "같은 풀이법" 보장.
+ *
+ * 경계값 가드: 잘못된 입력은 a_1 을 조용히 반환하거나 틀린 답을 만들지 않고
+ * 명확히 RangeError 로 실패한다.
+ * - targetIndex 는 1 이상의 정수 (a_{-3}/a_2.5 같은 무의미 인덱스 차단)
+ * - targetIndex 는 상한 이하 (가비지 입력의 런어웨이 루프 차단)
+ * - initial 은 유한수 (NaN/Infinity 전파 차단)
  */
 export function solveRecurrence(
   spec: RecurrenceSpec,
   initial: number,
   targetIndex: number,
 ): number {
+  if (!Number.isInteger(targetIndex) || targetIndex < 1) {
+    throw new RangeError(
+      `solveRecurrence: targetIndex 는 1 이상의 정수여야 합니다 (받음: ${targetIndex}).`,
+    );
+  }
+  if (targetIndex > MAX_TERM_INDEX) {
+    throw new RangeError(
+      `solveRecurrence: targetIndex 가 상한(${MAX_TERM_INDEX})을 초과했습니다 (받음: ${targetIndex}).`,
+    );
+  }
+  if (!Number.isFinite(initial)) {
+    throw new RangeError(`solveRecurrence: initial 은 유한수여야 합니다 (받음: ${initial}).`);
+  }
+
   let a = initial;
   for (let n = 1; n < targetIndex; n++) {
     a = spec.form === "linear" ? spec.p * a + spec.q : a + (spec.c * n + spec.d);
