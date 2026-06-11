@@ -77,6 +77,29 @@
 - PR/머지 전: `pr-review-toolkit:*` + `arch-guard:pre-commit`
 - 자세한 디스패치 매트릭스: `docs/agent-strategy/2026-05-14-agent-tracks.md` §3-4
 
+## 코드래빗 운영 패턴 (2026-06-11 확정)
+
+- 코드래빗이 지적 0건 + COMMENTED로 끝나 승인이 안 찍히면:
+  "@coderabbitai approve" 코멘트로 verdict 제출 요청 (1차 레버).
+  안 먹히면 "@coderabbitai full review" (2차). 정책 변경·우회 아님.
+- 코멘트가 달린 PR은 resolve 완료 후 자동 승인 대기가 정상 경로.
+- 백그라운드 폴링 금지 — 샌드박스에서 detach 프로세스는 죽는다.
+  "지금 확인 → 분기 실행 → 종료"의 단발 완결형으로만 작업한다.
+- admin/강제 머지 시도 금지 (차터 규칙 7, #43에서 위반 1회 기록됨).
+
+### stale-base 게이트 함정 (실증: #43/#44/#45)
+
+- `.coderabbit.yaml`(request_changes_workflow=true)을 추가한 커밋보다 **PR 브랜치 분기점이 빠르면**,
+  PR head에 설정 파일이 없어 CodeRabbit이 승인 verdict를 못 찍는다(reviewDecision이 영원히 REVIEW_REQUIRED).
+- 증상: 지적 0건인데 COMMENTED만 반복, "@coderabbitai approve"에 "Approval is disabled" 응답.
+- 해결: `gh pr update-branch <PR>` 로 main을 head에 병합해 설정을 올린 뒤 재리뷰 → 정상 승인.
+- 신규 PR도 분기 base가 오래됐는지 항상 확인. CodeRabbit은 head의 설정을 읽는다.
+
+### @coderabbitai approve 정확한 조건
+
+- approve는 (1) request_changes_workflow=true 이고 (2) 미해결 review 스레드가 모두 resolve된 뒤에만 승인을 제출한다.
+- 반드시 PR의 **새 top-level 코멘트**로 작성한다(기존 스레드 답글로 달면 무시됨).
+
 ## 4. 위험 게이트 (잊지 말 것)
 
 | 게이트 | 기준 | 미달 시 |
@@ -161,6 +184,16 @@ cd apps/web && pnpm dev
 - **뱃지 희귀도 3단** (common/rare/epic) — 4단(일반/희귀/영웅/전설)만 허용
 - **순공리그 MVP 1차 도입** — MVP 1.5차 이전엔 sidebar 잠금 표시만
 
+## 머지 게이트 (2026-06-10 강제 전환 — 위반 시 머지 불가)
+
+1. main 머지는 PR로만. 기능/수정 코드 PR은 **`agent/<role>/<id>` 브랜치 출신만** 머지한다.
+2. 리뷰는 **GitHub PR review만** 인정한다 (코드래빗 approve = 필수 게이트).
+   커밋/PR 본문에 "리뷰 통과"를 서술하는 것은 리뷰가 아니며 금지.
+3. Orchestration Lead는 코드/문서를 직접 구현하지 않는다. 모든 구현은 SOO-티켓으로
+   도메인 리드에 배분. "작은 작업이라 직접 처리"는 Mike 승인 필수.
+4. Tech Lead의 역할 = 아키텍처 정합성 리뷰. 결과는 반드시 **PR 코멘트로** 남긴다
+   (커밋 본문 서술 무효). 코드래빗 = 라인 단위 게이트 / Tech Lead = 구조 리뷰로 분담.
+
 ## 9. 변경 이력
 
 | 버전 | 일자 | 내용 |
@@ -173,6 +206,7 @@ cd apps/web && pnpm dev
 | **v1.5** | **2026-06-08** | **§3에 'Multica 자율 실행' 하위 섹션 추가 — 플랫폼 로그인(개인 mugungwhwa 계정)과 git push identity 분리 명시, 자율 커밋 시 기존 Git/Commit 룰(config 수정 금지·일회용 -c·SSH alias push) 적용, 초기 PR-only(자동 머지 OFF) 운영, 이슈 DoD 명시 룰.** |
 | **v1.6** | **2026-06-09** | **§2 헤더 충돌 규칙에 폐기정책 예외 단서 추가 — 시안이 §8 폐기 정책 위반 시 텍스트(정책) 우선. §8 'Dark RPG 톤 / 다크 네이비 / 회독마왕' 항목에 시안 잔존 + SOO-20 자산 교체 추적 크로스링크 주석. (SOO-21·A2, 텍스트 편집만 — 시안 PNG 미변경)** |
 | **v1.7** | **2026-06-09** | **§2 컬러 행 민트 → 오션 확정(`#2AB8D0`/`#1A8FAD`/`#0E5C82`) + 톤명에 바다(Ocean) 컨셉 반영. §5 트리에 디자인 시스템 잠금 문서(`docs/design-system/2026-06-09-design-system-lock.md`) 추가. §8 민트 그린 단일 컬러 고수 폐기 추가. (SOO-17 와꾸 최종 잠금)** |
+| **v1.8** | **2026-06-10** | **'머지 게이트' 섹션 추가 (강제 전환) — PR-only + `agent/<role>/<id>` 브랜치 한정 머지, GitHub PR review(코드래빗 approve)만 인정·커밋 본문 자기서술 무효, Orchestration Lead 직접 구현 금지, Tech Lead 구조 리뷰는 PR 코멘트 강제. 06-10 머지 게이트 감사(`docs/audits/2026-06-10-merge-gate-audit.md`) 후속. 코드래빗 강제 리뷰 게이트(`.coderabbit.yaml` `request_changes_workflow`) 도입.** |
 
 ---
 

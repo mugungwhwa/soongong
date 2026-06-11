@@ -22,9 +22,33 @@ export type { RecoveryVariant, VariantTier } from "./recovery";
 
 export type { AdminReviewItem, AdminReviewStatus } from "./admin";
 
+export type { WrongNote } from "./wrong-note";
+
+export type {
+  ReviewQuest,
+  ReviewCycle,
+  ReviewQuestStatus,
+} from "./review-quest";
+
 export type {
   AiClient,
   AnalyzeSourceInput,
   ClassifySubjectInput,
   ClassifySubjectResult,
 } from "./ai";
+
+export type {
+  PipelineSourceType,
+  SubmitInput,
+  SubmitOutput,
+  RecognizeInput,
+  RecognizeOutput,
+  RouteInput,
+  RouteOutput,
+  CardInput,
+  CardOutput,
+  GenerateInput,
+  GenerateOutput,
+  PipelineInput,
+  PipelineOutput,
+} from "./pipeline";
