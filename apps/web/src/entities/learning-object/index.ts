@@ -1,7 +1,7 @@
 export type {
   ParsedLearningObject,
   ObjectType,
-  DifficultyLevel,
+  DifficultyLevelCode,
   ReviewPriority,
   ReviewerStatus,
 } from "./model";

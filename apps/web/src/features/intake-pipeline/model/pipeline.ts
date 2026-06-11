@@ -38,38 +38,9 @@ export async function stageSubmit(input: SubmitInput): Promise<SubmitOutput> {
   return { sourceId: data.source_id as string };
 }
 
-// ─── Stage 2: Recognize (STUB) ──────────────────────────────────────────────
-// MOAT slot: 실제 OCR/AI 분석 로직 자리.
-// 현재: 입력 텍스트를 그대로 통과. confidence_score = 0 으로 stub 표시.
-
-export async function stageRecognize(input: RecognizeInput): Promise<RecognizeOutput> {
-  const supabase = createServiceClient();
-
-  // MOAT slot — OCR / 이미지 분석 / AI 파싱 로직이 여기에 swap-in 됩니다.
-  const extractedText = input.rawText;
-  const confidenceScore = 0; // stub: 실 OCR 붙으면 0–1 실측값으로 교체
-
-  const { data, error } = await supabase
-    .from("parsed_learning_objects")
-    .insert({
-      source_id: input.sourceId,
-      user_id: input.userId,
-      object_type: "question",
-      subject: "수학", // stub: 3단계 Route 결과로 backfill 예정
-      extracted_text: extractedText,
-      review_priority: "medium",
-      confidence_score: confidenceScore,
-      reviewer_status: "pending",
-    })
-    .select("object_id")
-    .single();
-
-  if (error || !data) throw new Error(`[recognize] ${error?.message ?? "insert failed"}`);
-  return { objectId: data.object_id as string };
-}
-
-// ─── Stage 3: Route ─────────────────────────────────────────────────────────
+// ─── Stage 2: Route ─────────────────────────────────────────────────────────
 // 간단한 키워드 휴리스틱으로 과목 감지 (AI 라우팅 이전 배관용).
+// Submit 직후 실행 — 감지된 subject를 Stage 3 Recognize에 전달해 정합성 확보.
 
 const MATH_KEYWORDS = ["함수", "미분", "적분", "방정식", "부등식", "벡터", "확률", "통계", "수열", "극값", "삼각", "수학"];
 const KOR_KEYWORDS  = ["문학", "독서", "화법", "작문", "문법", "국어", "현대시", "소설", "비문학"];
@@ -107,6 +78,37 @@ export async function stageRoute(input: RouteInput): Promise<RouteOutput> {
 
   if (error || !data) throw new Error(`[route] ${error?.message ?? "insert failed"}`);
   return { routingId: data.routing_id as string, detectedSubject: subject, finalSubject: subject };
+}
+
+// ─── Stage 3: Recognize (STUB) ──────────────────────────────────────────────
+// MOAT slot: 실제 OCR/AI 분석 로직 자리.
+// 현재: 입력 텍스트를 그대로 통과. confidence_score = 0 으로 stub 표시.
+// Route 완료 후 실행 — input.subject 로 parsed_learning_objects.subject 정합 보장.
+
+export async function stageRecognize(input: RecognizeInput): Promise<RecognizeOutput> {
+  const supabase = createServiceClient();
+
+  // MOAT slot — OCR / 이미지 분석 / AI 파싱 로직이 여기에 swap-in 됩니다.
+  const extractedText = input.rawText;
+  const confidenceScore = 0; // stub: 실 OCR 붙으면 0–1 실측값으로 교체
+
+  const { data, error } = await supabase
+    .from("parsed_learning_objects")
+    .insert({
+      source_id: input.sourceId,
+      user_id: input.userId,
+      object_type: "question",
+      subject: input.subject,
+      extracted_text: extractedText,
+      review_priority: "medium",
+      confidence_score: confidenceScore,
+      reviewer_status: "pending",
+    })
+    .select("object_id")
+    .single();
+
+  if (error || !data) throw new Error(`[recognize] ${error?.message ?? "insert failed"}`);
+  return { objectId: data.object_id as string };
 }
 
 // ─── Stage 4: Card ──────────────────────────────────────────────────────────
@@ -163,8 +165,8 @@ export async function stageGenerate(input: GenerateInput): Promise<GenerateOutpu
 
 export async function runIntakePipeline(input: PipelineInput): Promise<PipelineOutput> {
   const submit     = await stageSubmit({ userId: input.userId, rawText: input.rawText, sourceType: input.sourceType });
-  const recognize  = await stageRecognize({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText });
-  const route      = await stageRoute({ userId: input.userId, sourceId: submit.sourceId, objectId: recognize.objectId, rawText: input.rawText, sourceType: input.sourceType });
+  const route      = await stageRoute({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, sourceType: input.sourceType });
+  const recognize  = await stageRecognize({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, subject: route.finalSubject });
   const card       = await stageCard({ subject: route.finalSubject });
   const generate   = await stageGenerate({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject, typeId: card.typeId, typeName: card.typeName });
 
