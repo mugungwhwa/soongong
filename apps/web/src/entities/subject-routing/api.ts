@@ -25,16 +25,18 @@ export async function confirmSubjectRouting(
   correctedSubject: string,
 ): Promise<boolean> {
   const supabase = createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("subject_routing_results")
     .update({ user_corrected_subject: correctedSubject, final_subject: correctedSubject })
     .eq("routing_id", routingId)
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .select("routing_id")
+    .maybeSingle();
   if (error) {
     console.error("[subject-routing/api] confirmSubjectRouting:", error.message);
     return false;
   }
-  return true;
+  return data !== null;
 }
 
 export async function getRoutingResult(

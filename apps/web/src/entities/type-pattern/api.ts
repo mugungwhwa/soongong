@@ -14,7 +14,10 @@ export async function getTypePatternCard(
     .select(COLUMNS)
     .eq("type_id", typeId)
     .single();
-  if (error || !data) return null;
+  if (error || !data) {
+    if (error) console.error("[type-pattern/api] getTypePatternCard:", error.message);
+    return null;
+  }
   return data as TypePatternCard;
 }
 
