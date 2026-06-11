@@ -54,11 +54,9 @@ create policy "plo: admin read"
 create policy "plo: reviewer update"
   on public.parsed_learning_objects for update
   using (
-    auth.uid() = user_id or
     exists (select 1 from public.users where id = auth.uid() and role in ('reviewer','admin'))
   )
   with check (
-    auth.uid() = user_id or
     exists (select 1 from public.users where id = auth.uid() and role in ('reviewer','admin'))
   );
 

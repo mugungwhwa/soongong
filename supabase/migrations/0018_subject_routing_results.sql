@@ -36,50 +36,39 @@ create policy "srr: self read"
   on public.subject_routing_results for select
   using (auth.uid() = user_id);
 
--- OLD 행을 RLS 우회로 읽기 — WITH CHECK에서 변경 전 값 비교에 사용
-create or replace function public.srr_get_persisted_row(p_routing_id uuid)
-returns public.subject_routing_results
-language sql stable security definer
-as $$
-  select * from public.subject_routing_results where routing_id = p_routing_id
-$$;
-
--- user_corrected_subject / final_subject 외 컬럼이 모두 불변인지 검사
-create or replace function public.srr_only_confirmation_columns_changed(
-  old_row public.subject_routing_results,
-  new_row public.subject_routing_results
-)
-returns boolean
-language sql immutable
-as $$
-  select
-    (old_row.routing_id              is not distinct from new_row.routing_id)              and
-    (old_row.source_id               is not distinct from new_row.source_id)               and
-    (old_row.user_id                 is not distinct from new_row.user_id)                 and
-    (old_row.source_type             is not distinct from new_row.source_type)             and
-    (old_row.detected_subject        is not distinct from new_row.detected_subject)        and
-    (old_row.subject_confidence      is not distinct from new_row.subject_confidence)      and
-    (old_row.subject_group           is not distinct from new_row.subject_group)           and
-    (old_row.unit_candidates         is not distinct from new_row.unit_candidates)         and
-    (old_row.topic_candidates        is not distinct from new_row.topic_candidates)        and
-    (old_row.recommended_agents      is not distinct from new_row.recommended_agents)      and
-    (old_row.needs_user_confirmation is not distinct from new_row.needs_user_confirmation) and
-    (old_row.created_at              is not distinct from new_row.created_at)
-$$;
-
--- 본인만 수정 가능, 단 user_corrected_subject / final_subject 컬럼만 허용
+-- 본인만 수정 가능 (컬럼 제한은 아래 트리거가 담당)
 create policy "srr: self update confirmation"
   on public.subject_routing_results for update
   using (auth.uid() = user_id)
-  with check (
-    auth.uid() = user_id and
-    public.srr_only_confirmation_columns_changed(
-      public.srr_get_persisted_row(routing_id),
-      row(routing_id, source_id, user_id, source_type, detected_subject,
-          subject_confidence, subject_group, unit_candidates, topic_candidates,
-          recommended_agents, needs_user_confirmation, user_corrected_subject,
-          final_subject, created_at)::public.subject_routing_results
-    )
-  );
+  with check (auth.uid() = user_id);
+
+-- user_corrected_subject / final_subject 외 컬럼 변경을 차단하는 BEFORE UPDATE 트리거
+-- service_role(auth.uid() IS NULL)은 제약 없이 업데이트 가능
+create or replace function public.srr_enforce_confirmation_columns()
+returns trigger language plpgsql as $$
+begin
+  if auth.uid() is not null then
+    if new.routing_id              is distinct from old.routing_id              or
+       new.source_id               is distinct from old.source_id               or
+       new.user_id                 is distinct from old.user_id                 or
+       new.source_type             is distinct from old.source_type             or
+       new.detected_subject        is distinct from old.detected_subject        or
+       new.subject_confidence      is distinct from old.subject_confidence      or
+       new.subject_group           is distinct from old.subject_group           or
+       new.unit_candidates         is distinct from old.unit_candidates         or
+       new.topic_candidates        is distinct from old.topic_candidates        or
+       new.recommended_agents      is distinct from old.recommended_agents      or
+       new.needs_user_confirmation is distinct from old.needs_user_confirmation or
+       new.created_at              is distinct from old.created_at then
+      raise exception 'Only user_corrected_subject and final_subject may be updated by authenticated users';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+create trigger srr_confirmation_guard
+  before update on public.subject_routing_results
+  for each row execute function public.srr_enforce_confirmation_columns();
 
 -- insert는 service_role(Subject Routing Agent)만
