@@ -11,7 +11,6 @@ import {
   BookOpen,
   ShieldCheck,
   LogOut,
-  Compass,
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -31,7 +30,6 @@ type NavItem = {
 
 const MAIN_ITEMS: NavItem[] = [
   { href: ROUTES.today, label: "오늘의 회독", Icon: Home },
-  { href: ROUTES.journey, label: "내 여정", Icon: Compass },
   { href: ROUTES.calendar, label: "회독 캘린더", Icon: Calendar },
   { href: ROUTES.wrongNotes, label: "오답노트", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },

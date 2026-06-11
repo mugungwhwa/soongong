@@ -7,7 +7,7 @@ import {
   Camera,
   NotebookPen,
   BarChart3,
-  Compass,
+  Calendar,
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -21,8 +21,8 @@ type NavItem = {
 
 const ITEMS: NavItem[] = [
   { href: ROUTES.today, label: "오늘", Icon: Home },
-  { href: ROUTES.journey, label: "내 여정", Icon: Compass },
-  null, // camera FAB placeholder
+  { href: ROUTES.calendar, label: "캘린더", Icon: Calendar },
+  null, // camera FAB placeholder — 2:2 대칭 유지로 중앙 배치
   { href: ROUTES.wrongNotes, label: "오답", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
 ];

@@ -1,7 +1,9 @@
 "use client";
+import Link from "next/link";
 import { useGameState } from "@/entities/user-game-state";
+import { ROUTES } from "@/shared/config/routes";
 import type { UserRank } from "@/shared/contracts";
-import { MapPin, Trophy } from "lucide-react";
+import { ChevronRight, MapPin, Trophy } from "lucide-react";
 
 // §6-1 — 게임성_기획_구조.md v1.0 SSoT 누적 XP 임계값
 const RANKS: { name: UserRank; minXp: number; emoji: string }[] = [
@@ -54,9 +56,10 @@ export function TierJourneyHero() {
     computeTierInfo(totalXp);
 
   return (
-    <section
-      aria-label="현재 등급과 진행"
-      className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-bg-elevated)] px-4 py-3 shadow-[var(--shadow-card)]"
+    <Link
+      href={ROUTES.journey}
+      aria-label="현재 등급과 진행 — 내 여정 더 보기"
+      className="group flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-bg-elevated)] px-4 py-3 shadow-[var(--shadow-card)] transition-colors hover:border-[var(--color-mint-500)] hover:bg-[var(--color-mint-50)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2"
     >
       {/* 현재 등급 클러스터 */}
       <div className="flex min-w-0 items-center gap-3">
@@ -131,6 +134,18 @@ export function TierJourneyHero() {
           </div>
         </div>
       )}
-    </section>
+
+      {/* 여정 진입 affordance — strip 자체는 정적 표시, 클릭 시 /journey 이동 */}
+      <span className="flex flex-shrink-0 items-center gap-0.5 text-xs font-bold text-[var(--color-mint-700)]">
+        더 보기
+        <ChevronRight
+          size={14}
+          strokeWidth={2}
+          color="var(--color-mint-700)"
+          aria-hidden="true"
+          className="transition-transform group-hover:translate-x-0.5"
+        />
+      </span>
+    </Link>
   );
 }
