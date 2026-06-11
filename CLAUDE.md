@@ -87,6 +87,19 @@
   "지금 확인 → 분기 실행 → 종료"의 단발 완결형으로만 작업한다.
 - admin/강제 머지 시도 금지 (차터 규칙 7, #43에서 위반 1회 기록됨).
 
+### stale-base 게이트 함정 (실증: #43/#44/#45)
+
+- `.coderabbit.yaml`(request_changes_workflow=true)을 추가한 커밋보다 **PR 브랜치 분기점이 빠르면**,
+  PR head에 설정 파일이 없어 CodeRabbit이 승인 verdict를 못 찍는다(reviewDecision이 영원히 REVIEW_REQUIRED).
+- 증상: 지적 0건인데 COMMENTED만 반복, "@coderabbitai approve"에 "Approval is disabled" 응답.
+- 해결: `gh pr update-branch <PR>` 로 main을 head에 병합해 설정을 올린 뒤 재리뷰 → 정상 승인.
+- 신규 PR도 분기 base가 오래됐는지 항상 확인. CodeRabbit은 head의 설정을 읽는다.
+
+### @coderabbitai approve 정확한 조건
+
+- approve는 (1) request_changes_workflow=true 이고 (2) 미해결 review 스레드가 모두 resolve된 뒤에만 승인을 제출한다.
+- 반드시 PR의 **새 top-level 코멘트**로 작성한다(기존 스레드 답글로 달면 무시됨).
+
 ## 4. 위험 게이트 (잊지 말 것)
 
 | 게이트 | 기준 | 미달 시 |
