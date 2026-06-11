@@ -1,0 +1,29 @@
+export type ObjectType =
+  | "question"
+  | "concept_note"
+  | "lecture_concept"
+  | "wrong_answer"
+  | "type_pattern";
+
+export type DifficultyLevel = "L1" | "L2" | "L3" | "L4" | "L5";
+export type ReviewPriority = "low" | "medium" | "high";
+export type ReviewerStatus = "pending" | "approved" | "rejected";
+
+export interface ParsedLearningObject {
+  object_id: string;
+  source_id: string | null;
+  user_id: string;
+  object_type: ObjectType;
+  subject: string;
+  unit: string | null;
+  topic: string | null;
+  question_type: string | null;
+  difficulty_level: DifficultyLevel | null;
+  extracted_text: string | null;
+  student_note: string | null;
+  detected_wrong_reason: string | null;
+  review_priority: ReviewPriority;
+  confidence_score: number | null;
+  reviewer_status: ReviewerStatus;
+  created_at: string;
+}

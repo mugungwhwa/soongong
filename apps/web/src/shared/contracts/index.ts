@@ -36,3 +36,19 @@ export type {
   ClassifySubjectInput,
   ClassifySubjectResult,
 } from "./ai";
+
+export type {
+  PipelineSourceType,
+  SubmitInput,
+  SubmitOutput,
+  RecognizeInput,
+  RecognizeOutput,
+  RouteInput,
+  RouteOutput,
+  CardInput,
+  CardOutput,
+  GenerateInput,
+  GenerateOutput,
+  PipelineInput,
+  PipelineOutput,
+} from "./pipeline";
