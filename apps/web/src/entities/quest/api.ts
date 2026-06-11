@@ -13,7 +13,10 @@ export async function getTodayQuestsFromDb(userId: string): Promise<Quest[]> {
     .order("reward_xp", { ascending: false })
     .limit(3);
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("[quest/api] getTodayQuestsFromDb:", error.message);
+    throw new Error("퀘스트를 불러오지 못했습니다.");
+  }
   return (data ?? []) as Quest[];
 }
 

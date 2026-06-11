@@ -15,7 +15,7 @@ export function QuestList() {
 
   if (error) {
     return (
-      <p className="py-4 text-center text-sm text-[var(--color-risk-high)]">
+      <p role="alert" className="py-4 text-center text-sm text-[var(--color-risk-high)]">
         퀘스트를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.
       </p>
     );
