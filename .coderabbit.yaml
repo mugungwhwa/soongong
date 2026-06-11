@@ -1,0 +1,7 @@
+language: "ko-KR"
+reviews:
+  profile: "chill"
+  request_changes_workflow: true   # 핵심 — 코멘트 미해결 시 승인 보류, 해결 시 approve 제출
+  auto_review:
+    enabled: true
+    drafts: false
