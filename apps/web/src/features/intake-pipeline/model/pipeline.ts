@@ -17,6 +17,7 @@ import type {
 } from "@/shared/contracts/pipeline";
 import type { TypePatternCard } from "@/entities/type-pattern";
 import { generateV1Variation } from "./variation-v1";
+import { generateV2Variation } from "./variation-v2";
 
 // ─── Stage 1: Submit ────────────────────────────────────────────────────────
 
@@ -130,14 +131,16 @@ export async function stageCard(input: CardInput): Promise<CardOutput> {
   return { typeId: card.type_id, typeName: card.type_name };
 }
 
-// ─── Stage 5: Generate (V1 — SOO-40) ────────────────────────────────────────
-// MOAT slot: 문항 DNA 기반 V1(숫자/조건 미세변형) 생성.
+// ─── Stage 5: Generate (V1 — SOO-40 / V2 — SOO-44) ──────────────────────────
+// MOAT slot: 문항 DNA 기반 변형 생성.
 //   1) 원본 학습객체의 추출 텍스트 조회
-//   2) V1 엔진으로 점화식 DNA 분해 → 숫자만 변형 → 같은 풀이법으로 풀리는 새 문제 생성
+//   2) input.variationLevel(기본 V1)에 따라 변형 엔진 선택
+//        V1: 점화식 DNA 분해 → 숫자/계수 미세변형 → 같은 풀이법으로 풀리는 새 문제
+//        V2: 점화식 구조·숫자 보존 → 묻는 값 변경(단일 항 → 두 항 차/합/비교) → 풀이 정합
 //   3) 변형 문제를 새 parsed_learning_objects 행으로 저장(원본 스키마 그대로 활용)
-//   4) 그 변형 객체를 가리키는 review_quests 퀘스트 1건 출제(variation_level='V1')
-// 파싱 불가(점화식 아님) 시 V0(원문 회독)로 graceful 폴백 — 파이프라인을 막지 않음.
-// 범위 밖(별도 MOAT): 온톨로지·RAG·prior 점수·적응형 출제·V2~V5.
+//   4) 그 변형 객체를 가리키는 review_quests 퀘스트 1건 출제(variation_level 기록)
+// 파싱 불가(점화식 아님) 시 레벨 무관 V0(원문 회독)로 graceful 폴백 — 파이프라인을 막지 않음.
+// 범위 밖(별도 MOAT): 온톨로지·RAG·prior 점수·적응형 V레벨 선택·V3~V5.
 
 function tomorrowDateStr(): string {
   const due = new Date();
@@ -145,9 +148,83 @@ function tomorrowDateStr(): string {
   return due.toISOString().slice(0, 10);
 }
 
+/** review_quests 출제 메타 — 변형 레벨별로 다른 값. */
+interface QuestMeta {
+  quest_format: string;
+  variation_level: string;
+  difficulty_level: string;
+  reward_xp: number;
+}
+
+const V1_QUEST_META: QuestMeta = {
+  quest_format: "number_variation",
+  variation_level: "V1",
+  difficulty_level: "L2",
+  reward_xp: 25,
+};
+
+const V2_QUEST_META: QuestMeta = {
+  quest_format: "target_change", // 0009 스키마 check 제약에 사전 등록된 V2 포맷
+  variation_level: "V2",
+  difficulty_level: "L3", // 요구값 변경 — V1(L2)보다 한 단계
+  reward_xp: 30,
+};
+
+/**
+ * 변형 지문을 새 학습객체로 저장하고, 그 객체를 가리키는 퀘스트 1건을 출제한다.
+ * V1·V2 공통 경로 — 출제 메타(meta)만 레벨별로 다르다.
+ */
+async function emitVariantQuest(
+  supabase: ReturnType<typeof createServiceClient>,
+  input: GenerateInput,
+  stem: string,
+  dueDateStr: string,
+  meta: QuestMeta,
+): Promise<GenerateOutput> {
+  const { data: variantObj, error: variantErr } = await supabase
+    .from("parsed_learning_objects")
+    .insert({
+      source_id: null, // 생성 객체 — 외부 소스 없음
+      user_id: input.userId,
+      object_type: "question",
+      subject: input.subject,
+      extracted_text: stem,
+      review_priority: "medium",
+      confidence_score: 1, // 결정론적 생성 — 신뢰도 만점
+      reviewer_status: "pending", // 생성 문항도 검수 큐 경유
+    })
+    .select("object_id")
+    .single();
+  if (variantErr || !variantObj) {
+    throw new Error(`[generate] variant insert: ${variantErr?.message ?? "insert failed"}`);
+  }
+
+  const { data: quest, error: questErr } = await supabase
+    .from("review_quests")
+    .insert({
+      user_id: input.userId,
+      object_id: variantObj.object_id as string,
+      due_date: dueDateStr,
+      quest_format: meta.quest_format,
+      quest_mode: "today",
+      variation_level: meta.variation_level,
+      difficulty_level: meta.difficulty_level,
+      reward_xp: meta.reward_xp,
+      status: "pending",
+      hint_used: false,
+    })
+    .select("quest_id")
+    .single();
+  if (questErr || !quest) {
+    throw new Error(`[generate] quest insert: ${questErr?.message ?? "insert failed"}`);
+  }
+  return { questId: quest.quest_id as string };
+}
+
 export async function stageGenerate(input: GenerateInput): Promise<GenerateOutput> {
   const supabase = createServiceClient();
   const dueDateStr = tomorrowDateStr();
+  const level = input.variationLevel ?? "V1";
 
   // (1) 원본 추출 텍스트 조회 — 없으면 V0 폴백.
   const { data: sourceObj, error: sourceErr } = await supabase
@@ -159,49 +236,15 @@ export async function stageGenerate(input: GenerateInput): Promise<GenerateOutpu
 
   const sourceText = (sourceObj?.extracted_text as string | null) ?? "";
 
-  // (2) V1 변형 시도.
-  const variation = sourceText ? generateV1Variation(sourceText) : null;
-
-  // (3) V1 성공: 변형 문제를 새 학습객체로 저장 → 그 객체로 퀘스트 출제.
-  if (variation) {
-    const { data: variantObj, error: variantErr } = await supabase
-      .from("parsed_learning_objects")
-      .insert({
-        source_id: null, // 생성 객체 — 외부 소스 없음
-        user_id: input.userId,
-        object_type: "question",
-        subject: input.subject,
-        extracted_text: variation.stem,
-        review_priority: "medium",
-        confidence_score: 1, // 결정론적 생성 — 신뢰도 만점
-        reviewer_status: "pending", // 생성 문항도 검수 큐 경유
-      })
-      .select("object_id")
-      .single();
-    if (variantErr || !variantObj) {
-      throw new Error(`[generate] variant insert: ${variantErr?.message ?? "insert failed"}`);
+  // (2) 레벨별 변형 시도. 파싱 불가(null) 시 아래 V0 폴백으로 떨어진다.
+  if (sourceText) {
+    if (level === "V2") {
+      const v2 = generateV2Variation(sourceText);
+      if (v2) return emitVariantQuest(supabase, input, v2.stem, dueDateStr, V2_QUEST_META);
+    } else {
+      const v1 = generateV1Variation(sourceText);
+      if (v1) return emitVariantQuest(supabase, input, v1.stem, dueDateStr, V1_QUEST_META);
     }
-
-    const { data: quest, error: questErr } = await supabase
-      .from("review_quests")
-      .insert({
-        user_id: input.userId,
-        object_id: variantObj.object_id as string,
-        due_date: dueDateStr,
-        quest_format: "number_variation",
-        quest_mode: "today",
-        variation_level: "V1",
-        difficulty_level: "L2",
-        reward_xp: 25,
-        status: "pending",
-        hint_used: false,
-      })
-      .select("quest_id")
-      .single();
-    if (questErr || !quest) {
-      throw new Error(`[generate] quest insert: ${questErr?.message ?? "insert failed"}`);
-    }
-    return { questId: quest.quest_id as string };
   }
 
   // (3-fallback) 파싱 불가 → V0 원문 회독 퀘스트(원본 객체 그대로).
@@ -232,7 +275,7 @@ export async function runIntakePipeline(input: PipelineInput): Promise<PipelineO
   const route      = await stageRoute({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, sourceType: input.sourceType });
   const recognize  = await stageRecognize({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, subject: route.finalSubject });
   const card       = await stageCard({ subject: route.finalSubject });
-  const generate   = await stageGenerate({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject, typeId: card.typeId, typeName: card.typeName });
+  const generate   = await stageGenerate({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject, typeId: card.typeId, typeName: card.typeName, variationLevel: input.variationLevel });
 
   return {
     sourceId:     submit.sourceId,

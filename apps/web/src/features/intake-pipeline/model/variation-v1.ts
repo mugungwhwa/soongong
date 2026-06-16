@@ -80,8 +80,10 @@ const SUBSCRIPT_MAP: Record<string, string> = {
  *   a₁ / a_1        → a1
  *   aₙ₊₁ / a_{n+1}  → an+1
  *   aₙ / a_n        → an
+ *
+ * V2(SOO-44)에서 시드 유도용으로 재사용 — export.
  */
-function normalize(text: string): string {
+export function normalize(text: string): string {
   let out = "";
   for (const ch of text) out += SUBSCRIPT_MAP[ch] ?? ch;
   return out
@@ -205,9 +207,10 @@ export function solveRecurrence(
 }
 
 // ─── 결정론적 PRNG (시드 고정) ───────────────────────────────────────────────
+// V2(SOO-44)가 동일 시드 규약으로 재사용 — export.
 
 /** mulberry32 — 작은 결정론적 PRNG. Math.random 미사용(재현성). */
-function mulberry32(seed: number): () => number {
+export function mulberry32(seed: number): () => number {
   let t = seed >>> 0;
   return () => {
     t += 0x6d2b79f5;
@@ -219,7 +222,7 @@ function mulberry32(seed: number): () => number {
 }
 
 /** 문자열 → 32bit 해시 (시드 미지정 시 입력에서 결정론적 시드 유도). */
-function hashString(s: string): number {
+export function hashString(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) {
     h ^= s.charCodeAt(i);
@@ -228,7 +231,7 @@ function hashString(s: string): number {
   return h >>> 0;
 }
 
-function randInt(rng: () => number, min: number, max: number): number {
+export function randInt(rng: () => number, min: number, max: number): number {
   return min + Math.floor(rng() * (max - min + 1));
 }
 
@@ -245,13 +248,23 @@ function constTerm(n: number): string {
   return n > 0 ? ` + ${n}` : ` - ${-n}`;
 }
 
-function renderStem(dna: QuestionDNA): string {
-  const { initial, targetIndex, recurrence } = dna;
+/**
+ * 점화식 조건부(초항 + 점화식) LaTeX 절을 렌더링한다.
+ *   `$a_1 = 2$, $a_{n+1} = 3a_n + 1$`  (요구값 절은 호출부가 덧붙임)
+ *
+ * V2(SOO-44)는 같은 조건부를 공유하고 요구값 절만 바꿔 출제 — export.
+ */
+export function renderRecurrenceSetup(dna: QuestionDNA): string {
+  const { initial, recurrence } = dna;
   const rhs =
     recurrence.form === "linear"
       ? `${coef(recurrence.p)}a_n${constTerm(recurrence.q)}`
       : `a_n + ${coef(recurrence.c)}n${constTerm(recurrence.d)}`;
-  return `$a_1 = ${initial}$, $a_{n+1} = ${rhs}$ 일 때 $a_{${targetIndex}}$의 값을 구하시오.`;
+  return `$a_1 = ${initial}$, $a_{n+1} = ${rhs}$`;
+}
+
+function renderStem(dna: QuestionDNA): string {
+  return `${renderRecurrenceSetup(dna)} 일 때 $a_{${dna.targetIndex}}$의 값을 구하시오.`;
 }
 
 /** DNA 의 변형 가능 숫자 튜플 — 변형 전후 동일 여부 비교용. */

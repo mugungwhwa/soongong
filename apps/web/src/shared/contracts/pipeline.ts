@@ -16,6 +16,15 @@ export type PipelineSourceType =
   | "capture_note"
   | "manual_text";
 
+/**
+ * Generate 단계에서 시도할 변형 레벨.
+ *  - "V1": 숫자/조건 미세변형 (SOO-40, 기본값)
+ *  - "V2": 요구값 변경 — 단일 항 → 두 항의 차/합/비교 (SOO-44)
+ * 미지정 시 "V1". 적응형 V레벨 선택(숙련도 기반)은 범위 밖(별도 MOAT).
+ * 파싱 불가(점화식 아님) 시 레벨과 무관하게 V0 원문 회독으로 폴백.
+ */
+export type VariationLevel = "V1" | "V2";
+
 // ─── Stage 1: Submit ────────────────────────────────────────────────────────
 
 export interface SubmitInput {
@@ -78,6 +87,8 @@ export interface GenerateInput {
   subject: string;
   typeId: string | null;
   typeName: string;
+  /** 시도할 변형 레벨. 미지정 시 "V1". 파싱 불가 시 V0 폴백. */
+  variationLevel?: VariationLevel;
 }
 
 export interface GenerateOutput {
@@ -90,6 +101,8 @@ export interface PipelineInput {
   userId: string;
   rawText: string;
   sourceType: PipelineSourceType;
+  /** 시도할 변형 레벨. 미지정 시 "V1"(기존 동작 보존). */
+  variationLevel?: VariationLevel;
 }
 
 export interface PipelineOutput {
