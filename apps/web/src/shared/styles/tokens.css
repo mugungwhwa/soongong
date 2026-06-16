@@ -1,26 +1,23 @@
 @layer base {
   :root {
     /* ================================================================
-       Palette = 시안 UI v2 (teal/green) — SOO-45 (2026-06-16, Mike 지시).
+       Palette = 시안 UI v2 (teal/green) — SOO-45 (2026-06-16, Mike 확정 맵).
        SSoT 앵커(시안 UI EXAMPLE v1.0):
          #A8DCCB · #7BC4AE · #4CAF88 · #FFEBA3 · #FFB4B4 · #6BA6FF · #8E8E93
        변수명은 호환 위해 mint-* 유지, 값은 v2 teal.
        ⚠️ Ocean(#2AB8D0) 팔레트(SOO-17 lock)에서 teal로 전환.
-          CLAUDE.md §2/§8 · design-tokens.md §1 · design-system-lock v1.0 동반 갱신 필요(Mike 확인 대기).
+          CLAUDE.md §2/§8 · design-system-lock v1.0 동반 갱신 필요(후속).
        ================================================================ */
 
-    /* ---- Primary CTA (비가역 게이트 — Mike 확인 대기) ----------------
-       시안 CTA 버튼 fill 후보 2종. 최종 1개 확정 시 이 토큰에 박고,
-       CTA 컴포넌트를 bg-[var(--color-mint-500)] → bg-[var(--color-primary-cta)] 로 일괄 전환.
-         후보 A: #5E9C7B  (muted teal — 차분/고급)
-         후보 B: #4CAF88  (vivid teal-green — 시안 앵커 일치)
-       임의 확정 금지(이슈 게이트). PR은 placeholder 상태로 보고. */
-    --color-primary-cta: #___; /* TODO(Mike): 후보 A(#5E9C7B) / B(#4CAF88) 중 택1 확정 */
+    /* ---- Primary CTA (Mike 확정: #5E9C7B, 2026-06-16) ----
+       시안 CTA 버튼 fill. 후보였던 #4CAF88은 mint-700(deep accent)로 잔존. */
+    --color-primary-cta: #5E9C7B;
+    --color-primary-bg: #EAF4EE; /* CTA 연한 배경 (파생) */
 
     /* ---- Surface (크림 베이스 #F8FBF7 유지 + teal 재조율) ---- */
     --color-bg: #F8FBF7;
     --color-bg-elevated: #FFFFFF;
-    --color-bg-sunken: #EAF4EE;
+    --color-bg-sunken: #EFF5F1; /* bg-soft */
 
     /* Surface roles — SOO-36: 배경=크림 캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
        기존 --color-bg* 는 호환 위해 값 유지, 의미는 아래 semantic alias 가 SSoT.
@@ -37,9 +34,9 @@
        300/500/700 = 앵커 3종, 50/100/900 = 앵커서 톤 파생 (hex 명시 등록) */
     --color-mint-50:  #ECF7F2; /* 파생 — lightest tint */
     --color-mint-100: #D4EFE4; /* 파생 — light tint */
-    --color-mint-300: #A8DCCB; /* 앵커 — teal-light */
-    --color-mint-500: #7BC4AE; /* 앵커 — teal-mid (현 CTA fill) */
-    --color-mint-700: #4CAF88; /* 앵커 — teal-strong (hover/accent) */
+    --color-mint-300: #A8DCCB; /* 앵커 — teal-light (light tint/badge) */
+    --color-mint-500: #7BC4AE; /* 앵커 — teal-mid (brand accent/fill/active) */
+    --color-mint-700: #4CAF88; /* 앵커 — teal-strong (deep accent/icon emphasis) */
     --color-mint-900: #2E7D5B; /* 파생 — darkest, text-on-teal */
 
     /* ---- Risk (회독 위험도, soft) — mid=warning앵커 / high=danger앵커 ---- */
@@ -61,18 +58,18 @@
     --color-epic-bg: #F5E0FC;
     --color-epic-text: #8B5CF6;
 
-    /* ---- Text 4단 (기존값 유지 + disabled 추가, 대비 점검 완료) ---- */
-    --color-text-strong: #0C2535;   /* primary   — on #F8FBF7 대비 ~15:1 */
-    --color-text-default: #1C3848;  /* secondary — on #F8FBF7 대비 ~11:1 */
-    --color-text-muted: #4A7585;    /* tertiary  — on #F8FBF7 대비 ~5:1 */
-    --color-text-disabled: #8E8E93; /* disabled  — 앵커 neutral */
+    /* ---- Text 4단 (Mike 확정 맵 — 중성 그레이) ---- */
+    --color-text-strong: #2E2E2E;   /* primary */
+    --color-text-default: #6E6E6E;  /* secondary */
+    --color-text-muted: #9B9B9B;    /* tertiary */
+    --color-text-disabled: #BBBBBB; /* disabled */
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
     /* ---- State backgrounds (앵커서 톤 낮춘 파생 틴트, hex 명시 등록) ---- */
-    --color-risk-bg: #FFE9E9;    /* danger tint */
-    --color-warning-bg: #FFF6D6; /* warning tint */
-    --color-info-bg: #E7F0FF;    /* info tint */
+    --color-risk-bg: #FFEFEF;    /* danger-bg */
+    --color-warning-bg: #FFF8E0; /* warning-bg */
+    --color-info-bg: #EAF2FF;    /* info-bg */
 
     /* ---- Scrim / Overlay (modal·sheet backdrop) ---- */
     --color-scrim: rgba(0, 0, 0, 0.8);
@@ -81,7 +78,7 @@
     --gradient-quest-map: linear-gradient(to bottom right, #ECF7F2, #EAF4EE);
 
     /* ---- Border (teal 재조율) ---- */
-    --color-border-default: #DCEAE2;
+    --color-border-default: #E3EDE7; /* border-soft */
     --color-border-strong: #9CCBB7;
 
     /* Radius */
