@@ -12,11 +12,13 @@
 ## 1. 톤 잠금 (Light Study Garden)
 
 순공대장 UI는 **Light Study Garden** 단일 톤. 다크모드 도입 / 어두운 RPG 톤 회귀 금지 (구체 폐기 목록은 CLAUDE.md §8에 잠금 — 본 문서는 참조).
-- 베이스: 크림 계열 (`--color-bg` 등 — 코드 SoT `tokens.css` 기준)
-- 강조: **오션 `#2AB8D0`** (메인 브랜드 기본색, `design-system-lock.md` v1.0 Ocean 팔레트) — `--color-xp`는 soft golden `#F2C94C`로 차별
-- 위험도: 채도 ≤60 soft 톤 (UI 설계.md §3)
+- 베이스: 크림 계열 `#F8FBF7` (`--color-bg` — 코드 SoT `tokens.css` 기준)
+- 강조: **teal `#7BC4AE`** (메인 브랜드 기본색, 시안 UI v2 앵커) — `--color-xp`는 soft golden `#F2C94C`로 차별
+- 위험도: soft 톤 (mid=warning `#FFEBA3` / high=danger `#FFB4B4`)
 
-> **색 팔레트 = Ocean** (2026-06-09 SOO-17 잠금, SOO-16에서 `tokens.css` 실적용). 구 민트 `#7CC97C`는 폐기. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 Ocean**(`500`=`#2AB8D0` / `700`=`#1A8FAD` / `900`=`#0E5C82`). 전체 스케일은 `docs/design-system/2026-06-09-design-system-lock.md` §1.
+> **색 팔레트 = 시안 UI v2 (teal/green)** (2026-06-16 SOO-45). 앵커 SSoT: `#A8DCCB` / `#7BC4AE` / `#4CAF88` / `#FFEBA3` / `#FFB4B4` / `#6BA6FF` / `#8E8E93`. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 teal**(`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88`).
+>
+> ⚠️ **전환 주의**: 직전 잠금은 Ocean(`#2AB8D0`, SOO-17). 본 v2는 teal로의 전환으로, CLAUDE.md §2/§8 · `design-system-lock.md` v1.0 동반 갱신이 필요하다. **primary CTA 최종 hex(#5E9C7B vs #4CAF88)는 Mike 확정 대기**(`--color-primary-cta: #___` placeholder).
 
 ---
 
@@ -26,13 +28,16 @@
 
 | 카테고리 | 변수 prefix | 비고 |
 |---|---|---|
-| Surface | `--color-bg`, `--color-bg-elevated`, `--color-bg-sunken` | Light Study Garden 베이스 |
-| Brand (Ocean) | `--color-mint-{50,100,300,500,700,900}` | 변수명은 호환 위해 `mint` 유지, **값 = Ocean 팔레트** (`500`=`#2AB8D0` primary). lock v1.0 |
-| Risk | `--color-risk-{low,mid,high}` | 회독 위험도, soft (채도 ≤60) |
-| Reward / XP | `--color-xp`, `--color-xp-soft` | Duolingo `#ffc800`과 차별 |
-| Text | `--color-text-{strong,default,muted,inverse,on-warm}` | 5단계 |
-| Border | `--color-border-{default,strong}` | 2단계 |
-| Gradient | `--gradient-quest-map` | 등록 gradient만 사용 (lint 통과 대상) |
+| Primary CTA | `--color-primary-cta` | **Mike 확정 대기** `#___` placeholder. 후보 A `#5E9C7B` / B `#4CAF88` 주석 병기 (tokens.css) |
+| Surface | `--color-bg`(`#F8FBF7`), `--color-bg-elevated`, `--color-bg-sunken` | 크림 베이스 + teal 재조율 |
+| Brand (teal v2) | `--color-mint-{50,100,300,500,700,900}` | 변수명 호환 위해 `mint` 유지, **값 = teal 앵커** (`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88`). 50/100/900=파생 |
+| Risk | `--color-risk-{low,mid,high}` | 회독 위험도. low=`#BFE3C9`(파생) / mid=`#FFEBA3`(warning앵커) / high=`#FFB4B4`(danger앵커) |
+| Semantic state | `--color-{info,danger,warning,neutral}` | info `#6BA6FF` / danger `#FFB4B4` / warning `#FFEBA3` / neutral·disabled `#8E8E93` |
+| State bg | `--color-{risk-bg,warning-bg,info-bg}` | 앵커서 톤 낮춘 파생 틴트 |
+| Reward / XP | `--color-xp`, `--color-xp-soft` | Duolingo `#ffc800`과 차별, gold 유지 |
+| Text | `--color-text-{strong,default,muted,disabled,inverse,on-warm}` | 4단(primary/secondary/tertiary/disabled) + inverse/on-warm. 기존값 유지·대비 점검 |
+| Border | `--color-border-{default,strong}` | teal 재조율 (`#DCEAE2` / `#9CCBB7`) |
+| Gradient | `--gradient-quest-map` | teal 재조율, 등록 gradient만 사용 (lint 통과 대상) |
 | Radius | `--radius-{sm,md,lg,xl,pill}` | 8/12/16/24/9999px |
 | Spacing | `--space-{1..12}` | 4px base, scale 1=4 / 2=8 / 4=16 / 6=24 / 12=48 |
 | Shadow | `--shadow-{card,elevated}` | 오션톤 alpha 기반 (rgba(14,92,130,…)) |
@@ -71,3 +76,4 @@
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-19** | **초안. P0 와꾸 단계가 깔아놓은 `tokens.css` 기준 SSoT 메타 문서. P1 sub-plan Task 1 Step 3 산물.** |
+| **v1.1** | **2026-06-16** | **SOO-45: 시안 UI v2(teal/green) 팔레트 교체. 앵커 7종(`#A8DCCB`/`#7BC4AE`/`#4CAF88`/`#FFEBA3`/`#FFB4B4`/`#6BA6FF`/`#8E8E93`)으로 mint 스케일·risk·semantic state·border·gradient·shadow 재매핑. 신규 카테고리: Primary CTA(`#___` placeholder, Mike 확정 대기), Semantic state(info/danger/warning/neutral), text-disabled 추가. Ocean(SOO-17)→teal 전환 — CLAUDE.md §2/§8·design-system-lock v1.0 동반 갱신 필요(Mike 확인 대기). `pnpm lint:tokens` 통과(30 토큰), `pnpm build` 통과.** |

@@ -1,64 +1,88 @@
 @layer base {
   :root {
-    /* Palette = Ocean per design-system-lock v1.0 (2026-06-09). 변수명은 호환 위해 mint 유지, 값은 Ocean. */
+    /* ================================================================
+       Palette = 시안 UI v2 (teal/green) — SOO-45 (2026-06-16, Mike 지시).
+       SSoT 앵커(시안 UI EXAMPLE v1.0):
+         #A8DCCB · #7BC4AE · #4CAF88 · #FFEBA3 · #FFB4B4 · #6BA6FF · #8E8E93
+       변수명은 호환 위해 mint-* 유지, 값은 v2 teal.
+       ⚠️ Ocean(#2AB8D0) 팔레트(SOO-17 lock)에서 teal로 전환.
+          CLAUDE.md §2/§8 · design-tokens.md §1 · design-system-lock v1.0 동반 갱신 필요(Mike 확인 대기).
+       ================================================================ */
 
-    /* Surface (Ocean) */
-    --color-bg: #F2FAFB;
+    /* ---- Primary CTA (비가역 게이트 — Mike 확인 대기) ----------------
+       시안 CTA 버튼 fill 후보 2종. 최종 1개 확정 시 이 토큰에 박고,
+       CTA 컴포넌트를 bg-[var(--color-mint-500)] → bg-[var(--color-primary-cta)] 로 일괄 전환.
+         후보 A: #5E9C7B  (muted teal — 차분/고급)
+         후보 B: #4CAF88  (vivid teal-green — 시안 앵커 일치)
+       임의 확정 금지(이슈 게이트). PR은 placeholder 상태로 보고. */
+    --color-primary-cta: #___; /* TODO(Mike): 후보 A(#5E9C7B) / B(#4CAF88) 중 택1 확정 */
+
+    /* ---- Surface (크림 베이스 #F8FBF7 유지 + teal 재조율) ---- */
+    --color-bg: #F8FBF7;
     --color-bg-elevated: #FFFFFF;
-    --color-bg-sunken: #E2F3F8;
+    --color-bg-sunken: #EAF4EE;
 
-    /* Surface roles — SOO-36: 배경=오션 캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
+    /* Surface roles — SOO-36: 배경=크림 캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
        기존 --color-bg* 는 호환 위해 값 유지, 의미는 아래 semantic alias 가 SSoT.
-       규칙: 일반 콘텐츠 블록은 항상 surface(흰색). 틴트(bg-sunken)는 디자인락이 허용한
-       인용/원칙 블록·진행바 트랙·아이콘 칩 등 accent 역할에만 opt-in. */
-    --color-background: var(--color-bg); /* 페이지 캔버스 (오션 틴트) */
+       규칙: 일반 콘텐츠 블록은 항상 surface(흰색). 틴트(bg-sunken)는 인용/원칙 블록·
+       진행바 트랙·아이콘 칩 등 accent 역할에만 opt-in. */
+    --color-background: var(--color-bg); /* 페이지 캔버스 (크림 틴트) */
     --color-surface: var(--color-bg-elevated); /* 카드·패널·텍스트 블록 표면 (흰색 #FFFFFF) */
     --color-surface-foreground: var(--color-text-default);
     /* shadcn Card 호환: bg-card / text-card-foreground → surface 로 매핑 */
     --color-card: var(--color-surface);
     --color-card-foreground: var(--color-surface-foreground);
 
-    /* Brand mint (값 = Ocean 팔레트, 변수명 호환 유지) */
-    --color-mint-50: #E8F8FB;
-    --color-mint-100: #C2EDF5;
-    --color-mint-300: #7DD8EA;
-    --color-mint-500: #2AB8D0;
-    --color-mint-700: #1A8FAD;
-    --color-mint-900: #0E5C82;
+    /* ---- Brand teal (값 = v2 앵커, 변수명 mint-* 호환 유지) ----
+       300/500/700 = 앵커 3종, 50/100/900 = 앵커서 톤 파생 (hex 명시 등록) */
+    --color-mint-50:  #ECF7F2; /* 파생 — lightest tint */
+    --color-mint-100: #D4EFE4; /* 파생 — light tint */
+    --color-mint-300: #A8DCCB; /* 앵커 — teal-light */
+    --color-mint-500: #7BC4AE; /* 앵커 — teal-mid (현 CTA fill) */
+    --color-mint-700: #4CAF88; /* 앵커 — teal-strong (hover/accent) */
+    --color-mint-900: #2E7D5B; /* 파생 — darkest, text-on-teal */
 
-    /* Risk (soft, 채도 ≤60 — UI 설계.md §3) */
-    --color-risk-low: #A0BFDC;
-    --color-risk-mid: #E6B788;
-    --color-risk-high: #E29B9B;
+    /* ---- Risk (회독 위험도, soft) — mid=warning앵커 / high=danger앵커 ---- */
+    --color-risk-low:  #BFE3C9; /* 파생 soft green (안전) */
+    --color-risk-mid:  #FFEBA3; /* 앵커 warning yellow (주의) */
+    --color-risk-high: #FFB4B4; /* 앵커 danger red (위험) */
 
-    /* Reward / XP (Duolingo #ffc800과 차별, soft golden) */
+    /* ---- Semantic state ---- */
+    --color-info:    #6BA6FF; /* 앵커 — info blue */
+    --color-danger:  #FFB4B4; /* 앵커 — danger (= risk-high) */
+    --color-warning: #FFEBA3; /* 앵커 — warning (= risk-mid) */
+    --color-neutral: #8E8E93; /* 앵커 — neutral / disabled */
+
+    /* ---- Reward / XP (soft golden 유지 — Duolingo #ffc800과 차별) ---- */
     --color-xp: #F2C94C;
     --color-xp-soft: #FBE7A6;
 
-    /* Badge rarity — SSoT §5-3: 일반/희귀/영웅/전설 */
+    /* ---- Badge rarity — SSoT §5-3: 일반/희귀/영웅/전설 ---- */
     --color-epic-bg: #F5E0FC;
     --color-epic-text: #8B5CF6;
 
-    /* Text */
-    --color-text-strong: #0C2535;
-    --color-text-default: #1C3848;
-    --color-text-muted: #4A7585;
+    /* ---- Text 4단 (기존값 유지 + disabled 추가, 대비 점검 완료) ---- */
+    --color-text-strong: #0C2535;   /* primary   — on #F8FBF7 대비 ~15:1 */
+    --color-text-default: #1C3848;  /* secondary — on #F8FBF7 대비 ~11:1 */
+    --color-text-muted: #4A7585;    /* tertiary  — on #F8FBF7 대비 ~5:1 */
+    --color-text-disabled: #8E8E93; /* disabled  — 앵커 neutral */
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
-    /* State backgrounds (soft tint) */
-    --color-risk-bg: #FCECEA;
-    --color-info-bg: #E8F2FB;
+    /* ---- State backgrounds (앵커서 톤 낮춘 파생 틴트, hex 명시 등록) ---- */
+    --color-risk-bg: #FFE9E9;    /* danger tint */
+    --color-warning-bg: #FFF6D6; /* warning tint */
+    --color-info-bg: #E7F0FF;    /* info tint */
 
-    /* Scrim / Overlay (modal·sheet backdrop) */
+    /* ---- Scrim / Overlay (modal·sheet backdrop) ---- */
     --color-scrim: rgba(0, 0, 0, 0.8);
 
-    /* Gradients (registered, lint:tokens 통과 대상) */
-    --gradient-quest-map: linear-gradient(to bottom right, #E8F8FB, #E2F3F8);
+    /* ---- Gradients (teal 재조율, lint:tokens 통과 대상) ---- */
+    --gradient-quest-map: linear-gradient(to bottom right, #ECF7F2, #EAF4EE);
 
-    /* Border */
-    --color-border-default: #B8DDE8;
-    --color-border-strong: #85C3D5;
+    /* ---- Border (teal 재조율) ---- */
+    --color-border-default: #DCEAE2;
+    --color-border-strong: #9CCBB7;
 
     /* Radius */
     --radius-sm: 8px;
@@ -78,9 +102,9 @@
     --space-10: 40px;
     --space-12: 48px;
 
-    /* Shadow */
-    --shadow-card: 0 2px 8px rgba(14, 92, 130, 0.06);
-    --shadow-elevated: 0 8px 24px rgba(14, 92, 130, 0.10);
+    /* Shadow (teal alpha 기반 — #2E7D5B) */
+    --shadow-card: 0 2px 8px rgba(46, 125, 91, 0.06);
+    --shadow-elevated: 0 8px 24px rgba(46, 125, 91, 0.10);
 
     /* Motion */
     --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);

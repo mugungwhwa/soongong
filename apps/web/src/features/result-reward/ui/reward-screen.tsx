@@ -25,7 +25,7 @@ export function RewardScreen({ xpDelta, streak, hpAfter, message, onNext, onHome
       particleCount: 60,
       spread: 70,
       origin: { y: 0.4 },
-      colors: ["#2AB8D0", "#F2C94C", "#7DD8EA"],
+      colors: ["#4CAF88", "#F2C94C", "#7BC4AE"],
     });
     const controls = animate(xpMv, xpDelta, {
       duration: 0.8,
