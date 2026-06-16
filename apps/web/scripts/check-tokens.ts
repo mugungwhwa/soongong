@@ -1,6 +1,10 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname, resolve } from "node:path";
 
+// 허용 hex 화이트리스트(ALLOWED_HEX)는 별도 상수가 아니라 tokens.css 에서
+// 런타임 추출한다(buildWhitelist). 즉 팔레트 hex 추가/교체는 tokens.css 한 곳만
+// 갱신하면 자동 반영되며, 본 파일을 손댈 필요가 없다.
+// 팔레트 SSoT: src/shared/styles/tokens.css (시안 UI v2, SOO-45).
 const TOKENS_CSS = resolve("src/shared/styles/tokens.css");
 const SRC_ROOT = resolve("src");
 const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g;
