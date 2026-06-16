@@ -1,6 +1,7 @@
 export const ROUTES = {
   today: "/today",
   journey: "/journey",
+  dashboard: "/dashboard",
   calendar: "/calendar",
   wrongNotes: "/wrong-notes",
   graph: "/graph",

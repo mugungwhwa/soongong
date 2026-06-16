@@ -5,6 +5,7 @@ import { ROUTES } from "@/shared/config/routes";
 import { signOut } from "@/app/actions/auth";
 import {
   Home,
+  LayoutDashboard,
   Calendar,
   NotebookPen,
   BarChart3,
@@ -30,6 +31,7 @@ type NavItem = {
 
 const MAIN_ITEMS: NavItem[] = [
   { href: ROUTES.today, label: "오늘의 회독", Icon: Home },
+  { href: ROUTES.dashboard, label: "내 현황", Icon: LayoutDashboard },
   { href: ROUTES.calendar, label: "회독 캘린더", Icon: Calendar },
   { href: ROUTES.wrongNotes, label: "오답노트", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
