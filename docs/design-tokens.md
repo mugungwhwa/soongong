@@ -18,7 +18,7 @@
 
 > **색 팔레트 = 시안 UI v2 (teal/green)** (2026-06-16 SOO-45). 앵커 SSoT: `#A8DCCB` / `#7BC4AE` / `#4CAF88` / `#FFEBA3` / `#FFB4B4` / `#6BA6FF` / `#8E8E93`. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 teal**(`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88`).
 >
-> ⚠️ **전환 주의**: 직전 잠금은 Ocean(`#2AB8D0`, SOO-17). 본 v2는 teal로의 전환으로, CLAUDE.md §2/§8 · `design-system-lock.md` v1.0 동반 갱신이 필요하다(후속). **primary CTA fill = `#5E9C7B` 확정**(2026-06-16 Mike, 후보 `#4CAF88`은 mint-700로 잔존). text 4단은 중성 그레이(`#2E2E2E`/`#6E6E6E`/`#9B9B9B`/`#BBBBBB`)로 확정.
+> ⚠️ **전환 이력**: 직전 잠금 Ocean(`#2AB8D0`, SOO-17) → 본 v2 teal 전환(SOO-260616-01). CLAUDE.md §2/§8 · `design-system-lock.md` v2.0 동반 갱신 **완료**. **primary CTA fill = `#4CAF88` 확정**(2026-06-16 Mike, 후보 B; 후보 A `#5E9C7B` 미채택). text 4단은 중성 그레이(`#2E2E2E`/`#6E6E6E`/`#9B9B9B`/`#BBBBBB`)로 확정.
 
 ---
 
@@ -28,7 +28,7 @@
 
 | 카테고리 | 변수 prefix | 비고 |
 |---|---|---|
-| Primary CTA | `--color-primary-cta`, `--color-primary-bg` | **확정** CTA fill `#5E9C7B` (2026-06-16 Mike) / 연한 배경 `#EAF4EE`(파생) |
+| Primary CTA | `--color-primary-cta`, `--color-primary-bg` | **확정** CTA fill `#4CAF88` (2026-06-16 Mike, 후보 B; A `#5E9C7B` 미채택) / 연한 배경 `#EAF4EE`(파생) |
 | Surface | `--color-bg`(`#F8FBF7`), `--color-bg-elevated`(`#FFFFFF`), `--color-bg-sunken`(`#EFF5F1` bg-soft) | 크림 베이스 + teal 재조율 |
 | Brand (teal v2) | `--color-mint-{50,100,300,500,700,900}` | 변수명 호환 위해 `mint` 유지, **값 = teal 앵커** (`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88`). 50/100/900=파생 |
 | Risk | `--color-risk-{low,mid,high}` | 회독 위험도. low=`#BFE3C9`(파생) / mid=`#FFEBA3`(warning앵커) / high=`#FFB4B4`(danger앵커) |

@@ -9,9 +9,9 @@
           CLAUDE.md §2/§8 · design-system-lock v1.0 동반 갱신 필요(후속).
        ================================================================ */
 
-    /* ---- Primary CTA (Mike 확정: #5E9C7B, 2026-06-16) ----
-       시안 CTA 버튼 fill. 후보였던 #4CAF88은 mint-700(deep accent)로 잔존. */
-    --color-primary-cta: #5E9C7B;
+    /* ---- Primary CTA (Mike 확정: #4CAF88, 2026-06-16 후보 B) ----
+       시안 CTA 버튼 fill (= mint-700 톤). 후보 A #5E9C7B 미채택(기록 보존). */
+    --color-primary-cta: #4CAF88;
     --color-primary-bg: #EAF4EE; /* CTA 연한 배경 (파생) */
 
     /* ---- Surface (크림 베이스 #F8FBF7 유지 + teal 재조율) ---- */
