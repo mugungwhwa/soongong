@@ -244,4 +244,4 @@
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | v1.0 | 2026-06-09 | 최초 잠금. SOO-19 v3(`110076f`) 기준. Ocean 팔레트 / 로고 A / 레이아웃 v3 / 반응형 / 마스코트 placeholder 규칙 캡처. |
-| v2.0 | 2026-06-16 | **팔레트 교체: Ocean → v2 Teal/Mint** (SOO-260616-01, Mike 명시 승인). §1 전체 스케일·서피스·보더·그라데이션 hex를 v2 앵커(`#A8DCCB`/`#7BC4AE`/`#4CAF88` + 파생)로 1:1 치환. 위험도(§1-2)는 팔레트 무관 고정 유지. State 토큰(danger `#FFB4B4`/warning `#FFEBA3`/info `#6BA6FF`/neutral `#8E8E93`) 신규. primary CTA(`#5E9C7B` vs `#4CAF88`) Mike 확인 대기. 로고/레이아웃/마스코트 규칙은 v1.0 그대로. |
+| v2.0 | 2026-06-16 | **팔레트 교체: Ocean → v2 Teal/Mint** (SOO-260616-01, Mike 명시 승인). §1 전체 스케일·서피스·보더·그라데이션 hex를 v2 앵커(`#A8DCCB`/`#7BC4AE`/`#4CAF88` + 파생)로 1:1 치환. 위험도(§1-2)는 팔레트 무관 고정 유지. State 토큰(danger `#FFB4B4`/warning `#FFEBA3`/info `#6BA6FF`/neutral `#8E8E93`) 신규. primary CTA `#4CAF88` 확정(후보 B, 2026-06-16 Mike 선택; 후보 A `#5E9C7B` 미채택). 로고/레이아웃/마스코트 규칙은 v1.0 그대로. |

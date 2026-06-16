@@ -31,9 +31,9 @@
     --color-mint-700: #4CAF88; /* 앵커: primary-strong */
     --color-mint-900: #2E7D5B; /* 파생: deep green (강조·active) */
 
-    /* primary CTA 최종색 — ⚠️ Mike 확인 대기 (SOO-260616-01 게이트).
-       후보 A: #5E9C7B (muted sage)  |  후보 B: #4CAF88 (vivid green, = mint-700)
-       --color-cta: #___;  ← Mike 선택 후 이 줄 활성화. 현재는 mint-700 이 primary-strong 로 대행. */
+    /* primary CTA 최종색 — 후보 B 확정 (2026-06-16 Mike 선택, SOO-260616-01).
+       후보 A: #5E9C7B (muted sage) — 미채택, 기록 보존. */
+    --color-cta: #4CAF88; /* = mint-700 (primary-strong)와 동일 톤 */
 
     /* Risk (망각위험 — design-system-lock §1-2: 팔레트 무관 고정, 채도 ≤60) */
     --color-risk-low: #A0BFDC;

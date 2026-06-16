@@ -18,7 +18,7 @@
 
 > **색 팔레트 = v2 Teal/Mint** (2026-06-16 SOO-260616-01 잠금, Mike 명시 승인). 구 Ocean(`#2AB8D0`/`#1A8FAD`/`#0E5C82`, 2026-06-09 v1.0)은 폐기. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 v2**(`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88` primary-strong / `900`=`#2E7D5B`). 앵커 SSoT = 시안 UI EXAMPLE v1.0. 전체 스케일은 `docs/design-system/2026-06-09-design-system-lock.md` §1 (v2.0).
 >
-> **primary CTA 최종색**: 후보 A `#5E9C7B` / 후보 B `#4CAF88` 병기, **Mike 확인 대기** (tokens.css `--color-cta` 주석 참조).
+> **primary CTA 최종색**: **후보 B `#4CAF88` 확정** (2026-06-16 Mike 선택, `--color-cta`). 후보 A `#5E9C7B`는 미채택(기록 보존).
 
 ---
 
