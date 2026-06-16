@@ -23,7 +23,7 @@
 | 마스코트 | "순공이" (가안, **듀공** 모티프) | UI 설계.md §6 |
 | UI 라벨 | "회독퀘스트" / 백서 = "회독" | 핵심요약.md |
 | 톤 | Light Study Garden — **바다(Ocean) 컨셉** | UI 설계.md §1 |
-| 컬러 | 크림 `#F8FBF7` + 오션 `#2AB8D0`/`#1A8FAD`/`#0E5C82` + 위험도(소프트) | docs/design-system/2026-06-09-design-system-lock.md |
+| 컬러 | 크림 `#F8FBF7` + **v2 Teal/Mint** `#A8DCCB`/`#7BC4AE`/`#4CAF88` + 위험도(소프트). 구 오션 폐기 | docs/design-system/2026-06-09-design-system-lock.md (v2.0, SOO-260616-01) |
 | 시안 | `app_UI.png` / `web_ui.png` | repo root |
 | 시각 자산 | Midjourney + Canva (Mike 직접, **외주 없음**) | docs/visual-assets/...asset-inventory.md |
 | 디자인 reference | 듀오링고 + 카카오 헤이바이브 + 클래스101 + Pretendard (토스 차용 X) | UI 설계.md §1-2 비교 레퍼런스 |
@@ -164,8 +164,8 @@ cd apps/web && pnpm dev
 ## 8. 폐기 정책 (회귀 금지)
 
 다음을 다시 도입하려는 어떤 제안도 거절하고 Mike에게 확인 받기:
-- Dark RPG 톤 / 다크 네이비 / 회독마왕 (web_ui.png/app_UI.png 시안에 잔존 — SOO-20에서 자산 교체 추적) ← 오션 틸(#2AB8D0)은 다크 네이비 아님, 별개 컬러
-- **민트 그린(`#7CC97C`) 단일 컬러 고수** — 오션 팔레트로 확정(SOO-17). 민트 기반 제안은 오션으로 대체.
+- Dark RPG 톤 / 다크 네이비 / 회독마왕 (web_ui.png/app_UI.png 시안에 잔존 — SOO-20에서 자산 교체 추적) ← v2 teal/mint(#7BC4AE)은 다크 네이비 아님, 별개 컬러
+- **구 Ocean 팔레트(`#2AB8D0`/`#1A8FAD`/`#0E5C82`) 회귀** — **v2 Teal/Mint**(`#A8DCCB`/`#7BC4AE`/`#4CAF88`)로 확정(SOO-260616-01, 2026-06-16 Mike 명시 승인). 오션 기반 제안은 v2로 대체. (팔레트 히스토리: 민트 `#7CC97C` 단일 → Ocean v1.7 → v2 Teal/Mint v2.0)
 - 외주 발주 (작가/디자이너)
 - 토스 단일 reference 차용
 - git config user.* 수정
@@ -207,6 +207,7 @@ cd apps/web && pnpm dev
 | **v1.6** | **2026-06-09** | **§2 헤더 충돌 규칙에 폐기정책 예외 단서 추가 — 시안이 §8 폐기 정책 위반 시 텍스트(정책) 우선. §8 'Dark RPG 톤 / 다크 네이비 / 회독마왕' 항목에 시안 잔존 + SOO-20 자산 교체 추적 크로스링크 주석. (SOO-21·A2, 텍스트 편집만 — 시안 PNG 미변경)** |
 | **v1.7** | **2026-06-09** | **§2 컬러 행 민트 → 오션 확정(`#2AB8D0`/`#1A8FAD`/`#0E5C82`) + 톤명에 바다(Ocean) 컨셉 반영. §5 트리에 디자인 시스템 잠금 문서(`docs/design-system/2026-06-09-design-system-lock.md`) 추가. §8 민트 그린 단일 컬러 고수 폐기 추가. (SOO-17 와꾸 최종 잠금)** |
 | **v1.8** | **2026-06-10** | **'머지 게이트' 섹션 추가 (강제 전환) — PR-only + `agent/<role>/<id>` 브랜치 한정 머지, GitHub PR review(코드래빗 approve)만 인정·커밋 본문 자기서술 무효, Orchestration Lead 직접 구현 금지, Tech Lead 구조 리뷰는 PR 코멘트 강제. 06-10 머지 게이트 감사(`docs/audits/2026-06-10-merge-gate-audit.md`) 후속. 코드래빗 강제 리뷰 게이트(`.coderabbit.yaml` `request_changes_workflow`) 도입.** |
+| **v1.9** | **2026-06-16** | **§2 컬러 행 오션 → v2 Teal/Mint 교체(`#A8DCCB`/`#7BC4AE`/`#4CAF88`). §8 폐기 항목 방향 반전 — 구 Ocean 회귀 금지로 변경, v2가 정식(SOO-260616-01, Mike 명시 승인). 다크네이비 주석 v2 기준으로 갱신. tokens.css + check-tokens 위임 동결 1회 해제(Orchestration Lead 직접 구현, Mike 승인). design-system-lock v2.0 / design-tokens v1.1 연동.** |
 
 ---
 

@@ -1,64 +1,83 @@
 @layer base {
   :root {
-    /* Palette = Ocean per design-system-lock v1.0 (2026-06-09). 변수명은 호환 위해 mint 유지, 값은 Ocean. */
+    /* Palette = v2 시안 (Teal/Mint) per design-system-lock v2.0 (2026-06-16, SOO-260616-01).
+       구 Ocean(2026-06-09 v1.0) 폐기 — Mike 명시 승인. 변수명은 호환 위해 mint 유지, 값은 v2 Teal/Mint.
+       앵커 SSoT: 시안 UI EXAMPLE v1.0 = #A8DCCB / #7BC4AE / #4CAF88 / #FFEBA3 / #FFB4B4 / #6BA6FF / #8E8E93.
+       light-only — 다크모드 회귀 금지 (CLAUDE.md §8). */
 
-    /* Surface (Ocean) */
-    --color-bg: #F2FAFB;
+    /* Surface (크림 베이스 + teal 재조율) */
+    --color-bg: #F6FBF8;
     --color-bg-elevated: #FFFFFF;
-    --color-bg-sunken: #E2F3F8;
+    --color-bg-sunken: #E4F2EC;
 
-    /* Surface roles — SOO-36: 배경=오션 캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
+    /* Surface roles — SOO-36: 배경=캔버스 / 블록(카드·패널·텍스트영역)=흰색 고정.
        기존 --color-bg* 는 호환 위해 값 유지, 의미는 아래 semantic alias 가 SSoT.
        규칙: 일반 콘텐츠 블록은 항상 surface(흰색). 틴트(bg-sunken)는 디자인락이 허용한
        인용/원칙 블록·진행바 트랙·아이콘 칩 등 accent 역할에만 opt-in. */
-    --color-background: var(--color-bg); /* 페이지 캔버스 (오션 틴트) */
+    --color-background: var(--color-bg); /* 페이지 캔버스 (크림-teal 틴트) */
     --color-surface: var(--color-bg-elevated); /* 카드·패널·텍스트 블록 표면 (흰색 #FFFFFF) */
     --color-surface-foreground: var(--color-text-default);
     /* shadcn Card 호환: bg-card / text-card-foreground → surface 로 매핑 */
     --color-card: var(--color-surface);
     --color-card-foreground: var(--color-surface-foreground);
 
-    /* Brand mint (값 = Ocean 팔레트, 변수명 호환 유지) */
-    --color-mint-50: #E8F8FB;
-    --color-mint-100: #C2EDF5;
-    --color-mint-300: #7DD8EA;
-    --color-mint-500: #2AB8D0;
-    --color-mint-700: #1A8FAD;
-    --color-mint-900: #0E5C82;
+    /* Brand mint (값 = v2 Teal/Mint 앵커, 변수명 호환 유지).
+       primary 매핑: 300=palest teal / 500=primary / 700=primary-strong.
+       파생 틴트(50·100·900)는 앵커에서 톤 낮춰/올려 명시 등록. */
+    --color-mint-50: #EAF6F1;
+    --color-mint-100: #D2EBE2;
+    --color-mint-300: #A8DCCB; /* 앵커: palest teal */
+    --color-mint-500: #7BC4AE; /* 앵커: primary */
+    --color-mint-700: #4CAF88; /* 앵커: primary-strong */
+    --color-mint-900: #2E7D5B; /* 파생: deep green (강조·active) */
 
-    /* Risk (soft, 채도 ≤60 — UI 설계.md §3) */
+    /* primary CTA 최종색 — ⚠️ Mike 확인 대기 (SOO-260616-01 게이트).
+       후보 A: #5E9C7B (muted sage)  |  후보 B: #4CAF88 (vivid green, = mint-700)
+       --color-cta: #___;  ← Mike 선택 후 이 줄 활성화. 현재는 mint-700 이 primary-strong 로 대행. */
+
+    /* Risk (망각위험 — design-system-lock §1-2: 팔레트 무관 고정, 채도 ≤60) */
     --color-risk-low: #A0BFDC;
     --color-risk-mid: #E6B788;
     --color-risk-high: #E29B9B;
 
-    /* Reward / XP (Duolingo #ffc800과 차별, soft golden) */
+    /* State (v2 앵커 — danger/warning/info/neutral) */
+    --color-danger: #FFB4B4;
+    --color-warning: #FFEBA3;
+    --color-info: #6BA6FF;
+    --color-neutral: #8E8E93; /* neutral / disabled */
+
+    /* Reward / XP (Duolingo #ffc800과 차별, soft golden — 유지) */
     --color-xp: #F2C94C;
     --color-xp-soft: #FBE7A6;
 
-    /* Badge rarity — SSoT §5-3: 일반/희귀/영웅/전설 */
+    /* Badge rarity — SSoT §5-3: 일반/희귀/영웅/전설 (유지) */
     --color-epic-bg: #F5E0FC;
     --color-epic-text: #8B5CF6;
 
-    /* Text */
-    --color-text-strong: #0C2535;
-    --color-text-default: #1C3848;
-    --color-text-muted: #4A7585;
+    /* Text — 4단(primary/secondary/tertiary/disabled) + inverse/on-warm. 기존값 유지(대비 점검 완료). */
+    --color-text-strong: #0C2535; /* primary */
+    --color-text-default: #1C3848; /* secondary */
+    --color-text-muted: #4A7585; /* tertiary */
+    --color-text-disabled: #8E8E93; /* disabled (= neutral) */
     --color-text-inverse: #FFFFFF;
     --color-text-on-warm: #3A2A10;
 
-    /* State backgrounds (soft tint) */
-    --color-risk-bg: #FCECEA;
+    /* State backgrounds (soft tint — 앵커에서 톤 낮춰 생성, 명시 등록) */
+    --color-danger-bg: #FFEAEA;
+    --color-warning-bg: #FFF7DC;
     --color-info-bg: #E8F2FB;
+    --color-neutral-bg: #F0F0F1;
+    --color-risk-bg: #FCECEA; /* 호환 유지 (기존 사용처) */
 
     /* Scrim / Overlay (modal·sheet backdrop) */
     --color-scrim: rgba(0, 0, 0, 0.8);
 
     /* Gradients (registered, lint:tokens 통과 대상) */
-    --gradient-quest-map: linear-gradient(to bottom right, #E8F8FB, #E2F3F8);
+    --gradient-quest-map: linear-gradient(to bottom right, #EAF6F1, #E4F2EC);
 
-    /* Border */
-    --color-border-default: #B8DDE8;
-    --color-border-strong: #85C3D5;
+    /* Border (teal 재조율) */
+    --color-border-default: #CDE7DD;
+    --color-border-strong: #9FD3C0;
 
     /* Radius */
     --radius-sm: 8px;
@@ -78,9 +97,9 @@
     --space-10: 40px;
     --space-12: 48px;
 
-    /* Shadow */
-    --shadow-card: 0 2px 8px rgba(14, 92, 130, 0.06);
-    --shadow-elevated: 0 8px 24px rgba(14, 92, 130, 0.10);
+    /* Shadow (v2 green alpha 기반) */
+    --shadow-card: 0 2px 8px rgba(46, 125, 91, 0.06);
+    --shadow-elevated: 0 8px 24px rgba(46, 125, 91, 0.10);
 
     /* Motion */
     --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);

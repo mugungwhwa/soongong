@@ -53,7 +53,7 @@ export function ReviewPromiseReveal({
       particleCount: 70,
       spread: 75,
       origin: { y: 0.35 },
-      colors: ["#2AB8D0", "#F2C94C", "#7DD8EA"],
+      colors: ["#4CAF88", "#F2C94C", "#7BC4AE"],
     });
   }, []);
 

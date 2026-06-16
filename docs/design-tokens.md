@@ -13,10 +13,12 @@
 
 순공대장 UI는 **Light Study Garden** 단일 톤. 다크모드 도입 / 어두운 RPG 톤 회귀 금지 (구체 폐기 목록은 CLAUDE.md §8에 잠금 — 본 문서는 참조).
 - 베이스: 크림 계열 (`--color-bg` 등 — 코드 SoT `tokens.css` 기준)
-- 강조: **오션 `#2AB8D0`** (메인 브랜드 기본색, `design-system-lock.md` v1.0 Ocean 팔레트) — `--color-xp`는 soft golden `#F2C94C`로 차별
+- 강조: **Teal/Mint `#7BC4AE`** (메인 브랜드 기본색, `design-system-lock.md` v2.0 v2 팔레트) — `--color-xp`는 soft golden `#F2C94C`로 차별
 - 위험도: 채도 ≤60 soft 톤 (UI 설계.md §3)
 
-> **색 팔레트 = Ocean** (2026-06-09 SOO-17 잠금, SOO-16에서 `tokens.css` 실적용). 구 민트 `#7CC97C`는 폐기. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 Ocean**(`500`=`#2AB8D0` / `700`=`#1A8FAD` / `900`=`#0E5C82`). 전체 스케일은 `docs/design-system/2026-06-09-design-system-lock.md` §1.
+> **색 팔레트 = v2 Teal/Mint** (2026-06-16 SOO-260616-01 잠금, Mike 명시 승인). 구 Ocean(`#2AB8D0`/`#1A8FAD`/`#0E5C82`, 2026-06-09 v1.0)은 폐기. CSS 변수명은 호환 위해 `--color-mint-*` 유지하되 **값은 v2**(`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88` primary-strong / `900`=`#2E7D5B`). 앵커 SSoT = 시안 UI EXAMPLE v1.0. 전체 스케일은 `docs/design-system/2026-06-09-design-system-lock.md` §1 (v2.0).
+>
+> **primary CTA 최종색**: 후보 A `#5E9C7B` / 후보 B `#4CAF88` 병기, **Mike 확인 대기** (tokens.css `--color-cta` 주석 참조).
 
 ---
 
@@ -27,15 +29,16 @@
 | 카테고리 | 변수 prefix | 비고 |
 |---|---|---|
 | Surface | `--color-bg`, `--color-bg-elevated`, `--color-bg-sunken` | Light Study Garden 베이스 |
-| Brand (Ocean) | `--color-mint-{50,100,300,500,700,900}` | 변수명은 호환 위해 `mint` 유지, **값 = Ocean 팔레트** (`500`=`#2AB8D0` primary). lock v1.0 |
-| Risk | `--color-risk-{low,mid,high}` | 회독 위험도, soft (채도 ≤60) |
-| Reward / XP | `--color-xp`, `--color-xp-soft` | Duolingo `#ffc800`과 차별 |
-| Text | `--color-text-{strong,default,muted,inverse,on-warm}` | 5단계 |
+| Brand (v2 Teal/Mint) | `--color-mint-{50,100,300,500,700,900}` | 변수명은 호환 위해 `mint` 유지, **값 = v2 팔레트** (`300`=`#A8DCCB` / `500`=`#7BC4AE` primary / `700`=`#4CAF88` primary-strong). lock v2.0 |
+| Risk (망각위험) | `--color-risk-{low,mid,high}` | 회독 위험도, soft (채도 ≤60). **팔레트 무관 고정** (lock §1-2) |
+| State | `--color-{danger,warning,info,neutral}` + `*-bg` | v2 앵커: danger `#FFB4B4` / warning `#FFEBA3` / info `#6BA6FF` / neutral·disabled `#8E8E93` |
+| Reward / XP | `--color-xp`, `--color-xp-soft` | Duolingo `#ffc800`과 차별 (gold 유지) |
+| Text | `--color-text-{strong,default,muted,disabled,inverse,on-warm}` | 4단(primary/secondary/tertiary/disabled) + inverse/on-warm |
 | Border | `--color-border-{default,strong}` | 2단계 |
 | Gradient | `--gradient-quest-map` | 등록 gradient만 사용 (lint 통과 대상) |
 | Radius | `--radius-{sm,md,lg,xl,pill}` | 8/12/16/24/9999px |
 | Spacing | `--space-{1..12}` | 4px base, scale 1=4 / 2=8 / 4=16 / 6=24 / 12=48 |
-| Shadow | `--shadow-{card,elevated}` | 오션톤 alpha 기반 (rgba(14,92,130,…)) |
+| Shadow | `--shadow-{card,elevated}` | v2 green alpha 기반 (rgba(46,125,91,…)) |
 | Motion | `--ease-out-soft`, `--duration-{fast,mid,slow}` | 160/240/380ms |
 | Typography | `--font-{display,body}` | Pretendard 단일 (v1.3.9 webfont) |
 
@@ -71,3 +74,4 @@
 | 버전 | 일자 | 내용 |
 |---|---|---|
 | **v1.0** | **2026-05-19** | **초안. P0 와꾸 단계가 깔아놓은 `tokens.css` 기준 SSoT 메타 문서. P1 sub-plan Task 1 Step 3 산물.** |
+| **v1.1** | **2026-06-16** | **팔레트 Ocean → v2 Teal/Mint 교체 (SOO-260616-01, Mike 명시 승인). §1 강조색·blockquote, §2 Brand·Risk·State·Text·Shadow 행 갱신. State 토큰(danger/warning/info/neutral) 신규. text 4단 + disabled. primary CTA 2후보 병기·Mike 대기. 구 Ocean hex 전량 폐기.** |
