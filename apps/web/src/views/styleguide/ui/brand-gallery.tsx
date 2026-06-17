@@ -24,6 +24,43 @@ function Caption({ path }: { path: string }) {
   );
 }
 
+/**
+ * 로고 A안 워드마크 — design-system-lock §2-2 (목업 폴백).
+ * SVG <text> + stroke 렌더(Arial Black 계열, RockoUltraFLF 임베드 금지).
+ * 색은 토큰 구동(fill·stroke = --color-mint-900 = o900 로고 기본색).
+ * Illustrator 아웃라인 SVG path 확보 전까지의 잠정 렌더.
+ */
+function LogoWordmark({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 270 42"
+      role="img"
+      aria-label="SOONGONG 워드마크"
+      className={className}
+      style={{ overflow: "visible" }}
+    >
+      <text
+        x="4"
+        y="34"
+        fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
+        fontSize={34}
+        fontWeight={900}
+        letterSpacing={4}
+        strokeWidth={2.5}
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        paintOrder="stroke"
+        style={{
+          fill: "var(--color-mint-900)",
+          stroke: "var(--color-mint-900)",
+        }}
+      >
+        SOONGONG
+      </text>
+    </svg>
+  );
+}
+
 function GalleryBoard({
   n,
   title,
@@ -49,34 +86,39 @@ function GalleryBoard({
 export function BrandGallery() {
   return (
     <div className="space-y-5">
-      {/* 6. LOGO — 플랫 심볼 + 워드마크 lockup, light/크림 2버전 */}
+      {/* 6. LOGO — 플랫 심볼 + 워드마크 lockup, light/크림 2버전 (lock §2 A안) */}
       <GalleryBoard n={6} title="Logo · Lockup">
-        <div className="mb-2 flex items-center gap-2">
+        <div className="mb-3 flex items-center gap-2">
           <TrackTag kind="플랫" />
           <span className="text-xs text-[var(--color-text-default)]">
-            플랫 = in-app / 로고 심볼
+            플랫 = in-app / 로고 심볼 트랙
           </span>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {[
             { bg: "var(--color-bg-elevated)", label: "light 배경" },
-            { bg: "var(--color-bg)", label: "크림 배경" },
+            { bg: "var(--color-bg)", label: "크림 배경 (#F8FBF7)" },
           ].map((variant) => (
             <div
               key={variant.label}
-              className="flex flex-col items-center justify-center gap-2 rounded-[var(--radius-md)] border border-[var(--color-border-default)] p-5"
+              className="flex flex-col items-center justify-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-5 py-7"
               style={{ background: variant.bg }}
             >
-              <div className="flex items-center gap-3">
+              {/* lockup: 심볼 + 워드마크 가로 정렬. 심볼 높이가 워드마크 cap을
+                  살짝 상회하도록 비율 잡고, 심볼 중심을 워드마크에 baseline 정렬 */}
+              <div className="flex items-center gap-2.5">
                 <Image
                   src={`${BRAND}/soongong_icon_main.png`}
                   alt="순공대장 플랫 심볼"
-                  width={48}
-                  height={48}
-                  className="h-12 w-12 object-contain"
+                  width={44}
+                  height={44}
+                  className="h-11 w-11 shrink-0 object-contain"
                 />
-                <span className="text-xl font-bold text-[var(--color-text-strong)]">
-                  순공대장
+                <span className="flex flex-col items-start leading-none">
+                  <LogoWordmark className="h-7 w-auto" />
+                  <span className="mt-1 text-[9px] font-medium tracking-[0.18em] text-[var(--color-text-muted)]">
+                    순공대장
+                  </span>
                 </span>
               </div>
               <span className="text-[11px] text-[var(--color-text-muted)]">
@@ -86,6 +128,14 @@ export function BrandGallery() {
           ))}
         </div>
         <Caption path="public/brand/soongong_icon_main.png" />
+        {/* ⚠️ Mike 결정 게이트 — 폰트 최종 선택 보류. 리드 임의 확정 금지(lock §2-5). */}
+        <p className="mt-3 rounded-[var(--radius-sm)] bg-[var(--color-bg-sunken)] px-3 py-2 text-[10px] leading-relaxed text-[var(--color-text-default)]">
+          <span className="font-semibold">워드마크 폰트: A안(잠정)</span> — 시스템
+          Arial Black 계열 + SVG stroke 렌더(RockoUltraFLF 임베드 금지).
+          <br />B 후보 3종(Lilita One · Fredoka · Bowlby One, Google Fonts SIL
+          OFL) <span className="font-semibold">Mike 최종 선택 대기</span> — 전환은
+          별도 티켓.
+        </p>
       </GalleryBoard>
 
       {/* 7. APP ICON — icon.png 라운드 스퀘어 + 마스킹 미리보기 */}
