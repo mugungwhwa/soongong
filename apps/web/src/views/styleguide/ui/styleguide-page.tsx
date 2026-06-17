@@ -20,16 +20,35 @@ interface PersistedDraft {
   scale: number;
 }
 
+// 프리뷰 스케일 허용 범위 (TokenEditor 슬라이더와 동일).
+const SCALE_MIN = 0.85;
+const SCALE_MAX = 1.2;
+
+/** 평범한 string→string 레코드인지 검증 (배열/null/중첩객체 거부). */
+function isStringRecord(v: unknown): v is Record<string, string> {
+  if (typeof v !== "object" || v === null || Array.isArray(v)) return false;
+  return Object.values(v).every((val) => typeof val === "string");
+}
+
 function loadPersisted(): PersistedDraft | null {
   try {
     const raw = window.localStorage.getItem(DRAFT_STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<PersistedDraft>;
-    if (!parsed || typeof parsed !== "object") return null;
-    return {
-      tokens: parsed.tokens ?? {},
-      scale: typeof parsed.scale === "number" ? parsed.scale : 1,
-    };
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== "object" || parsed === null) return null;
+
+    const obj = parsed as Record<string, unknown>;
+    const tokens = isStringRecord(obj.tokens) ? obj.tokens : {};
+    const rawScale = obj.scale;
+    const scale =
+      typeof rawScale === "number" &&
+      Number.isFinite(rawScale) &&
+      rawScale >= SCALE_MIN &&
+      rawScale <= SCALE_MAX
+        ? rawScale
+        : 1;
+
+    return { tokens, scale };
   } catch {
     return null;
   }
