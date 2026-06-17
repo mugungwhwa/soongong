@@ -52,7 +52,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon");
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/styleguide");
 
   if (!user && !isPublic) {
     return NextResponse.redirect(new URL("/login", request.url));
