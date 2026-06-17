@@ -1,5 +1,6 @@
 -- SOO-50 Gate A: get_journey_map RPC
--- 읽기 전용 집계. 새 망각/FSRS 공식 없음 — calculate_forgetting_risk() 재사용.
+-- 읽기 전용 집계. smi.forgetting_risk(저장된 값) 직접 집계 — calculate_forgetting_risk() 호출 없음.
+-- (forgetting_risk는 schedule-next-review Edge Function이 갱신 시 사전 계산해 저장)
 -- RLS: auth.uid() = p_user_id 강제 (SECURITY DEFINER 내부 가드).
 --
 -- concept → region 매핑 경로:
@@ -8,9 +9,6 @@
 --       → plo.region_code (curriculum-lookup이 설정)
 --         → units.id (depth=2, 영역 anchor)
 --   fallback: plo.unit_id → units.region_code (units 행에 비정규화된 값)
---
--- 스케일 변환 (calculate_forgetting_risk 호환):
---   smi.confidence_avg (0~1) → 1.0 + confidence_avg * 4.0 (1~5 scale)
 
 create or replace function public.get_journey_map(
   p_user_id    uuid,
