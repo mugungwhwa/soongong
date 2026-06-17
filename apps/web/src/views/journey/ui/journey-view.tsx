@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useGameState } from "@/entities/user-game-state";
+import { JourneyNeuralMap } from "@/widgets/journey-neural-map";
 import type { UserRank } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
 import {
@@ -735,6 +736,16 @@ export function JourneyView() {
             </>
           )}
         </div>
+      </div>
+
+      {/* ── 망각 뉴럴 맵 (SOO-51, 저니탭 전용) ── */}
+      <div
+        style={{
+          padding: "var(--space-5) var(--space-4) var(--space-2)",
+          background: "var(--color-background)",
+        }}
+      >
+        <JourneyNeuralMap />
       </div>
 
       {/* ── 카드 스택 영역 ── */}
