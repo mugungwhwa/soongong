@@ -21,7 +21,7 @@
 
 Vercel은 모든 브랜치에 대해 고정 preview URL을 자동 생성한다. `main` 브랜치:
 
-```
+```text
 https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app
 ```
 
@@ -44,13 +44,13 @@ https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app
 
 아래 URL에서 `<BYPASS_SECRET>` 자리에 1단계에서 복사한 토큰을 붙여넣는다:
 
-```
+```text
 https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app/styleguide?x-vercel-protection-bypass=<BYPASS_SECRET>&x-vercel-set-bypass-cookie=samesitenone;secure
 ```
 
 이 URL을 브라우저에서 **최초 1회 방문**하면 쿠키가 자동 설정되어, 이후에는 토큰 없이 아래 URL만으로 접근 가능:
 
-```
+```text
 https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app/styleguide
 ```
 

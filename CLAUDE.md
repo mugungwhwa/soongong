@@ -127,6 +127,7 @@ docs/
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
 app_UI.png / web_ui.png (이미지 SSoT)
+/styleguide (preview 전용 고정 리뷰 URL: docs/ops/styleguide-review-access.md) ← 디자인·브랜드 가이드라인 시각적 출발점/근간
 ```
 
 ## 6. 자주 쓸 명령
@@ -208,6 +209,7 @@ cd apps/web && pnpm dev
 | **v1.7** | **2026-06-09** | **§2 컬러 행 민트 → 오션 확정(`#2AB8D0`/`#1A8FAD`/`#0E5C82`) + 톤명에 바다(Ocean) 컨셉 반영. §5 트리에 디자인 시스템 잠금 문서(`docs/design-system/2026-06-09-design-system-lock.md`) 추가. §8 민트 그린 단일 컬러 고수 폐기 추가. (SOO-17 와꾸 최종 잠금)** |
 | **v1.8** | **2026-06-10** | **'머지 게이트' 섹션 추가 (강제 전환) — PR-only + `agent/<role>/<id>` 브랜치 한정 머지, GitHub PR review(코드래빗 approve)만 인정·커밋 본문 자기서술 무효, Orchestration Lead 직접 구현 금지, Tech Lead 구조 리뷰는 PR 코멘트 강제. 06-10 머지 게이트 감사(`docs/audits/2026-06-10-merge-gate-audit.md`) 후속. 코드래빗 강제 리뷰 게이트(`.coderabbit.yaml` `request_changes_workflow`) 도입.** |
 | **v1.9** | **2026-06-16** | **§2 컬러 행 오션 → v2 Teal/Mint(`#A8DCCB`/`#7BC4AE`/`#4CAF88`). §8 폐기 항목 방향 반전 — 구 Ocean 회귀 금지, v2가 정식(SOO-260616-01, Mike 명시 승인). 다크네이비 주석 v2 기준 갱신. primary CTA 후보 B `#4CAF88` 확정. 팔레트 본체는 #58(SOO-45)로 선반영됐고 본 변경은 가드레일(§2/§8)·CTA·design-system-lock v2.0 동기화 후속(#58이 누락한 SSoT 정합).** |
+| **v2.0** | **2026-06-17** | **§5 핵심 문서 경로에 `/styleguide` 1줄 추가 — preview 전용 고정 리뷰 URL(docs/ops/styleguide-review-access.md)이 디자인·브랜드 가이드라인 시각적 출발점/근간임을 명문화 (SOO-54, Mike 결정).** |
 
 ---
 
