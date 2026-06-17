@@ -9,6 +9,13 @@
 --       → plo.region_code (curriculum-lookup이 설정)
 --         → units.id (depth=2, 영역 anchor)
 --   fallback: plo.unit_id → units.region_code (units 행에 비정규화된 값)
+--
+-- coverage(탐험률) 단위: topics (M2 확정 — 게임화 리드)
+--   topic_key  = coalesce(unit_id,'') || chr(1) || coalesce(topic,'')
+--   scope_total = distinct topic_keys in user PLO
+--   lit_count   = distinct topic_keys in user PLO with ≥1 SMI
+--   node_count(region) = distinct topic_keys in region (scope PLO 기준)
+--   lit_count(region)  = distinct topic_keys in region with ≥1 SMI
 
 create or replace function public.get_journey_map(
   p_user_id    uuid,
@@ -39,10 +46,13 @@ begin
       smi.next_review_at,
       smi.last_reviewed_at,
       -- region 결정: plo.region_code → units.region_code(fallback)
-      coalesce(plo.region_code, u.region_code)        as eff_region_code,
-      coalesce(u_rgn.name, plo.unit)                  as region_name,
-      coalesce(u.name, plo.unit)                      as unit_name,
-      plo.topic                                       as topic_name
+      coalesce(plo.region_code, u.region_code)                               as eff_region_code,
+      coalesce(u_rgn.name, plo.unit)                                         as region_name,
+      coalesce(u.name, plo.unit)                                             as unit_name,
+      plo.topic                                                              as topic_name,
+      -- topic 단위 집계 키 (M2: coverage를 topics 단위로 세기 위한 복합 키)
+      -- chr(1) = ASCII SOH, 실제 텍스트에 등장 불가 → unit_id·topic 조합 충돌 방지
+      coalesce(plo.unit_id::text, '') || chr(1) || coalesce(plo.topic, '')  as topic_key
     from public.student_memory_items smi
     left join public.parsed_learning_objects plo
            on plo.object_id = smi.object_id
@@ -54,58 +64,81 @@ begin
     where smi.user_id = p_user_id
   ),
 
-  -- ── scope_total: 사용자가 업로드한 전체 학습 객체 수 ────────────────────
+  -- ── scope_agg: 사용자 PLO의 유니크 topics 수 ────────────────────────────
+  -- scope_total = distinct (unit_id, topic) pairs — coverage 분모
   scope_agg as (
-    select count(*)::int as scope_total
+    select count(distinct
+      coalesce(unit_id::text, '') || chr(1) || coalesce(topic, '')
+    )::int as scope_total
     from public.parsed_learning_objects
     where user_id = p_user_id
   ),
 
-  -- ── lit 집계 (메모리 아이템 = 학습 완료 개념) ───────────────────────────
+  -- ── lit_agg: ≥1 SMI인 유니크 topics 수 + 생생도(vividness) ──────────────
+  -- lit_count = distinct topic_keys in user_items — coverage 분자
+  -- vividness = mastery 평균 — SMI 행 기준 유지(생생도 로직 변경 없음)
   lit_agg as (
     select
-      count(*)::int                         as lit_count,
+      count(distinct topic_key)::int        as lit_count,
       avg(mastery_score::numeric / 100)     as vividness
     from user_items
+  ),
+
+  -- ── region_topic_counts: 영역별 전체 topics 수 (node_count 소스) ──────────
+  -- node_count(region) = 영역 내 전체 distinct topics (scope PLO 기준)
+  -- lit_count(region)  = 영역 내 ≥1 SMI인 distinct topics (user_items 기준)
+  -- → 둘이 달라져 영역 탐험률이 의미를 가짐 (M2 핵심)
+  region_topic_counts as (
+    select
+      coalesce(plo.region_code, u.region_code)                         as eff_region_code,
+      count(distinct
+        coalesce(plo.unit_id::text, '') || chr(1) || coalesce(plo.topic, '')
+      )::int                                                           as topic_count
+    from public.parsed_learning_objects plo
+    left join public.units u on u.id = plo.unit_id
+    where plo.user_id = p_user_id
+      and coalesce(plo.region_code, u.region_code) is not null
+    group by 1
   ),
 
   -- ── 영역별 집계 ──────────────────────────────────────────────────────────
   -- dimming 판정: forgetting_risk='high' OR next_review_at <= today
   region_agg as (
     select
-      eff_region_code                                          as region_code,
-      max(region_name)                                         as region_name,
-      avg(mastery_score::numeric / 100)                        as mastery_avg,
-      count(*)::int                                            as node_count,
-      count(*)::int                                            as lit_count,
+      ui.eff_region_code                                               as region_code,
+      max(ui.region_name)                                              as region_name,
+      avg(ui.mastery_score::numeric / 100)                             as mastery_avg,
+      coalesce(rtc.topic_count, 0)                                     as node_count,
+      count(distinct ui.topic_key)::int                                as lit_count,
       count(*) filter (
-        where forgetting_risk = 'high'
-           or (next_review_at is not null
-               and next_review_at::date <= current_date)
-      )::int                                                   as dimming_count,
+        where ui.forgetting_risk = 'high'
+           or (ui.next_review_at is not null
+               and ui.next_review_at::date <= current_date)
+      )::int                                                           as dimming_count,
       -- risk_score: 영역 내 위험도 평균 — 연체 항목(overdue)은 high와 동등 처리
       avg(case
-            when forgetting_risk = 'high'
-              or (next_review_at is not null
-                  and next_review_at::date <= current_date) then 3.0
-            when forgetting_risk = 'medium' then 2.0
+            when ui.forgetting_risk = 'high'
+              or (ui.next_review_at is not null
+                  and ui.next_review_at::date <= current_date) then 3.0
+            when ui.forgetting_risk = 'medium' then 2.0
             else 1.0
-          end)                                                 as risk_score
-    from user_items
-    where eff_region_code is not null
-    group by eff_region_code
+          end)                                                         as risk_score
+    from user_items ui
+    left join region_topic_counts rtc on rtc.eff_region_code = ui.eff_region_code
+    where ui.eff_region_code is not null
+    group by ui.eff_region_code, rtc.topic_count
   ),
 
   -- ── hotspots: 상위 8개 위험 개념 ────────────────────────────────────────
   hotspot_ranked as (
     select
-      object_id                                                as concept_id,
-      eff_region_code                                          as region_code,
+      object_id                                                        as concept_id,
+      eff_region_code                                                  as region_code,
       unit_name,
       topic_name,
-      mastery_score::numeric / 100                             as mastery,
+      mastery_score::numeric / 100                                     as mastery,
       forgetting_risk,
-      next_review_at::date                                     as next_review_due,
+      next_review_at::date                                             as next_review_due,
       last_reviewed_at,
       row_number() over (
         order by
@@ -116,7 +149,7 @@ begin
           end asc,
           mastery_score asc,
           next_review_at asc nulls last
-      )                                                        as rn
+      )                                                                as rn
     from user_items
   )
 
