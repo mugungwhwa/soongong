@@ -6,6 +6,7 @@ import { PartyPopper, Flame, Heart } from "lucide-react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
+import { getConfettiColors } from "@/shared/lib/confetti-colors";
 
 type Props = {
   xpDelta: number;
@@ -25,7 +26,7 @@ export function RewardScreen({ xpDelta, streak, hpAfter, message, onNext, onHome
       particleCount: 60,
       spread: 70,
       origin: { y: 0.4 },
-      colors: ["#4CAF88", "#F2C94C", "#7BC4AE"],
+      colors: getConfettiColors(),
     });
     const controls = animate(xpMv, xpDelta, {
       duration: 0.8,

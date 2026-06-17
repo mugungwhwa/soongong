@@ -6,6 +6,7 @@ import { CalendarHeart, Sparkles } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
 import type { ReviewCycle } from "@/shared/contracts";
+import { getConfettiColors } from "@/shared/lib/confetti-colors";
 
 /**
  * 온보딩 클라이맥스 — "복습 스케줄 약속".
@@ -53,7 +54,7 @@ export function ReviewPromiseReveal({
       particleCount: 70,
       spread: 75,
       origin: { y: 0.35 },
-      colors: ["#4CAF88", "#F2C94C", "#7BC4AE"],
+      colors: getConfettiColors(),
     });
   }, []);
 
