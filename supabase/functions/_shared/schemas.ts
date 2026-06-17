@@ -23,7 +23,10 @@ export const ocrParsedSchema = z.object({
   difficulty_level: z.enum(["L1", "L2", "L3", "L4", "L5"]).nullable(),
   extracted_text: z.string().max(4000),
   student_note: z.string().max(500).nullable(),
-  detected_wrong_reason: z.array(z.string().max(100)),
+  detected_wrong_reason: z.union([
+    z.array(z.string().max(100)),
+    z.string().max(500).transform((s) => (s ? s.split(",").map((r) => r.trim()).filter(Boolean) : [])),
+  ]),
   review_priority: z.enum(["low", "medium", "high"]),
   confidence_score: z.number().min(0).max(1),
   contains_math_formula: z.boolean(),
