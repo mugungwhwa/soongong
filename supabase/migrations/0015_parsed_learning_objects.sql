@@ -67,6 +67,7 @@ create or replace function public.audit_plo_changes()
 returns trigger
 language plpgsql
 security definer
+set search_path = pg_catalog, public
 as $$
 begin
   insert into public.audit_logs (actor_id, actor_role, action, target_table, target_id, diff)
@@ -80,7 +81,15 @@ begin
     end,
     'parsed_learning_objects',
     coalesce(new.object_id::text, old.object_id::text),
-    jsonb_build_object('old', to_jsonb(old), 'new', to_jsonb(new))
+    -- 민감 필드(extracted_text, student_note, detected_wrong_reason)는 감사 로그에서 제외
+    jsonb_build_object(
+      'old', case when old is null then null
+                  else to_jsonb(old) - 'extracted_text' - 'student_note' - 'detected_wrong_reason'
+             end,
+      'new', case when new is null then null
+                  else to_jsonb(new) - 'extracted_text' - 'student_note' - 'detected_wrong_reason'
+             end
+    )
   );
   return coalesce(new, old);
 end;
@@ -89,3 +98,38 @@ $$;
 create trigger plo_audit
   after insert or update or delete on public.parsed_learning_objects
   for each row execute function public.audit_plo_changes();
+
+-- reviewer(비-admin)는 reviewer_status / review_priority / confidence_score 만 수정 가능
+-- admin / service_role(auth.uid() IS NULL)은 제한 없음
+create or replace function public.plo_restrict_reviewer_columns()
+returns trigger
+language plpgsql
+as $$
+declare
+  v_role text;
+begin
+  select role into v_role from public.users where id = auth.uid();
+  if v_role = 'reviewer' then
+    if new.object_id              is distinct from old.object_id              or
+       new.source_id              is distinct from old.source_id              or
+       new.user_id                is distinct from old.user_id                or
+       new.object_type            is distinct from old.object_type            or
+       new.subject                is distinct from old.subject                or
+       new.unit                   is distinct from old.unit                   or
+       new.topic                  is distinct from old.topic                  or
+       new.question_type          is distinct from old.question_type          or
+       new.difficulty_level       is distinct from old.difficulty_level       or
+       new.extracted_text         is distinct from old.extracted_text         or
+       new.student_note           is distinct from old.student_note           or
+       new.detected_wrong_reason  is distinct from old.detected_wrong_reason  or
+       new.created_at             is distinct from old.created_at then
+      raise exception 'Reviewers may only update reviewer_status, review_priority, and confidence_score';
+    end if;
+  end if;
+  return new;
+end;
+$$;
+
+create trigger plo_reviewer_column_guard
+  before update on public.parsed_learning_objects
+  for each row execute function public.plo_restrict_reviewer_columns();

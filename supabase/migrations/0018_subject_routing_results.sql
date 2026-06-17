@@ -18,7 +18,8 @@ create table public.subject_routing_results (
   needs_user_confirmation boolean not null default false,
   user_corrected_subject text,
   final_subject text,
-  created_at timestamptz not null default now()
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 create index srr_user_idx
@@ -72,3 +73,17 @@ create trigger srr_confirmation_guard
   for each row execute function public.srr_enforce_confirmation_columns();
 
 -- insert는 service_role(Subject Routing Agent)만
+
+create or replace function public.srr_set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at := now();
+  return new;
+end;
+$$;
+
+create trigger srr_updated_at
+  before update on public.subject_routing_results
+  for each row execute function public.srr_set_updated_at();

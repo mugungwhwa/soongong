@@ -1,6 +1,9 @@
 -- SOO-31: student_memory_items
 -- SSoT: 유저_데이터_관리_보안.md §3.E + 외부_데이터_유입_엔진.md §5.E
 -- 학생 개인 RAG — 회독 엔진의 기억 상태
+--
+-- ⚠️ 배포 순서: supabase db push(이 마이그레이션 적용) 완료 후 Edge Function 배포 필수.
+--    daily-quest-builder / schedule-next-review 는 이 테이블 존재를 전제로 동작함.
 
 create table public.student_memory_items (
   memory_id uuid primary key default gen_random_uuid(),
