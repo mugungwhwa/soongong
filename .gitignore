@@ -4,7 +4,8 @@ Thumbs.db
 
 # 도구 / 임시
 .claude-dev-helper/
-.claude/
+.claude/*
+!.claude/skills/
 .omc/
 *.swp
 *.swo
