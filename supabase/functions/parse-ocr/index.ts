@@ -14,6 +14,13 @@ Deno.serve(async (req: Request) => {
     return new Response("Method not allowed", { status: 405 });
   }
 
+  // 인증: Bearer JWT 검증으로 호출자 신원 확인
+  const authHeader = req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+  const token = authHeader.slice(7);
+
   let source_id: string;
   try {
     ({ source_id } = await req.json());
@@ -24,21 +31,32 @@ Deno.serve(async (req: Request) => {
 
   const supabase = getAdminClient();
 
-  // 1) 소스 조회
-  const { data: source } = await supabase
+  // JWT로 호출자 user_id 확인 (admin client의 auth.getUser로 토큰 검증)
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+  if (authError || !user) return new Response("Unauthorized", { status: 401 });
+
+  // 1) 소스 조회 — DB 오류와 404를 구분
+  const { data: source, error: sourceError } = await supabase
     .from("external_sources")
     .select("source_id, user_id, raw_url, source_type, metadata")
     .eq("source_id", source_id)
     .single();
 
+  if (sourceError) return new Response(`DB error: ${sourceError.message}`, { status: 500 });
   if (!source) return new Response("source not found", { status: 404 });
+
+  // 소유권 검증: 인증된 사용자의 소스만 처리
+  if (source.user_id !== user.id) return new Response("Forbidden", { status: 403 });
+
   if (!source.raw_url) return new Response("no raw_url — text-only source not supported yet", { status: 422 });
 
-  // 2) signed URL 발급 (60초)
-  const { data: signed } = await supabase.storage
+  // 2) signed URL 발급 (60초) — Storage 오류와 빈 URL 구분
+  const { data: signed, error: storageError } = await supabase.storage
     .from("uploads")
     .createSignedUrl(source.raw_url, 60);
-  if (!signed?.signedUrl) return new Response("storage signed URL error", { status: 500 });
+
+  if (storageError) return new Response(`storage error: ${storageError.message}`, { status: 500 });
+  if (!signed?.signedUrl) return new Response("storage signed URL empty", { status: 500 });
 
   // 3) Claude vision 호출 (exponential backoff는 _shared/ai.ts 내 callWithBackoff)
   let ocrResult;
@@ -96,13 +114,13 @@ Deno.serve(async (req: Request) => {
     reviewer_status: "pending",
   };
 
-  const { data: plo, error } = await supabase
+  const { data: plo, error: insertError } = await supabase
     .from("parsed_learning_objects")
     .insert(insertPayload)
     .select()
     .single();
 
-  if (error) return new Response(error.message, { status: 500 });
+  if (insertError) return new Response(insertError.message, { status: 500 });
 
   return Response.json(plo);
 });

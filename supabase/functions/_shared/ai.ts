@@ -26,14 +26,14 @@ async function callWithBackoff(
   fn: () => Promise<Anthropic.Message>,
   maxRetries = 3,
 ): Promise<Anthropic.Message> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       return await fn();
     } catch (err) {
       const isRateLimit =
         err instanceof Anthropic.RateLimitError ||
         (err instanceof Anthropic.APIStatusError && (err as Anthropic.APIStatusError).status === 429);
-      if (!isRateLimit || attempt === maxRetries) throw err;
+      if (!isRateLimit || attempt === maxRetries - 1) throw err;
       const delay = Math.min(1000 * 2 ** attempt + Math.random() * 500, 16_000);
       await new Promise((r) => setTimeout(r, delay));
     }

@@ -6,7 +6,7 @@ alter table public.parsed_learning_objects
   alter column detected_wrong_reason type text[]
   using case
     when detected_wrong_reason is null or detected_wrong_reason = '' then '{}'::text[]
-    else array[detected_wrong_reason]
+    else string_to_array(detected_wrong_reason, ',')
   end;
 
 alter table public.parsed_learning_objects
