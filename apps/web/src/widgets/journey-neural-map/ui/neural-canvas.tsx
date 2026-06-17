@@ -182,24 +182,49 @@ export function NeuralCanvas({
     ro.observe(container);
     resize();
 
-    // ── 가시성: 화면 밖/탭 숨김 시 rAF 정지(배터리·CPU 절약) ──
+    // ── 가시성: 화면 밖/탭 숨김 시 rAF 루프 자체를 취소·재개(배터리·CPU 절약) ──
+    // 렌더만 스킵하면 콜백이 계속 돌아 절감이 제한적이므로 루프를 멈췄다 재개한다.
     let visible = true;
+    let running = false;
+    let raf = 0;
+    let lastFrame = performance.now();
+
+    function startLoop() {
+      if (running || !visible || document.hidden) return;
+      running = true;
+      lastFrame = performance.now();
+      raf = requestAnimationFrame(frame);
+    }
+
+    function stopLoop() {
+      running = false;
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = 0;
+      }
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         visible = entries[0]?.isIntersecting ?? true;
+        if (visible) startLoop();
+        else stopLoop();
       },
       { threshold: 0.01 },
     );
     io.observe(container);
 
-    let raf = 0;
-    let lastFrame = performance.now();
+    function onVisibilityChange() {
+      if (document.hidden) stopLoop();
+      else startLoop();
+    }
+    document.addEventListener("visibilitychange", onVisibilityChange);
 
     function frame(now: number) {
+      if (!running) return;
       raf = requestAnimationFrame(frame);
       const dt = Math.min(48, now - lastFrame);
       lastFrame = now;
-      if (!visible || document.hidden) return;
 
       const vp = vpRef.current;
       const it = interaction.current;
@@ -320,7 +345,7 @@ export function NeuralCanvas({
       }
     }
 
-    raf = requestAnimationFrame(frame);
+    startLoop();
 
     // ── 포인터 이벤트(팬/줌/핀치/탭/호버) ──
     function toLocal(e: PointerEvent): { x: number; y: number } {
@@ -488,9 +513,10 @@ export function NeuralCanvas({
     canvas.addEventListener("wheel", onWheel, { passive: false });
 
     return () => {
-      cancelAnimationFrame(raf);
+      stopLoop();
       ro.disconnect();
       io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", endPointer);

@@ -29,6 +29,8 @@ export function useJourneyMap() {
 
   // in-flight 영역 요청 중복 방지(같은 영역 동시 진입 시 1회만).
   const inFlight = useRef<Set<string>>(new Set());
+  // 이미 적재 완료한 영역(재요청 스킵). dedup 판단을 ref로만 해 stale 클로저 회피.
+  const loaded = useRef<Set<string>>(new Set());
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -50,42 +52,37 @@ export function useJourneyMap() {
     };
   }, []);
 
-  const ensureRegion = useCallback(
-    (regionCode: string) => {
-      if (!regionCode) return;
-      setState((s) => {
-        if (s.regionNodes[regionCode] || inFlight.current.has(regionCode)) {
-          return s;
-        }
-        inFlight.current.add(regionCode);
-        // 비동기 페치는 setState 콜백 밖에서 트리거(아래 microtask).
-        queueMicrotask(() => {
-          fetchJourneyMap(regionCode)
-            .then((res) => {
-              if (!mounted.current) return;
-              setState((prev) => ({
-                ...prev,
-                regionNodes: { ...prev.regionNodes, [regionCode]: res.nodes },
-                loadingRegion: prev.loadingRegion === regionCode ? null : prev.loadingRegion,
-              }));
-            })
-            .catch((e: unknown) => {
-              console.error("[journey-map] ensureRegion:", e);
-              if (!mounted.current) return;
-              setState((prev) => ({
-                ...prev,
-                loadingRegion: prev.loadingRegion === regionCode ? null : prev.loadingRegion,
-              }));
-            })
-            .finally(() => {
-              inFlight.current.delete(regionCode);
-            });
-        });
-        return { ...s, loadingRegion: regionCode };
+  const ensureRegion = useCallback((regionCode: string) => {
+    if (!regionCode) return;
+    // dedup·페치 트리거는 setState updater 밖에서 수행한다.
+    // updater 안에 부수효과(inFlight.add·fetch)를 두면 React 18 Strict Mode/concurrent에서
+    // updater가 2회 호출돼 중복 요청이 발생할 수 있음(CodeRabbit #4). 판단은 ref로만.
+    if (loaded.current.has(regionCode) || inFlight.current.has(regionCode)) return;
+    inFlight.current.add(regionCode);
+    setState((s) => ({ ...s, loadingRegion: regionCode })); // 순수 상태 업데이트만
+
+    fetchJourneyMap(regionCode)
+      .then((res) => {
+        loaded.current.add(regionCode);
+        if (!mounted.current) return;
+        setState((prev) => ({
+          ...prev,
+          regionNodes: { ...prev.regionNodes, [regionCode]: res.nodes },
+          loadingRegion: prev.loadingRegion === regionCode ? null : prev.loadingRegion,
+        }));
+      })
+      .catch((e: unknown) => {
+        console.error("[journey-map] ensureRegion:", e);
+        if (!mounted.current) return;
+        setState((prev) => ({
+          ...prev,
+          loadingRegion: prev.loadingRegion === regionCode ? null : prev.loadingRegion,
+        }));
+      })
+      .finally(() => {
+        inFlight.current.delete(regionCode);
       });
-    },
-    [],
-  );
+  }, []);
 
   return {
     map: state.map,

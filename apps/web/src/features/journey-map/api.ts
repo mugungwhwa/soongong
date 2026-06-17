@@ -13,7 +13,13 @@ export async function fetchJourneyMap(
     error: authError,
   } = await supabase.auth.getUser();
 
-  if (authError || !user) {
+  // 인증 서비스 실패(네트워크·토큰 검증 등)와 미로그인은 별개 상태로 구분 —
+  // 진단·재시도 로직이 둘을 다르게 다룰 수 있도록 메시지를 분리한다.
+  if (authError) {
+    console.error("[journey-map/api] auth.getUser:", authError.message);
+    throw new Error("인증 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+  }
+  if (!user) {
     throw new Error("로그인이 필요합니다.");
   }
 
