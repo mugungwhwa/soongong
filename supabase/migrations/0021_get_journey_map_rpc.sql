@@ -48,6 +48,7 @@ begin
     from public.student_memory_items smi
     left join public.parsed_learning_objects plo
            on plo.object_id = smi.object_id
+          and plo.user_id = p_user_id          -- SECURITY DEFINER 환경 테넌트 경계 강제
     left join public.units u
            on u.id = plo.unit_id
     left join public.units u_rgn
@@ -84,11 +85,13 @@ begin
            or (next_review_at is not null
                and next_review_at::date <= current_date)
       )::int                                                   as dimming_count,
-      -- risk_score: 영역 내 위험도 평균 (high=3, medium=2, low=1)
-      avg(case forgetting_risk
-            when 'high'   then 3.0
-            when 'medium' then 2.0
-            else               1.0
+      -- risk_score: 영역 내 위험도 평균 — 연체 항목(overdue)은 high와 동등 처리
+      avg(case
+            when forgetting_risk = 'high'
+              or (next_review_at is not null
+                  and next_review_at::date <= current_date) then 3.0
+            when forgetting_risk = 'medium' then 2.0
+            else 1.0
           end)                                                 as risk_score
     from user_items
     where eff_region_code is not null

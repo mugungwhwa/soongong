@@ -24,7 +24,7 @@ create index units_depth_idx      on public.units (depth);
 create index units_subject_idx    on public.units (subject_code) where subject_code is not null;
 create index units_search_idx     on public.units using gin (search_vector);
 
--- region_code / subject_code 자동 채우기 트리거
+-- region_code / subject_code 자동 채우기 + 부모 깊이 검증 트리거
 -- 삽입 순서: depth=1 → depth=2 → depth=3+ 보장 필요 (seed 스크립트 책임)
 create or replace function public.units_set_ancestors()
 returns trigger
@@ -36,14 +36,36 @@ begin
   if new.depth = 1 then
     new.region_code  := null;
     new.subject_code := null;
+
   elsif new.depth = 2 then
+    -- 부모는 반드시 depth=1 과목이어야 함
+    if new.parent_id is null then
+      raise exception 'depth=2 unit requires a parent_id (depth=1 subject)';
+    end if;
+    select depth into v_parent from public.units where id = new.parent_id;
+    if not found or v_parent.depth != 1 then
+      raise exception 'depth=2 unit parent must be depth=1, got depth=%',
+        coalesce(v_parent.depth::text, 'not found');
+    end if;
     new.region_code  := new.id;        -- 자기 자신이 region anchor
     new.subject_code := new.parent_id;
+
   else
-    select region_code, subject_code
+    -- depth>=3: 부모는 반드시 depth = new.depth-1 이어야 함
+    if new.parent_id is null then
+      raise exception 'units with depth>1 require a parent_id';
+    end if;
+    select depth, region_code, subject_code
       into v_parent
       from public.units
      where id = new.parent_id;
+    if not found then
+      raise exception 'parent unit % not found', new.parent_id;
+    end if;
+    if v_parent.depth != new.depth - 1 then
+      raise exception 'unit depth must equal parent.depth + 1 (parent depth=%, this depth=%)',
+        v_parent.depth, new.depth;
+    end if;
     new.region_code  := v_parent.region_code;
     new.subject_code := v_parent.subject_code;
   end if;

@@ -36,3 +36,50 @@ comment on column public.student_memory_items.last_reviewed_at is
 create index smi_last_reviewed_idx
   on public.student_memory_items (user_id, last_reviewed_at desc)
   where last_reviewed_at is not null;
+
+-- ─────────────────────────────────────────────────────────
+-- region_code 자동 채우기 + depth=2 검증 트리거
+-- curriculum-lookup이 unit_id를 채우면 region_code를 자동 파생.
+-- region_code 직접 지정 시 depth=2 unit인지 + unit_id 일관성 검증.
+-- ─────────────────────────────────────────────────────────
+create or replace function public.plo_sync_region_code()
+returns trigger
+language plpgsql
+as $$
+declare
+  v_unit_region text;
+  v_region_depth int;
+begin
+  if new.unit_id is not null then
+    if new.region_code is null then
+      -- unit_id로부터 region_code 자동 파생
+      select region_code into new.region_code
+        from public.units where id = new.unit_id;
+    else
+      -- 양쪽 모두 지정된 경우 일관성 검증
+      select region_code into v_unit_region
+        from public.units where id = new.unit_id;
+      if found and v_unit_region is distinct from new.region_code then
+        raise exception 'region_code (%) does not match unit_id region (%)',
+          new.region_code, v_unit_region;
+      end if;
+    end if;
+  end if;
+
+  -- region_code가 depth=2 unit인지 항상 검증
+  if new.region_code is not null then
+    select depth into v_region_depth
+      from public.units where id = new.region_code;
+    if not found or v_region_depth != 2 then
+      raise exception 'region_code must reference a depth=2 unit (got depth=%)',
+        coalesce(v_region_depth::text, 'not found');
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+create trigger plo_region_sync
+  before insert or update of unit_id, region_code on public.parsed_learning_objects
+  for each row execute function public.plo_sync_region_code();
