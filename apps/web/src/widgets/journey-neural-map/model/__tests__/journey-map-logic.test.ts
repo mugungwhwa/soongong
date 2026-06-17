@@ -104,6 +104,22 @@ describe("layoutRegionNodes", () => {
     const nodes = Array.from({ length: 25 }, (_, i) => node(`n${i}`));
     expect(layoutRegionNodes(nodes, { x: 0, y: 0 })).toHaveLength(25);
   });
+  it("서버 반환 순서와 무관 — 같은 집합이면 동일 레이아웃(결정론)", () => {
+    const base = [
+      node("c3", 0.3, "단원B"),
+      node("c1", 0.9, "단원A"),
+      node("c2", 0.5, "단원A"),
+      node("c4", 0.2, "단원C"),
+    ];
+    const shuffled = [base[2], base[0], base[3], base[1]];
+    const center = { x: 500, y: 370 };
+    const a = layoutRegionNodes(base, center);
+    const b = layoutRegionNodes(shuffled, center);
+    // 출력 자체가 정렬되어 순서·좌표가 완전히 동일해야 한다.
+    expect(b.map((n) => [n.node.concept_id, n.x, n.y, n.radius])).toEqual(
+      a.map((n) => [n.node.concept_id, n.x, n.y, n.radius]),
+    );
+  });
 });
 
 describe("color utils", () => {

@@ -84,10 +84,17 @@ export function NeuralCanvas({
   };
 
   // 영역 레이아웃 캐시(regions 동일하면 재계산 안 함).
+  // 키에 stats까지 포함 — region_code 집합이 같아도 통계가 갱신되면 stale 방지
+  // (lobe 반경은 node_count 파생, 렌더는 mastery_avg/dimming/risk 의존).
   const regionLayoutRef = useRef<RegionLayout[]>([]);
   const regionLayoutKeyRef = useRef<string>("");
   {
-    const key = regions.map((r) => r.region_code).join("|");
+    const key = regions
+      .map(
+        (r) =>
+          `${r.region_code}:${r.node_count}:${r.mastery_avg}:${r.dimming_count}:${r.risk_score}`,
+      )
+      .join("|");
     if (key !== regionLayoutKeyRef.current) {
       regionLayoutRef.current = layoutRegions(regions);
       regionLayoutKeyRef.current = key;

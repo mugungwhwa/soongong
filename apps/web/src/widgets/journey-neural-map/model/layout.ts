@@ -77,14 +77,18 @@ export function layoutRegionNodes(
     else groups.set(key, [node]);
   }
 
-  const unitKeys = [...groups.keys()];
+  // unit 키를 사전식 정렬 → ui 인덱스가 서버 반환 순서와 무관하게 고정(결정론).
+  const unitKeys = [...groups.keys()].sort();
   const unitCount = Math.max(unitKeys.length, 1);
   // 영역 전개 반경 — 노드 많을수록 넓게.
   const spread = 120 + Math.min(200, nodes.length * 4);
 
   const out: NodeLayout[] = [];
   unitKeys.forEach((unitKey, ui) => {
-    const groupNodes = groups.get(unitKey)!;
+    // 그룹 내 노드도 concept_id로 안정 정렬 → i 인덱스 고정(hit-test 안정).
+    const groupNodes = [...groups.get(unitKey)!].sort((a, b) =>
+      a.concept_id < b.concept_id ? -1 : a.concept_id > b.concept_id ? 1 : 0,
+    );
     const uFrac = unitCount === 1 ? 0 : ui / unitCount;
     const uAngle = uFrac * Math.PI * 2 + hash01(unitKey) * 0.5;
     const uRadius = unitCount === 1 ? 0 : spread * (0.45 + 0.4 * Math.sqrt((ui + 0.5) / unitCount));
