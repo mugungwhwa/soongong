@@ -3,6 +3,12 @@ import type { CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
+  // NEXT_PUBLIC_MOCK_MODE=true 시 인증 게이트 전체 바이패스.
+  // 목업/데모 목적. 인증 코드는 보존 — 플래그 OFF 시 아래 게이트 원복.
+  if (process.env.NEXT_PUBLIC_MOCK_MODE === "true") {
+    return NextResponse.next({ request });
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
