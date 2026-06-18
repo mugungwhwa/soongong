@@ -31,7 +31,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 24: pnpm 11.x 는 시작 시 node:sqlite(스토어 인덱스)를 hard-require 하며,
+          # 이는 Node >= 22.5 에서만 존재하고 Node 24 부터 플래그 없이 로드된다.
+          # Node 20 으로 고정하면 pnpm 초기화 단계에서 ERR_UNKNOWN_BUILTIN_MODULE 로 죽는다.
+          node-version: 24
           cache: pnpm
 
       - name: Install dependencies
