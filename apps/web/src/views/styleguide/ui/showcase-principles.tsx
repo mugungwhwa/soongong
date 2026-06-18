@@ -6,6 +6,7 @@
  *
  * 소스: design-review 스킬 §2~§3 (Duolingo 차용/변형/거절 매트릭스, 폐기 회귀,
  * Voice 톤) + 기존 LockedDecisions. 값(hex)은 tokens.css가 SSoT — 여기 복붙 금지.
+ * 주의: §3 매트릭스는 design.duolingo.com 사이트 실사물이 아니라 우리 내부 결정 기록이다.
  *
  * ⚠️ raw hex 금지 · `dark:` 금지. 색은 var() 토큰만.
  */
@@ -118,6 +119,13 @@ export function PrinciplesMatrix() {
           r.note,
         ])}
       />
+      <p className="mt-3 rounded-[var(--radius-md)] bg-[var(--color-bg-sunken)] px-3 py-2 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+        <strong className="text-[var(--color-text-default)]">출처:</strong> 이 표는
+        design.duolingo.com 사이트 실사 결과가 아니라{" "}
+        <strong className="text-[var(--color-text-default)]">우리가 의식적으로 정한 내부 결정 기록</strong>
+        (design-review 스킬 §3)이다. 실제 사이트에는 차용/변형/거절 표가 없다 — 사이트 IA
+        실측은 별도(이슈 코멘트의 STEP 0 보고 참조).
+      </p>
     </ShowcaseSection>
   );
 }
@@ -150,6 +158,25 @@ export function PrinciplesGuardrails() {
   );
 }
 
+/** Voice 원칙 — 기존 잠긴 룰의 재진술(새 결정 0건). 소스는 각 항목에 표기. */
+const VOICE_TENETS: { t: string; d: string; src: string }[] = [
+  {
+    t: "압박이 아니라 동반",
+    d: "학습을 공포로 프레이밍하지 않는다. 위협적 캐릭터·죄책감 카피 금지.",
+    src: "design-review §2-1·§2-5",
+  },
+  {
+    t: "손실도 부드럽게",
+    d: "streak loss는 순공이 sleep mood로. 빨강 하트 대신 기억HP 변형.",
+    src: "매트릭스 ‘변형’",
+  },
+  {
+    t: "알림은 최소·예측가능",
+    d: "회독 일정(1/3/7/14일)만. 잦은 reminder 푸시는 거절한다.",
+    src: "매트릭스 ‘거절’",
+  },
+];
+
 export function PrinciplesVoice() {
   return (
     <ShowcaseSection
@@ -157,7 +184,28 @@ export function PrinciplesVoice() {
       title="Voice 원칙 — 동반자 톤"
       description="압박·죄책감·공포 대신 함께 가는 동반자 톤. 소스는 기존 검수기준 + Duolingo 거절 매트릭스(새 결정 0건, design-review §2-5)."
     >
-      <ExampleCard title="카피 톤 가드레일">
+      <ExampleCard title="동반자 톤 3원칙" hint="기존 잠긴 룰 재진술">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {VOICE_TENETS.map((v) => (
+            <div
+              key={v.t}
+              className="rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface)] p-3"
+            >
+              <p className="text-sm font-bold text-[var(--color-text-strong)]">
+                {v.t}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-default)]">
+                {v.d}
+              </p>
+              <code className="mt-2 block font-mono text-[10px] text-[var(--color-text-muted)]">
+                {v.src}
+              </code>
+            </div>
+          ))}
+        </div>
+      </ExampleCard>
+
+      <ExampleCard title="카피 톤 가드레일" hint="do / don't">
         <DoDont dos={VOICE_DO} donts={VOICE_DONT} />
       </ExampleCard>
     </ShowcaseSection>
