@@ -40,7 +40,7 @@ Deno.serve(async (req: Request) => {
     .from("external_sources")
     .select("source_id, user_id, raw_url, source_type, metadata")
     .eq("source_id", source_id)
-    .single();
+    .maybeSingle();
 
   if (sourceError) return new Response(`DB error: ${sourceError.message}`, { status: 500 });
   if (!source) return new Response("source not found", { status: 404 });

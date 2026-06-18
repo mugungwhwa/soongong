@@ -22,7 +22,7 @@ export interface ParsedLearningObject {
   difficulty_level: DifficultyLevelCode | null;
   extracted_text: string | null;
   student_note: string | null;
-  detected_wrong_reason: string | null;
+  detected_wrong_reason: string[];
   review_priority: ReviewPriority;
   confidence_score: number | null;
   reviewer_status: ReviewerStatus;
