@@ -35,8 +35,14 @@ export const SELF_CHECK_SYSTEM = {
 // 구조화 출력에 사용하는 기본 모델. generated_problems.generator_model 기록값과 동기화.
 export const DEFAULT_MODEL = "claude-haiku-4-5-20251001";
 
-export function getModel(_tier: "fast" | "smart") {
-  return client.messages;
+// tier → 모델 id. fast=Haiku(기본), smart=Sonnet(생성 품질 직결 경로).
+const MODEL_BY_TIER = {
+  fast: DEFAULT_MODEL,
+  smart: "claude-sonnet-4-6",
+} as const;
+
+export function getModel(tier: "fast" | "smart"): string {
+  return MODEL_BY_TIER[tier];
 }
 
 async function callWithBackoff(
@@ -62,14 +68,14 @@ async function callWithBackoff(
 export async function generateObject<T extends ZodTypeAny>({
   schema,
   messages,
-  model: _model,
+  model,
   system = [CACHED_SYSTEM],
   toolDescription = "컴플라이언스 분류 결과를 구조화된 형식으로 반환합니다.",
   maxTokens = 1024,
 }: {
   schema: T;
   messages: Anthropic.MessageParam[];
-  model: ReturnType<typeof getModel>;
+  model?: string | null;
   system?: Array<{ type: "text"; text: string; cache_control?: { type: "ephemeral" } }>;
   toolDescription?: string;
   maxTokens?: number;
@@ -78,7 +84,7 @@ export async function generateObject<T extends ZodTypeAny>({
 
   const response = await callWithBackoff(() =>
     client.messages.create({
-      model: DEFAULT_MODEL,
+      model: model ?? DEFAULT_MODEL,
       max_tokens: maxTokens,
       system,
       tools: [
