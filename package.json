@@ -6,6 +6,7 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint",
+    "lint:arch": "pnpm --filter web lint:arch",
     "lint:tokens": "pnpm --filter web lint:tokens",
     "lint:no-dark": "pnpm --filter web lint:no-dark",
     "lint:images": "bash scripts/check-image-deprecated.sh --all",

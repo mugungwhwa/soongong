@@ -1,0 +1,41 @@
+name: arch-lint
+
+# soongong 네이티브 FSD 아키텍처 게이트 (SOO-67)
+# 레이어 단방향 의존 위반 시 PR 실패. Treenod arch-guard 외부 스킬 대체.
+# 아키텍처 한정 — 디자인/토큰 가드는 별도.
+
+on:
+  pull_request:
+    paths:
+      - "apps/web/src/**"
+      - "apps/web/.dependency-cruiser.cjs"
+      - "apps/web/package.json"
+      - "apps/web/tsconfig.json"
+      - ".github/workflows/arch-lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/src/**"
+      - "apps/web/.dependency-cruiser.cjs"
+
+jobs:
+  fsd-arch:
+    name: FSD layer boundaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: FSD architecture lint
+        run: pnpm lint:arch
