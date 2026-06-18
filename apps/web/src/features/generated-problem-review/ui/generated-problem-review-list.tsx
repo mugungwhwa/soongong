@@ -24,7 +24,8 @@ type RowStatus =
   | { kind: "pending" }
   | { kind: "rejecting" }
   | { kind: "approved" }
-  | { kind: "rejected"; reason: RejectReason };
+  | { kind: "rejected"; reason: RejectReason }
+  | { kind: "error"; message: string };
 
 const MODE_LABEL: Record<string, string> = {
   rebuild: "재정비",
@@ -36,13 +37,14 @@ async function recordDecision(
   problemId: string,
   decision: ReviewDecision,
   reason?: RejectReason,
-): Promise<void> {
+): Promise<{ ok: boolean }> {
   const supabase = createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  await supabase.from("audit_logs").insert({
+  // supabase-js v2는 throw하지 않고 error를 반환 — 확인 안 하면 감사 기록 실패가 조용히 묻힘.
+  const { error } = await supabase.from("audit_logs").insert({
     actor_id: user?.id ?? null,
     actor_role: "reviewer",
     action: decision === "approved" ? "approve" : "reject",
@@ -50,6 +52,12 @@ async function recordDecision(
     target_id: problemId,
     diff: reason ? { decision, reason } : { decision },
   });
+
+  if (error) {
+    console.error("[generated-problem-review] 감사 기록 실패", error);
+    return { ok: false };
+  }
+  return { ok: true };
 }
 
 function SourceContrast({
@@ -93,12 +101,24 @@ function ReviewCard({ item }: { item: GeneratedProblemReviewItem }) {
 
   async function approve() {
     setStatus({ kind: "approved" });
-    await recordDecision(item.problemId, "approved");
+    const { ok } = await recordDecision(item.problemId, "approved");
+    if (!ok) {
+      setStatus({
+        kind: "error",
+        message: "승인 기록에 실패했어요. 다시 시도해 주세요.",
+      });
+    }
   }
 
   async function reject(reason: RejectReason) {
     setStatus({ kind: "rejected", reason });
-    await recordDecision(item.problemId, "rejected", reason);
+    const { ok } = await recordDecision(item.problemId, "rejected", reason);
+    if (!ok) {
+      setStatus({
+        kind: "error",
+        message: "반려 기록에 실패했어요. 다시 시도해 주세요.",
+      });
+    }
   }
 
   return (
@@ -161,7 +181,13 @@ function ReviewCard({ item }: { item: GeneratedProblemReviewItem }) {
       </CardContent>
 
       <CardFooter className="flex-col items-stretch gap-2">
-        {status.kind === "pending" && (
+        {status.kind === "error" && (
+          <p className="text-xs text-[var(--color-danger)]">
+            {status.message}
+          </p>
+        )}
+
+        {(status.kind === "pending" || status.kind === "error") && (
           <div className="flex gap-2">
             <Button size="sm" onClick={approve}>
               승인
