@@ -32,7 +32,12 @@ Deno.serve(async (req: Request) => {
     .single();
   if (!source) return new Response("source not found", { status: 404 });
 
-  const userContent: Array<{ type: string; text?: string; image?: URL }> = [
+  // 이미지 블록은 Anthropic SDK content 형식(source.url)을 따른다 — generateObject 가
+  // messages 를 client.messages.create 로 그대로 전달하므로 Vercel AI-SDK 형식(image:URL)은 거부됨.
+  const userContent: Array<
+    | { type: "text"; text: string }
+    | { type: "image"; source: { type: "url"; url: string } }
+  > = [
     { type: "text", text: COMPLIANCE_PROMPT },
   ];
 
@@ -45,7 +50,7 @@ Deno.serve(async (req: Request) => {
         type: "text",
         text: `source_type: ${source.source_type}\n학생 메모: ${source.metadata?.student_note ?? "없음"}`,
       });
-      userContent.push({ type: "image", image: new URL(signed.signedUrl) });
+      userContent.push({ type: "image", source: { type: "url", url: signed.signedUrl } });
     }
   } else if (source.raw_text) {
     userContent.push({
