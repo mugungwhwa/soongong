@@ -1,13 +1,15 @@
+"use client";
+
 /**
- * Patterns + Content/Voice 카테고리 뷰.
+ * Patterns · 도메인규칙 카테고리 뷰 (SOO-69).
  * - Patterns: 레이아웃 / 상호작용 패턴 (정적 예시).
- * - Content/Voice: 자산이 약한 영역 — 카피 톤 do/don't만 표기 + placeholder.
- * raw hex 0건 · `dark:` 0건.
+ * - 도메인규칙 시각화: 기억HP 0–5 정수 게이지 · 위험도 데사처드 pill ·
+ *   화면별 게임성 강도 캡 표. 값은 게임화 SSoT(잠긴 값) — 여기선 렌더만.
+ * raw hex 0건 · `dark:` 0건. 색은 var() 토큰만.
  */
 
 import * as React from "react";
-import { Check, X } from "lucide-react";
-import { ShowcaseSection, ExampleCard, PlaceholderNote } from "./showcase-kit";
+import { ShowcaseSection, ExampleCard, RuleTable } from "./showcase-kit";
 
 export function PatternsLayout() {
   return (
@@ -64,24 +66,7 @@ export function PatternsInteraction() {
       title="상호작용"
       description="모션은 마스코트 등장 위주의 부분 차용. 버튼/카드 과한 bounce는 금지(매트릭스). 전환은 토큰 duration/ease 사용."
     >
-      <ExampleCard title="기억HP 게이지" hint="0–5 정수 · 하트/백분율 ❌">
-        <div className="flex items-center gap-1.5">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <span
-              key={i}
-              className="h-3 w-8 rounded-[var(--radius-pill)]"
-              style={{
-                background:
-                  i < 4 ? "var(--color-mint-500)" : "var(--color-bg-sunken)",
-              }}
-            />
-          ))}
-          <span className="ml-2 text-xs font-semibold text-[var(--color-text-default)]">
-            4 / 5
-          </span>
-        </div>
-      </ExampleCard>
-      <ExampleCard title="hover/transition" hint="--duration-fast · --ease-out-soft">
+      <ExampleCard title="hover / transition" hint="--duration-fast · --ease-out-soft">
         <button
           type="button"
           className="rounded-[var(--radius-md)] bg-[var(--color-mint-100)] px-4 py-2 text-sm font-semibold text-[var(--color-mint-900)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-soft)] hover:bg-[var(--color-mint-300)]"
@@ -93,53 +78,129 @@ export function PatternsInteraction() {
   );
 }
 
-const VOICE_DO = [
-  "압박 없는 동반자 톤 — “순공이가 잠들고 있어요. 깨워줄까요?”",
-  "성취를 함께 기뻐하기 — “회독 완료! 기억HP가 채워졌어요.”",
-  "부드러운 재시작 — “괜찮아요, 내일 다시 알려줄게요.”",
-];
+/** 기억HP 0–5 정수 게이지 — 채워진 칸 수로만 표현(하트/백분율 ❌). */
+function HpGauge({ value }: { value: number }) {
+  return (
+    <div className="flex items-center gap-1.5">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <span
+          key={i}
+          className="h-3 w-8 rounded-[var(--radius-pill)]"
+          style={{
+            background:
+              i < value ? "var(--color-mint-500)" : "var(--color-bg-sunken)",
+          }}
+        />
+      ))}
+      <span className="ml-2 text-xs font-semibold tabular-nums text-[var(--color-text-default)]">
+        {value} / 5
+      </span>
+    </div>
+  );
+}
 
-const VOICE_DONT = [
-  "passive-aggressive — “돌아와!”, “안 하면 망한다”",
-  "죄책감/공포 — 성적·합격 보장, fear 카피",
-  "잦은 푸시로 압박 — 회독 일정(1/3/7/14일) 외 reminder",
-];
-
-export function ContentVoice() {
+export function DomainMemoryHp() {
   return (
     <ShowcaseSection
-      eyebrow="Content & Voice"
-      title="보이스 · 톤"
-      description="현재 자산이 약한 영역 — 보강은 별도 티켓. 지금은 카피 톤의 do/don't 가드레일만 제시한다(design-review §2-5)."
+      eyebrow="도메인규칙"
+      title="기억HP — 0–5 정수 게이지"
+      description="기억HP는 0–5 정수로만 표현한다. 백분율·빨강 하트는 금지(게임화 잠긴 값 + Duolingo 하트 ‘변형’ 결정). 손실은 데사처드 톤으로 부드럽게."
     >
-      <ExampleCard title="카피 톤 가드레일">
-        <div className="grid gap-5 md:grid-cols-2">
-          <div>
-            <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[var(--color-mint-700)]">
-              <Check className="h-3.5 w-3.5" /> 동반자 톤 (do)
-            </h4>
-            <ul className="space-y-1.5 text-xs leading-relaxed text-[var(--color-text-default)]">
-              {VOICE_DO.map((v) => (
-                <li key={v}>{v}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[var(--color-danger)]">
-              <X className="h-3.5 w-3.5" /> 금지 (don't)
-            </h4>
-            <ul className="space-y-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">
-              {VOICE_DONT.map((v) => (
-                <li key={v}>{v}</li>
-              ))}
-            </ul>
-          </div>
+      <ExampleCard title="상태별 게이지" hint="채운 칸 수 = 정수값">
+        <div className="space-y-3">
+          {[5, 4, 3, 1, 0].map((v) => (
+            <HpGauge key={v} value={v} />
+          ))}
         </div>
       </ExampleCard>
-      <PlaceholderNote title="콘텐츠 자산 보강 예정">
-        empty-state 일러스트 카피, 온보딩 문구, 알림 템플릿 등은 아직 정리 전입니다.
-        별도 티켓에서 채웁니다.
-      </PlaceholderNote>
+    </ShowcaseSection>
+  );
+}
+
+/** 위험도 데사처드 pill — 자극적 원색 금지, 소프트 톤만(low/mid/high). */
+function RiskPill({
+  varName,
+  label,
+}: {
+  varName: string;
+  label: string;
+}) {
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] px-2.5 py-1 text-xs font-semibold text-[var(--color-text-strong)]"
+      style={{ background: `var(${varName})` }}
+    >
+      {label}
+    </span>
+  );
+}
+
+export function DomainRisk() {
+  return (
+    <ShowcaseSection
+      eyebrow="도메인규칙"
+      title="회독 위험도 — 데사처드 pill"
+      description="망각 위험도는 부드러운 빨강/노랑/초록 톤(데사처드)으로만 표기한다. 자극적 원색·네온 금지. 값은 tokens.css의 --color-risk-* 가 SSoT."
+    >
+      <ExampleCard title="위험도 3단" hint="--color-risk-low / mid / high">
+        <div className="flex flex-wrap items-center gap-2">
+          <RiskPill varName="--color-risk-low" label="안전" />
+          <RiskPill varName="--color-risk-mid" label="주의" />
+          <RiskPill varName="--color-risk-high" label="위험" />
+        </div>
+      </ExampleCard>
+    </ShowcaseSection>
+  );
+}
+
+/** §2-3 화면별 게임성 강도 캡 — -20dB 원칙. 초과 시 위반. */
+const INTENSITY_CAPS: { screen: string; cap: number; note: string }[] = [
+  { screen: "홈", cap: 30, note: "네온/파티클 금지, stats + 배지만" },
+  { screen: "회독 플레이", cap: 20, note: "진행도 + HP만" },
+  { screen: "결과", cap: 50, note: "XP 카운트업 + spring 마스코트 허용" },
+  { screen: "오답던전 / 망각방어", cap: 60, note: "강한 loss 신호는 데사처드로" },
+  { screen: "순공리그", cap: 70, note: "경쟁 신호 (MVP 1.5차)" },
+  { screen: "4점보스", cap: 80, note: "최고 강도 — 보스전 한정" },
+];
+
+/** 강도 막대 — 캡 비율을 mint 톤으로 시각화. */
+function IntensityBar({ cap }: { cap: number }) {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="h-2 flex-1 overflow-hidden rounded-[var(--radius-pill)] bg-[var(--color-bg-sunken)]">
+        <span
+          className="block h-full rounded-[var(--radius-pill)] bg-[var(--color-mint-500)]"
+          style={{ width: `${cap}%` }}
+        />
+      </span>
+      <span className="w-9 shrink-0 text-right text-[11px] font-semibold tabular-nums text-[var(--color-text-muted)]">
+        {cap}%
+      </span>
+    </div>
+  );
+}
+
+export function DomainIntensityCaps() {
+  return (
+    <ShowcaseSection
+      eyebrow="도메인규칙"
+      title="화면별 게임성 강도 캡"
+      description="Dark RPG 대비 -20dB. ‘홈을 게임처럼’ 만들면 위반 — 게임성은 결과·서브모드에서 올린다. 캡 초과는 design-review §2-3 위반(잠긴 값)."
+    >
+      <ExampleCard title="강도 상한" hint="초과 시 위반">
+        <RuleTable
+          columns={["화면", "강도 캡", "허용 범위"]}
+          rows={INTENSITY_CAPS.map((c) => [
+            <span key="s" className="font-semibold text-[var(--color-text-strong)]">
+              {c.screen}
+            </span>,
+            <div key="b" className="min-w-[120px]">
+              <IntensityBar cap={c.cap} />
+            </div>,
+            c.note,
+          ])}
+        />
+      </ExampleCard>
     </ShowcaseSection>
   );
 }

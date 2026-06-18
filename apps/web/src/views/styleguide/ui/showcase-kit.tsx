@@ -7,6 +7,7 @@
  */
 
 import * as React from "react";
+import { Check, X } from "lucide-react";
 
 /** 카테고리 뷰 한 칸의 헤더 + 본문 래퍼. */
 export function ShowcaseSection({
@@ -103,6 +104,121 @@ export function Swatch({ varName, label }: { varName: string; label: string }) {
         </code>
       </span>
     </div>
+  );
+}
+
+/**
+ * Do / Don't 2열 가드레일 — 컴포넌트 4단 틀의 ④번 칸.
+ * do = 동반자/권장, dont = 금지. 톤은 design-review §2-5 기준.
+ */
+export function DoDont({
+  dos,
+  donts,
+}: {
+  dos: React.ReactNode[];
+  donts: React.ReactNode[];
+}) {
+  return (
+    <div className="mt-4 grid gap-4 border-t border-[var(--color-border-default)] pt-4 sm:grid-cols-2">
+      <div className="rounded-[var(--radius-md)] bg-[var(--color-mint-50)] p-3">
+        <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[var(--color-mint-700)]">
+          <Check className="h-3.5 w-3.5" /> Do
+        </h4>
+        <ul className="space-y-1.5 text-xs leading-relaxed text-[var(--color-text-default)]">
+          {dos.map((d, i) => (
+            <li key={i} className="flex gap-1.5">
+              <span className="select-none text-[var(--color-mint-500)]">·</span>
+              <span>{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="rounded-[var(--radius-md)] bg-[var(--color-risk-bg)] p-3">
+        <h4 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-[var(--color-danger)]">
+          <X className="h-3.5 w-3.5" /> Don&apos;t
+        </h4>
+        <ul className="space-y-1.5 text-xs leading-relaxed text-[var(--color-text-muted)]">
+          {donts.map((d, i) => (
+            <li key={i} className="flex gap-1.5">
+              <span className="select-none text-[var(--color-risk-high)]">·</span>
+              <span>{d}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 규칙 표 — Duolingo 차용/변형/거절 매트릭스·게임성 강도 캡 등 정적 문서 표.
+ * 값은 본 표가 아니라 design-review 스킬 §2~§3이 SSoT(여기선 렌더만).
+ */
+export function RuleTable({
+  columns,
+  rows,
+}: {
+  columns: string[];
+  rows: React.ReactNode[][];
+}) {
+  return (
+    <div className="overflow-x-auto rounded-[var(--radius-lg)] border border-[var(--color-border-default)]">
+      <table className="w-full border-collapse text-left text-xs">
+        <thead>
+          <tr className="bg-[var(--color-bg-sunken)]">
+            {columns.map((c) => (
+              <th
+                key={c}
+                className="whitespace-nowrap px-3 py-2 font-bold text-[var(--color-text-strong)]"
+              >
+                {c}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, ri) => (
+            <tr
+              key={ri}
+              className="border-t border-[var(--color-border-default)] align-top"
+            >
+              {row.map((cell, ci) => (
+                <td
+                  key={ci}
+                  className="px-3 py-2 leading-relaxed text-[var(--color-text-default)]"
+                >
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/**
+ * 결정 태그 pill — 차용 / 변형 / 거절 등 분류 라벨.
+ * 색은 의미별 토큰만(차용=mint, 변형=warning, 거절=danger).
+ */
+export function VerdictPill({
+  kind,
+}: {
+  kind: "차용" | "변형" | "거절" | "부분 차용" | "차용(잠금)";
+}) {
+  const tone =
+    kind === "거절"
+      ? "bg-[var(--color-risk-bg)] text-[var(--color-danger)]"
+      : kind === "변형"
+        ? "bg-[var(--color-warning-bg)] text-[var(--color-text-on-warm)]"
+        : "bg-[var(--color-mint-50)] text-[var(--color-mint-700)]";
+  return (
+    <span
+      className={`inline-block whitespace-nowrap rounded-[var(--radius-pill)] px-2 py-0.5 text-[10px] font-bold ${tone}`}
+    >
+      {kind}
+    </span>
   );
 }
 

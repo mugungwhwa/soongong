@@ -36,6 +36,7 @@ import {
   ShowcaseSection,
   ExampleCard,
   TokenChips,
+  DoDont,
   PlaceholderNote,
 } from "./showcase-kit";
 
@@ -67,6 +68,16 @@ export function CompButton() {
           <Button disabled>비활성</Button>
         </div>
       </ExampleCard>
+      <DoDont
+        dos={[
+          "CTA는 primary 토큰(--color-primary-cta)으로만",
+          "비활성 상태를 명확히 — disabled 시 대비 낮춤",
+        ]}
+        donts={[
+          "원색 그린을 직접 박기 (저채도 민트 ‘변형’ 결정 위반)",
+          "버튼에 과한 bounce 모션 (bounce는 마스코트 한정)",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
@@ -87,6 +98,16 @@ export function CompBadge() {
         </div>
         <TokenChips tokens={["--radius-pill", "--color-primary-cta"]} />
       </ExampleCard>
+      <DoDont
+        dos={[
+          "상태/라벨 표기용 pill로 사용",
+          "위험 표기는 데사처드 위험도 토큰으로",
+        ]}
+        donts={[
+          "빨강 하트(생명) 대용으로 쓰기 — 기억HP 0–5로 대체",
+          "자극적 원색 배지 남발",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
@@ -115,6 +136,16 @@ export function CompCard() {
           tokens={["--color-surface", "--color-border-default", "--radius-lg"]}
         />
       </ExampleCard>
+      <DoDont
+        dos={[
+          "흰색 surface 고정 — 배경이 비치지 않게",
+          "--shadow-card 단독으로 부드러운 입체감",
+        ]}
+        donts={[
+          "토스풍 box-shadow 중첩",
+          "카드 배경에 그라데이션/네온",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
@@ -138,6 +169,16 @@ export function CompInput() {
           tokens={["--color-border-default", "--radius-md", "--color-text-muted"]}
         />
       </ExampleCard>
+      <DoDont
+        dos={[
+          "Label과 항상 함께 — 접근 가능한 폼",
+          "비활성/에러 상태를 토큰으로 구분",
+        ]}
+        donts={[
+          "placeholder만으로 라벨 대체",
+          "에러를 자극적 원색 테두리로 강조",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
@@ -173,6 +214,16 @@ export function CompDialog() {
         </Dialog>
         <TokenChips tokens={["--color-surface", "--color-scrim", "--radius-lg"]} />
       </ExampleCard>
+      <DoDont
+        dos={[
+          "동반자 톤 카피 — “괜찮아요, 내일 다시 알려줄게요.”",
+          "되돌릴 수 있는 선택을 명확히",
+        ]}
+        donts={[
+          "죄책감/공포 카피 — “안 하면 망한다”",
+          "닫기 어려운 강제 모달로 압박",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
@@ -209,6 +260,16 @@ export function CompToast() {
         {/* 루트 레이아웃에 Toaster가 없으므로 쇼케이스 안에서 로컬 마운트 */}
         <Toaster position="bottom-right" />
       </ExampleCard>
+      <DoDont
+        dos={[
+          "성취/안내를 동반자 톤으로 — “기억HP가 채워졌어요.”",
+          "짧고 비차단(non-blocking) 피드백",
+        ]}
+        donts={[
+          "잦은 알림으로 압박 (회독 일정 외 reminder ❌)",
+          "공포/손실 자극 토스트",
+        ]}
+      />
     </ShowcaseSection>
   );
 }
