@@ -16,7 +16,7 @@ import Image from "next/image";
 import { BrandGallery } from "./brand-gallery";
 import { ShowcaseSection, ExampleCard, RuleTable } from "./showcase-kit";
 
-const MASCOT = "/mascot";
+const BRAND = "/brand";
 
 /** 화면 맥락 ↔ mood 매핑 — design-review §2-1 (결과=celebrate, 오답=comfort, loss=sleep). */
 const MOODS: {
@@ -52,8 +52,8 @@ export function BrandMascot() {
         <div className="flex flex-wrap items-center gap-5">
           <div className="rounded-[var(--radius-lg)] bg-[var(--color-mint-50)] p-3">
             <Image
-              src={`${MASCOT}/main-alpha.png`}
-              alt="순공이 — 기본 포즈"
+              src={`${BRAND}/soongong-main.png`}
+              alt="순공이 — 전신"
               width={120}
               height={120}
               className="h-28 w-28 object-contain"
@@ -61,18 +61,18 @@ export function BrandMascot() {
           </div>
           <div className="rounded-[var(--radius-lg)] bg-[var(--color-mint-50)] p-3">
             <Image
-              src={`${MASCOT}/repeat_normal-alpha.png`}
-              alt="순공이 — 회독 포즈"
+              src={`${BRAND}/soongong_icon_main.png`}
+              alt="순공이 — 아이콘 / 얼굴"
               width={120}
               height={120}
               className="h-28 w-28 object-contain"
             />
           </div>
           <p className="max-w-xs text-xs leading-relaxed text-[var(--color-text-muted)]">
-            현재 확보된 포즈는 기본·회독 2종. mood 변형은 자산 제작 후 채운다(마스코트 락 — 다른
+            정본 순공이(듀공) — 전신 + 아이콘. mood 변형은 자산 제작 후 채운다(마스코트 락 — 다른
             모티프로 교체 금지).
             <br />
-            <code className="font-mono text-[10px]">public/mascot/</code>
+            <code className="font-mono text-[10px]">public/brand/soongong-main.png · soongong_icon_main.png</code>
           </p>
         </div>
       </ExampleCard>
