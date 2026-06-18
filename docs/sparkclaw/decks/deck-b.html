@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>순공대장 — 에이전트 개발 형태 · SparkClaw 1기</title>
+<link rel="stylesheet" href="sparkclaw-theme.css">
+</head>
+<body>
+
+<!-- ============ #1 Cover ============ -->
+<section class="slide cover">
+  <div class="row" style="height:100%;gap:0;">
+    <div class="left">
+      <div class="logo-lockup">
+        <img src="../../../apps/web/public/brand/soongong_icon_main.png" alt="순공대장">
+        <span class="wm">순공대장</span>
+      </div>
+      <h1>비개발자 창업자 1명이 운용하는<br><span class="em-cta">통제된 AI 엔지니어링 조직</span>.</h1>
+      <p class="tag">“프롬프트 하나로 50개 에이전트 딸깍”이 아닙니다. 인간 게이트와 거버넌스가 박힌, AI wrapper의 <span class="em">반대편</span>.</p>
+      <p class="en">The opposite of an AI wrapper.</p>
+      <p class="meta">SparkClaw 1기 · 2026.06 · 1인 창업자 트랙<br>에이전트 개발 형태 소개</p>
+    </div>
+    <div class="right">
+      <img class="hero" src="../../../apps/web/public/mascot/main-alpha.png" alt="순공이">
+    </div>
+  </div>
+</section>
+
+<!-- ============ #2 핵심 명제 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">02</span> 핵심 명제</div>
+  <h1 class="title">AI를 <span class="strong">도구</span>가 아니라 <span class="em-cta">조직</span>으로.</h1>
+  <div class="body">
+    <div class="quote big">사람을 뽑았을 때와 <span class="em">동일한 조직 구조와 통제 장치</span>를, 에이전트 팀에 그대로 적용했습니다.</div>
+    <p class="lede">비개발자인 제가 코드를 직접 쓰지 않고도 시스템 일관성·아키텍처·품질·보안을 유지할 수 있는 이유입니다. SparkClaw가 찾는 “AI를 팀원으로 쓰는 창업자”의 가장 정직한 형태.</p>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>02 / 08</span></div>
+</section>
+
+<!-- ============ #3 듀얼 트랙 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">03</span> 듀얼 트랙</div>
+  <h1 class="title">에이전트가 에이전트를 만듭니다.</h1>
+  <div class="body">
+    <div class="row cols-2">
+      <div class="card pad-lg accent">
+        <div class="pill" style="background:var(--color-mint-700);color:var(--color-text-inverse);">만드는 에이전트</div>
+        <h2 class="card-title" style="margin-top:14px;font-size:23px;">Development Agents</h2>
+        <p class="card-body" style="font-size:17px;">제품을 만드는 가상 개발 스쿼드 — 설계·구현·리뷰·통합. Claude Code 기반.</p>
+        <p class="muted" style="font-size:14px;margin:10px 0 0;">▶ 이 문서가 설명하는 트랙</p>
+      </div>
+      <div class="card pad-lg">
+        <div class="pill">작동하는 에이전트</div>
+        <h2 class="card-title" style="margin-top:14px;font-size:23px;">16 Product Agents</h2>
+        <p class="card-body" style="font-size:17px;">제품 안에서 사용자에게 작동하는 16개 AI — OCR·분석·RAG·회독 스케줄링·게임 리텐션.</p>
+      </div>
+    </div>
+    <div class="quote">즉, <span class="em-cta">“AI 개발팀이 AI 제품 엔진을 만든다”</span>는 메타 구조입니다.</div>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>03 / 08</span></div>
+</section>
+
+<!-- ============ #4 Squad 구조 — 허브 앤 스포크 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">04</span> SQUAD 구조 · 허브 앤 스포크</div>
+  <h1 class="title sm">한 명의 창구, 분해해 위임하는 라우터, 통합 리뷰 게이트.</h1>
+  <div class="body" style="justify-content:flex-start;gap:14px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+      <div class="node-box you" style="min-width:200px;">Mike <div class="role">유일한 창구 · 최종 결정권자</div></div>
+      <div style="color:var(--color-mint-500);font-size:20px;font-weight:800;">↓</div>
+      <div class="node-box lead" style="min-width:260px;">Orchestration Lead <div class="role">PM · 라우터 · 스코프 가디언</div></div>
+      <div style="color:var(--color-mint-500);font-size:20px;font-weight:800;">↓ 병렬 위임</div>
+    </div>
+    <div class="row gap-sm" style="justify-content:center;">
+      <div class="node-box">Tech Lead<div class="role">통합 리뷰</div></div>
+      <div class="node-box">회독·망각<div class="role">엔진 리드</div></div>
+      <div class="node-box warn">문제생성·AI ⚠️<div class="role">MOAT 리드</div></div>
+      <div class="node-box">게임화<div class="role">리드</div></div>
+      <div class="node-box">UI·디자인<div class="role">리드</div></div>
+      <div class="node-box">플랫폼·인프라<div class="role">리드</div></div>
+    </div>
+    <p class="lede muted" style="text-align:center;font-size:16px;margin:4px 0 0;">저는 Orchestration Lead 1명에게만 지시·보고받습니다. 각 리드의 작업은 머지 전 <span class="em">Tech Lead 통합 리뷰</span>를 거칩니다.</p>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>04 / 08</span></div>
+</section>
+
+<!-- ============ #5 모델 티어링 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">05</span> 모델 티어링</div>
+  <h1 class="title">비용과 품질의 <span class="em-cta">의식적 분리</span>.</h1>
+  <div class="body">
+    <div class="row cols-2">
+      <div class="card pad-lg accent">
+        <div class="pill" style="background:var(--color-mint-700);color:var(--color-text-inverse);">상위 (Opus급)</div>
+        <h2 class="card-title" style="margin-top:14px;">판단 · 아키텍처 · 해자 · 리서치</h2>
+        <ul class="clean" style="margin-top:8px;">
+          <li>Orchestration · Tech Lead</li>
+          <li>문제생성·AI (MOAT)</li>
+          <li>출제 경향 리서치</li>
+        </ul>
+      </div>
+      <div class="card pad-lg">
+        <div class="pill">표준 (Sonnet급)</div>
+        <h2 class="card-title" style="margin-top:14px;">task 단위로 잠긴, 정의된 구현</h2>
+        <ul class="clean" style="margin-top:8px;">
+          <li>회독·망각 엔진</li>
+          <li>게임화 · UI</li>
+          <li>플랫폼·인프라</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote">판단이 필요한 자리에만 비싼 모델을. 어려운 구간만 상위 모델로 <span class="em">에스컬레이션</span>합니다.</div>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>05 / 08</span></div>
+</section>
+
+<!-- ============ #6 거버넌스 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">06</span> 거버넌스</div>
+  <h1 class="title">“에이전트 자가 보고 ≠ 통제.” 그래서 <span class="em-cta">구조</span>로 통제합니다.</h1>
+  <div class="body">
+    <div class="row gap-sm">
+      <div class="card grow"><div class="card-title" style="font-size:17px;">PR-only · 자동 머지 OFF</div><div class="card-body" style="font-size:14.5px;">머지는 창업자가 직접. 에이전트는 머지 권한 없음.</div></div>
+      <div class="card grow"><div class="card-title" style="font-size:17px;">물리 검증</div><div class="card-body" style="font-size:14.5px;">보고가 아니라 GitHub / git ls-remote로 직접 확인.</div></div>
+      <div class="card grow"><div class="card-title" style="font-size:17px;">CodeRabbit 강제 리뷰</div><div class="card-body" style="font-size:14.5px;">미해결 코멘트 있으면 승인 보류.</div></div>
+    </div>
+    <div class="row gap-sm">
+      <div class="card grow"><div class="card-title" style="font-size:17px;">CLAUDE.md 자동 로드</div><div class="card-body" style="font-size:14.5px;">잠긴 결정·폐기 정책을 모든 리드가 준수.</div></div>
+      <div class="card grow"><div class="card-title" style="font-size:17px;">계정 · git 분리</div><div class="card-body" style="font-size:14.5px;">git config 수정 금지 · 지정 SSH 경로로만 push.</div></div>
+    </div>
+    <div class="quote">에이전트는 시키지 않아도 “통과했습니다”라고 보고합니다 — 그래서 보고를 신뢰하지 않고, <span class="em-cta">구조로</span> 막습니다.</div>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>06 / 08</span></div>
+</section>
+
+<!-- ============ #7 인간 게이트 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">07</span> 인간 게이트</div>
+  <h1 class="title">비효율이 아니라 <span class="em-cta">설계</span>입니다.</h1>
+  <div class="body">
+    <table class="tbl">
+      <tr><th style="width:40%;">오직 창업자가 통과시키는 지점</th><th>이유</th></tr>
+      <tr><td class="k">되돌리기 어려운 작업 — 머지 · push · 삭제</td><td>한 번 나가면 되돌리기 어렵습니다.</td></tr>
+      <tr><td class="k">비용 발생 / 리드 간 충돌</td><td>자율 처리 금지, 창업자에게 상신.</td></tr>
+      <tr><td class="k">MOAT — 데이터 모델·베이지안 prior·변형 정책</td><td>회사의 진짜 해자 설계는 <span class="em">비위임</span>. 에이전트는 리서치·초안·구현만.</td></tr>
+    </table>
+    <div class="quote">되돌릴 수 있는 라우팅은 위임하고, 되돌릴 수 없는 결정은 <span class="em-cta">사람</span>이 잡습니다.</div>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>07 / 08</span></div>
+</section>
+
+<!-- ============ #8 증거 + Fit ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">08</span> 증거 · FIT</div>
+  <h1 class="title">말이 아니라, 공개 저장소에 <span class="em-cta">기록</span>으로.</h1>
+  <div class="body">
+    <div class="row gap-sm">
+      <div class="chip tint">P0 7일 계획 → 단일 세션 14커밋 압축 완주</div>
+      <div class="chip tint">Playwright E2E 통과</div>
+    </div>
+    <div class="row gap-sm">
+      <div class="chip tint">디자인 리뷰 89 / 100</div>
+      <div class="chip tint">아키텍처 감사 Critical 0건</div>
+      <div class="chip tint">디자인 토큰 린트 0 위반</div>
+    </div>
+    <div class="row gap-sm">
+      <div class="chip tint">Supabase 마이그레이션 21종 + Edge Function 8종</div>
+      <div class="chip tint">전 과정 PR 기록 (누가·무엇을·어떤 게이트)</div>
+    </div>
+    <div class="quote big">1인이지만, 규율 있는 팀입니다. 그 팀의 마지막 결정권자는 <span class="em-cta">사람</span>입니다.</div>
+    <p class="muted" style="font-size:14px;margin:0;">확장 설계 — 인간 CTO 합류 시 Tech Lead 좌석을 그대로 인수인계(임시 좌석 명시).</p>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>SparkClaw 2026 · 에이전트 개발 형태</span><span>08 / 08</span></div>
+</section>
+
+</body>
+</html>
