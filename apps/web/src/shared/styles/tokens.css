@@ -103,6 +103,13 @@
     --shadow-card: 0 2px 8px rgba(46, 125, 91, 0.06);
     --shadow-elevated: 0 8px 24px rgba(46, 125, 91, 0.10);
 
+    /* ---- 저니탭 뉴럴 맵 캔버스 전용 표면 (SOO-51) ----
+       글로우(불빛) 대비를 위한 어두운 표면. 캔버스 내부 surface 한정 —
+       flat-vector in-app UI 규칙과 분리(이슈 가드레일). §8 폐기 톤이 아니라
+       teal-green 브랜드(mint-900 #2E7D5B)에서 파생한 딥 틸. 캔버스 밖 어디서도 쓰지 말 것. */
+    --journey-canvas-bg-center: #1C5942; /* 깊은 틸 (중앙, 불빛 가장 밝은 영역) */
+    --journey-canvas-bg-edge: #0E3326;   /* 더 깊은 틸 (가장자리 vignette) */
+
     /* Motion */
     --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
     --duration-fast: 160ms;
