@@ -33,3 +33,30 @@ export const ocrParsedSchema = z.object({
 });
 
 export type OcrParsed = z.infer<typeof ocrParsedSchema>;
+
+// SOO-64: generate-problem 출력 스키마.
+// 주의: difficulty_level은 의도적으로 제외 — 난이도는 get_target_difficulty RPC 결과만 사용(자체산정 금지).
+// targets_wrong_reason은 입력 detected_wrong_reason 목록에서만 고르도록 프롬프트로 강제하고, 코드에서 교집합 재검증.
+export const generatedProblemSchema = z
+  .object({
+    question_format: z.enum(["multiple_choice", "short_answer"]),
+    stem: z.string().min(1).max(2000),
+    choices: z.array(z.string().max(500)).max(8).nullable(),
+    answer: z.string().min(1).max(1000),
+    explanation: z.string().min(1).max(3000),
+    targets_wrong_reason: z.array(z.string().max(100)).min(1),
+  })
+  .refine(
+    (d) => d.question_format !== "multiple_choice" || (d.choices != null && d.choices.length >= 2),
+    { message: "multiple_choice requires at least 2 choices", path: ["choices"] },
+  );
+
+export type GeneratedProblem = z.infer<typeof generatedProblemSchema>;
+
+// SOO-64: 정답↔해설 정합성 self-check 출력 스키마.
+export const selfCheckSchema = z.object({
+  consistent: z.boolean(),
+  reason: z.string().max(300),
+});
+
+export type SelfCheck = z.infer<typeof selfCheckSchema>;
