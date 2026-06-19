@@ -9,7 +9,7 @@
 
 - 16:9(1280×720px→960×540pt) · Pretendard · 한국어(영문 tagline 병기).
 - 디자인 SSoT = `apps/web/src/shared/styles/tokens.css`. 테마(`soongong-deck-theme.css`)는 그 토큰의 CSS 변수 복제 — 슬라이드 마크업은 raw hex 0건, 전부 `var(--*)` 참조.
-- deck 비주얼 = 승인 브랜드 자산만 사용: 히어로 `apps/web/public/brand/main_concepting_.png`(Deck A 표지), 로고 `apps/web/public/brand/soongong_icon_main.png`(Deck A 클로징·Deck B 표지·footer). **`mascot/main-alpha.png`(왕관 듀공 전신)은 Mike가 "안 쓰는 마스코트"로 지정 — deck에서 제거됨**(SOO-260619-06). 임의 마스코트·예전 캐릭터 생성 금지.
+- deck 비주얼 = 승인 자산만 사용: 히어로 `apps/web/public/brand/main_concepting_.png`(Deck A 표지), 로고 `apps/web/public/brand/soongong_icon_main.png`(footer·로고 락업), 반신 마스코트 `apps/web/public/mascot/main-half*.png`(표정 4종: 기본·cheer·comeon·good 누끼 — Deck B 표지=cheer, Deck A 클로징=기본). **`mascot/main-alpha.png`(왕관 듀공 전신)은 Mike가 "안 쓰는 마스코트"로 지정 — deck에서 제거·계속 금지**(SOO-260619-06). 임의 마스코트·예전 캐릭터 생성 금지.
 
 ## ⏳ 대기 중 (placeholder)
 
