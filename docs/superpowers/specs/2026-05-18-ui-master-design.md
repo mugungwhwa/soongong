@@ -326,6 +326,8 @@ mascot-v0.2/ 저장 전 확인:
 
 **1차 적용 (SOO-79, 2026-06-19 완료):** `sub-boy` / `sub-girl`(휴먼 보조, 3D 트랙) 흰 배경 rembg 누끼 → `apps/web/public/brand/sub-{boy,girl}-alpha.png`(1024² RGBA). 실측(`verify-alpha-normalization.py` PASS): **긴 변 89.8%**(높이 기준 ~90% 충족), 폭 ~37%는 인물 종횡비(≈1:2.4) 보존 결과(왜곡 방지), 패딩 좌우 ~31%·상하 ~5% 대칭, 4모서리 alpha=0, border 흰-잔재 0px.
 
+**2차 적용 (SOO-80, 2026-06-19 완료):** `main-half` 마스코트(순공이) 반신 표정 4종(`main-half` / `-cheer` / `-comeon` / `-good`, 3D 트랙) → `apps/web/public/mascot/main-half{,-cheer,-comeon,-good}-alpha.png`(1024² RGBA), 원본 RGB 동명 `.png` 보존(§4.6 마스코트 경로). 기본 3종은 rembg(u2net, alpha_matting) 흰배경 누끼. **`-good`(만세+✨ 포즈)은 alpha_matting이 하반신을 반투명 고스트로 매팅 실패** → 코너 flood-fill 화이트 키로 대체(내부 크림 배는 몸통에 둘러싸여 안전, 노란 ✨ 데코 보존). 4종 모두 `verify-alpha-normalization.py` PASS(긴 변 89.7~90.0%, 대칭 패딩, 4모서리 alpha=0). 마스코트 락(soongong-design 룰5) 충족 — 동일 순공이 신규 포즈, 신규 마스코트 도입 아님. 스타일가이드 brand-gallery 보드 9에 표정 4종 노출.
+
 ---
 
 ## §5. 컴포넌트 라이브러리 사용 가이드
