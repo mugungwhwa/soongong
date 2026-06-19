@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
-import { signOut } from "@/app/actions/auth";
 import {
   Home,
   LayoutDashboard,
@@ -11,7 +10,6 @@ import {
   BarChart3,
   BookOpen,
   ShieldCheck,
-  LogOut,
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
@@ -133,15 +131,6 @@ export function Sidebar() {
               </Link>
             );
           })}
-          <form action={signOut}>
-            <button
-              type="submit"
-              className="w-full flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 hover:bg-[var(--color-mint-50)] transition text-[var(--color-text-muted)] text-sm text-left"
-            >
-              <LogOut {...ICON_STYLE} color="var(--color-text-muted)" />
-              <span>로그아웃</span>
-            </button>
-          </form>
         </nav>
       </div>
     </aside>
