@@ -198,18 +198,18 @@ export function BrandGallery() {
         <Caption path="public/brand/soongong-main.png" />
       </GalleryBoard>
 
-      {/* 9. CHARACTER — sub-girl.png / sub-boy.png */}
+      {/* 9. CHARACTER — sub-girl-alpha.png / sub-boy-alpha.png (배경 투명, SOO-79) */}
       <GalleryBoard n={9} title="Character · 보조">
         <div className="mb-2 flex items-center gap-2">
           <TrackTag kind="3D" />
           <span className="text-xs text-[var(--color-text-default)]">
-            휴먼 보조 캐릭터 2종
+            휴먼 보조 캐릭터 2종 (배경 투명)
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { file: "sub-girl.png", label: "sub-girl" },
-            { file: "sub-boy.png", label: "sub-boy" },
+            { file: "sub-girl-alpha.png", label: "sub-girl" },
+            { file: "sub-boy-alpha.png", label: "sub-boy" },
           ].map((c) => (
             <div
               key={c.file}

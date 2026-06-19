@@ -1,6 +1,6 @@
 ---
 name: soongong-design
-description: Use when working on 순공대장 UI — building or editing a screen/component, touching design tokens, color, theming, the /styleguide surface, brand or mascot assets, or any styling in apps/web. Loads the locked design rules and where each value/spec actually lives. Triggers on tokens.css, hardcoded hex, dark mode, 듀공/마스코트, 회독마왕/Ocean regression.
+description: Use when working on 순공대장 UI — building or editing a screen/component, touching design tokens, color, theming, the /styleguide surface, brand or mascot assets, character/캐릭터 images needing 배경 투명화/누끼, or any styling in apps/web. Loads the locked design rules and where each value/spec actually lives. Triggers on tokens.css, hardcoded hex, dark mode, 듀공/마스코트, 캐릭터 누끼/투명화/배경 제거/흰배경 없이, 회독마왕/Ocean regression.
 ---
 
 # 순공대장 디자인 가이드 (규칙 + SSoT 위치)
@@ -22,6 +22,7 @@ description: Use when working on 순공대장 UI — building or editing a scree
 | **시각 surface** (토큰/컴포넌트 눈으로 확인) | `/styleguide` 라우트 — `apps/web/src/views/styleguide/` |
 | **`/styleguide` 고정 리뷰 URL·접근** | `docs/ops/styleguide-review-access.md` |
 | **잠긴 결정 / 폐기 정책** | `CLAUDE.md` §2(잠긴 결정), §8(회귀 금지) |
+| **캐릭터 배경 투명화(누끼) 상시 런북** | `docs/superpowers/specs/2026-05-18-ui-master-design.md` §4.13 (rembg 기본 · `public/brand/` 경로 · bbox 90% 정규화 · `-alpha` 네이밍 · QA 게이트). 마스코트 락(룰5)은 2차/보조 캐릭터에 미적용 |
 
 값이나 스펙을 옮겨 적고 싶으면 멈춰라. 옮기지 말고 위 경로를 가리켜라.
 
