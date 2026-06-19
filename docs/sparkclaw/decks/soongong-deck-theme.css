@@ -1,8 +1,8 @@
 /* ============================================================================
-   sparkclaw-theme.css — SparkClaw 제출 Deck 공용 테마 (Deck A · Deck B)
+   soongong-deck-theme.css — 순공대장 사업소개서/보조자료 Deck 공용 테마
    ----------------------------------------------------------------------------
    디자인 SSoT = apps/web/src/shared/styles/tokens.css (v2 teal/mint).
-   아래 CSS 변수는 그 토큰의 복제(빌드지침 §2 · 충돌 시 tokens.css 원본 우선).
+   아래 CSS 변수는 그 토큰의 복제(충돌 시 tokens.css 원본 우선).
    off-palette hex 0건 원칙: 슬라이드 마크업은 raw hex 금지, 반드시 var(--*) 참조.
    Light-only. 다크모드/다크네이비/Dark RPG/토스풍 중첩그림자 금지(폐기정책 §8).
    ============================================================================ */
@@ -314,3 +314,50 @@ ul.clean li::before {
 .node-box.you { background: var(--color-text-strong); color: var(--color-text-inverse); border-color: var(--color-text-strong); }
 .node-box.you .role { color: var(--color-mint-300); }
 .node-box.warn { border-color: var(--color-risk-high); }
+
+/* ============================== v2 — Placeholder (Mike/리서치 대기) ============================== */
+.ph {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-muted);
+  text-align: center; padding: 20px;
+}
+.ph .ph-ico { font-size: 26px; color: var(--color-mint-500); }
+.ph .ph-t { font-size: 15px; font-weight: 800; color: var(--color-text-default); }
+.ph .ph-s { font-size: 12.5px; color: var(--color-text-muted); }
+.ph.tall { aspect-ratio: 9 / 17; }          /* 모바일 화면 칸 */
+.ph.wide { aspect-ratio: 16 / 10; }         /* 웹/대시보드 화면 칸 */
+
+/* ============================== v2 — Platform feature grid ============================== */
+.feat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.feat {
+  background: var(--color-surface); border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md); box-shadow: var(--shadow-card);
+  padding: 16px 18px; display: flex; gap: 13px; align-items: flex-start;
+}
+.feat .fi {
+  flex: none; width: 36px; height: 36px; border-radius: var(--radius-md);
+  background: var(--color-mint-100); color: var(--color-mint-900);
+  display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800;
+}
+.feat .ft { font-size: 16px; font-weight: 800; color: var(--color-text-strong); margin: 0 0 3px; }
+.feat .fd { font-size: 13.5px; line-height: 1.45; color: var(--color-text-default); }
+
+/* ============================== v2 — Simple horizontal bar chart ============================== */
+.barchart { display: flex; flex-direction: column; gap: 16px; }
+.barrow { display: flex; align-items: center; gap: 14px; }
+.barrow .blabel { width: 190px; flex: none; font-size: 15px; font-weight: 700; color: var(--color-text-strong); }
+.barrow .btrack { flex: 1; height: 30px; background: var(--color-bg-sunken); border-radius: var(--radius-pill); overflow: hidden; position: relative; }
+.barrow .bfill { height: 100%; background: var(--color-mint-500); border-radius: var(--radius-pill); display: flex; align-items: center; }
+.barrow .bfill.strong { background: var(--color-mint-700); }
+.barrow .bval { font-size: 14px; font-weight: 800; color: var(--color-text-strong); white-space: nowrap; }
+
+/* ============================== v2 — Section divider label ============================== */
+.section-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 800; letter-spacing: 0.08em;
+  color: var(--color-mint-700); text-transform: uppercase;
+}
+.colspan-2 { grid-column: span 2; }
