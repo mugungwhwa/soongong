@@ -33,7 +33,7 @@
     <div class="quote big">사람을 뽑았을 때와 <span class="em">동일한 조직 구조와 통제 장치</span>를, AI 팀에 그대로 적용해 운용합니다.</div>
     <p class="lede">비개발자인 창업자가 코드를 직접 쓰지 않고도 시스템 일관성·아키텍처·품질·보안을 유지하는 이유입니다. “Claude로 코딩한다”가 아니라, <span class="em">역할·라우팅·리뷰·게이트가 있는 조직</span>으로 AI를 운용합니다.</p>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>02 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>02 / 09</span></div>
 </section>
 
 <!-- ============ #3 듀얼 트랙 ============ -->
@@ -56,15 +56,37 @@
     </div>
     <div class="quote">즉, <span class="em-cta">“AI 개발팀이 AI 제품 엔진을 만든다”</span>는 메타 구조입니다.</div>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>03 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>03 / 09</span></div>
 </section>
 
-<!-- ============ #4 Squad 구조 — 허브 앤 스포크 ============ -->
+<!-- ============ #4 Multica 오케스트레이션 레이어 ============ -->
 <section class="slide">
-  <div class="kicker"><span class="num">03</span> SQUAD 구조 · 허브 앤 스포크</div>
+  <div class="kicker"><span class="num">03</span> 오케스트레이션 · MULTICA</div>
+  <h1 class="title sm">에이전트 팀을 굴리는 레이어 — Multica.</h1>
+  <div class="body">
+    <div class="flow">
+      <div class="node">창업자<div class="sub">이슈 작성 (제품 언어)</div></div>
+      <div class="arrow">→</div>
+      <div class="node lead">Multica<div class="sub">squad·agent 라우팅</div></div>
+      <div class="arrow">→</div>
+      <div class="node">도메인 리드 에이전트<div class="sub">워크트리·구현</div></div>
+      <div class="arrow">→</div>
+      <div class="node">PR<div class="sub">결과는 이슈로 회수</div></div>
+    </div>
+    <div class="row cols-2">
+      <div class="card pad-lg"><div class="card-title">Multica가 하는 일</div><div class="card-body" style="font-size:15.5px;">이슈를 적합한 스쿼드/리드 에이전트에 배분하고, 에이전트가 저장소를 체크아웃해 작업한 뒤 PR과 이슈 코멘트로 결과를 돌려줍니다.</div></div>
+      <div class="card pad-lg accent"><div class="card-title">자기 증명</div><div class="card-body" style="font-size:15.5px;">이 문서(deck)도 Multica 이슈로 <span class="em">UI·디자인 리드 에이전트</span>에 배분되어, 디자인 시스템 검수를 거쳐 제작됐습니다.</div></div>
+    </div>
+  </div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>04 / 09</span></div>
+</section>
+
+<!-- ============ #5 Squad 구조 — 허브 앤 스포크 ============ -->
+<section class="slide">
+  <div class="kicker"><span class="num">04</span> SQUAD 구조 · 허브 앤 스포크</div>
   <h1 class="title sm">한 명의 창구, 분해해 위임하는 라우터, 통합 리뷰 게이트.</h1>
   <div class="body" style="justify-content:flex-start;gap:14px;">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:9px;">
       <div class="node-box you" style="min-width:200px;">창업자 <div class="role">유일한 창구 · 최종 결정권자</div></div>
       <div style="color:var(--color-mint-500);font-size:20px;font-weight:800;">↓</div>
       <div class="node-box lead" style="min-width:260px;">Orchestration Lead <div class="role">PM · 라우터 · 스코프 가디언</div></div>
@@ -80,12 +102,12 @@
     </div>
     <p class="lede muted" style="text-align:center;font-size:16px;margin:4px 0 0;">창업자는 Orchestration Lead 1명에게만 지시·보고받습니다. 각 리드의 작업은 머지 전 <span class="em">Tech Lead 통합 리뷰</span>를 거칩니다.</p>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>04 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>05 / 09</span></div>
 </section>
 
-<!-- ============ #5 모델 티어링 ============ -->
+<!-- ============ #6 모델 티어링 ============ -->
 <section class="slide">
-  <div class="kicker"><span class="num">04</span> 모델 티어링</div>
+  <div class="kicker"><span class="num">05</span> 모델 티어링</div>
   <h1 class="title">비용과 품질의 <span class="em-cta">의식적 분리</span>.</h1>
   <div class="body">
     <div class="row cols-2">
@@ -110,17 +132,17 @@
     </div>
     <div class="quote">판단이 필요한 자리에만 비싼 모델을. 어려운 구간만 상위 모델로 <span class="em">에스컬레이션</span>합니다.</div>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>05 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>06 / 09</span></div>
 </section>
 
-<!-- ============ #6 거버넌스 ============ -->
+<!-- ============ #7 거버넌스 ============ -->
 <section class="slide">
-  <div class="kicker"><span class="num">05</span> 거버넌스</div>
+  <div class="kicker"><span class="num">06</span> 거버넌스</div>
   <h1 class="title">“에이전트 자가 보고 ≠ 통제.” 그래서 <span class="em-cta">구조</span>로 통제합니다.</h1>
   <div class="body">
     <div class="row gap-sm">
       <div class="card grow"><div class="card-title" style="font-size:17px;">PR-only · 자동 머지 OFF</div><div class="card-body" style="font-size:14.5px;">머지는 창업자가 직접. 에이전트는 머지 권한 없음.</div></div>
-      <div class="card grow"><div class="card-title" style="font-size:17px;">물리 검증</div><div class="card-body" style="font-size:14.5px;">보고가 아니라 저장소 상태로 직접 확인.</div></div>
+      <div class="card grow"><div class="card-title" style="font-size:17px;">물리 검증</div><div class="card-body" style="font-size:14.5px;">보고가 아니라 저장소 상태(git)로 직접 확인.</div></div>
       <div class="card grow"><div class="card-title" style="font-size:17px;">강제 코드 리뷰</div><div class="card-body" style="font-size:14.5px;">미해결 코멘트 있으면 승인 보류.</div></div>
     </div>
     <div class="row gap-sm">
@@ -129,12 +151,12 @@
     </div>
     <div class="quote">에이전트는 시키지 않아도 “통과했습니다”라고 보고합니다 — 그래서 보고를 신뢰하지 않고, <span class="em-cta">구조로</span> 막습니다.</div>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>06 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>07 / 09</span></div>
 </section>
 
-<!-- ============ #7 인간 게이트 ============ -->
+<!-- ============ #8 인간 게이트 ============ -->
 <section class="slide">
-  <div class="kicker"><span class="num">06</span> 인간 게이트</div>
+  <div class="kicker"><span class="num">07</span> 인간 게이트</div>
   <h1 class="title">비효율이 아니라 <span class="em-cta">설계</span>입니다.</h1>
   <div class="body">
     <table class="tbl">
@@ -145,30 +167,24 @@
     </table>
     <div class="quote">되돌릴 수 있는 라우팅은 위임하고, 되돌릴 수 없는 결정은 <span class="em-cta">사람</span>이 잡습니다.</div>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>07 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>08 / 09</span></div>
 </section>
 
-<!-- ============ #8 증거 ============ -->
+<!-- ============ #9 증거 · git 실증 ============ -->
 <section class="slide">
-  <div class="kicker"><span class="num">07</span> 증거</div>
-  <h1 class="title">말이 아니라, 공개 저장소의 <span class="em-cta">기록</span>으로.</h1>
+  <div class="kicker"><span class="num">08</span> 증거 · GIT 실증</div>
+  <h1 class="title">말이 아니라, <span class="em-cta">git 기록</span>이 증명합니다.</h1>
   <div class="body">
-    <div class="row gap-sm">
-      <div class="chip tint">핵심 화면 데모 완주</div>
-      <div class="chip tint">E2E 테스트 통과</div>
-      <div class="chip tint">아키텍처 감사 Critical 0건</div>
-    </div>
-    <div class="row gap-sm">
-      <div class="chip tint">디자인 토큰 린트 0 위반</div>
-      <div class="chip tint">백엔드 마이그레이션 + Edge Function 배치</div>
-    </div>
-    <div class="row gap-sm">
-      <div class="chip tint">전 과정 PR 기록 — 누가·무엇을·어떤 게이트를 통과했는지 추적 가능</div>
+    <p class="lede">에이전트의 “했습니다”는 증거가 아닙니다. 누가·무엇을·언제 했는지는 <span class="strong">커밋·PR·머지 기록</span>에 물리적으로 남고, 창업자는 그 상태를 직접 확인합니다.</p>
+    <div class="feat-grid">
+      <div class="feat"><div class="fi">⎇</div><div><p class="ft">커밋 단위 추적</p><p class="fd">각 변경이 누구(어느 리드)의 작업인지 커밋으로.</p></div></div>
+      <div class="feat"><div class="fi">⇄</div><div><p class="ft">전 과정 PR 기록</p><p class="fd">어떤 게이트를 통과했는지 PR로 추적 가능.</p></div></div>
+      <div class="feat"><div class="fi">✓</div><div><p class="ft">머지 게이트</p><p class="fd">PR-only · 자동 머지 OFF · 머지는 사람.</p></div></div>
+      <div class="feat"><div class="fi">◷</div><div><p class="ft">물리 확인</p><p class="fd">자가 보고가 아니라 git 상태로 검증.</p></div></div>
     </div>
     <div class="quote big">1인이지만, 규율 있는 팀입니다. 그 팀의 마지막 결정권자는 <span class="em-cta">사람</span>입니다.</div>
-    <p class="muted" style="font-size:14px;margin:0;">확장 설계 — 인간 CTO 합류 시 Tech Lead 좌석을 그대로 인수인계(임시 좌석 명시).</p>
   </div>
-  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>08 / 08</span></div>
+  <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png">순공대장</span><span>개발 형태 (보조 자료)</span><span>09 / 09</span></div>
 </section>
 
 </body>
