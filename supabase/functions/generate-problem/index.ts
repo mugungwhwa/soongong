@@ -4,7 +4,7 @@
 import { generateObject, getModel, GEN_SYSTEM, SELF_CHECK_SYSTEM, DEFAULT_MODEL } from "../_shared/ai.ts";
 import { generatedProblemSchema, selfCheckSchema } from "../_shared/schemas.ts";
 import { getAdminClient } from "../_shared/supabase.ts";
-import { evaluateGenerationEligibility, intersectWrongReasons } from "./eligibility.ts";
+import { evaluateGenerationEligibility, intersectWrongReasons, meaningfulWrongReasons } from "./eligibility.ts";
 
 const PROMPT_VERSION = "gp-v1";
 const MAX_GEN_ATTEMPTS = 2; // self-check 실패 시 1회 재생성
@@ -91,7 +91,8 @@ Deno.serve(async (req: Request) => {
   }
 
   // 5) 생성 + self-check 루프 (정합 실패 시 1회 재생성)
-  const wrongReasons = plo.detected_wrong_reason as string[];
+  //    빈의미 토큰("없음"·"정답")은 제거 — 모델에 실제 약점만 정조준 대상으로 넘긴다.
+  const wrongReasons = meaningfulWrongReasons(plo.detected_wrong_reason as string[]);
   const modeGuide = MODE_GUIDE[target.mode] ?? MODE_GUIDE.maintain;
 
   let generated = null;
@@ -108,7 +109,9 @@ Deno.serve(async (req: Request) => {
         schema: generatedProblemSchema,
         system: [GEN_SYSTEM],
         toolDescription: "약점 정조준 변형 문항을 구조화된 형식으로 반환합니다.",
-        maxTokens: 2048,
+        // stem(≤2000)+choices+answer(≤1000)+explanation(≤3000) 전체가 잘리지 않도록 충분히 확보.
+        // 2048 은 긴 해설에서 JSON 이 truncate 돼 스키마 위반(explanation/targets undefined)을 유발했다.
+        maxTokens: 4096,
         messages: [{ role: "user", content: [{ type: "text", text: genPrompt }] }],
       });
       candidate = object;
