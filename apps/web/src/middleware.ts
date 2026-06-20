@@ -49,6 +49,7 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
   const isPublic =
+    pathname === "/" || // 브랜드 히어로(랜딩) — 비로그인 첫 진입 (SOO-73)
     pathname.startsWith("/login") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/_next") ||
