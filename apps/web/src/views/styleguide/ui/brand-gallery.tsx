@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import { Logo } from "@/shared/ui/logo";
+
 /**
  * 브랜드 자산 갤러리 — 보드 6~11. 정적(next/image), 토큰 비구동.
  * PNG 는 색이 baked 되어 슬라이더 영향을 받지 않는다(레퍼런스 표시 전용).
@@ -137,6 +139,41 @@ export function BrandGallery() {
           OFL) <span className="font-semibold">Mike 최종 선택 대기</span> — 전환은
           별도 티켓.
         </p>
+
+        {/* 확정 SVG 4종 (SOO-105) — Mike 제공·무손실 경량화본. <Logo> 단일 참조점.
+            light = 투명 배경 lockup / mint = 민트 라운드 배지(자체 배경 포함). */}
+        <div className="mt-5 mb-2 flex items-center gap-2">
+          <TrackTag kind="플랫" />
+          <span className="text-xs text-[var(--color-text-default)]">
+            확정 SVG 4종 (SOO-105) — KO/EN × light/mint, 단일 컴포넌트 슬롯인
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {(
+            [
+              { lang: "ko", variant: "light", bg: "var(--color-bg-elevated)" },
+              { lang: "en", variant: "light", bg: "var(--color-bg)" },
+              { lang: "ko", variant: "mint", bg: "var(--color-bg-sunken)" },
+              { lang: "en", variant: "mint", bg: "var(--color-bg-sunken)" },
+            ] as const
+          ).map((item) => (
+            <div
+              key={`${item.lang}-${item.variant}`}
+              className="flex flex-col items-center justify-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-border-default)] px-5 py-7"
+              style={{ background: item.bg }}
+            >
+              <Logo
+                lang={item.lang}
+                variant={item.variant}
+                className="h-16 max-w-[80%]"
+              />
+              <span className="text-[11px] text-[var(--color-text-muted)]">
+                {item.lang.toUpperCase()} · {item.variant}
+              </span>
+            </div>
+          ))}
+        </div>
+        <Caption path="public/brand/logo/soongong-logo-{ko|en}-{light|mint}.svg" />
       </GalleryBoard>
 
       {/* 7. APP ICON — icon.png 라운드 스퀘어 + 마스킹 미리보기 */}
