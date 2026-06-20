@@ -206,7 +206,13 @@
       <div class="card pad-lg"><div class="card-title">온톨로지 + 베이지안 prior</div><div class="card-body" style="font-size:15.5px;">강한 prior 덕분에 10문제·5분 진단으로 온보딩을 통과시킵니다. (약한 prior는 50문제·1시간 → 대량 이탈.)</div></div>
       <div class="card pad-lg"><div class="card-title">변환 표준화</div><div class="card-body" style="font-size:15.5px;">교재·필기·캡처가 달라도 같은 학습 객체 구조로 수렴. 맞춤 연동이 아니라 표준 파이프라인.</div></div>
     </div>
-    <p class="muted" style="font-size:14px;margin:0;">데이터 아키텍처 — Postgres(온톨로지 트루스) + 벡터 검색(학습 객체 임베딩).</p>
+    <p class="muted" style="font-size:13px;margin:2px 0 0;font-weight:700;color:var(--color-text-default);">기술 스택 — repo 실제 기반, 동작 데모가 이 위에서 돕니다</p>
+    <div class="flow" style="margin:0;">
+      <div class="node">Claude vision<div class="sub">자료 인식</div></div><div class="arrow">→</div>
+      <div class="node">Supabase · Edge Functions<div class="sub">파이프라인·백엔드</div></div><div class="arrow">→</div>
+      <div class="node">온톨로지 + 메모리 RAG<div class="sub">Postgres · pgvector</div></div><div class="arrow">→</div>
+      <div class="node lead">베이지안 추천<div class="sub">최적 복습문제</div></div>
+    </div>
   </div>
   <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png" alt="">순공대장</span><span>사업소개서</span><span>11 / 19</span></div>
 </section>
@@ -214,19 +220,24 @@
 <!-- ============ #12 해자 ============ -->
 <section class="slide">
   <div class="kicker"><span class="num">11</span> 해자 · MOAT</div>
-  <h1 class="title">진짜 해자 = <span class="em-cta">학생별 망각곡선 데이터</span>.</h1>
+  <h1 class="title">진짜 해자 = <span class="em-cta">학생 메모리가 만드는 복리 자산</span>.</h1>
   <div class="body">
     <div class="flow">
-      <div class="node">1주<div class="sub">단순 태그</div></div>
+      <div class="node">① 학생 메모리 RAG<div class="sub">오답·풀이패턴 누적</div></div>
       <div class="arrow">→</div>
-      <div class="node">1개월<div class="sub">실수·해석 패턴</div></div>
+      <div class="node">② 온톨로지<div class="sub">과목→단원→개념→유형→오답패턴</div></div>
       <div class="arrow">→</div>
-      <div class="node">3개월<div class="sub">풀이 사고 모델</div></div>
-      <div class="arrow">→</div>
-      <div class="node lead">6개월<div class="sub">유사 학생 선제 추천</div></div>
+      <div class="node lead">③ 베이지안 최적화<div class="sub">‘안 까먹을 확률 최대’ 문제 추천</div></div>
     </div>
-    <p class="lede" style="text-align:center;">알수록 정확해지고, 정확할수록 머무르고, 머물수록 데이터가 쌓이는 <span class="em">복리 플라이휠</span>.</p>
-    <div class="quote">이 레이어는 학원도 학생도 자체 구축할 대상이 아니며, <span class="em-cta">경쟁사가 사후에 따라잡기 가장 어려운 부분</span>입니다.</div>
+    <p class="lede" style="text-align:center;">데이터가 쌓일수록 그 학생을 더 정확히 압니다 — 학원도 학생도 자체 구축할 수 없는, <span class="em">경쟁사가 사후에 못 따라잡는 복리 자산</span>.</p>
+    <div class="flow">
+      <div class="node">메모리 RAG</div><div class="arrow">→</div>
+      <div class="node">베이지안 예측</div><div class="arrow">→</div>
+      <div class="node">최적 복습문제</div><div class="arrow">→</div>
+      <div class="node">리텐션 ↑</div><div class="arrow">↻</div>
+      <div class="node lead">RAG 더 풍부</div>
+    </div>
+    <p class="muted" style="font-size:13px;margin:0;text-align:center;">돌수록 강해지는 플라이휠 — 데이터→예측→문제→리텐션→다시 데이터.</p>
   </div>
   <div class="slide-footer"><span class="brand"><img src="../../../apps/web/public/brand/soongong_icon_main.png" alt="">순공대장</span><span>사업소개서</span><span>12 / 19</span></div>
 </section>
