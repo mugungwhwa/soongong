@@ -5,7 +5,7 @@ import { Card } from "@/shared/ui/card";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { XpCounter } from "./xp-counter";
 import { useGameState } from "@/entities/user-game-state";
-import { resultToMood } from "@/entities/game";
+import { resultToMood } from "@/entities/game/lib/mascot-mood";
 
 export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
   const s = useGameState();

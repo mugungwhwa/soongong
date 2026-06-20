@@ -7,7 +7,7 @@ import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { getConfettiColors } from "@/shared/lib/confetti-colors";
-import { resultToMood } from "@/entities/game";
+import { resultToMood } from "@/entities/game/lib/mascot-mood";
 
 type Props = {
   xpDelta: number;
