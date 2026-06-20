@@ -113,6 +113,49 @@ export async function stageRecognize(input: RecognizeInput): Promise<RecognizeOu
   return { objectId: data.object_id as string };
 }
 
+// ─── Stage 3b: Memorize ─────────────────────────────────────────────────────
+// PLO 생성 직후 student_memory_items 행을 UPSERT해 망각위험 추적 시작.
+// concept_key = "${subject}:${objectId}" — 과목+객체 단위로 유일.
+// 이미 존재하면 DO NOTHING (기존 mastery_score 보존).
+
+export async function stageMemorize(input: {
+  userId: string;
+  objectId: string;
+  subject: string;
+}): Promise<{ memoryId: string }> {
+  const supabase = createServiceClient();
+  const conceptKey = `${input.subject}:${input.objectId}`;
+
+  const { data, error } = await supabase
+    .from("student_memory_items")
+    .upsert(
+      {
+        user_id: input.userId,
+        object_id: input.objectId,
+        concept_key: conceptKey,
+        next_review_at: new Date(Date.now() + 86400_000).toISOString(),
+      },
+      { onConflict: "user_id,concept_key", ignoreDuplicates: true },
+    )
+    .select("memory_id")
+    .single();
+
+  if (error || !data) {
+    // 이미 존재(중복)하는 경우 기존 행 조회 후 반환
+    const { data: existing, error: fetchErr } = await supabase
+      .from("student_memory_items")
+      .select("memory_id")
+      .eq("user_id", input.userId)
+      .eq("concept_key", conceptKey)
+      .single();
+    if (fetchErr || !existing)
+      throw new Error(`[memorize] ${fetchErr?.message ?? "upsert failed"}`);
+    return { memoryId: existing.memory_id as string };
+  }
+
+  return { memoryId: data.memory_id as string };
+}
+
 // ─── Stage 4: Card ──────────────────────────────────────────────────────────
 // type_pattern_cards 에서 과목 일치 카드 1건 조회.
 // 데이터 미존재 시 fallback { typeId: null, typeName: "general" } 반환.
@@ -204,6 +247,7 @@ async function emitVariantQuest(
     .insert({
       user_id: input.userId,
       object_id: variantObj.object_id as string,
+      memory_id: input.memoryId ?? null,
       due_date: dueDateStr,
       quest_format: meta.quest_format,
       quest_mode: "today",
@@ -253,6 +297,7 @@ export async function stageGenerate(input: GenerateInput): Promise<GenerateOutpu
     .insert({
       user_id: input.userId,
       object_id: input.objectId,
+      memory_id: input.memoryId ?? null,
       due_date: dueDateStr,
       quest_format: "original",
       quest_mode: "today",
@@ -271,11 +316,12 @@ export async function stageGenerate(input: GenerateInput): Promise<GenerateOutpu
 // ─── Full Pipeline Orchestrator ──────────────────────────────────────────────
 
 export async function runIntakePipeline(input: PipelineInput): Promise<PipelineOutput> {
-  const submit     = await stageSubmit({ userId: input.userId, rawText: input.rawText, sourceType: input.sourceType });
-  const route      = await stageRoute({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, sourceType: input.sourceType });
-  const recognize  = await stageRecognize({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, subject: route.finalSubject });
-  const card       = await stageCard({ subject: route.finalSubject });
-  const generate   = await stageGenerate({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject, typeId: card.typeId, typeName: card.typeName, variationLevel: input.variationLevel });
+  const submit    = await stageSubmit({ userId: input.userId, rawText: input.rawText, sourceType: input.sourceType });
+  const route     = await stageRoute({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, sourceType: input.sourceType });
+  const recognize = await stageRecognize({ userId: input.userId, sourceId: submit.sourceId, rawText: input.rawText, subject: route.finalSubject });
+  const memorize  = await stageMemorize({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject });
+  const card      = await stageCard({ subject: route.finalSubject });
+  const generate  = await stageGenerate({ userId: input.userId, objectId: recognize.objectId, subject: route.finalSubject, typeId: card.typeId, typeName: card.typeName, memoryId: memorize.memoryId, variationLevel: input.variationLevel });
 
   return {
     sourceId:     submit.sourceId,
@@ -283,6 +329,7 @@ export async function runIntakePipeline(input: PipelineInput): Promise<PipelineO
     routingId:    route.routingId,
     finalSubject: route.finalSubject,
     typeId:       card.typeId,
+    memoryId:     memorize.memoryId,
     questId:      generate.questId,
   };
 }
