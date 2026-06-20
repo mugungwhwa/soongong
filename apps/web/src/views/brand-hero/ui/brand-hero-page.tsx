@@ -103,7 +103,7 @@ export function BrandHeroPage() {
             문제사진과 오답을 AI가 매일 회독 퀘스트로 바꿔주는
             <span className="font-semibold text-[var(--color-text-strong)]">
               {" "}
-              듀오링고형 수능 학습 앱
+              듀오링고의 다음 진화, 수능 회독 학습 앱
             </span>
             .
           </p>
