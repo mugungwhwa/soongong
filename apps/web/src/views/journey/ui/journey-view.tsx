@@ -542,7 +542,7 @@ export function JourneyView() {
                   lineHeight: 1.2,
                 }}
               >
-                순공 여정
+                순공냅스
               </p>
               <p
                 style={{

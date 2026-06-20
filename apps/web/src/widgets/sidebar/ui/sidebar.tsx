@@ -34,7 +34,7 @@ const MAIN_ITEMS: NavItem[] = [
   { href: ROUTES.calendar, label: "회독 캘린더", Icon: Calendar },
   { href: ROUTES.wrongNotes, label: "오답노트", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
-  { href: ROUTES.journey, label: "망각 지도", Icon: Brain },
+  { href: ROUTES.journey, label: "순공냅스", Icon: Brain },
   { href: ROUTES.diary, label: "순공일지", Icon: BookOpen },
 ];
 

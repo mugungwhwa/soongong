@@ -21,7 +21,7 @@
 | 항목 | 값 | SSoT |
 |---|---|---|
 | 마스코트 | "순공이" (가안, **듀공** 모티프) | UI 설계.md §6 |
-| UI 라벨 | "회독퀘스트" / 백서 = "회독" | 핵심요약.md |
+| UI 라벨 | "회독퀘스트" / 백서 = "회독" / 저니탭(뉴럴 망각맵, /journey) = "순공냅스" | 핵심요약.md |
 | 톤 | Light Study Garden — **바다(Ocean) 컨셉** | UI 설계.md §1 |
 | 컬러 | 크림 `#F8FBF7` + **v2 Teal/Mint** `#A8DCCB`/`#7BC4AE`/`#4CAF88` + 위험도(소프트). 구 오션 폐기 | docs/design-system/2026-06-09-design-system-lock.md (v2.0, SOO-260616-01) |
 | 시안 | `app_UI.png` / `web_ui.png` | repo root |
