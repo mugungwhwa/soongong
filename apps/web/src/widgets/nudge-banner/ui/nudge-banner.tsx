@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
-import { useNudgeTrigger } from "@/entities/memory";
+import { useNudgeContext } from "@/shared/lib/nudge-context";
 import { ROUTES } from "@/shared/config/routes";
 
 /** 망각위험/복습 due 조건 충족 시 순공이 nudge 배너를 노출한다. 조건 미충족·로딩 중에는 null. */
 export function NudgeBanner() {
-  const { active, reason, count, loading } = useNudgeTrigger();
+  const { active, reason, count, loading } = useNudgeContext();
   if (loading || !active) return null;
 
   return (

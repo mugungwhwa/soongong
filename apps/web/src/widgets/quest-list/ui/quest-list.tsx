@@ -1,12 +1,12 @@
 "use client";
 import { useTodayQuests } from "@/entities/quest";
-import { useNudgeTrigger } from "@/entities/memory";
+import { useNudgeContext } from "@/shared/lib/nudge-context";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { QuestCard } from "./quest-card";
 
 export function QuestList() {
   const { quests, loading, error } = useTodayQuests();
-  const { active: nudgeActive, reason: nudgeReason, count: nudgeCount } = useNudgeTrigger();
+  const { active: nudgeActive, reason: nudgeReason, count: nudgeCount } = useNudgeContext();
 
   if (loading) {
     return (

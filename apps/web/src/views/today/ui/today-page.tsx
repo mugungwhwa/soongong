@@ -6,7 +6,7 @@ import { QuestList } from "@/widgets/quest-list";
 import { ReviewMap } from "@/widgets/review-map";
 import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
-import { NudgeBanner, NotificationBell } from "@/widgets/nudge-banner";
+import { NudgeBanner, NotificationBell, NudgeProvider } from "@/widgets/nudge-banner";
 import { IntakeHero } from "@/features/upload-source";
 import { PartyPopper } from "lucide-react";
 
@@ -40,50 +40,53 @@ export function TodayPage({
         </div>
       )}
 
-      {/* 1. 상단 상태 밴드 — 진도·등급·뇌(기억HP)·불(스트릭)을 한눈에 (SOO-81, Mike 구조 지시 2026-06-20) */}
-      <section aria-label="내 상태" className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-lg font-bold text-[var(--color-text-strong)] lg:text-xl">
-              {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
-            </h1>
-            <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
-              {isFirstEntry
-                ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
-                : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
-            </p>
+      {/* NudgeProvider: useNudgeTrigger를 1회만 실행 — NudgeBanner/NotificationBell/QuestList가 context로 소비 */}
+      <NudgeProvider>
+        {/* 1. 상단 상태 밴드 — 진도·등급·뇌(기억HP)·불(스트릭)을 한눈에 (SOO-81, Mike 구조 지시 2026-06-20) */}
+        <section aria-label="내 상태" className="space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-lg font-bold text-[var(--color-text-strong)] lg:text-xl">
+                {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
+              </h1>
+              <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
+                {isFirstEntry
+                  ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
+                  : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
+              </p>
+            </div>
+            <NotificationBell />
           </div>
-          <NotificationBell />
+          <NudgeBanner />
+          <TierJourneyHero />
+          <StatsGrid />
+        </section>
+
+        {/* 2. 중앙 대형 인테이크 히어로 — 핵심 행동(문제 사진 흡수) 승격 */}
+        <IntakeHero />
+
+        {/* 3. 보조 바로가기 */}
+        <FeatureGrid />
+
+        {/* 4. 하단 — 오늘의 회독 / 회독맵 / 약점 */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px] lg:gap-6">
+          <div className="min-w-0 space-y-4 lg:space-y-6">
+            <section id="today-quests" className="space-y-3 scroll-mt-6">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+                오늘의 회독 캠프
+              </h2>
+              <QuestList />
+            </section>
+
+            <ReviewMap />
+          </div>
+
+          <aside className="space-y-4">
+            <SubjectProgress />
+            <ForgettingTop3 />
+          </aside>
         </div>
-        <NudgeBanner />
-        <TierJourneyHero />
-        <StatsGrid />
-      </section>
-
-      {/* 2. 중앙 대형 인테이크 히어로 — 핵심 행동(문제 사진 흡수) 승격 */}
-      <IntakeHero />
-
-      {/* 3. 보조 바로가기 */}
-      <FeatureGrid />
-
-      {/* 4. 하단 — 오늘의 회독 / 회독맵 / 약점 */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px] lg:gap-6">
-        <div className="min-w-0 space-y-4 lg:space-y-6">
-          <section id="today-quests" className="space-y-3 scroll-mt-6">
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-              오늘의 회독 캠프
-            </h2>
-            <QuestList />
-          </section>
-
-          <ReviewMap />
-        </div>
-
-        <aside className="space-y-4">
-          <SubjectProgress />
-          <ForgettingTop3 />
-        </aside>
-      </div>
+      </NudgeProvider>
     </div>
   );
 }

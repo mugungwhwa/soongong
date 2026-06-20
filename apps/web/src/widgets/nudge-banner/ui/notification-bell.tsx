@@ -1,10 +1,10 @@
 "use client";
 import { Bell } from "lucide-react";
-import { useNudgeTrigger } from "@/entities/memory";
+import { useNudgeContext } from "@/shared/lib/nudge-context";
 
 /** 망각위험/복습 due 조건 충족 시 빨간 도트를 표시하는 알림 벨. */
 export function NotificationBell() {
-  const { active } = useNudgeTrigger();
+  const { active } = useNudgeContext();
 
   return (
     <button
