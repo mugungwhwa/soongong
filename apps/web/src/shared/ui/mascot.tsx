@@ -23,7 +23,7 @@ export type MascotMood =
 // 구 mood → 신 표정 mood. 자산이 있는 표정으로 의미 보존 매핑.
 // celebrate/축하 → praise(칭찬), comfort/위로(오답+loss 통합) → down(시무룩, 자산 도착 전 idle 폴백),
 // think·sleep/휴식 → idle(차분 기본), surprise → cheer(긍정 환기).
-const MOOD_MAP: Record<MascotMood, MascotMoodReaction> = {
+const moodMap: Record<MascotMood, MascotMoodReaction> = {
   cheer: "cheer",
   celebrate: "praise",
   think: "idle",
@@ -42,6 +42,6 @@ export function Mascot({
   className?: string;
 }) {
   return (
-    <MascotReaction mood={MOOD_MAP[mood]} size={size} className={className} />
+    <MascotReaction mood={moodMap[mood]} size={size} className={className} />
   );
 }

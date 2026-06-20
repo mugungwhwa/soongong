@@ -8,21 +8,21 @@ import { cn } from "@/shared/lib/cn";
  * 자산 정본·라벨은 스타일가이드 board 9(`/styleguide`)에서 시각 확인.
  *
  * - `down`(시무룩)은 Mike 제작 예정 자산이라 현재 미존재 → idle 폴백 + 1회 경고.
- *   자산 도착 시 아래 MOOD_ASSET.down 경로만 채우면 전 화면 자동 전환(호출처 무수정).
+ *   자산 도착 시 아래 moodAsset.down 경로만 채우면 전 화면 자동 전환(호출처 무수정).
  * - 게임 이벤트(스트릭/XP/기억HP)·망각위험 → mood 방출 트리거는 Phase 2b 후속
  *   (게임화 리드 / 회독·망각 리드). 본 컴포넌트는 "검증 측" 렌더만 담당.
  */
 export type MascotMoodReaction = "idle" | "cheer" | "nudge" | "praise" | "down";
 
-const SIZE = { sm: 32, md: 48, lg: 72, xl: 120 } as const;
+const sizeMap = { sm: 32, md: 48, lg: 72, xl: 120 } as const;
 
-const MASCOT_DIR = "/mascot";
+const mascotDir = "/mascot";
 
 /**
  * mood → 자산 파일명. `null` = 자산 미존재(→ idle 폴백).
  * 자산이 들어오면 파일명을 채우는 것만으로 자동 전환된다(두 번째 SSoT 금지: 경로는 여기 한 곳).
  */
-const MOOD_ASSET: Record<MascotMoodReaction, string | null> = {
+const moodAsset: Record<MascotMoodReaction, string | null> = {
   idle: "main-half-alpha.png", // 기본
   cheer: "main-half-cheer-alpha.png", // 응원
   nudge: "main-half-comeon-alpha.png", // 이리와(조름) — 망각위험·복습 due
@@ -30,7 +30,7 @@ const MOOD_ASSET: Record<MascotMoodReaction, string | null> = {
   down: null, // 시무룩(오답+loss 통합) — Mike 제작 예정. 도착 전 idle 폴백.
 };
 
-const MOOD_LABEL: Record<MascotMoodReaction, string> = {
+const moodLabel: Record<MascotMoodReaction, string> = {
   idle: "기본",
   cheer: "응원",
   nudge: "이리와",
@@ -49,14 +49,14 @@ export function MascotReaction({
   priority,
 }: {
   mood?: MascotMoodReaction;
-  size?: keyof typeof SIZE;
+  size?: keyof typeof sizeMap;
   /** 노출 맥락(접근성 라벨 + 폴백 경고에 표기). 예: "3일 미회독". */
   reason?: string;
   className?: string;
   priority?: boolean;
 }) {
-  const px = SIZE[size];
-  const asset = MOOD_ASSET[mood];
+  const px = sizeMap[size];
+  const asset = moodAsset[mood];
   // 자산이 없으면 idle 폴백(자산 도착 시 자동 전환).
   const resolvedMood: MascotMoodReaction = asset ? mood : "idle";
 
@@ -69,16 +69,16 @@ export function MascotReaction({
     // eslint-disable-next-line no-console
     console.warn(
       `[MascotReaction] mood="${mood}"${reason ? ` (${reason})` : ""} 자산 미존재 — idle 폴백. ` +
-        `public${MASCOT_DIR}/ 에 자산 추가 후 MOOD_ASSET.${mood} 채우면 자동 전환.`,
+        `public${mascotDir}/ 에 자산 추가 후 moodAsset.${mood} 채우면 자동 전환.`,
     );
   }
 
-  const file = MOOD_ASSET[resolvedMood]!;
-  const label = `순공이 ${MOOD_LABEL[resolvedMood]}${reason ? ` — ${reason}` : ""}`;
+  const file = moodAsset[resolvedMood]!;
+  const label = `순공이 ${moodLabel[resolvedMood]}${reason ? ` — ${reason}` : ""}`;
 
   return (
     <Image
-      src={`${MASCOT_DIR}/${file}`}
+      src={`${mascotDir}/${file}`}
       alt={label}
       width={px}
       height={px}
