@@ -3,7 +3,6 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
-import { Mascot } from "@/shared/ui/mascot";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { PadCanvas, type PadCanvasHandle } from "@/widgets/pad-canvas";
 import { AnswerForm, useQuestPlay, persistPlaySubmission } from "@/features/quest-play";
@@ -104,7 +103,7 @@ export function PlayPage({ questId }: { questId: string }) {
 
       {play.state === "submitted-correct" && (
         <Card className="p-6 text-center space-y-4 shadow-[var(--shadow-elevated)]">
-          <Mascot mood="celebrate" size="xl" className="mx-auto" />
+          <MascotReaction mood="praise" size="xl" reason="정답! 회독 완료" className="mx-auto" />
           <div className="text-xl font-bold text-[var(--color-mint-700)]">
             정답! +{quest.rewardXp} XP
           </div>
@@ -127,7 +126,7 @@ export function PlayPage({ questId }: { questId: string }) {
 
       {play.state === "submitted-wrong" && (
         <Card className="p-6 text-center space-y-4 shadow-[var(--shadow-elevated)]">
-          <Mascot mood="comfort" size="xl" className="mx-auto" />
+          <MascotReaction mood="down" size="xl" reason="오답" className="mx-auto" />
           <div className="text-lg font-semibold text-[var(--color-text-strong)]">
             아쉬워요. 오답회수로 회복할까요?
           </div>

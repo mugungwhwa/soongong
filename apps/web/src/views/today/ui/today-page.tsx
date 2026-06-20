@@ -1,4 +1,4 @@
-import { Mascot } from "@/shared/ui/mascot";
+import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { TierJourneyHero } from "@/widgets/tier-journey-hero";
 import { FeatureGrid } from "@/widgets/feature-grid";
 import { StatsGrid } from "@/widgets/stats-grid";
@@ -20,7 +20,7 @@ export function TodayPage({
     <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-6">
       {isFirstEntry && (
         <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
-          <Mascot mood="celebrate" size="md" />
+          <MascotReaction mood="praise" size="md" reason="첫 회독 준비" />
           <div className="min-w-0 flex-1">
             <p className="flex items-center gap-2 font-bold text-[var(--color-mint-700)]">
               회독 퀘스트가 준비됐어요!

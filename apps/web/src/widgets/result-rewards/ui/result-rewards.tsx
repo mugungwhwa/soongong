@@ -2,12 +2,14 @@
 import { motion } from "framer-motion";
 import { Trophy, Flame, Heart } from "lucide-react";
 import { Card } from "@/shared/ui/card";
-import { Mascot } from "@/shared/ui/mascot";
+import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { XpCounter } from "./xp-counter";
 import { useGameState } from "@/entities/user-game-state";
+import { resultToMood } from "@/entities/game/lib/mascot-mood";
 
 export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
   const s = useGameState();
+  const { mood, reason } = resultToMood(true, s.streakDays);
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -20,7 +22,7 @@ export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring" }}
         >
-          <Mascot mood="celebrate" size="xl" className="mx-auto" />
+          <MascotReaction mood={mood} size="xl" reason={reason} className="mx-auto" />
         </motion.div>
         <div>
           <div className="text-3xl font-bold text-[var(--color-text-on-warm)] inline-block bg-[var(--color-xp)] px-4 py-1 rounded-[var(--radius-pill)]">
