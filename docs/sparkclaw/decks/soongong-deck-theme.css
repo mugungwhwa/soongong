@@ -380,3 +380,21 @@ ul.clean li::before {
 /* 본문 단락 가독성 */
 .lede { letter-spacing: -0.005em; }
 .title { letter-spacing: -0.015em; }
+
+/* ============================== v3 — 2x2 Positioning Map (Deck A 시장 D) ============================== */
+.posmap { max-width: 940px; margin: 0 auto; width: 100%; }
+.posmap .pm-ytop, .posmap .pm-ybot { text-align: center; font-size: 12.5px; font-weight: 800; color: var(--color-text-default); }
+.posmap .pm-ytop { margin: 0 0 6px; }
+.posmap .pm-ybot { margin: 6px 0 0; }
+.posmap .grid2 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; height: 262px; }
+.posmap .pm-xrow { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12.5px; font-weight: 800; color: var(--color-text-default); }
+.pm-quad { border: 1.5px dashed var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-bg-sunken); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.pm-quad .pm-qh { font-size: 11.5px; font-weight: 800; color: var(--color-text-muted); letter-spacing: 0.01em; }
+.pm-quad.win { border: 2px solid var(--color-mint-700); background: var(--color-mint-100); }
+.pm-quad.win .pm-qh { color: var(--color-mint-900); }
+.pm-quad .pm-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.pm-chip { background: var(--color-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-pill); padding: 5px 11px; font-size: 12.5px; font-weight: 700; color: var(--color-text-strong); box-shadow: var(--shadow-card); }
+.pm-chip .pm-cn { font-size: 10.5px; font-weight: 600; color: var(--color-text-muted); margin-left: 5px; }
+.pm-win-name { font-size: 22px; font-weight: 800; color: var(--color-mint-900); }
+.pm-win-sub { font-size: 13px; line-height: 1.4; color: var(--color-text-default); }
+.pm-empty { font-size: 12px; color: var(--color-text-muted); margin: auto; text-align: center; }
