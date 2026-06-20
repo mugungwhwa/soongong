@@ -324,6 +324,13 @@ mascot-v0.2/ 저장 전 확인:
 
 **마스코트 락 경계 (중요):** 2차/보조 캐릭터(예: `sub-boy`/`sub-girl`, 휴먼 보조)는 §4.2 잠긴 결정 11(듀공 모티프 등)을 **적용받지 않는다** — 이들은 마스코트가 아니다. 누끼·해상도·정규화·톤만 상속한다. 마스코트 교체/추가는 여전히 금지(soongong-design 룰5).
 
+**사용 범위 가드레일 (SOO-88, Mike 결정 2026-06-20 — 잠금):** `sub-boy`/`sub-girl`은 **보조 브랜드 자산**이다(마스코트 아님). 순공이가 유일 마스코트이고 sub는 그 아래 보조 브랜드 레이어다.
+- **용도** = ① 프로필(브랜드 페르소나) + ② 서브 브랜드 이미지. *(주의: "프로필"의 정확한 의미 — 랜딩의 캐릭터 소개(브랜드 페르소나) vs 인앱 유저 아바타 — 는 Mike 확정 대기 중. 인앱 아바타로 해석되면 아래 "금지 범위"와 충돌하므로, 확정 전까지 인앱 적용 금지가 우선한다.)*
+- **허용 범위** = **히어로 / 마케팅 / 랜딩 화면에만.**
+- **금지 범위** = 인앱 학습 루프 전체(회독·게임화·대시보드·오답던전·결과·저니·플레이 등). sub-* 자산을 인앱 화면에 투입하면 위반이다.
+- **현황(SOO-88 점검)** = 랜딩/마케팅/히어로 화면은 아직 미구현. 현재 sub-* 노출처는 `/styleguide` brand-gallery 보드 10(브랜드 카탈로그)뿐 — 인앱 사용처 0건. 랜딩/마케팅 surface 생성 시 그곳에 배치한다(현 시점 별도 배치 작업 불필요).
+- **자동 가드** = `pnpm lint:sub-scope`(`apps/web/scripts/check-sub-brand-scope.ts`). 허용 surface(`views/styleguide`·`views/landing`·`views/marketing`) 밖에서 `sub-(boy|girl)` 참조 시 fail. 새 마케팅/랜딩 surface 추가 시 스크립트 ALLOWLIST에 경로를 명시 추가한다(인앱 화면은 추가 금지 — 요청 시 Mike 확인).
+
 **1차 적용 (SOO-79, 2026-06-19 완료):** `sub-boy` / `sub-girl`(휴먼 보조, 3D 트랙) 흰 배경 rembg 누끼 → `apps/web/public/brand/sub-{boy,girl}-alpha.png`(1024² RGBA). 실측(`verify-alpha-normalization.py` PASS): **긴 변 89.8%**(높이 기준 ~90% 충족), 폭 ~37%는 인물 종횡비(≈1:2.4) 보존 결과(왜곡 방지), 패딩 좌우 ~31%·상하 ~5% 대칭, 4모서리 alpha=0, border 흰-잔재 0px.
 
 **2차 적용 (SOO-80, 2026-06-19 완료):** `main-half` 마스코트(순공이) 반신 표정 4종(`main-half` / `-cheer` / `-comeon` / `-good`, 3D 트랙) → `apps/web/public/mascot/main-half{,-cheer,-comeon,-good}-alpha.png`(1024² RGBA), 원본 RGB 동명 `.png` 보존(§4.6 마스코트 경로). 기본 3종은 rembg(u2net, alpha_matting) 흰배경 누끼. **`-good`(만세+✨ 포즈)은 alpha_matting이 하반신을 반투명 고스트로 매팅 실패** → 코너 flood-fill 화이트 키로 대체(내부 크림 배는 몸통에 둘러싸여 안전, 노란 ✨ 데코 보존). 4종 모두 `verify-alpha-normalization.py` PASS(긴 변 89.7~90.0%, 대칭 패딩, 4모서리 alpha=0). 마스코트 락(soongong-design 룰5) 충족 — 동일 순공이 신규 포즈, 신규 마스코트 도입 아님. 스타일가이드 brand-gallery 보드 9에 표정 4종 노출.

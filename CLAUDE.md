@@ -109,6 +109,7 @@
 | P6 E2E 7개 시나리오 | 모두 통과 | qa-tester 재실행 |
 | tldraw 라이선스 | 상용 시 trial → commercial | Konva로 교체 (1-2일 spike) |
 | 디자인 토큰 lint | `pnpm lint:tokens` 통과 | 등록 외 hex 차단 (`scripts/check-tokens.ts`) |
+| sub-* 브랜드 스코프 | `pnpm lint:sub-scope` 통과 | sub-boy/girl 인앱 사용 차단 — 히어로/마케팅/랜딩 전용 (`scripts/check-sub-brand-scope.ts`, SOO-88) |
 
 ## 5. 핵심 문서 경로
 
