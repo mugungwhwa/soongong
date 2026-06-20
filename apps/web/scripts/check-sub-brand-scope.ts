@@ -24,7 +24,8 @@ import { join, extname, resolve, sep } from "node:path";
 // ─────────────────────────────────────────────────────────────
 
 const SRC_ROOT = resolve("src");
-const SUB_RE = /sub-(?:boy|girl)/g;
+// case-insensitive: Sub-Boy / SUB-GIRL 등 대소문자 우회 차단 (CodeRabbit PR#93)
+const SUB_RE = /sub-(?:boy|girl)/gi;
 
 // 허용 surface — SRC_ROOT 기준 상대 경로 prefix
 const ALLOWLIST = [
