@@ -514,7 +514,9 @@ function renderQuests(){
       <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
       <div class="body"><div class="ttl">${q.t}</div><div class="sub">${q.sub}</div></div>
       <div class="rt"><span class="pill ${q.risk}">${RISK_LABEL[q.risk]}</span><span class="dday">${q.dday}</span></div>`;
+    el.setAttribute('role','button'); el.setAttribute('tabindex','0');
     el.addEventListener('click', ()=>toggleQuest(q, el));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleQuest(q,el);}});
     qlist.appendChild(el);
   });
 }
