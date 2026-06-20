@@ -32,7 +32,7 @@ export function Mascot({
       aria-label={`순공이 ${mood}`}
     >
       <Image
-        src="/mascot/main.png"
+        src="/brand/soongong-main.png"
         alt=""
         width={px}
         height={px}
