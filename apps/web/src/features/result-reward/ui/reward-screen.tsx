@@ -5,8 +5,9 @@ import confetti from "canvas-confetti";
 import { PartyPopper, Flame, Heart } from "lucide-react";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
-import { Mascot } from "@/shared/ui/mascot";
+import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { getConfettiColors } from "@/shared/lib/confetti-colors";
+import { resultToMood } from "@/entities/game";
 
 type Props = {
   xpDelta: number;
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function RewardScreen({ xpDelta, streak, hpAfter, message, onNext, onHome }: Props) {
+  const { mood, reason } = resultToMood(xpDelta > 0, streak);
   const xpMv = useMotionValue(0);
   const xpDisplayRef = useRef<HTMLSpanElement>(null);
 
@@ -65,7 +67,7 @@ export function RewardScreen({ xpDelta, streak, hpAfter, message, onNext, onHome
         </div>
 
         <div className="flex justify-center">
-          <Mascot mood="celebrate" size="xl" />
+          <MascotReaction mood={mood} size="xl" reason={reason} />
         </div>
 
         <p className="text-body text-text-primary">{message}</p>
