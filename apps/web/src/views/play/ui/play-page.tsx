@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/shared/ui/card";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
+import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { PadCanvas, type PadCanvasHandle } from "@/widgets/pad-canvas";
 import { AnswerForm, useQuestPlay, persistPlaySubmission } from "@/features/quest-play";
 import { getQuestById } from "@/shared/mocks/quests";
@@ -64,11 +65,21 @@ export function PlayPage({ questId }: { questId: string }) {
 
   return (
     <div className="mx-auto max-w-2xl p-4 lg:p-8 space-y-4">
-      <header>
-        <div className="text-sm text-[var(--color-text-muted)]">
-          {quest.subject} · {quest.unit}
+      <header className="flex items-center gap-3">
+        {play.state === "playing" && (
+          <MascotReaction
+            mood="cheer"
+            size="md"
+            reason="회독 시작"
+            className="shrink-0"
+          />
+        )}
+        <div className="min-w-0">
+          <div className="text-sm text-[var(--color-text-muted)]">
+            {quest.subject} · {quest.unit}
+          </div>
+          <h1 className="text-xl font-bold text-[var(--color-text-strong)]">{quest.topic}</h1>
         </div>
-        <h1 className="text-xl font-bold text-[var(--color-text-strong)]">{quest.topic}</h1>
       </header>
 
       {play.state === "playing" && (
