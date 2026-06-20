@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Flame, CheckSquare, ShieldCheck, Medal, AlertCircle } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/server";
@@ -298,14 +297,7 @@ function RankCard({ rank, xp, badges }: { rank: string; xp: number; badges: Game
 // ── 페이지 (RSC) ───────────────────────────────────────────────────────────────
 
 export async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect(ROUTES.login);
-
-  const data = await fetchDashboardData(user.id);
+  const data = await fetchDashboardData("mock-user");
 
   if (!data.ok) {
     return (
