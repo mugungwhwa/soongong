@@ -22,16 +22,16 @@ export function IntakeHero() {
   return (
     <section
       aria-label="문제 사진 올리기"
-      className="rounded-[var(--radius-xl)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-6 lg:p-8"
+      className="mx-auto w-full max-w-3xl rounded-[var(--radius-xl)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-5 lg:p-7"
     >
-      <div className="flex flex-col items-center gap-5 text-center lg:flex-row lg:gap-8 lg:text-left">
+      <div className="flex flex-col items-center gap-5 text-center lg:flex-row lg:gap-7 lg:text-left">
         <Image
           src="/brand/soongong-main.png"
           alt="순공대장 마스코트 순공이"
           width={160}
           height={160}
           priority
-          className="h-28 w-28 shrink-0 object-contain drop-shadow-[var(--shadow-elevated)] lg:h-40 lg:w-40"
+          className="h-28 w-28 shrink-0 object-contain drop-shadow-[var(--shadow-elevated)] lg:h-32 lg:w-32"
         />
         <div className="min-w-0 flex-1">
           <span className="inline-flex items-center rounded-[var(--radius-pill)] bg-[var(--color-mint-100)] px-3 py-1 text-xs font-bold text-[var(--color-mint-900)]">

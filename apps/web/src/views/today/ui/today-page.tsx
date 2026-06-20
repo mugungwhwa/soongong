@@ -7,7 +7,9 @@ import { ReviewMap } from "@/widgets/review-map";
 import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { IntakeHero } from "@/features/upload-source";
-import { Bell, PartyPopper } from "lucide-react";
+import Link from "next/link";
+import { ROUTES } from "@/shared/config/routes";
+import { Bell, Brain, PartyPopper } from "lucide-react";
 
 export function TodayPage({
   isFirstEntry = false,
@@ -17,7 +19,7 @@ export function TodayPage({
   userName?: string;
 }) {
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-6">
+    <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-8">
       {isFirstEntry && (
         <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
           <MascotReaction mood="praise" size="md" reason="첫 회독 준비" />
@@ -41,29 +43,45 @@ export function TodayPage({
 
       {/* 1. 상단 상태 밴드 — 진도·등급·뇌(기억HP)·불(스트릭)을 한눈에 (SOO-81, Mike 구조 지시 2026-06-20) */}
       <section aria-label="내 상태" className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-lg font-bold text-[var(--color-text-strong)] lg:text-xl">
+            <h1 className="text-xl font-bold text-[var(--color-text-strong)] lg:text-2xl">
               {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
             </h1>
-            <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
+            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
               {isFirstEntry
                 ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
                 : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
             </p>
           </div>
-          <button
-            aria-label="알림"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] transition hover:bg-[var(--color-mint-100)]"
-          >
-            <Bell
-              size={16}
-              strokeWidth={1.5}
-              color="var(--color-text-muted)"
-              fill="none"
-              aria-hidden="true"
-            />
-          </button>
+          {/* 항시 노출 액션 — 순공냅스(시그니처) + 알림. 모바일에선 사이드바가 숨으므로 여기가 순공냅스 상시 진입점. */}
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href={ROUTES.journey}
+              aria-label="순공냅스 — 뉴럴 망각맵"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] transition hover:bg-[var(--color-mint-100)]"
+            >
+              <Brain
+                size={16}
+                strokeWidth={1.5}
+                color="var(--color-mint-700)"
+                fill="none"
+                aria-hidden="true"
+              />
+            </Link>
+            <button
+              aria-label="알림"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] transition hover:bg-[var(--color-mint-100)]"
+            >
+              <Bell
+                size={16}
+                strokeWidth={1.5}
+                color="var(--color-text-muted)"
+                fill="none"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
         </div>
         <TierJourneyHero />
         <StatsGrid />

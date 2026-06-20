@@ -29,13 +29,13 @@ type NavItem = {
   Icon: ComponentType<LucideProps>;
 };
 
+// 순공냅스(/journey)는 평범한 목록 행에서 빼 상단 고정 아이콘 엔트리로 승격한다 (SOO-90, Mike 2026-06-20).
 const MAIN_ITEMS: NavItem[] = [
   { href: ROUTES.today, label: "오늘의 회독", Icon: Home },
   { href: ROUTES.dashboard, label: "내 현황", Icon: LayoutDashboard },
   { href: ROUTES.calendar, label: "회독 캘린더", Icon: Calendar },
   { href: ROUTES.wrongNotes, label: "오답노트", Icon: NotebookPen },
   { href: ROUTES.graph, label: "그래프", Icon: BarChart3 },
-  { href: ROUTES.journey, label: "순공냅스", Icon: Brain },
   { href: ROUTES.diary, label: "순공일지", Icon: BookOpen },
 ];
 
@@ -74,6 +74,40 @@ export function Sidebar() {
           </text>
         </svg>
       </div>
+
+      {/* 순공냅스 = 리텐션 엔진 시그니처 — 목록에서 빼 상단 고정 아이콘 엔트리로 승격 (SOO-90). */}
+      <Link
+        href={ROUTES.journey}
+        aria-label="순공냅스 — 뉴럴 망각맵"
+        aria-current={pathname === ROUTES.journey ? "page" : undefined}
+        className="mb-3 flex items-center gap-3 rounded-[var(--radius-md)] border px-3 py-2.5 transition"
+        style={{
+          borderColor:
+            pathname === ROUTES.journey
+              ? "var(--color-mint-500)"
+              : "var(--color-mint-300)",
+          background:
+            pathname === ROUTES.journey
+              ? "var(--color-mint-100)"
+              : "var(--color-mint-50)",
+        }}
+      >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-mint-100)]">
+          <Brain
+            {...ICON_STYLE}
+            color="var(--color-mint-700)"
+          />
+        </span>
+        <span className="min-w-0">
+          <span className="block text-sm font-bold text-[var(--color-mint-900)]">
+            순공냅스
+          </span>
+          <span className="block text-[11px] text-[var(--color-text-muted)]">
+            뉴럴 망각맵
+          </span>
+        </span>
+      </Link>
+
       <nav className="flex flex-col gap-1">
         {MAIN_ITEMS.map((item) => {
           const isActive = pathname === item.href;
