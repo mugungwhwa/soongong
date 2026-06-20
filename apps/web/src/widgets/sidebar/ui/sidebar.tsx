@@ -15,6 +15,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
+import { MascotReaction } from "@/shared/ui/mascot-reaction";
 
 const ICON_STYLE: LucideProps = {
   size: 18,
@@ -47,10 +48,11 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
-      <div className="mb-6">
+      <div className="mb-6 flex items-center gap-2">
+        <MascotReaction mood="idle" size="sm" className="shrink-0" />
         <svg
           viewBox="0 0 245 44"
-          style={{ width: "100%", maxWidth: 240, overflow: "visible" }}
+          style={{ width: "100%", maxWidth: 200, overflow: "visible" }}
           role="img"
           aria-label="SOONGONG"
         >
