@@ -211,7 +211,7 @@ export function BrandGallery() {
           {[
             { file: "main-half-alpha.png", label: "기본" },
             { file: "main-half-cheer-alpha.png", label: "응원" },
-            { file: "main-half-comeon-alpha.png", label: "환영" },
+            { file: "main-half-comeon-alpha.png", label: "이리와" },
             { file: "main-half-good-alpha.png", label: "칭찬" },
           ].map((m) => (
             <div
