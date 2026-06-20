@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useGameState } from "@/entities/user-game-state";
 import { JourneyNeuralMap } from "@/widgets/journey-neural-map";
+import { Mascot } from "@/shared/ui/mascot";
 import type { UserRank } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
 import {
@@ -457,7 +458,7 @@ export function JourneyView() {
         marginInline: "auto",
       }}
     >
-      {/* ── 여정 헤더 (딥 오션 그라데이션) ── */}
+      {/* ── 여정 헤더 (딥 민트 그라데이션) ── */}
       <div
         style={{
           background:
@@ -492,7 +493,8 @@ export function JourneyView() {
             width: 80,
             height: 80,
             borderRadius: "50%",
-            background: "rgba(42,184,208,0.12)",
+            background:
+              "color-mix(in srgb, var(--color-mint-300) 14%, transparent)",
             pointerEvents: "none",
           }}
         />
@@ -540,7 +542,7 @@ export function JourneyView() {
                   lineHeight: 1.2,
                 }}
               >
-                순공 여정
+                순공냅스
               </p>
               <p
                 style={{
@@ -554,19 +556,16 @@ export function JourneyView() {
               </p>
             </div>
           </div>
-          {/* 마스코트 */}
+          {/* 마스코트 — 순공이(듀공 정본). 등급 신호는 카드·배너의 이모지가 전담. */}
           <div
-            aria-hidden="true"
             style={{
-              fontSize: "1.75rem",
-              lineHeight: 1,
               filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.2))",
               animation: "journey-bob 3.2s ease-in-out infinite",
               position: "relative",
               zIndex: 1,
             }}
           >
-            {current.emoji}
+            <Mascot mood="cheer" size="sm" />
           </div>
         </div>
 

@@ -41,7 +41,7 @@ export const JOURNEY_MAP_STRINGS = {
   riskLow: "생생함",
 
   // ── 로딩 / 에러 / 빈 상태 ──────────────────────────────────
-  loading: "여정 지도를 그리는 중…",
+  loading: "망각 지도를 그리는 중…",
   errorTitle: "지도를 불러오지 못했어요",
   errorRetry: "다시 시도",
   emptyTitle: "아직 켜진 불이 없어요",

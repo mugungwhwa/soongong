@@ -58,7 +58,7 @@ export function TierJourneyHero() {
   return (
     <Link
       href={ROUTES.journey}
-      aria-label="현재 등급과 진행 — 내 여정 더 보기"
+      aria-label="현재 등급과 진행 — 순공냅스 더 보기"
       className="group flex flex-wrap items-center gap-x-4 gap-y-3 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-bg-elevated)] px-4 py-3 shadow-[var(--shadow-card)] transition-colors hover:border-[var(--color-mint-500)] hover:bg-[var(--color-mint-50)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2"
     >
       {/* 현재 등급 클러스터 */}

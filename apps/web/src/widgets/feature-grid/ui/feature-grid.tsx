@@ -3,7 +3,7 @@ import { ROUTES } from "@/shared/config/routes";
 import {
   CalendarCheck,
   RotateCcw,
-  ShieldCheck,
+  Brain,
   Trophy,
   Lock,
   ChevronRight,
@@ -51,10 +51,10 @@ const FEATURES: Feature[] = [
   },
   {
     key: "forgetting",
-    title: "망각방어전",
+    title: "순공냅스",
     desc: "기억이 옅어지기 전에 지켜내요",
     href: ROUTES.journey,
-    Icon: ShieldCheck,
+    Icon: Brain,
   },
   {
     key: "league",
