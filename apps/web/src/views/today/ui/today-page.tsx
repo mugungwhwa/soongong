@@ -50,7 +50,7 @@ export function TodayPage({
             </h1>
             <p className="mt-1 text-sm text-[var(--color-text-muted)]">
               {isFirstEntry
-                ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
+                ? "순공이랑 첫 회독퀘스트를 시작해볼까요?"
                 : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
             </p>
           </div>

@@ -10,7 +10,7 @@ import { useUploadSheetStore } from "../model/upload-sheet-store";
  * CTA로 승격. 같은 zustand store(openSheet)를 호출해 기존 업로드 시트 재사용.
  *
  * 디자인 검수 준수:
- * - §2-3 홈 게임성 30% 캡: "크게"는 정보 위계(핵심 행동)지 게임 연출이 아님.
+ * - §2-3 홈 게임성 50% 캡(2026-06-20, 30→50): "크게"는 정보 위계(핵심 행동)지 게임 연출이 아님.
  *   네온/파티클/glow 없이 차분한 민트 surface + 단일 그림자.
  * - §2-1 마스코트: 정본 자산 /brand/soongong-main.png만 사용(placeholder 미사용).
  *   전용 "카메라 든 순공이" 일러스트는 /brand에 없어 마스코트+카메라 아이콘으로 연출.
