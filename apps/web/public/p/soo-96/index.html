@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — 상용화 퀄리티 기준점 (홈 + 순공냅스) · SOO-96</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+/* ============================================================================
+   DESIGN TOKENS — MIRRORED from apps/web/src/shared/styles/tokens.css
+   ⚠️ 프로토타입 전용 미러. 프로덕션 SSoT 아님. 값 변경은 tokens.css 에서.
+   (SOO-96 기준점 프로토타입 — 자체 완결형 githack 단일 파일이라 인라인 미러)
+   ============================================================================ */
+:root{
+  --color-primary-cta:#4CAF88; --color-primary-bg:#EAF4EE;
+  --color-bg:#F8FBF7; --color-bg-elevated:#FFFFFF; --color-bg-sunken:#EFF5F1;
+  --color-background:var(--color-bg); --color-surface:var(--color-bg-elevated);
+  --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
+  --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
+  --color-risk-low:#BFE3C9; --color-risk-mid:#FFEBA3; --color-risk-high:#FFB4B4;
+  --color-info:#6BA6FF; --color-danger:#FFB4B4; --color-warning:#FFEBA3; --color-neutral:#8E8E93;
+  --color-xp:#F2C94C; --color-xp-soft:#FBE7A6;
+  --color-epic-bg:#F5E0FC; --color-epic-text:#8B5CF6;
+  --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
+  --color-text-disabled:#BBBBBB; --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
+  --color-risk-bg:#FFEFEF; --color-warning-bg:#FFF8E0; --color-info-bg:#EAF2FF;
+  --color-border-default:#E3EDE7; --color-border-strong:#9CCBB7;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+  --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
+  --journey-canvas-bg-center:#1C5942; --journey-canvas-bg-edge:#0E3326;
+  /* MOTION — tokens.css + 프로토타입 스프링(마스코트/로고 등장 한정, 매트릭스 §부분차용) */
+  --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1); /* overshoot = bouncy, 마스코트·로고 등장 전용 */
+  --duration-fast:160ms; --duration-mid:240ms; --duration-slow:380ms;
+  --font-display:"Pretendard",system-ui,sans-serif; --font-body:"Pretendard",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--font-body);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #EEF7F1 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, #F0F6EE 0%, transparent 55%),
+    #EDF3EE;
+  color:var(--color-text-strong);
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── 상단 컨트롤 바 ───────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;
+  padding:14px clamp(16px,4vw,40px);
+  background:rgba(255,255,255,.72);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--color-border-default);
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.topbar .brand .dot{width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,var(--color-mint-500),var(--color-mint-700));box-shadow:var(--shadow-card)}
+.topbar .meta{font-size:12px;color:var(--color-text-muted);font-weight:600}
+.spacer{flex:1}
+.seg{display:inline-flex;background:var(--color-bg-sunken);border-radius:var(--radius-pill);padding:4px;gap:2px}
+.seg button{
+  border:0;background:transparent;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:13px;color:var(--color-text-default);
+  padding:7px 14px;border-radius:var(--radius-pill);transition:color var(--duration-fast),background var(--duration-mid)
+}
+.seg button.on{background:#fff;color:var(--color-mint-900);box-shadow:var(--shadow-card)}
+.seg.width button{padding:7px 12px;font-size:12px}
+.replay{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--color-border-default);
+  background:#fff;border-radius:var(--radius-pill);padding:7px 13px;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:12px;color:var(--color-mint-900);transition:transform var(--duration-fast)
+}
+.replay:active{transform:scale(.95)}
+
+/* ── 무대 ─────────────────────────────────────────────────────────── */
+.stage{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:clamp(20px,4vw,48px) 16px 72px}
+.device{width:100%;max-width:412px;transition:max-width var(--duration-slow) var(--ease-out-soft)}
+.device.web{max-width:1080px}
+.screen{display:none}
+.screen.show{display:block}
+
+/* phone frame (앱 모드) */
+.device:not(.web) .frame{
+  background:var(--color-background);border-radius:38px;overflow:hidden;
+  box-shadow:var(--shadow-elevated);
+  border:9px solid #fff;outline:1px solid var(--color-border-default);
+  min-height:760px;position:relative
+}
+.device.web .frame{
+  background:var(--color-background);border-radius:var(--radius-xl);overflow:hidden;
+  box-shadow:var(--shadow-elevated);border:1px solid var(--color-border-default);min-height:680px
+}
+
+/* ── reveal 모션 (스태거 페이드업) ─────────────────────────────────── */
+.rv{opacity:0;transform:translateY(14px)}
+.rv.in{opacity:1;transform:none;transition:opacity var(--duration-slow) var(--ease-out-soft),transform var(--duration-slow) var(--ease-out-soft)}
+
+/* ============================ 홈 ============================ */
+.home{padding:var(--space-5) var(--space-5) var(--space-8)}
+.device.web .home{display:grid;grid-template-columns:248px 1fr;gap:var(--space-8);padding:var(--space-8)}
+.web-rail{display:none}
+.device.web .web-rail{display:block}
+.web-rail .nav-item{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:var(--radius-md);font-weight:700;font-size:14px;color:var(--color-text-default);cursor:pointer;transition:background var(--duration-fast)}
+.web-rail .nav-item.on{background:var(--color-mint-50);color:var(--color-mint-900)}
+.web-rail .nav-item:hover{background:var(--color-bg-sunken)}
+.web-rail .nav-ico{width:20px;height:20px;color:currentColor}
+
+/* 헤더: 인사 + 마스코트 */
+.greet{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4)}
+.greet .hi{font-size:13px;font-weight:700;color:var(--color-text-muted)}
+.greet h1{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1.25;margin-top:3px}
+.greet h1 b{color:var(--color-mint-700)}
+.mascot-wrap{position:relative;flex-shrink:0}
+.mascot{width:88px;height:88px;object-fit:contain;display:block;filter:drop-shadow(0 6px 12px rgba(46,125,91,.18));animation:floaty 3.4s var(--ease-out-soft) infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+.mascot-pop{animation:mascotPop var(--duration-slow) var(--ease-spring) both}
+@keyframes mascotPop{0%{opacity:0;transform:scale(.5) translateY(10px)}100%{opacity:1;transform:scale(1)}}
+.mascot-bubble{
+  position:absolute;top:-6px;right:96px;white-space:nowrap;
+  background:#fff;border:1px solid var(--color-border-default);box-shadow:var(--shadow-card);
+  border-radius:var(--radius-lg) var(--radius-lg) 4px var(--radius-lg);
+  padding:8px 12px;font-size:12.5px;font-weight:700;color:var(--color-text-strong)
+}
+.device.web .mascot-bubble{display:none}
+
+/* stats 4박스 */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-3);margin-top:var(--space-5)}
+.stat{
+  background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);
+  padding:13px 10px 12px;text-align:center;box-shadow:var(--shadow-card)
+}
+.stat .ico{width:22px;height:22px;margin:0 auto 6px;display:block;color:var(--color-mint-700)}
+.stat .v{font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1}
+.stat .lab{font-size:10.5px;font-weight:700;color:var(--color-text-muted);margin-top:5px}
+/* 기억HP pips (0–5 정수) */
+.hp{display:flex;gap:3px;justify-content:center;align-items:center}
+.hp i{width:7px;height:11px;border-radius:3px;background:var(--color-border-default);display:block;transition:background var(--duration-mid),transform var(--duration-mid)}
+.hp i.on{background:var(--color-mint-500)}
+.hp i.pulse{animation:hpPulse var(--duration-slow) var(--ease-spring)}
+@keyframes hpPulse{0%{transform:scaleY(.4)}60%{transform:scaleY(1.25)}100%{transform:scaleY(1)}}
+
+/* 섹션 타이틀 */
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:var(--space-8) 2px var(--space-3)}
+.sec-h h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.sec-h .cnt{font-size:12px;font-weight:700;color:var(--color-mint-700)}
+
+/* 오늘의 회독 진행 카드 */
+.prog{
+  background:linear-gradient(135deg,#fff, #FBFEFC);
+  border:1px solid var(--color-border-default);border-radius:var(--radius-xl);
+  padding:var(--space-5);box-shadow:var(--shadow-card);margin-top:var(--space-2)
+}
+.prog .row1{display:flex;align-items:center;justify-content:space-between}
+.prog .row1 .t{font-size:14px;font-weight:800}
+.prog .row1 .n{font-size:13px;font-weight:800;color:var(--color-mint-700)}
+.bar{height:10px;border-radius:var(--radius-pill);background:var(--color-bg-sunken);margin-top:11px;overflow:hidden}
+.bar .fill{height:100%;border-radius:var(--radius-pill);background:linear-gradient(90deg,var(--color-mint-300),var(--color-mint-700));width:0;transition:width 900ms var(--ease-out-soft)}
+.prog .hint{font-size:12px;font-weight:600;color:var(--color-text-default);margin-top:10px}
+
+/* 회독퀘스트 리스트 (위험도 우선 정렬) */
+.qlist{display:flex;flex-direction:column;gap:10px;margin-top:var(--space-2)}
+.device.web .qcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.q{
+  display:flex;align-items:center;gap:13px;background:var(--color-surface);
+  border:1px solid var(--color-border-default);border-radius:var(--radius-lg);
+  padding:13px 14px;box-shadow:var(--shadow-card);cursor:pointer;
+  transition:transform var(--duration-fast) var(--ease-out-soft),box-shadow var(--duration-mid),border-color var(--duration-mid)
+}
+.q:hover{transform:translateY(-2px);box-shadow:var(--shadow-elevated);border-color:var(--color-border-strong)}
+.q:active{transform:scale(.985)}
+.q .chk{
+  width:26px;height:26px;border-radius:9px;border:2px solid var(--color-border-strong);flex-shrink:0;
+  display:grid;place-items:center;transition:background var(--duration-mid),border-color var(--duration-mid)
+}
+.q .chk svg{width:15px;height:15px;color:#fff;opacity:0;transform:scale(.4);transition:opacity var(--duration-fast),transform var(--duration-mid) var(--ease-spring)}
+.q .body{flex:1;min-width:0}
+.q .ttl{font-size:14px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.q .sub{font-size:11.5px;font-weight:600;color:var(--color-text-muted);margin-top:2px}
+.q .rt{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.pill{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:var(--radius-pill);letter-spacing:-.01em}
+.pill.high{background:var(--color-risk-bg);color:#C96868}
+.pill.mid{background:var(--color-warning-bg);color:#A98A2E}
+.pill.low{background:var(--color-mint-50);color:var(--color-mint-900)}
+.dday{font-size:10.5px;font-weight:700;color:var(--color-text-muted)}
+/* 완료 상태 */
+.q.done{border-color:var(--color-mint-300);background:var(--color-mint-50)}
+.q.done .chk{background:var(--color-mint-700);border-color:var(--color-mint-700)}
+.q.done .chk svg{opacity:1;transform:scale(1)}
+.q.done .ttl{color:var(--color-text-muted);text-decoration:line-through;text-decoration-color:var(--color-border-strong)}
+.q.done .pill,.q.done .dday{opacity:.4}
+
+/* CTA */
+.cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  margin-top:var(--space-6);border:0;cursor:pointer;font-family:inherit;
+  background:var(--color-primary-cta);color:#fff;font-weight:800;font-size:15px;
+  padding:16px;border-radius:var(--radius-lg);box-shadow:0 6px 16px rgba(76,175,136,.28);
+  transition:transform var(--duration-fast) var(--ease-out-soft),box-shadow var(--duration-mid)
+}
+.cta:hover{box-shadow:0 10px 22px rgba(76,175,136,.34);transform:translateY(-1px)}
+.cta:active{transform:scale(.97)}
+
+/* 하단 탭바 (앱 전용) */
+.tabbar{display:flex;justify-content:space-around;align-items:center;padding:10px 6px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-top:1px solid var(--color-border-default);
+  position:sticky;bottom:0}
+.device.web .tabbar{display:none}
+.tabbar .ti{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--color-text-muted)}
+.tabbar .ti.on{color:var(--color-mint-700)}
+.tabbar .ti svg{width:22px;height:22px}
+
+/* ============================ 순공냅스 ============================ */
+.synapse{position:relative}
+.syn-canvas{display:block;width:100%;height:560px;border-radius:0}
+.device.web .syn-canvas{height:640px}
+.syn-top{position:absolute;top:0;left:0;right:0;padding:18px 20px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(14,51,38,.55),transparent)}
+.syn-top h2{color:#fff;font-size:18px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.syn-top p{color:rgba(255,255,255,.72);font-size:12px;font-weight:600;margin-top:3px}
+.syn-legend{position:absolute;left:16px;bottom:16px;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+.syn-legend .lg{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:rgba(255,255,255,.82)}
+.syn-legend .lg .sw{width:12px;height:12px;border-radius:50%}
+/* 노드 탭 패널 */
+.syn-panel{
+  position:absolute;left:14px;right:14px;bottom:14px;
+  background:rgba(255,255,255,.97);border-radius:var(--radius-xl);box-shadow:var(--shadow-elevated);
+  padding:16px 18px;transform:translateY(140%);opacity:0;
+  transition:transform var(--duration-slow) var(--ease-spring),opacity var(--duration-mid)
+}
+.syn-panel.show{transform:translateY(0);opacity:1}
+.syn-panel .ph{display:flex;align-items:center;justify-content:space-between}
+.syn-panel .ph .nm{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.syn-panel .ph .x{border:0;background:var(--color-bg-sunken);width:28px;height:28px;border-radius:50%;cursor:pointer;font-weight:800;color:var(--color-text-muted)}
+.syn-panel .meta{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+.syn-panel .gobtn{margin-top:14px;width:100%;border:0;background:var(--color-primary-cta);color:#fff;font-weight:800;font-size:14px;padding:13px;border-radius:var(--radius-md);cursor:pointer;font-family:inherit;transition:transform var(--duration-fast)}
+.syn-panel .gobtn:active{transform:scale(.97)}
+
+/* ============================ 디자인 언어 ============================ */
+.dl{padding:var(--space-6) clamp(18px,4vw,40px) var(--space-12);max-width:1080px;margin:0 auto}
+.dl h2{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-bottom:6px}
+.dl .lead{font-size:13.5px;color:var(--color-text-default);font-weight:600;line-height:1.6;margin-bottom:var(--space-8)}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-4)}
+.card{background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-xl);padding:var(--space-6);box-shadow:var(--shadow-card)}
+.card h3{font-size:14px;font-weight:800;letter-spacing:-.02em;margin-bottom:4px}
+.card .d{font-size:12px;color:var(--color-text-muted);font-weight:600;line-height:1.5}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.sw2{text-align:center}
+.sw2 .b{width:46px;height:46px;border-radius:var(--radius-md);box-shadow:var(--shadow-card);border:1px solid rgba(0,0,0,.04)}
+.sw2 .n{font-size:9.5px;font-weight:700;color:var(--color-text-muted);margin-top:5px}
+.curve{margin-top:14px;height:70px;border-radius:var(--radius-md);background:var(--color-bg-sunken);position:relative;overflow:hidden}
+.curve .dot{position:absolute;top:50%;left:8px;width:18px;height:18px;border-radius:50%;background:var(--color-mint-700);transform:translateY(-50%);box-shadow:0 3px 8px rgba(76,175,136,.4)}
+.token-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--color-border-default);font-size:12.5px;font-weight:700}
+.token-row:last-child{border-bottom:0}
+.token-row code{font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--color-mint-900);background:var(--color-mint-50);padding:2px 7px;border-radius:6px}
+.spacing-vis{display:flex;align-items:flex-end;gap:6px;margin-top:14px;height:56px}
+.spacing-vis i{background:linear-gradient(180deg,var(--color-mint-300),var(--color-mint-500));border-radius:5px 5px 0 0;flex:1;display:block}
+.matrix{margin-top:var(--space-6)}
+.matrix .mrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--color-border-default);font-size:12.5px}
+.matrix .mrow:last-child{border-bottom:0}
+.tag{font-size:10px;font-weight:800;padding:3px 8px;border-radius:var(--radius-pill);flex-shrink:0;width:46px;text-align:center}
+.tag.use{background:var(--color-mint-50);color:var(--color-mint-900)}
+.tag.mod{background:var(--color-warning-bg);color:#A98A2E}
+.tag.rej{background:var(--color-risk-bg);color:#C96868}
+.matrix .mrow .pat{font-weight:700;flex:0 0 152px}
+.matrix .mrow .note{color:var(--color-text-default);font-weight:600;font-size:11.5px}
+@media(max-width:560px){.matrix .mrow .pat{flex-basis:120px}.matrix .mrow .note{display:none}}
+
+.foot{text-align:center;font-size:11px;color:var(--color-text-muted);font-weight:600;padding:0 16px 28px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> 순공대장 <span class="meta">· 상용화 퀄리티 기준점 (Phase 1)</span></div>
+  <div class="spacer"></div>
+  <div class="seg view" id="segView">
+    <button data-view="home" class="on">홈</button>
+    <button data-view="synapse">순공냅스</button>
+    <button data-view="dl">디자인 언어</button>
+  </div>
+  <div class="seg width" id="segWidth">
+    <button data-w="app" class="on">📱 앱</button>
+    <button data-w="web">🖥 웹</button>
+  </div>
+  <button class="replay" id="replay">↻ 모션 다시보기</button>
+</div>
+
+<div class="stage">
+  <div class="device" id="device">
+
+    <!-- ======================= 홈 ======================= -->
+    <section class="screen show" id="view-home">
+      <div class="frame">
+        <div class="home">
+          <!-- 웹 전용 좌측 레일 -->
+          <aside class="web-rail rv">
+            <div class="brand" style="padding:6px 13px 18px;font-size:17px"><span class="dot"></span> 순공대장</div>
+            <div class="nav-item on"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg> 홈</div>
+            <div class="nav-item"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg> 순공냅스</div>
+            <div class="nav-item"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 18z"/></svg> 오답회수</div>
+            <div class="nav-item"><svg class="nav-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> 캘린더</div>
+          </aside>
+
+          <div class="home-main">
+            <!-- 인사 + 마스코트 -->
+            <header class="greet rv">
+              <div>
+                <div class="hi">6월 20일 금요일</div>
+                <h1>오늘 <b>4개</b> 회독으로<br/>망각을 막아볼까요?</h1>
+              </div>
+              <div class="mascot-wrap">
+                <div class="mascot-bubble rv">같이 가요! 🌱</div>
+                <img class="mascot" id="mascot" alt="순공이" src="../../../apps/web/public/mascot/main-half-cheer-alpha.png"
+                     onerror="this.onerror=null;this.src='../../../apps/web/public/mascot/main-half-good-alpha.png'"/>
+              </div>
+            </header>
+
+            <!-- stats 4박스 -->
+            <div class="stats">
+              <div class="stat rv">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 4 4 5 4 9a4 4 0 1 1-8 0c0-1 .5-2 1-3 1 1 2 1 2-1 0-2-1-3 1-4z"/></svg>
+                <div class="v" data-count="12" data-suffix="일">0일</div>
+                <div class="lab">연속 순공</div>
+              </div>
+              <div class="stat rv">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.3-9.3-9.2C1 8.5 3 5 6.4 5c2 0 3.2 1.2 3.6 2 .4-.8 1.6-2 3.6-2C17 5 19 8.5 21.3 11.8 19 16.7 12 21 12 21z"/></svg>
+                <div class="hp" id="hp"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
+                <div class="lab">기억 HP</div>
+              </div>
+              <div class="stat rv">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                <div class="v" data-count="46" data-suffix="분">0분</div>
+                <div class="lab">순공 시간</div>
+              </div>
+              <div class="stat rv">
+                <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg>
+                <div class="v" style="font-size:13px;line-height:1.15">순공러<br><span style="font-size:11px;color:var(--color-text-muted)">1,240XP</span></div>
+                <div class="lab">등급 · XP</div>
+              </div>
+            </div>
+
+            <!-- 오늘의 회독 진행 -->
+            <div class="sec-h rv"><h2>오늘의 회독</h2><span class="cnt" id="qcount">1 / 4 완료</span></div>
+            <div class="prog rv">
+              <div class="row1"><span class="t">진행률</span><span class="n" id="pNum">25%</span></div>
+              <div class="bar"><div class="fill" id="pFill"></div></div>
+              <div class="hint">위험한 개념부터 정리하면 망각 곡선을 더 효율적으로 막을 수 있어요.</div>
+            </div>
+
+            <!-- 회독퀘스트 리스트 (위험도 우선) -->
+            <div class="sec-h rv"><h2>회독퀘스트</h2><span class="cnt">위험도순</span></div>
+            <div class="qcols">
+              <div class="qlist" id="qlist"><!-- JS injects --></div>
+            </div>
+
+            <button class="cta rv" id="startBtn">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+              가장 위험한 회독부터 시작
+            </button>
+          </div>
+        </div>
+
+        <!-- 하단 탭바 (앱) -->
+        <nav class="tabbar">
+          <div class="ti on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>홈</div>
+          <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg>순공냅스</div>
+          <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.2L4 18z"/></svg>오답회수</div>
+          <div class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>캘린더</div>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ======================= 순공냅스 ======================= -->
+    <section class="screen" id="view-synapse">
+      <div class="frame">
+        <div class="synapse">
+          <canvas class="syn-canvas" id="synCanvas"></canvas>
+          <div class="syn-top">
+            <h2>🧠 순공냅스</h2>
+            <p>학습한 개념이 신경망처럼 이어져요. 흐려진 노드는 잊혀가는 기억이에요.</p>
+          </div>
+          <div class="syn-legend">
+            <div class="lg"><span class="sw" style="background:#4CAF88;box-shadow:0 0 8px #4CAF88"></span> 또렷한 기억</div>
+            <div class="lg"><span class="sw" style="background:#FFEBA3"></span> 흐려지는 중</div>
+            <div class="lg"><span class="sw" style="background:#FFB4B4"></span> 곧 잊혀요</div>
+          </div>
+          <div class="syn-panel" id="synPanel">
+            <div class="ph"><span class="nm" id="pnNm">개념</span><button class="x" id="pnX">✕</button></div>
+            <div class="meta" id="pnMeta"></div>
+            <button class="gobtn">이 개념 회독하기 →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 디자인 언어 ======================= -->
+    <section class="screen" id="view-dl">
+      <div class="dl">
+        <h2>디자인 언어 — 한 장 정리</h2>
+        <p class="lead">홈에서 확정한 룩&필·모션 언어를 순공냅스에 동일 적용해 전 화면 확장의 <b>기준점</b>으로 삼습니다. 톤 = Light Study Garden(크림·화이트·소프트 민트). 색·치수는 <code style="font-family:ui-monospace;font-size:12px;background:var(--color-mint-50);padding:1px 6px;border-radius:5px">tokens.css</code> 단일 SSoT.</p>
+
+        <div class="dl-grid">
+          <div class="card">
+            <h3>🎨 코어 팔레트</h3>
+            <div class="d">v2 Teal/Mint 앵커 3종 + 위험도 소프트 톤. 원색 금지, 데사처드.</div>
+            <div class="swatches">
+              <div class="sw2"><div class="b" style="background:#A8DCCB"></div><div class="n">mint-300</div></div>
+              <div class="sw2"><div class="b" style="background:#7BC4AE"></div><div class="n">mint-500</div></div>
+              <div class="sw2"><div class="b" style="background:#4CAF88"></div><div class="n">mint-700</div></div>
+              <div class="sw2"><div class="b" style="background:#FFEBA3"></div><div class="n">risk-mid</div></div>
+              <div class="sw2"><div class="b" style="background:#FFB4B4"></div><div class="n">risk-high</div></div>
+              <div class="sw2"><div class="b" style="background:#F8FBF7;border:1px solid #E3EDE7"></div><div class="n">cream-bg</div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>🌀 모션 곡선</h3>
+            <div class="d">기본 전환 = ease-out-soft. 마스코트·로고 등장만 spring(overshoot). 카드/버튼 과한 bounce 금지.</div>
+            <div class="curve"><div class="dot" id="curveDot"></div></div>
+            <div class="token-row"><span>기본 전환</span><code>ease-out-soft · 240ms</code></div>
+            <div class="token-row"><span>등장(마스코트/로고)</span><code>spring · 380ms</code></div>
+            <div class="token-row"><span>탭 피드백</span><code>scale .97 · 160ms</code></div>
+          </div>
+
+          <div class="card">
+            <h3>📏 간격 스케일 (4px base)</h3>
+            <div class="d">space-1~12. 화면 패딩 20~32, 카드 내부 16~24, 리스트 갭 10.</div>
+            <div class="spacing-vis">
+              <i style="height:8%"></i><i style="height:17%"></i><i style="height:25%"></i><i style="height:33%"></i>
+              <i style="height:42%"></i><i style="height:50%"></i><i style="height:67%"></i><i style="height:83%"></i><i style="height:100%"></i>
+            </div>
+            <div class="token-row" style="margin-top:12px"><span>radius</span><code>card 16 · 패널 24 · pill ∞</code></div>
+          </div>
+
+          <div class="card">
+            <h3>🔡 타이포 위계</h3>
+            <div class="d">Pretendard. 위계로 정보 정리.</div>
+            <div style="font-size:23px;font-weight:800;letter-spacing:-.03em;margin-top:10px">H1 · 23 / 800</div>
+            <div style="font-size:16px;font-weight:800;margin-top:6px">H2 섹션 · 16 / 800</div>
+            <div style="font-size:14px;font-weight:700;margin-top:6px">본문 강조 · 14 / 700</div>
+            <div style="font-size:12px;font-weight:600;color:var(--color-text-muted);margin-top:6px">캡션 · 12 / 600 · muted</div>
+          </div>
+
+          <div class="card">
+            <h3>🟢 그림자 · 표면</h3>
+            <div class="d">크림 캔버스 + 흰 카드. 단일 그림자만(토스풍 중첩 금지). 순공냅스 캔버스만 딥 틸 예외.</div>
+            <div style="display:flex;gap:12px;margin-top:14px">
+              <div style="flex:1;height:54px;background:#fff;border-radius:12px;box-shadow:var(--shadow-card);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--color-text-muted)">card</div>
+              <div style="flex:1;height:54px;background:#fff;border-radius:12px;box-shadow:var(--shadow-elevated);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--color-text-muted)">elevated</div>
+              <div style="flex:1;height:54px;background:linear-gradient(135deg,#1C5942,#0E3326);border-radius:12px;display:grid;place-items:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.8)">canvas</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>🦭 마스코트 순공이</h3>
+            <div class="d">듀공 모티프 락. mood로 톤 전달 — 결과=celebrate, 오답=comfort, loss=sleep(차분).</div>
+            <div style="display:flex;justify-content:center;margin-top:8px">
+              <img src="../../../apps/web/public/mascot/main-half-good-alpha.png" alt="순공이" style="width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 6px 12px rgba(46,125,91,.18))"
+                   onerror="this.style.display='none'"/>
+            </div>
+          </div>
+        </div>
+
+        <h2 style="margin-top:var(--space-10);font-size:17px">듀오링고 차용 · 변형 · 거절 매트릭스 (준수 체크)</h2>
+        <div class="card matrix" style="margin-top:var(--space-4)">
+          <div class="mrow"><span class="tag use">차용</span><span class="pat">마스코트 전 화면</span><span class="note">홈 헤더·순공냅스·빈 상태에 순공이 노출</span></div>
+          <div class="mrow"><span class="tag mod">변형</span><span class="pat">그린+노랑 액센트</span><span class="note">저채도 v2 민트 + soft golden, 원색 아님</span></div>
+          <div class="mrow"><span class="tag mod">변형</span><span class="pat">빨강 하트 5개</span><span class="note">기억 HP 0–5 정수 pips, 하트·백분율 아님</span></div>
+          <div class="mrow"><span class="tag mod">변형</span><span class="pat">bouncy 전반</span><span class="note">마스코트·로고 등장만 spring, 카드/버튼은 soft</span></div>
+          <div class="mrow"><span class="tag rej">거절</span><span class="pat">passive-aggressive 카피</span><span class="note">"같이 가요" 동반자 톤, 죄책감·fear 0</span></div>
+          <div class="mrow"><span class="tag rej">거절</span><span class="pat">아이템샵 · 잦은 푸시</span><span class="note">회독 일정 알림(1/3/7/14일)만, 인앱 상점 없음</span></div>
+        </div>
+
+        <div class="card" style="margin-top:var(--space-4);background:var(--color-mint-50);border-color:var(--color-border-strong)">
+          <h3>✅ 게임성 강도 캡 준수</h3>
+          <div class="d" style="color:var(--color-mint-900)">홈 = 30% 이내 (stats + 배지만, 네온·파티클 0 — 모션은 등장/전환 마이크로 인터랙션으로만 "살아있게"). 순공냅스 캔버스 글로우는 SOO-51 딥 틸 예외 surface 한정.</div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="foot">SOO-96 · 상용화 퀄리티 디자인 기준점 프로토타입 · 홈 + 순공냅스 · 머지 없이 githack 라이브 · 마스코트/캔버스 토큰은 repo 실값 미러</div>
+
+<script>
+/* ============================================================================
+   Mock 데이터 — 회독퀘스트 (위험도 우선 정렬) + 순공냅스 노드/엣지
+   ============================================================================ */
+const QUESTS = [
+  {id:1, t:"미분계수와 도함수", sub:"수학Ⅱ · 미분", risk:"high", dday:"D-0", done:false},
+  {id:2, t:"확률의 곱셈정리", sub:"확률과 통계 · 확률", risk:"high", dday:"D-1", done:false},
+  {id:3, t:"등비수열의 합", sub:"수학Ⅰ · 수열", risk:"mid", dday:"D-3", done:false},
+  {id:4, t:"삼각함수의 그래프", sub:"수학Ⅰ · 삼각함수", risk:"low", dday:"완료", done:true},
+];
+const RISK_LABEL = {high:"위험", mid:"주의", low:"안전"};
+
+/* ── 회독퀘스트 렌더 ── */
+const qlist = document.getElementById('qlist');
+function renderQuests(){
+  qlist.innerHTML = '';
+  QUESTS.forEach((q,i)=>{
+    const el = document.createElement('div');
+    el.className = 'q rv' + (q.done?' done':'');
+    el.style.transitionDelay = (i*60)+'ms';
+    el.innerHTML = `
+      <div class="chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="body"><div class="ttl">${q.t}</div><div class="sub">${q.sub}</div></div>
+      <div class="rt"><span class="pill ${q.risk}">${RISK_LABEL[q.risk]}</span><span class="dday">${q.dday}</span></div>`;
+    el.setAttribute('role','button'); el.setAttribute('tabindex','0');
+    el.addEventListener('click', ()=>toggleQuest(q, el));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleQuest(q,el);}});
+    qlist.appendChild(el);
+  });
+}
+function toggleQuest(q, el){
+  q.done = !q.done;
+  el.classList.toggle('done', q.done);
+  updateProgress(true);
+}
+function updateProgress(animateHp){
+  const total = QUESTS.length;
+  const done = QUESTS.filter(q=>q.done).length;
+  const pct = Math.round(done/total*100);
+  document.getElementById('pFill').style.width = pct+'%';
+  document.getElementById('pNum').textContent = pct+'%';
+  document.getElementById('qcount').textContent = `${done} / ${total} 완료`;
+  // 기억 HP 반영 (3 기본 + 완료 보너스, 0–5 정수 cap)
+  if(animateHp){
+    const hp = Math.min(5, 2 + done);
+    const pips = document.querySelectorAll('#hp i');
+    pips.forEach((p,idx)=>{
+      const on = idx < hp;
+      if(on && !p.classList.contains('on')){ p.classList.add('pulse'); setTimeout(()=>p.classList.remove('pulse'),400); }
+      p.classList.toggle('on', on);
+    });
+  }
+}
+
+/* ============================================================================
+   모션 시퀀스 — 스태거 reveal + 카운트업
+   ============================================================================ */
+function countUp(el){
+  const target = +el.dataset.count, suf = el.dataset.suffix||'';
+  const dur = 900, t0 = performance.now();
+  function step(now){
+    const p = Math.min(1, (now-t0)/dur);
+    const e = 1-Math.pow(1-p,3); // easeOutCubic
+    el.textContent = Math.round(target*e)+suf;
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function playHome(){
+  const m = document.getElementById('mascot');
+  m.classList.remove('mascot-pop'); void m.offsetWidth; m.classList.add('mascot-pop');
+  const rvs = document.querySelectorAll('#view-home .rv');
+  rvs.forEach((el,i)=>{ el.classList.remove('in'); el.style.transitionDelay=(60+i*55)+'ms'; });
+  requestAnimationFrame(()=>rvs.forEach(el=>el.classList.add('in')));
+  // 진행바 + 카운트업
+  QUESTS.forEach(q=>{ if(q.id===4) q.done=true; else q.done=false; });
+  renderQuests();
+  document.querySelectorAll('#view-home .rv').forEach((el,i)=>{el.classList.add('in');el.style.transitionDelay=(60+i*45)+'ms';});
+  setTimeout(()=>{ updateProgress(false); document.querySelectorAll('.stat .v[data-count]').forEach(countUp); }, 400);
+}
+
+/* ============================================================================
+   순공냅스 — 뇌 모양 + 시냅스 연결 캔버스 (mock)
+   ============================================================================ */
+const SYN = (()=>{
+  const canvas = document.getElementById('synCanvas');
+  const ctx = canvas.getContext('2d');
+  const PAL = {center:'#1C5942', edge:'#0E3326', glow:'#ECF7F2', litLow:'#A8DCCB',
+               litHigh:'#4CAF88', dimMid:'#FFEBA3', dimHigh:'#FFB4B4', outline:'#7BC4AE'};
+  let W=0,H=0,dpr=1,nodes=[],edges=[],t0=0,raf=null,started=0,active=null;
+
+  // 뇌(이중 반구) 윤곽을 따르는 노드 배치 — 영역(과목)별 군집
+  const REGIONS = [
+    {name:"수학Ⅱ", cx:-0.30, cy:-0.08, risk:"dimHigh"},
+    {name:"확률과 통계", cx:0.30, cy:-0.10, risk:"dimHigh"},
+    {name:"수학Ⅰ", cx:-0.18, cy:0.26, risk:"dimMid"},
+    {name:"삼각함수", cx:0.22, cy:0.28, risk:"litHigh"},
+    {name:"미적분", cx:0.02, cy:-0.30, risk:"litHigh"},
+  ];
+  const CONCEPTS = {
+    "수학Ⅱ":["미분계수","도함수","극값","변화율"],
+    "확률과 통계":["곱셈정리","조건부확률","독립시행","기댓값"],
+    "수학Ⅰ":["등비수열","수열의 합","로그","지수함수"],
+    "삼각함수":["사인법칙","코사인법칙","주기","그래프"],
+    "미적분":["극한","연속","급수"],
+  };
+
+  function build(){
+    dpr = Math.min(2, window.devicePixelRatio||1);
+    const rect = canvas.getBoundingClientRect();
+    W = rect.width; H = rect.height;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    const cx=W/2, cy=H*0.5, rx=Math.min(W*0.40,250), ry=H*0.34;
+    nodes=[]; edges=[];
+    let idx=0;
+    REGIONS.forEach((reg,ri)=>{
+      const baseX = cx + reg.cx*rx*2, baseY = cy + reg.cy*ry*2;
+      const list = CONCEPTS[reg.name];
+      const regNodes=[];
+      list.forEach((c,ci)=>{
+        const a = (ci/list.length)*Math.PI*2 + ri;
+        const r = 26 + (ci%2)*16;
+        const x = baseX + Math.cos(a)*r*1.4;
+        const y = baseY + Math.sin(a)*r;
+        // 뇌 타원 안쪽으로 클램프
+        const node = {id:idx++, x, y, region:reg.name, concept:c, risk:reg.risk,
+                      rad: ci===0?9:6.5, born: idx*70, pulse:Math.random()*6};
+        nodes.push(node); regNodes.push(node);
+      });
+      // 영역 내부 시냅스 연결
+      for(let i=0;i<regNodes.length;i++){
+        edges.push({a:regNodes[0], b:regNodes[i], reg:true});
+      }
+      reg._hub = regNodes[0];
+    });
+    // 영역 허브 간 연결 (개념 간 교차 연결)
+    for(let i=0;i<REGIONS.length;i++){
+      edges.push({a:REGIONS[i]._hub, b:REGIONS[(i+1)%REGIONS.length]._hub, reg:false});
+    }
+    edges.push({a:REGIONS[4]._hub, b:REGIONS[0]._hub, reg:false});
+    edges.push({a:REGIONS[4]._hub, b:REGIONS[1]._hub, reg:false});
+  }
+
+  function colorFor(node){
+    if(node.risk==='dimHigh') return PAL.dimHigh;
+    if(node.risk==='dimMid') return PAL.dimMid;
+    return PAL.litHigh;
+  }
+
+  function draw(now){
+    if(!started) started=now;
+    const elapsed = now-started;
+    // 배경 그라데이션 (딥 틸 캔버스 — SOO-51 예외)
+    const g = ctx.createRadialGradient(W/2,H*0.46,40, W/2,H*0.5, Math.max(W,H)*0.7);
+    g.addColorStop(0, PAL.center); g.addColorStop(1, PAL.edge);
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    // 엣지(시냅스) — stroke-dashoffset 식 드로우온
+    edges.forEach((e,i)=>{
+      const appear = Math.min(1, Math.max(0, (elapsed-200-i*45)/500));
+      if(appear<=0) return;
+      const x2 = e.a.x + (e.b.x-e.a.x)*appear;
+      const y2 = e.a.y + (e.b.y-e.a.y)*appear;
+      const lit = (e.a.risk==='litHigh'||e.b.risk==='litHigh');
+      ctx.beginPath(); ctx.moveTo(e.a.x,e.a.y); ctx.lineTo(x2,y2);
+      ctx.strokeStyle = lit? 'rgba(123,196,174,0.5)' : 'rgba(168,220,203,0.22)';
+      ctx.lineWidth = e.reg?1.4:2.2; ctx.stroke();
+      // 시냅스 신호(펄스가 선을 따라 흐름) — lit 엣지만
+      if(appear>=1 && lit){
+        const tt = ((now/1400)+i*0.2)%1;
+        const px=e.a.x+(e.b.x-e.a.x)*tt, py=e.a.y+(e.b.y-e.a.y)*tt;
+        ctx.beginPath(); ctx.arc(px,py,2.2,0,7); ctx.fillStyle=PAL.glow; ctx.fill();
+      }
+    });
+
+    // 노드
+    nodes.forEach(n=>{
+      const appear = Math.min(1, Math.max(0,(elapsed-n.born)/420));
+      if(appear<=0) return;
+      const col = colorFor(n);
+      const isLit = n.risk==='litHigh';
+      const pulse = isLit? (Math.sin(now/600+n.pulse)*0.5+0.5):0.15;
+      const r = n.rad*appear;
+      // 글로우
+      const gr = ctx.createRadialGradient(n.x,n.y,0, n.x,n.y, r+12+pulse*8);
+      gr.addColorStop(0, hexA(col, isLit?0.9:0.5));
+      gr.addColorStop(1, hexA(col,0));
+      ctx.fillStyle=gr; ctx.beginPath(); ctx.arc(n.x,n.y,r+12+pulse*8,0,7); ctx.fill();
+      // 코어
+      ctx.beginPath(); ctx.arc(n.x,n.y,r,0,7);
+      ctx.fillStyle = isLit? col : hexA(col,0.82); ctx.fill();
+      ctx.lineWidth=1.5; ctx.strokeStyle=hexA('#FFFFFF',isLit?0.5:0.25); ctx.stroke();
+      // active 강조 링
+      if(active===n){
+        ctx.beginPath(); ctx.arc(n.x,n.y,r+7+Math.sin(now/200)*2,0,7);
+        ctx.strokeStyle=PAL.glow; ctx.lineWidth=2; ctx.stroke();
+      }
+    });
+    raf = requestAnimationFrame(draw);
+  }
+  function hexA(hex,a){
+    const h=hex.replace('#',''); const n=parseInt(h,16);
+    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+
+  function hit(mx,my){
+    let found=null, best=22;
+    nodes.forEach(n=>{ const d=Math.hypot(n.x-mx,n.y-my); if(d<best){best=d;found=n;} });
+    return found;
+  }
+  const panel=document.getElementById('synPanel');
+  function showPanel(n){
+    active=n;
+    document.getElementById('pnNm').textContent = n.concept;
+    const riskTxt = n.risk==='dimHigh'?'곧 잊혀요':n.risk==='dimMid'?'흐려지는 중':'또렷한 기억';
+    const riskCls = n.risk==='dimHigh'?'high':n.risk==='dimMid'?'mid':'low';
+    document.getElementById('pnMeta').innerHTML =
+      `<span class="pill ${riskCls}">${riskTxt}</span>`+
+      `<span class="pill low" style="background:var(--color-bg-sunken);color:var(--color-text-default)">${n.region}</span>`;
+    panel.classList.add('show');
+  }
+  document.getElementById('pnX').addEventListener('click',()=>{panel.classList.remove('show');active=null;});
+  canvas.addEventListener('click', e=>{
+    const r=canvas.getBoundingClientRect();
+    const n=hit(e.clientX-r.left, e.clientY-r.top);
+    if(n) showPanel(n); else {panel.classList.remove('show');active=null;}
+  });
+
+  function start(){ build(); started=0; if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(draw); }
+  function stop(){ if(raf) cancelAnimationFrame(raf); raf=null; }
+  window.addEventListener('resize', ()=>{ if(raf){ build(); } });
+  return {start, stop};
+})();
+
+/* ============================================================================
+   뷰 / 폭 토글
+   ============================================================================ */
+const device = document.getElementById('device');
+let curView='home';
+function setView(v){
+  curView=v;
+  document.querySelectorAll('#segView button').forEach(b=>b.classList.toggle('on', b.dataset.view===v));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById('view-'+v).classList.add('show');
+  // 폭 토글은 디자인언어 화면에선 의미 없음
+  document.getElementById('segWidth').style.opacity = (v==='dl')?'.4':'1';
+  document.getElementById('segWidth').style.pointerEvents = (v==='dl')?'none':'auto';
+  if(v==='home') playHome();
+  else if(v==='synapse'){ requestAnimationFrame(()=>SYN.start()); }
+  else SYN.stop();
+  if(v!=='synapse') SYN.stop();
+}
+document.querySelectorAll('#segView button').forEach(b=>{
+  b.addEventListener('click', ()=>setView(b.dataset.view));
+});
+document.querySelectorAll('#segWidth button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#segWidth button').forEach(x=>x.classList.toggle('on', x===b));
+    device.classList.toggle('web', b.dataset.w==='web');
+    if(curView==='synapse') requestAnimationFrame(()=>SYN.start());
+  });
+});
+document.getElementById('replay').addEventListener('click', ()=>{
+  if(curView==='home') playHome();
+  else if(curView==='synapse') SYN.start();
+});
+document.getElementById('startBtn').addEventListener('click', ()=>setView('synapse'));
+
+// 초기 진입 모션
+renderQuests();
+requestAnimationFrame(()=>{ setTimeout(playHome, 120); });
+</script>
+</body>
+</html>
