@@ -1,12 +1,13 @@
 import Image from "next/image";
 
 /**
- * 브랜드 자산 갤러리 — 보드 6~10. 정적(next/image), 토큰 비구동.
+ * 브랜드 자산 갤러리 — 보드 6~11. 정적(next/image), 토큰 비구동.
  * PNG 는 색이 baked 되어 슬라이더 영향을 받지 않는다(레퍼런스 표시 전용).
  * 자산은 PR #61(apps/web/public/brand/)이 소유 — 여기선 배치·렌더만 한다.
  */
 
 const BRAND = "/brand";
+const MASCOT = "/mascot";
 
 function TrackTag({ kind }: { kind: "플랫" | "3D" }) {
   return (
@@ -198,18 +199,55 @@ export function BrandGallery() {
         <Caption path="public/brand/soongong-main.png" />
       </GalleryBoard>
 
-      {/* 9. CHARACTER — sub-girl.png / sub-boy.png */}
-      <GalleryBoard n={9} title="Character · 보조">
+      {/* 9. MASCOT 반신 — main-half*-alpha.png 표정 4종 (배경 투명, §4.13, SOO-80) */}
+      <GalleryBoard n={9} title="Mascot · 반신 표정">
         <div className="mb-2 flex items-center gap-2">
           <TrackTag kind="3D" />
           <span className="text-xs text-[var(--color-text-default)]">
-            휴먼 보조 캐릭터 2종
+            순공이 반신 표정 4종 (배경 투명) · 마스코트 락
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            { file: "main-half-alpha.png", label: "기본" },
+            { file: "main-half-cheer-alpha.png", label: "응원" },
+            { file: "main-half-comeon-alpha.png", label: "이리와" },
+            { file: "main-half-good-alpha.png", label: "칭찬" },
+          ].map((m) => (
+            <div
+              key={m.file}
+              className="flex flex-col items-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-bg-sunken)] p-3"
+            >
+              <Image
+                src={`${MASCOT}/${m.file}`}
+                alt={`순공이 반신 ${m.label}`}
+                width={140}
+                height={140}
+                className="h-auto w-[140px] max-w-full object-contain"
+              />
+              <span className="text-[11px] font-medium text-[var(--color-text-default)]">
+                {m.label}
+              </span>
+              <span className="font-mono text-[10px] text-[var(--color-text-muted)]">
+                public/mascot/{m.file}
+              </span>
+            </div>
+          ))}
+        </div>
+      </GalleryBoard>
+
+      {/* 10. CHARACTER — sub-girl-alpha.png / sub-boy-alpha.png (배경 투명, SOO-79) */}
+      <GalleryBoard n={10} title="Character · 보조">
+        <div className="mb-2 flex items-center gap-2">
+          <TrackTag kind="3D" />
+          <span className="text-xs text-[var(--color-text-default)]">
+            휴먼 보조 캐릭터 2종 (배경 투명)
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           {[
-            { file: "sub-girl.png", label: "sub-girl" },
-            { file: "sub-boy.png", label: "sub-boy" },
+            { file: "sub-girl-alpha.png", label: "sub-girl" },
+            { file: "sub-boy-alpha.png", label: "sub-boy" },
           ].map((c) => (
             <div
               key={c.file}
@@ -230,8 +268,8 @@ export function BrandGallery() {
         </div>
       </GalleryBoard>
 
-      {/* 10. HERO — main_concepting_.png 배너 썸네일 */}
-      <GalleryBoard n={10} title="Hero · 배너">
+      {/* 11. HERO — main_concepting_.png 배너 썸네일 */}
+      <GalleryBoard n={11} title="Hero · 배너">
         <div className="mb-2 flex items-center gap-2">
           <TrackTag kind="3D" />
           <span className="text-xs text-[var(--color-text-default)]">

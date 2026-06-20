@@ -5,6 +5,7 @@ import { assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import {
   evaluateGenerationEligibility,
   intersectWrongReasons,
+  meaningfulWrongReasons,
   type ComplianceLike,
   type PloLike,
 } from "./eligibility.ts";
@@ -68,6 +69,26 @@ Deno.test("선별: detected_wrong_reason 빈 배열 → 422", () => {
   assertEquals(r.status, 422);
 });
 
+Deno.test("선별: detected_wrong_reason=['없음'] (정답 답안) → 422 스킵", () => {
+  const r = evaluateGenerationEligibility({ ...validPlo, detected_wrong_reason: ["없음"] }, allow);
+  assertEquals(r.eligible, false);
+  assertEquals(r.status, 422);
+});
+
+Deno.test("선별: 빈의미 토큰 변형('없음.'/'정답'/'N/A') → 422 스킵", () => {
+  for (const tok of ["없음.", "정답", "N/A", "해당 없음", " - "]) {
+    const r = evaluateGenerationEligibility({ ...validPlo, detected_wrong_reason: [tok] }, allow);
+    assertEquals(r.eligible, false, `'${tok}' 는 부적격이어야 함`);
+    assertEquals(r.status, 422);
+  }
+});
+
+Deno.test("선별: '없음' + 실제 약점 혼재 → 적격 (실제 약점이 남으므로)", () => {
+  const r = evaluateGenerationEligibility({ ...validPlo, detected_wrong_reason: ["없음", "계산실수"] }, allow);
+  assertEquals(r.eligible, true);
+  assertEquals(r.status, 200);
+});
+
 Deno.test("선별: topic null → 422", () => {
   const r = evaluateGenerationEligibility({ ...validPlo, topic: null }, allow);
   assertEquals(r.eligible, false);
@@ -99,4 +120,21 @@ Deno.test("매칭: 교집합 0개 → 빈 배열(정조준 실패 신호)", () =
 
 Deno.test("매칭: 중복 제거", () => {
   assertEquals(intersectWrongReasons(["개념미숙"], ["개념미숙", "개념미숙"]), ["개념미숙"]);
+});
+
+// ── meaningfulWrongReasons: 빈의미 토큰 필터 ─────────────────────────
+Deno.test("필터: 빈의미 토큰만 → 빈 배열", () => {
+  assertEquals(meaningfulWrongReasons(["없음"]), []);
+  assertEquals(meaningfulWrongReasons(["정답", "N/A", " - ", ""]), []);
+  assertEquals(meaningfulWrongReasons(null), []);
+  assertEquals(meaningfulWrongReasons(undefined), []);
+});
+
+Deno.test("필터: 실제 약점은 표기 보존, 빈의미 토큰만 제거", () => {
+  assertEquals(meaningfulWrongReasons(["없음", "계산실수"]), ["계산실수"]);
+  assertEquals(meaningfulWrongReasons([" 개념미숙 ", "정답"]), ["개념미숙"]);
+});
+
+Deno.test("필터: 정규화 후 중복 제거", () => {
+  assertEquals(meaningfulWrongReasons(["계산실수", "계산실수"]), ["계산실수"]);
 });

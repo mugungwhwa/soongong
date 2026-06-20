@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/shared/lib/supabase/client";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
 import { ReviewPromiseReveal } from "@/features/onboarding-promise";
@@ -57,20 +56,6 @@ export default function OnboardingPage() {
       setError("만 14세 미만은 보호자 동의 후 가입할 수 있어요.");
       return;
     }
-    setLoading(true);
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-    await supabase
-      .from("users")
-      .update({ birth_year: Number(birthYear) })
-      .eq("id", user.id);
-    setLoading(false);
     setError(null);
     setStep("subjects");
   }
