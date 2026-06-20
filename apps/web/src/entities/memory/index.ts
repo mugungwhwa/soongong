@@ -7,4 +7,4 @@ export {
 } from "./api";
 
 export { useNudgeTrigger } from "./model/use-nudge-trigger";
-export type { NudgeState } from "./model/use-nudge-trigger";
+export type { NudgeState } from "@/shared/lib/nudge-context";
