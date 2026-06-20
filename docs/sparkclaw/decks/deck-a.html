@@ -206,9 +206,10 @@
       <div class="card pad-lg"><div class="card-title">온톨로지 + 베이지안 prior</div><div class="card-body" style="font-size:15.5px;">강한 prior 덕분에 10문제·5분 진단으로 온보딩을 통과시킵니다. (약한 prior는 50문제·1시간 → 대량 이탈.)</div></div>
       <div class="card pad-lg"><div class="card-title">변환 표준화</div><div class="card-body" style="font-size:15.5px;">교재·필기·캡처가 달라도 같은 학습 객체 구조로 수렴. 맞춤 연동이 아니라 표준 파이프라인.</div></div>
     </div>
-    <p class="muted" style="font-size:13px;margin:2px 0 0;font-weight:700;color:var(--color-text-default);">기술 스택 — repo 실제 기반, 동작 데모가 이 위에서 돕니다</p>
+    <p class="muted" style="font-size:13px;margin:2px 0 0;font-weight:700;color:var(--color-text-default);">기술 스택 — Claude vision·Supabase·RAG 가동, Mathpix는 폴백 도입 설계</p>
     <div class="flow" style="margin:0;">
-      <div class="node">Claude vision<div class="sub">자료 인식</div></div><div class="arrow">→</div>
+      <div class="node">입력<div class="sub">촬영·업로드·필기</div></div><div class="arrow">→</div>
+      <div class="node">인식<div class="sub">Claude vision 가동 + Mathpix 폴백(설계)</div></div><div class="arrow">→</div>
       <div class="node">Supabase · Edge Functions<div class="sub">파이프라인·백엔드</div></div><div class="arrow">→</div>
       <div class="node">온톨로지 + 메모리 RAG<div class="sub">Postgres · pgvector</div></div><div class="arrow">→</div>
       <div class="node lead">베이지안 추천<div class="sub">최적 복습문제</div></div>
