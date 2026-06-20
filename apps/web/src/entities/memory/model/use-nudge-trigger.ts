@@ -1,15 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/shared/lib/supabase/client";
-
-export interface NudgeState {
-  /** 망각위험 high + 복습 overdue 조건 충족 시 true. */
-  active: boolean;
-  /** UI·접근성 라벨용. 예: "3일 미회독". */
-  reason: string | null;
-  /** 위험 대상 학습객체 전체 수 (limit 미적용). */
-  count: number;
-}
+import type { NudgeState } from "@/shared/lib/nudge-context";
 
 /**
  * 망각위험/복습 due 신호를 읽어 nudge 발동 여부를 반환한다.
