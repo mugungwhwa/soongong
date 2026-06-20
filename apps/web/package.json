@@ -9,6 +9,7 @@
     "lint": "next lint",
     "lint:tokens": "tsx scripts/check-tokens.ts",
     "lint:no-dark": "tsx scripts/check-no-dark.ts",
+    "lint:sub-scope": "tsx scripts/check-sub-brand-scope.ts",
     "test": "vitest",
     "test:e2e": "playwright test",
     "eval:p2": "tsx ../../eval/p2/runner.ts"

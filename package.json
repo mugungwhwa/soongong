@@ -8,6 +8,7 @@
     "lint": "pnpm --filter web lint",
     "lint:tokens": "pnpm --filter web lint:tokens",
     "lint:no-dark": "pnpm --filter web lint:no-dark",
+    "lint:sub-scope": "pnpm --filter web lint:sub-scope",
     "lint:images": "bash scripts/check-image-deprecated.sh --all",
     "test": "pnpm --filter web test",
     "test:e2e": "pnpm --filter web test:e2e"

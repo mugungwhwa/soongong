@@ -35,11 +35,12 @@ description: Use when working on 순공대장 UI — building or editing a scree
 5. **마스코트 락.** 마스코트는 듀공 모티프 "순공이" 하나로 고정. 다른 마스코트·식물 모티프(씨앗/새싹/꽃 등급 등) 도입 금지.
 6. **폐기 방향 회귀 금지.** 회독마왕 / 다크 네이비 / Dark Study RPG / 구 Ocean 팔레트 / 토스 단일 reference로의 회귀 제안은 거절하고 Mike 확인. (목록·근거: `CLAUDE.md` §8)
 7. **`/styleguide` = 출발점·근간.** `/styleguide`는 모든 디자인·브랜드 가이드라인을 눈으로 확인하는 정본 surface이자 출발점이다. 새 화면/컴포넌트는 여기서 토큰·컴포넌트 패턴을 먼저 확인하고 시작한다. 고정 리뷰 URL·접근 방법은 `docs/ops/styleguide-review-access.md`를 경로 참조(URL을 다른 파일에 복붙하지 말 것).
+8. **sub-* 브랜드 한정.** `sub-boy`/`sub-girl`은 마스코트가 아닌 **보조 브랜드 자산**(용도: 프로필=브랜드 페르소나 + 서브 브랜드 이미지). **히어로/마케팅/랜딩 화면에만** 쓰고, 인앱 학습 루프(회독·게임화·대시보드·결과·오답던전 등)엔 **절대 미사용**. 게이트: `pnpm lint:sub-scope`. (스펙: master-design §4.13 사용 범위 가드레일 / 결정: SOO-88. "프로필"=인앱 아바타 해석은 Mike 확정 전까지 보류 — 충돌 시 인앱 금지 우선.)
 
 ## 작업 전 / 후
 
 - **전**: tokens.css와 `/styleguide`에서 쓸 토큰을 먼저 확인. 필요한 값이 없으면 새 hex를 박지 말고 `docs/design-tokens.md`의 토큰 추가 규칙을 따라 tokens.css에 등록.
-- **후 (PR 올리기 전)**: 로컬에서 `pnpm lint:tokens` + `pnpm lint:no-dark`를 직접 실행해 통과시킨다. 실패하면 고쳐서 다시 올린다. 이 둘은 `CLAUDE.md` §4 위험 게이트·머지 게이트가 요구하는 **로컬·리뷰 단계 검사**이며, 현재 `.github/workflows`에 자동 CI나 브랜치 보호로 강제되지는 않는다 — 그러니 에이전트가 손수 돌려야 한다.
+- **후 (PR 올리기 전)**: 로컬에서 `pnpm lint:tokens` + `pnpm lint:no-dark`를 직접 실행해 통과시킨다(브랜드 캐릭터/마케팅 surface를 건드렸으면 `pnpm lint:sub-scope`도). 실패하면 고쳐서 다시 올린다. 이 둘은 `CLAUDE.md` §4 위험 게이트·머지 게이트가 요구하는 **로컬·리뷰 단계 검사**이며, 현재 `.github/workflows`에 자동 CI나 브랜치 보호로 강제되지는 않는다 — 그러니 에이전트가 손수 돌려야 한다.
 
 ## Red Flags — 멈추고 다시 보라
 
@@ -47,4 +48,5 @@ description: Use when working on 순공대장 UI — building or editing a scree
 - 다크모드/네이비 변형을 추가하고 있다 → light-only 위반.
 - tokens.css 값이나 lock 문서 스펙을 다른 파일로 복사하고 있다 → 두 번째 SSoT.
 - 마스코트를 듀공이 아닌 것으로 바꾸거나 식물 등급을 도입하고 있다 → 잠긴 결정 위반.
+- `sub-boy`/`sub-girl`을 인앱 화면(회독·게임화·대시보드·결과·저니·플레이 등)에 넣고 있다 → 브랜드 한정 위반(히어로/마케팅/랜딩 전용). `pnpm lint:sub-scope`로 확인.
 - "구 Ocean이 더 나으니 되돌리자" → §8 폐기 정책 위반, Mike 확인 필요.
