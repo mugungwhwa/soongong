@@ -6,8 +6,9 @@ import { QuestList } from "@/widgets/quest-list";
 import { ReviewMap } from "@/widgets/review-map";
 import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
+import { NudgeBanner, NotificationBell } from "@/widgets/nudge-banner";
 import { IntakeHero } from "@/features/upload-source";
-import { Bell, PartyPopper } from "lucide-react";
+import { PartyPopper } from "lucide-react";
 
 export function TodayPage({
   isFirstEntry = false,
@@ -52,19 +53,9 @@ export function TodayPage({
                 : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
             </p>
           </div>
-          <button
-            aria-label="알림"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] transition hover:bg-[var(--color-mint-100)]"
-          >
-            <Bell
-              size={16}
-              strokeWidth={1.5}
-              color="var(--color-text-muted)"
-              fill="none"
-              aria-hidden="true"
-            />
-          </button>
+          <NotificationBell />
         </div>
+        <NudgeBanner />
         <TierJourneyHero />
         <StatsGrid />
       </section>

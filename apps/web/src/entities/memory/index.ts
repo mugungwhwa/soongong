@@ -5,3 +5,6 @@ export {
   getHighRiskMemoryItems,
   getMemoryByObjectId,
 } from "./api";
+
+export { useNudgeTrigger } from "./model/use-nudge-trigger";
+export type { NudgeState } from "./model/use-nudge-trigger";
