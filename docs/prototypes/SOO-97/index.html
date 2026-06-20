@@ -241,7 +241,9 @@ body{
 .review .summ .box .v{font-size:18px;font-weight:800;color:var(--color-text-strong)}
 .review .summ .box .l{font-size:10.5px;font-weight:700;color:var(--color-text-muted);margin-top:4px}
 .wlist{display:flex;flex-direction:column;gap:10px;margin-top:var(--space-5)}
-.device.web .wcols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* 웹 폭: 오답카드를 2단 그리드로. 그리드는 카드들의 실제 부모(.wlist)에 걸어야 한다 —
+   래퍼(.wcols)에 걸면 자식이 .wlist 하나뿐이라 좌측 1칼럼만 채우고 우측이 빈다(SOO-107). */
+.device.web .wlist{display:grid;grid-template-columns:1fr 1fr;align-items:start}
 .w{
   display:flex;align-items:center;gap:13px;background:var(--color-surface);
   border:1px solid var(--color-border-default);border-radius:var(--radius-lg);
