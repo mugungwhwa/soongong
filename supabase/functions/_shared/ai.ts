@@ -65,6 +65,17 @@ async function callWithBackoff(
   throw new Error("unreachable");
 }
 
+// Zod 에러를 모델·로그가 읽기 쉬운 필드 단위 문자열로 변환.
+function formatSchemaError(err: unknown): string {
+  if (err && typeof err === "object" && "issues" in err) {
+    const issues = (err as { issues: Array<{ path: Array<string | number>; message: string }> }).issues;
+    return issues
+      .map((i) => `- ${i.path.join(".") || "(root)"}: ${i.message}`)
+      .join("\n");
+  }
+  return err instanceof Error ? err.message : String(err);
+}
+
 export async function generateObject<T extends ZodTypeAny>({
   schema,
   messages,
@@ -72,6 +83,7 @@ export async function generateObject<T extends ZodTypeAny>({
   system = [CACHED_SYSTEM],
   toolDescription = "컴플라이언스 분류 결과를 구조화된 형식으로 반환합니다.",
   maxTokens = 1024,
+  maxRepairAttempts = 2,
 }: {
   schema: T;
   messages: Anthropic.MessageParam[];
@@ -79,31 +91,68 @@ export async function generateObject<T extends ZodTypeAny>({
   system?: Array<{ type: "text"; text: string; cache_control?: { type: "ephemeral" } }>;
   toolDescription?: string;
   maxTokens?: number;
+  // 스키마 위반 시 검증 오류를 모델에 피드백하며 재호출하는 self-repair 횟수.
+  maxRepairAttempts?: number;
 }): Promise<{ object: import("npm:zod@3").infer<T> }> {
   const jsonSchema = zodToJsonSchema(schema, { $refStrategy: "none" });
+  // 재시도마다 직전 tool_use(잘못된 출력) + tool_result(오류 피드백)를 누적한다.
+  const convo: Anthropic.MessageParam[] = [...messages];
+  let lastError: unknown = new Error("structured_output produced no result");
 
-  const response = await callWithBackoff(() =>
-    client.messages.create({
-      model: model ?? DEFAULT_MODEL,
-      max_tokens: maxTokens,
-      system,
-      tools: [
+  for (let attempt = 0; attempt <= maxRepairAttempts; attempt++) {
+    const response = await callWithBackoff(() =>
+      client.messages.create({
+        model: model ?? DEFAULT_MODEL,
+        max_tokens: maxTokens,
+        system,
+        tools: [
+          {
+            name: "structured_output",
+            description: toolDescription,
+            input_schema: jsonSchema as Anthropic.Tool["input_schema"],
+          },
+        ],
+        tool_choice: { type: "tool", name: "structured_output" },
+        messages: convo,
+      })
+    );
+
+    const truncated = response.stop_reason === "max_tokens";
+    const toolUse = response.content.find((b) => b.type === "tool_use");
+    if (!toolUse || toolUse.type !== "tool_use") {
+      // tool_use 자체가 없으면 피드백할 출력이 없어 self-repair 불가 → 즉시 종료.
+      lastError = new Error(
+        truncated
+          ? "structured_output truncated before tool call (max_tokens) — raise maxTokens"
+          : "structured_output tool not called",
+      );
+      break;
+    }
+
+    // Anthropic tool-use 는 호출만 강제할 뿐 input 의 스키마 적합성은 보장하지 않는다 → 직접 검증.
+    const result = schema.safeParse(toolUse.input);
+    if (result.success) return { object: result.data };
+
+    lastError = result.error;
+    if (attempt === maxRepairAttempts) break;
+
+    // self-repair: 자신이 낸 잘못된 출력 + 검증 오류를 되돌려주고 structured_output 재호출 요청.
+    convo.push({ role: "assistant", content: response.content as Anthropic.ContentBlockParam[] });
+    convo.push({
+      role: "user",
+      content: [
         {
-          name: "structured_output",
-          description: toolDescription,
-          input_schema: jsonSchema as Anthropic.Tool["input_schema"],
+          type: "tool_result",
+          tool_use_id: toolUse.id,
+          is_error: true,
+          content:
+            (truncated ? "출력이 max_tokens 한도로 잘렸습니다. 더 간결하게 작성하세요.\n" : "") +
+            "structured_output 입력이 스키마를 위반했습니다. 아래 오류를 모두 고쳐 structured_output 도구를 정확히 한 번 더 호출하세요:\n" +
+            formatSchemaError(result.error),
         },
       ],
-      tool_choice: { type: "tool", name: "structured_output" },
-      messages,
-    })
-  );
-
-  const toolUse = response.content.find((b) => b.type === "tool_use");
-  if (!toolUse || toolUse.type !== "tool_use") {
-    throw new Error("structured_output tool not called");
+    });
   }
 
-  const parsed = schema.parse(toolUse.input);
-  return { object: parsed };
+  throw new Error(`structured_output schema validation failed: ${formatSchemaError(lastError)}`);
 }
