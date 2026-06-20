@@ -10,7 +10,13 @@ import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { UploadTrigger } from "@/features/upload-source";
 import { Bell, PartyPopper } from "lucide-react";
 
-export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) {
+export function TodayPage({
+  isFirstEntry = false,
+  userName,
+}: {
+  isFirstEntry?: boolean;
+  userName?: string;
+}) {
   return (
     <div className="p-4 lg:p-6 max-w-[1400px] mx-auto">
       {isFirstEntry && (
@@ -47,7 +53,7 @@ export function TodayPage({ isFirstEntry = false }: { isFirstEntry?: boolean }) 
           />
           <div className="min-w-0">
             <h1 className="text-lg font-bold text-[var(--color-text-strong)] lg:text-xl">
-              안녕하세요, 김순공님!
+              {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
             </h1>
             <p className="mt-0.5 text-sm text-[var(--color-text-default)]">
               {isFirstEntry
