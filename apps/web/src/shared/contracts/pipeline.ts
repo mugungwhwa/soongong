@@ -87,6 +87,8 @@ export interface GenerateInput {
   subject: string;
   typeId: string | null;
   typeName: string;
+  /** stageMemorize가 반환한 student_memory_items.memory_id. review_quests에 연결. */
+  memoryId?: string;
   /** 시도할 변형 레벨. 미지정 시 "V1". 파싱 불가 시 V0 폴백. */
   variationLevel?: VariationLevel;
 }
@@ -111,5 +113,6 @@ export interface PipelineOutput {
   routingId: string;
   finalSubject: string;
   typeId: string | null;
+  memoryId: string;
   questId: string;
 }
