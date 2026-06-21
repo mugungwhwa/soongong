@@ -1,4 +1,5 @@
 import { createClient } from "@/shared/lib/supabase/client";
+import type { ReviewGrade } from "@/entities/game";
 
 export type GameProgressMode = "today" | "wrong_recovery" | "memory_defense";
 
@@ -10,6 +11,7 @@ export async function recordGameProgress(
   mode: GameProgressMode,
   isCorrect: boolean,
   hintUsed: boolean,
+  grade?: ReviewGrade,
 ): Promise<void> {
   try {
     const supabase = createClient();
@@ -25,6 +27,7 @@ export async function recordGameProgress(
           result: isCorrect ? "correct" : "wrong",
           mode,
           hint_used: hintUsed,
+          grade,
         },
       },
     });
