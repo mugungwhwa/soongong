@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 현재 UI ↔ 조사 레퍼런스 시각 비교 덱 (SOO-95)</title>
+<style>
+  /* 순공대장 브랜드 토큰 (덱 chrome 전용 — 제품 토큰 변경 아님) */
+  :root{
+    --cream:#F8FBF7; --ink:#243530; --muted:#5d6f68; --line:#e3ece7;
+    --mint-1:#A8DCCB; --mint-2:#7BC4AE; --mint-3:#4CAF88;
+    --card:#ffffff; --shadow:0 2px 14px rgba(40,80,64,.07);
+    --warn:#E7A23B; --bad:#D9756B; --good:#4CAF88;
+    --ref:#6b7fd7; --ref-bg:#eef1fc; /* 레퍼런스 패널 식별색(보라 계열) */
+    --pill-gap:#fbeede; --pill-gap-ink:#a36a14;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Pretendard","Apple SD Gothic Neo",-apple-system,system-ui,sans-serif;
+    background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+  a{color:var(--mint-3)}
+
+  /* 헤더 */
+  header.hero{padding:56px 0 30px;background:
+    radial-gradient(1200px 380px at 50% -120px, #e7f5ee 0%, var(--cream) 70%);}
+  .eyebrow{display:inline-block;font-size:13px;font-weight:700;letter-spacing:.04em;
+    color:var(--mint-3);background:#e9f6ef;padding:5px 12px;border-radius:999px}
+  h1{font-size:clamp(26px,4vw,40px);margin:14px 0 8px;letter-spacing:-.02em}
+  .sub{font-size:17px;color:var(--muted);max-width:760px}
+  .disclaimer{margin-top:20px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--mint-2);
+    border-radius:12px;padding:14px 18px;font-size:14px;color:var(--muted);max-width:860px;box-shadow:var(--shadow)}
+  .disclaimer b{color:var(--ink)}
+
+  /* 폼팩터 토글 */
+  .toolbar{position:sticky;top:0;z-index:40;background:rgba(248,251,247,.86);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 0;margin-top:26px}
+  .toolbar .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .ff-toggle{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:var(--shadow)}
+  .ff-toggle button{border:0;background:transparent;padding:7px 18px;border-radius:999px;font-size:14px;
+    font-weight:700;color:var(--muted);cursor:pointer;transition:.18s}
+  .ff-toggle button.on{background:var(--mint-3);color:#fff}
+  .toolbar .hint{font-size:13px;color:var(--muted)}
+  .jump{margin-left:auto;font-size:13px;display:flex;gap:6px;flex-wrap:wrap}
+  .jump a{text-decoration:none;color:var(--muted);background:#fff;border:1px solid var(--line);
+    padding:4px 10px;border-radius:999px}
+
+  section{padding:30px 0}
+  h2{font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--mint-3);text-transform:uppercase;margin:0 0 4px}
+  .section-title{font-size:23px;margin:2px 0 18px;letter-spacing:-.01em}
+
+  /* TL;DR P카드 */
+  .pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 16px 18px;box-shadow:var(--shadow)}
+  .pcard .ptag{font-size:12px;font-weight:800;color:#fff;background:var(--mint-3);padding:3px 10px;border-radius:999px}
+  .pcard.p1 .ptag{background:var(--bad)}
+  .pcard h4{margin:12px 0 6px;font-size:16px}
+  .pcard p{margin:0;font-size:13px;color:var(--muted)}
+  .pcard .src{margin-top:10px;font-size:12px;color:var(--ref);font-weight:700}
+
+  /* 비교 행 */
+  .cmp{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);
+    overflow:hidden;margin-bottom:26px}
+  .cmp-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .cmp-head .n{font-size:13px;font-weight:800;color:#fff;background:var(--ink);width:26px;height:26px;
+    border-radius:8px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .cmp-head h3{margin:0;font-size:19px;letter-spacing:-.01em}
+  .cmp-head .route{font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted);
+    background:#f1f5f3;padding:2px 8px;border-radius:6px}
+  .cmp-head .gap-pill{margin-left:auto;font-size:12px;font-weight:700;background:var(--pill-gap);
+    color:var(--pill-gap-ink);padding:4px 11px;border-radius:999px}
+
+  .cmp-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  @media(max-width:840px){.cmp-body{grid-template-columns:1fr}}
+  .pane{padding:22px}
+  .pane.left{background:linear-gradient(180deg,#fbfdfb,#fff)}
+  .pane.right{background:var(--ref-bg);border-left:1px solid var(--line)}
+  @media(max-width:840px){.pane.right{border-left:0;border-top:1px solid var(--line)}}
+  .pane .label{font-size:12px;font-weight:800;letter-spacing:.04em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .pane.left .label{color:var(--mint-3)}
+  .pane.right .label{color:var(--ref)}
+  .pane .label .dot{width:9px;height:9px;border-radius:50%}
+  .pane.left .dot{background:var(--mint-3)}
+  .pane.right .dot{background:var(--ref)}
+  .pane .badge-real{font-size:11px;font-weight:700;color:var(--good);background:#e8f6ef;padding:2px 8px;border-radius:6px}
+  .pane .badge-recr{font-size:11px;font-weight:700;color:var(--ref);background:#fff;border:1px solid #d6ddf7;padding:2px 8px;border-radius:6px}
+
+  /* 순공 실캡처 phone/web frame */
+  .shot-wrap{display:flex;justify-content:center}
+  .phone{width:248px;border-radius:26px;border:8px solid #1f2a27;background:#1f2a27;box-shadow:0 12px 30px rgba(31,42,39,.22);overflow:hidden}
+  .phone img{display:block;width:100%}
+  .webframe{width:100%;border-radius:12px;border:1px solid var(--line);box-shadow:0 8px 22px rgba(40,80,64,.12);overflow:hidden;background:#fff}
+  .webframe .bar{height:26px;background:#eef3f0;display:flex;align-items:center;gap:5px;padding:0 10px}
+  .webframe .bar i{width:9px;height:9px;border-radius:50%;background:#cdd8d2}
+  .webframe img{display:block;width:100%}
+  .shot-app{display:block}.shot-web{display:none}
+  body.ff-web .shot-app{display:none}body.ff-web .shot-web{display:block}
+  .noscreen{border:2px dashed #cdd6d0;border-radius:16px;padding:30px 18px;text-align:center;color:var(--muted);background:#fafdfb}
+  .noscreen .x{font-size:30px}
+  .noscreen .t{font-weight:800;color:var(--bad);margin-top:6px}
+
+  /* 레퍼런스 재현(연구용) — 미니 목업 */
+  .ref-mock{width:248px;margin:0 auto;border-radius:18px;background:#fff;border:1px solid #dde3f5;
+    box-shadow:0 8px 22px rgba(70,90,170,.12);overflow:hidden;font-size:12px}
+  .ref-mock .top{padding:10px 12px;font-weight:800;border-bottom:1px solid #eef0fa;display:flex;align-items:center;gap:8px}
+  .ref-mock .body2{padding:12px}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font-weight:700;font-size:11px}
+  .row{display:flex;gap:8px}
+  .duo-streak{background:#fff4e0;color:#e08b00}
+  .duo-xp{background:#fff8d6;color:#bb9700}
+  .duo-heart{background:#ffe3e0;color:#d9483f}
+  .pill-count{flex:1;text-align:center;border-radius:10px;padding:8px 4px;font-weight:800;color:#fff}
+  .pc-new{background:#3b9ae1}.pc-learn{background:#e08b00}.pc-rev{background:#3aa66f}
+  .pc-num{font-size:18px;display:block;line-height:1.1}
+  .pc-lab{font-size:10px;font-weight:600;opacity:.92}
+  .ref-pet{width:64px;height:64px;border-radius:50%;margin:6px auto;background:
+    radial-gradient(circle at 50% 38%,#bfe3f2,#7fc4dd);display:flex;align-items:center;justify-content:center;font-size:30px}
+  .seedrow{display:flex;justify-content:space-between;align-items:flex-end;margin-top:8px}
+  .seed{flex:1;text-align:center;font-size:20px}
+  .strength-bar{height:7px;border-radius:99px;background:#eef0fa;overflow:hidden;margin:3px 0 7px}
+  .strength-bar i{display:block;height:100%;background:linear-gradient(90deg,#7fc4dd,#3aa66f)}
+  .quiz-opt{border:1px solid #dde3f5;border-radius:10px;padding:8px 10px;margin-bottom:6px;font-weight:600;color:#3a4a86}
+  .quiz-opt.sel{background:#eef1fc;border-color:#9fb0ee}
+  .grade-btns{display:flex;gap:5px;margin-top:8px}
+  .grade-btns span{flex:1;text-align:center;border-radius:8px;padding:6px 2px;font-size:10px;font-weight:800;color:#fff}
+  .gb-again{background:#d9483f}.gb-hard{background:#e08b00}.gb-good{background:#3aa66f}.gb-easy{background:#3b9ae1}
+  .toast{background:#f3f6e9;border:1px solid #dbe6bd;border-radius:12px;padding:10px 12px;color:#5b6b2e;font-weight:600}
+  .toast .ic{font-size:18px}
+  .xp-pop{background:linear-gradient(180deg,#fffbe6,#fff);border:2px solid #ffe08a;border-radius:14px;
+    text-align:center;padding:14px}
+  .xp-pop .big{font-size:26px;font-weight:900;color:#bb9700}
+
+  /* 코멘트 3줄 */
+  .verdict{margin-top:18px;border-top:1px dashed var(--line);padding-top:14px;display:grid;gap:9px}
+  .vrow{display:grid;grid-template-columns:96px 1fr;gap:10px;font-size:13.5px;align-items:start}
+  .vrow .k{font-weight:800;font-size:11px;letter-spacing:.03em;padding-top:2px}
+  .vrow.ref .k{color:var(--ref)}.vrow.cur .k{color:var(--mint-3)}.vrow.gap .k{color:var(--pill-gap-ink)}
+  .vrow .v{color:#3a4640}
+  .pmap{margin-top:6px;display:inline-flex;align-items:center;gap:8px;font-size:12px;background:#eaf6f0;
+    border:1px solid #cfeadd;color:#2c6b51;font-weight:700;padding:5px 11px;border-radius:999px}
+  .pmap.none{background:#f4f4f4;border-color:#e4e4e4;color:#888}
+
+  /* 매트릭스 */
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);font-size:14px}
+  th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#eef6f1;font-size:12px;letter-spacing:.04em;color:var(--ink)}
+  .mtx td:first-child{color:var(--good);font-weight:600}
+  .mtx td:last-child{color:var(--bad)}
+  .strong{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+  .strong ul{margin:8px 0 0;padding-left:18px}
+  .strong li{margin:6px 0;font-size:14px}
+
+  footer{padding:36px 0 60px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:20px}
+  footer code{background:#eef3f0;padding:1px 6px;border-radius:5px;font-size:12px}
+  .method{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;box-shadow:var(--shadow);margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">SOO-95 · UI·디자인 리드</span>
+    <h1>순공대장 현재 UI <span style="color:var(--mint-3)">↔</span> 조사 레퍼런스 시각 비교 덱</h1>
+    <p class="sub">순공대장 <b>현재 전체 화면을 실제 렌더 캡처</b>해서, SOO-93에서 티어다운한 <b>회독 리텐션 레퍼런스 6종</b>(듀오링고·Finch·Anki·Memrise·Quizlet·Brilliant)과 좌우로 나란히 비교한다. 한눈에 <b>현재 → 레퍼런스 → 갭</b>이 보이도록 구성했고, 각 갭이 SOO-94 <b>P1~P5 제안</b> 중 무엇으로 메워지는지 연결했다.</p>
+    <div class="disclaimer">
+      <b>이 문서는 비교·분석 자료이지 리디자인 제안이 아니다.</b> 색·로고·마스코트·디자인 토큰 변경 0건, 코어 회독 루프·MOAT 무수정.
+      좌측은 순공대장 <b>실제 앱 렌더 스크린샷</b>(mock 모드 localhost 캡처), 우측은 레퍼런스의 시그니처 패턴을 <b>연구용으로 재현한 미니 목업</b>(타사 앱 실제 스크린샷 아님 — 공개 repo 저작권 가드)이다.
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="ff-toggle" role="group" aria-label="폼팩터 전환">
+      <button id="btn-app" class="on" onclick="setFF('app')">📱 앱 (모바일 폭)</button>
+      <button id="btn-web" onclick="setFF('web')">🖥 웹 (데스크톱 폭)</button>
+    </div>
+    <span class="hint">좌측 순공 캡처의 폼팩터를 전환합니다 (동일 반응형 웹앱, 390px / 1440px 실캡처).</span>
+    <nav class="jump">
+      <a href="#tldr">갭 요약</a><a href="#cmp">화면 비교</a><a href="#matrix">차용/거절</a><a href="#strength">강점</a>
+    </nav>
+  </div>
+</div>
+
+<!-- TL;DR -->
+<section id="tldr" class="wrap">
+  <h2>TL;DR</h2>
+  <div class="section-title">순공은 이미 "좋은 쪽"에 정렬돼 있다 — 빠진 건 <b>리텐션 마감재 5종</b></div>
+  <p class="sub" style="margin-bottom:18px">마스코트 mood 분기 · 기억HP 0–5 정수 · 라이트 동반자 톤은 듀오링고/Habitica의 다크패턴을 구조적으로 피하고 있다. 아래 P1~P5는 모두 <b>코어 회독 루프를 그대로 두고 마감재만 더하는</b> 저(低)브랜드리스크 영역이다.</p>
+  <div class="pgrid">
+    <div class="pcard p1">
+      <span class="ptag">P1 · 최우선</span><h4>비-처벌 빈 상태</h4>
+      <p>첫 회독 전·큐 0건일 때 순공이가 기다리는 동반자 화면. 현재 <b>완전 미구현(최대 공백)</b>.</p>
+      <div class="src">← Finch · 갭 L</div>
+    </div>
+    <div class="pcard">
+      <span class="ptag">P2</span><h4>동반자 톤 리마인드</h4>
+      <p>"○○단원에 물 줄 시간이래요"식 돌봄 넛지·푸시. 협박/죄책감 금지.</p>
+      <div class="src">← Memrise·Finch · 갭 J</div>
+    </div>
+    <div class="pcard">
+      <span class="ptag">P3</span><h4>오늘 복습 due 큐 정수</h4>
+      <p>홈에 "오늘 회독 N개"를 Anki식 정수 카운트로 명확화. 데이터는 이미 존재 → 표시만.</p>
+      <div class="src">← Anki · 갭 F</div>
+    </div>
+    <div class="pcard">
+      <span class="ptag">P4</span><h4>회독 보호권(Freeze)</h4>
+      <p>끊겨도 순공이가 하루 막아줌. <b>무료·죄책감 0</b>(유료 repair 거절).</p>
+      <div class="src">← 듀오링고(분해) · 갭 B</div>
+    </div>
+    <div class="pcard">
+      <span class="ptag">P5</span><h4>단원별 숙련도 시각화</h4>
+      <p>정수 단계·은유 상태로(백분율 금지). 기억HP 0–5 체계의 단원 단위 확장.</p>
+      <div class="src">← Quizlet·Memrise · 갭 H</div>
+    </div>
+  </div>
+</section>
+
+<!-- 화면 비교 -->
+<section id="cmp" class="wrap">
+  <h2>화면별 1:1 비교</h2>
+  <div class="section-title">좌 = 순공 현재(실캡처) <span style="color:#c3ccc7">·</span> 우 = 레퍼런스 패턴(연구용 재현)</div>
+
+  <!-- 1. 홈 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">1</span><h3>홈 / 오늘의 회독</h3><span class="route">/today</span>
+      <span class="gap-pill">갭 F · B</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap">
+          <div class="phone shot-app"><img src="./shots/today-app.png" alt="순공 홈 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/today-web.png" alt="순공 홈 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: 듀오링고 헤더 + Anki due 카운트 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🦉 듀오링고 — 홈 헤더
+            <span style="margin-left:auto" class="row">
+              <span class="chip duo-streak">🔥 12</span><span class="chip duo-xp">⚡ 1,160</span><span class="chip duo-heart">❤ 5</span></span>
+          </div>
+          <div class="body2">
+            <div style="font-weight:800;margin-bottom:6px;color:#3a4a86">Anki — 오늘 할 양 (정수)</div>
+            <div class="row">
+              <span class="pill-count pc-new"><span class="pc-num">3</span><span class="pc-lab">신규</span></span>
+              <span class="pill-count pc-learn"><span class="pc-num">5</span><span class="pc-lab">복습중</span></span>
+              <span class="pill-count pc-rev"><span class="pc-num">12</span><span class="pc-lab">오늘예정</span></span>
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:#8a93b8">헤더 streak/XP 상시 노출 + 오늘 due를 숫자로 즉시 인지</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">듀오링고는 헤더에 streak🔥·XP를 <b>상시 노출</b>해 진입 동기를 박고, Anki는 "오늘 할 양"을 <b>정수 3카운트</b>로 즉시 인지시킨다.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v">스트릭 12·기억HP 4/5·stats 4박스·마스코트 mood를 이미 보유(모범). 다만 "오늘 회독 N개" due 큐의 <b>정수 가시성</b>이 약하고, streak <b>Freeze가 없어</b> 끊기면 처벌형 리셋.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>F</b> 오늘 due 큐 정수 명확성 · <b>B</b> Freeze 부재.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P3 (due 큐 정수) · P4 (Freeze)</span>
+    </div>
+  </div>
+
+  <!-- 2. 빈 상태 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">2</span><h3>빈 상태 (첫 회독 전 / 큐 0건)</h3><span class="route">미구현</span>
+      <span class="gap-pill">갭 L · 최대 공백</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="noscreen">
+          <div class="x">🫥</div>
+          <div class="t">전용 빈 상태 화면 없음</div>
+          <div style="margin-top:8px;font-size:13px">코드베이스에 empty-state 컴포넌트 부재. 큐 0건·첫 진입 시 동반자 연출이 없어 <b>복귀·첫경험 마찰</b>이 그대로 남는다. (참고: <code>/today?first=1</code> 첫진입 변형은 있으나 "기다림" 빈상태는 아님)</div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: Finch 비-처벌 빈 상태 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🐤 Finch — 할 일이 없는 날</div>
+          <div class="body2" style="text-align:center">
+            <div class="ref-pet">🐤</div>
+            <div style="font-weight:800;color:#3a4a86">오늘은 쉬어도 괜찮아요</div>
+            <div style="font-size:11px;color:#8a93b8;margin-top:4px">"your bird waits patiently" — off-day 페널티 0. 펫이 그냥 기다린다.</div>
+            <div style="margin-top:10px"><span class="chip" style="background:#eef1fc;color:#3a4a86">🌿 에너지는 그대로 유지</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">Finch는 할 일이 없거나 하루 걸러도 <b>페널티를 주지 않고</b> 펫이 기다린다. 성취 최적화가 아니라 <b>self-compassion</b> 중심 → 복귀 마찰 0.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v">빈 상태 화면 <b>완전 미구현</b>. 큐가 비거나 첫 진입일 때 순공이가 기다려주는 연출이 없다 — 갭표 <b>L(최대 공백)</b>.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>L</b> 비-처벌 빈 상태 부재. D1 리텐션 직결.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P1 (비-처벌 빈 상태 · 최우선)</span>
+    </div>
+  </div>
+
+  <!-- 3. 회독 중 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">3</span><h3>회독 진행 (문제 풀이)</h3><span class="route">/play</span>
+      <span class="gap-pill">갭 G · MOAT 경계</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap">
+          <div class="phone shot-app"><img src="./shots/play-app.png" alt="순공 회독 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/play-web.png" alt="순공 회독 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: Anki 카드 플립 + 자가채점 / Brilliant 즉각 피드백 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🃏 Anki — 카드 뒤집기</div>
+          <div class="body2">
+            <div style="border:1px solid #eef0fa;border-radius:10px;padding:14px;text-align:center;font-weight:700">점화식 a₃ = ?<br><span style="font-size:11px;color:#8a93b8;font-weight:500">탭하여 정답 확인</span></div>
+            <div style="font-size:11px;color:#8a93b8;margin:8px 0 2px">회상 강도 자가채점 → 다음 간격 조정</div>
+            <div class="grade-btns"><span class="gb-again">Again</span><span class="gb-hard">Hard</span><span class="gb-good">Good</span><span class="gb-easy">Easy</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">Anki/Quizlet은 카드를 뒤집은 뒤 <b>회상 강도를 자가채점</b>(Again/Hard/Good/Easy)해 다음 복습 간격을 조정한다. Brilliant는 풀이 단계마다 즉각 피드백.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v">문제 카드 + <b>풀이판(tldraw)</b> + 정답 입력 + 힌트를 보유. 채점은 <b>정답/오답 이분</b>이며 회상 강도 자가채점은 없다.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>G</b> 회상 강도 자가채점 부재. 단, 망각·문제생성 <b>MOAT 경계</b>라 직접 제안 아님 → 상신.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P6 (백로그 · MOAT 상신 — Mike/게임화 리드 합의)</span>
+    </div>
+  </div>
+
+  <!-- 4. 결과 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">4</span><h3>결과 / 보상</h3><span class="route">/result</span>
+      <span class="gap-pill">갭 작음 · 강점 영역</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap">
+          <div class="phone shot-app"><img src="./shots/result-app.png" alt="순공 결과 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/result-web.png" alt="순공 결과 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: 듀오링고 레슨 완료 XP 팝업 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🦉 듀오링고 — 레슨 완료</div>
+          <div class="body2">
+            <div class="xp-pop"><div style="font-size:30px">🎉</div><div class="big">+60 XP</div>
+              <div style="font-size:11px;color:#8a93b8">완료 즉시 팝업 · 노랑 시각화 · 스트릭 유지</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">듀오링고는 완료 <b>즉시 XP 팝업</b>으로 보상을 시각화하고 변동 보상으로 도파민 루프를 강화한다.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v"><b>celebrate mood + XP 카운터 애니메이션</b>을 이미 보유 — 갭표 D 모범 수준. 보상 시각화는 레퍼런스와 동급.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v">작음. 가변 보상 레이어(C) 강화 여지만 — 리그(현재 마케팅 카드)를 인앱 보상과 연결 시 확장.</span></div>
+      </div>
+      <span class="pmap none">신규 제안 없음 · 강점 유지 (회귀 금지)</span>
+    </div>
+  </div>
+
+  <!-- 5. 여정 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">5</span><h3>순공 여정 (진척 · 숙련도)</h3><span class="route">/journey</span>
+      <span class="gap-pill">갭 H</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap">
+          <div class="phone shot-app"><img src="./shots/journey-app.png" alt="순공 여정 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/journey-web.png" alt="순공 여정 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: Memrise 숙련도 은유 + Quizlet mastery 단계 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🌱 Memrise — 단원별 숙련(strength)</div>
+          <div class="body2">
+            <div style="font-size:11px;color:#8a93b8;margin-bottom:6px">단어=씨앗, 복습=물주기 · 정수/은유로 강도 표시(백분율 X)</div>
+            <div>수열 <div class="strength-bar"><i style="width:80%"></i></div></div>
+            <div>점화식 <div class="strength-bar"><i style="width:45%"></i></div></div>
+            <div>벡터 <div class="strength-bar"><i style="width:20%"></i></div></div>
+            <div class="seedrow"><span class="seed">🌳</span><span class="seed">🌿</span><span class="seed">🌱</span></div>
+            <div style="text-align:center;font-size:10px;color:#8a93b8">숙련 = 식물 성장 단계(은유)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">듀오링고 path/리그가 진척을 시각화하고, Memrise/Quizlet은 단원·항목별 <b>숙련도를 정수 단계·은유</b>(식물 성장, mastery level)로 보여준다.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v"><b>NeuralMap + tier 진척%</b> + 6단 등급을 보유(갭표 E 모범, 적응형 망각엔진 I는 MOAT). 다만 <b>단원별 숙련 단계</b> 표시가 약하다.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>H</b> 단원별 숙련도 시각화 약함. <b>백분율 금지</b> — 기억HP 0–5 은유 내에서 정수·은유로.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P5 (단원별 숙련도 · 정수/은유)</span>
+    </div>
+  </div>
+
+  <!-- 6. 오답노트 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">6</span><h3>오답 회수 / 오답노트</h3><span class="route">/wrong-notes</span>
+      <span class="gap-pill">갭 F · H</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap">
+          <div class="phone shot-app"><img src="./shots/wrong-notes-app.png" alt="순공 오답 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/wrong-notes-web.png" alt="순공 오답 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: Anki 덱 큐 + Quizlet mastery <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🃏 Anki/Quizlet — 복습 덱</div>
+          <div class="body2">
+            <div class="row" style="margin-bottom:8px">
+              <span class="pill-count pc-learn"><span class="pc-num">4</span><span class="pc-lab">회수 대기</span></span>
+              <span class="pill-count pc-rev"><span class="pc-num">2</span><span class="pc-lab">오늘 due</span></span>
+            </div>
+            <div class="quiz-opt sel">수열 점화식 · 숙련 ●●●○○</div>
+            <div class="quiz-opt">벡터 내적 · 숙련 ●○○○○</div>
+            <div style="font-size:10px;color:#8a93b8">잊기 직전 항목 우선 + 항목별 mastery 단계</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">Anki는 덱 진입 시 <b>복습 큐를 정수</b>로, Quizlet은 항목별 <b>mastery 단계</b>로 "무엇을 얼마나" 복습할지 보여준다.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v"><b>Tier V1–V5 오답 회수 모드</b>를 보유(회독 본질에 정합). 다만 due <b>정수 카운트</b>와 항목별 <b>숙련 단계</b> 노출을 강화할 여지.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>F</b> due 정수 · <b>H</b> 숙련 단계 노출.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P3 (due 정수) · P5 (숙련 단계)</span>
+    </div>
+  </div>
+
+  <!-- 7. 랜딩/온보딩 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">7</span><h3>랜딩 / 온보딩</h3><span class="route">/ · /onboarding</span>
+      <span class="gap-pill">갭 A · N</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">실제 렌더</span></div>
+        <div class="shot-wrap" style="gap:10px">
+          <div class="phone shot-app" style="width:190px"><img src="./shots/landing-app.png" alt="순공 랜딩 앱"></div>
+          <div class="phone shot-app" style="width:190px"><img src="./shots/onboarding-app.png" alt="순공 온보딩 앱"></div>
+          <div class="webframe shot-web"><div class="bar"><i></i><i></i><i></i></div><img src="./shots/landing-web.png" alt="순공 랜딩 웹"></div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: 듀오링고 Play-first + Brilliant 개인화 퀴즈 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🦉/💡 가치 먼저, 가입은 나중</div>
+          <div class="body2">
+            <div style="font-weight:800;color:#3a4a86;margin-bottom:6px">목표가 무엇인가요?</div>
+            <div class="quiz-opt sel">수능 등급 올리기</div>
+            <div class="quiz-opt">까먹는 개념 잡기</div>
+            <div class="quiz-opt">매일 회독 습관</div>
+            <div style="font-size:10px;color:#8a93b8;margin-top:6px">3문항만 묻고 <b>즉시 학습 시작</b> · 회원가입은 온보딩 끝(스킵 가능)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">듀오링고는 <b>가치(첫 레슨·진척)를 먼저 주고</b> 가입은 온보딩 끝에 배치(Play-first), Brilliant는 <b>목표 묻는 퀴즈</b>로 페이월 전 구매의도를 적립한다.</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v">브랜드 히어로 + <b>3스텝 온보딩</b>(생년→과목→사진 + 회독약속 reveal) 보유. 가입 게이트 위치·목표/가치 개인화는 점검 여지(현재 목업은 가입 게이트 제거됨).</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>A</b> Play-first 가입 후순위 점검 · <b>N</b> 목표/가치 개인화 약함.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P7 (백로그 · Play-first 온보딩 게이트 점검)</span>
+    </div>
+  </div>
+
+  <!-- 8. 리마인드 -->
+  <div class="cmp">
+    <div class="cmp-head"><span class="n">8</span><h3>리마인드 / 푸시 (화면 횡단)</h3><span class="route">미구현</span>
+      <span class="gap-pill">갭 J</span></div>
+    <div class="cmp-body">
+      <div class="pane left">
+        <div class="label"><span class="dot"></span>순공대장 현재 <span class="badge-real">코드베이스 조사</span></div>
+        <div class="noscreen">
+          <div class="x">🔕</div>
+          <div class="t">푸시·리마인드 미구현</div>
+          <div style="margin-top:8px;font-size:13px"><code>NudgeProvider</code> 구조와 Bell 버튼 <b>UI 스텁만</b> 존재. 돌봄 톤 리마인드 카피·스케줄러 로직은 ✗. (홈 캡처의 우상단 🔔이 그 스텁)</div>
+        </div>
+      </div>
+      <div class="pane right">
+        <div class="label"><span class="dot"></span>레퍼런스: Memrise 돌봄 톤 넛지 <span class="badge-recr">패턴 재현</span></div>
+        <div class="ref-mock">
+          <div class="top">🌱 Memrise / 🐤 Finch — 돌봄 톤</div>
+          <div class="body2">
+            <div class="toast"><span class="ic">💧</span> "수열 단원에 물 줄 시간이래요"<div style="font-size:10px;color:#8a93b8;margin-top:4px;font-weight:500">압박이 아닌 동반자 톤 · "just enough to help, never overwhelm"</div></div>
+            <div style="margin-top:8px;font-size:10px;color:#d9483f">✗ 거절: "You let Duo down"식 죄책감 카피</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pane" style="padding-top:0">
+      <div class="verdict">
+        <div class="vrow ref"><span class="k">레퍼런스 강점</span><span class="v">Memrise "Plants Need Watering" / Finch는 <b>돌봄·동반자 톤</b>으로 복귀를 유도한다. 압박·죄책감이 아니라 "딱 도와줄 만큼만".</span></div>
+        <div class="vrow cur"><span class="k">순공 현재</span><span class="v">푸시 ✗, <b>NudgeProvider 구조만</b>. 리마인드의 동반자 톤 카피 시스템이 비어 있다 — D1/D7 리텐션 핵심 레버 공백.</span></div>
+        <div class="vrow gap"><span class="k">갭</span><span class="v"><b>J</b> 돌봄 톤 리마인드 부재. 설계 시 §3 거절 매트릭스(잦은 푸시·죄책감) 가드 필수.</span></div>
+      </div>
+      <span class="pmap">메우는 제안 → P2 (동반자 톤 리마인드)</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- 차용/거절 매트릭스 -->
+<section id="matrix" class="wrap">
+  <h2>브랜드 락 가드</h2>
+  <div class="section-title">차용 ✅ vs 거절 ❌ 매트릭스</div>
+  <p class="sub" style="margin-bottom:14px">순공대장은 현재 <b>오른쪽(거절) 패턴을 하나도 쓰지 않는다</b>. 위 제안은 전부 왼쪽(차용)에서, 색·마스코트·토큰을 건드리지 않고 기능·플로우·UX 마감재만 더하는 방향이다.</p>
+  <table class="mtx">
+    <tr><th>차용 ✅ (동반자 톤 유지)</th><th>거절 ❌ (다크패턴 / 브랜드 위반)</th></tr>
+    <tr><td>Play-first 온보딩 (가치 먼저)</td><td>passive-aggressive 카피 ("You let Duo down")</td></tr>
+    <tr><td>Streak <b>Freeze</b> (불안완화, 무료)</td><td><b>유료</b> streak repair / hearts 결제 유도</td></tr>
+    <tr><td>돌봄 톤 리마인드 ("물 줄 시간")</td><td>빨강 하트 차감 / 잦은 압박 푸시</td></tr>
+    <tr><td>비-처벌 빈 상태 (기다림)</td><td>HP death · 캐릭터 데미지 (Habitica)</td></tr>
+    <tr><td>due 큐 정수 노출</td><td>백분율 · 하트게이지 위계</td></tr>
+    <tr><td>숙련도 정수 · 은유 시각화</td><td>파티 연좌 데미지 (사회적 죄책감)</td></tr>
+    <tr><td>마스코트 mood = 성과 (이미 보유)</td><td>아이템샵형 하드 과금 게이팅</td></tr>
+  </table>
+</section>
+
+<!-- 강점 -->
+<section id="strength" class="wrap">
+  <h2>회귀 금지</h2>
+  <div class="section-title">순공이가 이미 잘하고 있는 것</div>
+  <div class="strong">
+    <ul>
+      <li><b>마스코트 mood = 성과 연동</b> — 듀오링고/Finch 모범과 동급(5 mood 분기: cheer/celebrate/comfort/down/idle). 위 결과·홈 캡처에서 실제 작동 확인.</li>
+      <li><b>기억HP 0–5 정수</b> — SRS 군의 "정수 숙련도" 베스트프랙티스와 정합. 백분율/하트로 회귀 금지.</li>
+      <li><b>라이트 동반자 톤</b> — Habitica·듀오링고 다크패턴(HP death·죄책감 카피·유료 repair)을 구조적으로 회피. 유지.</li>
+      <li><b>적응형 망각 엔진(forgetting-top3 · memory_defense)</b> — 갭표 I 모범. <b>MOAT라 손대지 않음.</b></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="method">
+      <b>방법론 / 출처</b><br>
+      · <b>좌측(순공)</b>: <code>mugungwhwa/soongong</code> 실제 앱을 <code>NEXT_PUBLIC_MOCK_MODE=true</code> mock 모드로 로컬 렌더, Playwright로 <b>앱 390px / 웹 1440px 풀페이지 실캡처</b>(<code>scripts/soo95-capture.mjs</code>). 텍스트 묘사 아님.<br>
+      · <b>우측(레퍼런스)</b>: SOO-93 <code>docs/ui-research/2026-06-20-retention-competitive-teardown.md</code> 티어다운 근거로 각 앱의 시그니처 패턴을 <b>연구용 CSS 미니 목업으로 재현</b>. 타사 앱 실제 스크린샷이 아니다(공개 repo 저작권 가드).<br>
+      · <b>P1~P5 / 갭 A~O</b>: SOO-93 티어다운 §3·§4 직접 인용. <b>색·로고·마스코트·토큰 변경 0건, MOAT·코어 회독 루프 무수정.</b>
+    </div>
+    <div>SOO-95 · UI·디자인 리드 · 2026-06-20 · 비교/분석 자료(리디자인 제안 아님)</div>
+  </div>
+</footer>
+
+<script>
+  function setFF(ff){
+    document.body.classList.toggle('ff-web', ff==='web');
+    document.getElementById('btn-app').classList.toggle('on', ff==='app');
+    document.getElementById('btn-web').classList.toggle('on', ff==='web');
+  }
+</script>
+</body>
+</html>
