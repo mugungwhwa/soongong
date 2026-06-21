@@ -1,17 +1,34 @@
-# Styleguide 고정 리뷰 URL 설정 가이드
+# Styleguide 리뷰 URL 접근 가이드
 
 **작성**: 2026-06-17 (SOO-54)  
-**담당**: 플랫폼·인프라 리드
+**갱신**: 2026-06-22 (SOO-106 — 공개 프로덕션 URL 전환)  
+**담당**: UI·디자인 리드 / 플랫폼·인프라 리드
 
 ---
 
-## 배경
+## 현행 (SOO-106) — 공개 프로덕션 URL
 
-`/styleguide`는 preview 환경 전용 (production은 404 유지). Mike가 Vercel 로그인·매번 다른 PR URL 없이 북마크 한 번으로 접근할 수 있도록 고정 리뷰 URL을 구성한다.
+`/styleguide`는 **통합 UI·디자인 + 플랫폼 개발 가이드라인 라이브 사이트**이자 Mike 체크포인트 열람 수단이다. 따라서 **프로덕션 공개 URL로 직접 열린다**:
 
-현재 상태:
-- ✅ 앱 로그인 차단 면제 — middleware.ts `isPublic` 목록 (SOO-48)
-- ✅ production 404 — `page.tsx` `isStyleguideVisible()` env 게이트
+```text
+https://soongong-web.vercel.app/styleguide
+```
+
+- ✅ 모든 환경(production 포함)에서 렌더 — `page.tsx` 의 env 게이트 제거(SOO-106).
+- ✅ 검색엔진 비노출 — `metadata.robots = { index: false, follow: false }` 유지(unlisted). 토큰·브랜드 자산만 포함, PII/사업 기밀 없음.
+- 토큰·매번 다른 PR URL·Vercel 로그인 없이 북마크 한 번으로 접근.
+
+> 아래 "preview 고정 URL(SOO-54)" 섹션은 production 이 404였을 때의 우회책이었다. 현행에선 위 공개 프로덕션 URL을 기본 열람 수단으로 쓴다. preview 별 빌드 확인이 필요할 때만 참고.
+
+---
+
+## (구) preview 고정 URL — SOO-54 (production 404 시절 우회책)
+
+> ⚠️ **이 섹션은 SOO-106 이전 상태 기준.** 당시 `/styleguide`는 preview 전용(production 404)이라, Mike가 매번 다른 PR URL·Vercel 로그인 없이 접근하도록 main preview 고정 URL을 구성했다. 지금은 공개 프로덕션 URL이 있으므로 보조 수단이다.
+
+당시 상태:
+- ✅ 앱 로그인 차단 면제 — middleware `isPublic` 목록 (SOO-48)
+- ✅ production 404 — `page.tsx` `isStyleguideVisible()` env 게이트 (**SOO-106에서 제거**)
 - ❌ Vercel Deployment Protection — 브라우저에서 401 반환 (이 문서가 해결)
 - ❌ PR마다 URL 변경 — main 브랜치 고정 alias로 해결 (이 문서가 해결)
 
@@ -62,18 +79,21 @@ https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app/styleg
 
 | 항목 | 내용 |
 |---|---|
-| 공개 범위 | 토큰을 아는 누구나 preview styleguide 접근 가능 |
+| 공개 범위 | 프로덕션 URL을 아는 누구나 접근 가능 (unlisted — 검색 비노출) |
+| 검색 노출 | `robots noindex/nofollow` 로 차단 — 색인되지 않음 |
 | 민감 데이터 | styleguide는 디자인 토큰·브랜드 자산만 포함 (PII/사업 기밀 없음) |
-| production 격리 | `VERCEL_ENV === "production"` 시 `notFound()` — 회귀 불가 |
-| 토큰 노출 대응 | Vercel Dashboard에서 토큰 재생성으로 즉시 차단 |
+| 토큰 노출 대응 | (preview 우회책 한정) Vercel Dashboard에서 bypass 토큰 재생성으로 즉시 차단 |
 
-결론: 민감 데이터 없음 + production 격리 유지 → 허용 범위 내.
+결론: 민감 데이터 없음 + 검색 비노출(unlisted) → 공개 열람 허용 범위 내 (SOO-106, Mike 결정).
 
 ---
 
 ## 검증 체크리스트
 
-- [ ] `https://soongong.vercel.app/styleguide` (production) → 404
-- [ ] `https://soongong-web-git-main-mikeikhoonkim1208-2196s-projects.vercel.app/styleguide` → 로그인 없이 styleguide 렌더
-- [ ] 쿠키 설정 후 토큰 파라미터 제거한 URL → 여전히 접근 가능
-- [ ] 앱 로그인 세션 없는 시크릿 창 → styleguide 접근 가능
+현행 (SOO-106):
+- [ ] `https://soongong-web.vercel.app/styleguide` (production) → 로그인 없이 styleguide 렌더 (404 아님)
+- [ ] 시크릿 창(앱 로그인 세션 없음) → 접근 가능
+- [ ] 페이지 응답 헤더/메타에 `noindex` 유지 (검색 비노출)
+
+(구) preview 우회책:
+- [ ] main preview 고정 URL → 토큰 1회 방문 후 토큰 없이 접근 가능

@@ -1,28 +1,15 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { DesignSystemShowcase } from "@/views/styleguide";
 
-// dev 전용 — 검색엔진 인덱싱 차단.
+// 공개 라이브 가이드(unlisted) — SOO-106.
+// /styleguide 는 통합 UI·디자인 + 플랫폼 개발 가이드라인 라이브 사이트이자
+// Mike 체크포인트 열람 수단이다. 모든 환경(production 포함)에서 직접 URL 접근을
+// 허용하되, 검색엔진 인덱싱은 noindex 로 계속 차단한다(검색 비노출 = unlisted).
 export const metadata: Metadata = {
   title: "디자인 시스템 · 순공대장",
   robots: { index: false, follow: false },
 };
 
-// dev + Vercel preview 전용 노출 (allowlist). 그 외(=실제 production, 또는
-// 정체불명 환경)는 차단해 "dev 전용" 스펙을 fail-closed 로 지킨다.
-// VERCEL_ENV: "production" | "preview" | "development". Vercel 밖(로컬 dev/build)에선 undefined.
-function isStyleguideVisible(): boolean {
-  const vercelEnv = process.env.VERCEL_ENV;
-  if (vercelEnv) {
-    return vercelEnv === "preview" || vercelEnv === "development";
-  }
-  // Vercel 밖: 로컬 dev 만 허용 (production 빌드 런타임은 차단).
-  return process.env.NODE_ENV !== "production";
-}
-
 export default function Page() {
-  if (!isStyleguideVisible()) {
-    notFound();
-  }
   return <DesignSystemShowcase />;
 }
