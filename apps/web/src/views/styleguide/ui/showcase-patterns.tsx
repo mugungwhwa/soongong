@@ -9,7 +9,8 @@
  */
 
 import * as React from "react";
-import { ShowcaseSection, ExampleCard, RuleTable } from "./showcase-kit";
+import { useEffect, useRef, useState } from "react";
+import { ShowcaseSection, ExampleCard, RuleTable, DoDont } from "./showcase-kit";
 
 export function PatternsLayout() {
   return (
@@ -73,6 +74,120 @@ export function PatternsInteraction() {
         >
           마우스를 올려보세요
         </button>
+      </ExampleCard>
+    </ShowcaseSection>
+  );
+}
+
+/**
+ * 모션 언어 (SOO-96) — 토큰을 라이브로 읽어 보여주는 살아있는 문서.
+ * 값(ms/cubic-bezier)은 tokens.css 가 SSoT 이므로 복붙하지 않고 getComputedStyle 로
+ * 런타임에 읽는다 — tokens.css 가 바뀌면 이 표도 자동 반영(드리프트 0).
+ */
+const MOTION_TOKENS: { varName: string; use: string }[] = [
+  { varName: "--ease-out-soft", use: "기본 ease — 부드럽게 감속(soft landing)" },
+  { varName: "--duration-fast", use: "hover·탭 등 즉각 피드백" },
+  { varName: "--duration-mid", use: "카드·시트 전환" },
+  { varName: "--duration-slow", use: "마스코트 등장·강조 모먼트" },
+];
+
+function useComputedTokens(varNames: string[]): Record<string, string> {
+  const [values, setValues] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const style = getComputedStyle(document.documentElement);
+    const next: Record<string, string> = {};
+    for (const name of varNames) {
+      next[name] = style.getPropertyValue(name).trim();
+    }
+    setValues(next);
+    // varNames 는 모듈 상수 — 재실행 불필요.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return values;
+}
+
+export function PatternsMotion() {
+  const computed = useComputedTokens(MOTION_TOKENS.map((t) => t.varName));
+  const [playing, setPlaying] = useState(false);
+  const replayRef = useRef<number | null>(null);
+
+  const replay = () => {
+    setPlaying(false);
+    if (replayRef.current) window.cancelAnimationFrame(replayRef.current);
+    replayRef.current = window.requestAnimationFrame(() => setPlaying(true));
+  };
+
+  useEffect(() => {
+    setPlaying(true);
+    return () => {
+      if (replayRef.current) window.cancelAnimationFrame(replayRef.current);
+    };
+  }, []);
+
+  return (
+    <ShowcaseSection
+      eyebrow="Patterns · 모션 언어"
+      title="모션 언어 (SOO-96)"
+      description="모션은 '부분 차용' — 마스코트 등장 같은 환영 모먼트에만 활기를 쓰고, 버튼·카드의 과한 bounce 는 금지한다. 전환 시간·곡선은 토큰만 사용하며, 아래 값은 tokens.css 에서 런타임에 직접 읽는다(자동 반영)."
+    >
+      <ExampleCard title="모션 토큰" hint="값은 tokens.css 가 SSoT · 런타임 read">
+        <RuleTable
+          columns={["토큰", "현재 값(live)", "용도"]}
+          rows={MOTION_TOKENS.map((t) => [
+            <code
+              key="v"
+              className="font-mono text-[11px] font-semibold text-[var(--color-mint-700)]"
+            >
+              {t.varName}
+            </code>,
+            <code key="c" className="font-mono text-[11px] tabular-nums text-[var(--color-text-default)]">
+              {computed[t.varName] || "…"}
+            </code>,
+            t.use,
+          ])}
+        />
+      </ExampleCard>
+
+      <ExampleCard title="마스코트 등장 — soft landing" hint="--duration-slow · --ease-out-soft">
+        <div className="flex flex-col items-center gap-4 py-4">
+          <div
+            className="h-16 w-16 rounded-[var(--radius-lg)] bg-[var(--color-mint-500)]"
+            style={
+              playing
+                ? {
+                    animation:
+                      "soongong-motion-rise var(--duration-slow) var(--ease-out-soft) both",
+                  }
+                : { opacity: 0 }
+            }
+          />
+          <button
+            type="button"
+            onClick={replay}
+            className="rounded-[var(--radius-md)] bg-[var(--color-mint-100)] px-4 py-2 text-sm font-semibold text-[var(--color-mint-900)] transition-colors duration-[var(--duration-fast)] ease-[var(--ease-out-soft)] hover:bg-[var(--color-mint-300)]"
+          >
+            다시 재생
+          </button>
+        </div>
+        <style>{`@keyframes soongong-motion-rise {
+          from { opacity: 0; transform: translateY(12px) scale(0.96); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }`}</style>
+      </ExampleCard>
+
+      <ExampleCard title="모션 가드레일" hint="매트릭스 — Bouncy 부분 차용">
+        <DoDont
+          dos={[
+            "마스코트 등장·결과 축하에 spring/soft landing(강도 캡 내)",
+            "전환은 --duration-* + --ease-out-soft 토큰만 사용",
+            "감속(ease-out) 중심 — 자연스러운 도착감",
+          ]}
+          donts={[
+            "버튼·카드 전반의 과한 bounce(매트릭스 위반)",
+            "ms·cubic-bezier 값을 컴포넌트에 하드코딩(두 번째 SSoT)",
+            "홈에서 네온·파티클 남발(게임성 강도 캡 초과)",
+          ]}
+        />
       </ExampleCard>
     </ShowcaseSection>
   );
