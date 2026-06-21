@@ -60,10 +60,13 @@ export function PlayPage({ questId }: { questId: string }) {
   const { session, loading, error } = useRecallSession(questId);
   const [revealed, setRevealed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  // 동기 락 — submitting state 는 비동기라 같은 렌더의 연속 클릭을 못 막는다.
+  const submitLockRef = useRef(false);
   const startedAtRef = useRef<number>(Date.now());
 
   function handleGrade(grade: ReviewGrade) {
-    if (submitting) return;
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
     setSubmitting(true);
     const elapsedSeconds = Math.max(
       0,
@@ -96,9 +99,10 @@ export function PlayPage({ questId }: { questId: string }) {
     );
   }
 
-  const pct = Math.round(
-    (session.progress.current / session.progress.total) * 100,
-  );
+  const pct =
+    session.progress.total > 0
+      ? Math.round((session.progress.current / session.progress.total) * 100)
+      : 0;
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col p-4 lg:max-w-xl lg:p-6">
