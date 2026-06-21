@@ -1,3 +1,5 @@
+> ⚠️ **구버전 스냅샷 (2026-05-18 기준).** 본 문서는 작성 시점 기록이며 현행 기준이 아니다. 현행 앱 디자인 SSoT = `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1, **v2 Teal/Mint** 팔레트 `#A8DCCB`/`#7BC4AE`/`#4CAF88`) + `tokens.css`. 구 시안 `app_UI.png`/`web_ui.png`·Ocean(`#2AB8D0`)/민트 팔레트는 폐기. (정합: SOO-118)
+
 # 순공대장 — 브랜드 디자인 에이전트 (Brand Agent) SSoT v0.0
 
 > 본 문서는 순공대장 브랜드 식별 자산(로고·OG image·favicon·앱 아이콘)을 일관되게 생성·운영하기 위한 단일 진실 공급원(SSoT). Mike + Claude 협업 시 다음 세션이 한 줄 트리거로 즉시 작업 모드 진입 가능하도록 설계.

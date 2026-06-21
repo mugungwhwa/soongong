@@ -1,3 +1,5 @@
+> ⚠️ **구버전 스냅샷 (2026-05-14 기준).** 본 문서는 작성 시점 기록이며 현행 기준이 아니다. 현행 앱 디자인 SSoT = `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1, **v2 Teal/Mint** 팔레트 `#A8DCCB`/`#7BC4AE`/`#4CAF88`) + `tokens.css`. 구 시안 `app_UI.png`/`web_ui.png`·Ocean(`#2AB8D0`)/민트 팔레트는 폐기. (정합: SOO-118)
+
 # 순공대장 — SparkClaw 제출 통합 자료
 
 > **이 문서는 SparkClaw 서류 제출용 1-stop 자료다.** 사업소개서 본문(`00_프로젝트_사업_전략/SparkClaw_사업소개서.md`) + Agent 트랙 분리(`docs/agent-strategy/...`) + 시각 자산 가이드를 **심사관 관점**으로 재구성. PDF/PPT 변환은 §11 참조.

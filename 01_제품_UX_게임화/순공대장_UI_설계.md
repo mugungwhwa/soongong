@@ -6,7 +6,7 @@ project: "순공대장"
 converted_at: "2026-05-13 08:56:36"
 revised_at: "2026-05-14"
 revision_note: "v2.3 — '토스' 표현 정밀화. 실제 차용 영역(듀오링고 / 카카오 헤이바이브 / 클래스101 / Pretendard)별 reference 분리. designer agent 가이드용 '비교 레퍼런스' 섹션 신규 추가. v2.2 변경분(마스코트 '순공이' / 듀공 / 회독퀘스트 / 시안 SSoT 잠금)은 그대로 유지."
-ssot_image: ["app_UI.png", "web_ui.png"]
+ssot_image: []  # 구 시안 app_UI.png/web_ui.png는 폐기 — SSoT 아님. 현행 비주얼 SSoT = /styleguide + docs/design-system/2026-06-09-design-system-lock.md(v2.1) + tokens.css
 mascot_status: "가안 — 작업명 '순공이', 형태 '듀공(dugong)'. 이름·외형 모두 가안. Midjourney + Canva 작업으로 직접 제작 (외주 발주 없음). 시각 자산 inventory: docs/visual-assets/2026-05-14-soongong-asset-inventory.md"
 ui_label_naming: "사용자 노출 UI 라벨은 '회독퀘스트'. 백서·기술 문서에서는 '회독' 그대로 사용 OK."
 usage: "개발 지침 / 기획 소스 / Agent 설계 참고"
@@ -14,7 +14,9 @@ usage: "개발 지침 / 기획 소스 / Agent 설계 참고"
 
 # 순공대장 UI 설계
 
-> **1차 완성안 시안: `app_UI.png`, `web_ui.png` — 이미지가 SSoT.** 본 문서의 텍스트와 시안이 충돌하면 **이미지가 우선**한다.
+> ⚠️ **[2026-06-21 정합] 현행 비주얼 SSoT 갱신** — 구 시안 `app_UI.png` / `web_ui.png`는 **폐기(SSoT 아님)**. 현행 디자인 와꾸·색·컴포넌트 정본은 **`/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1) + `apps/web/src/shared/styles/tokens.css`**. 색 팔레트는 **v2 Teal/Mint**(`#A8DCCB`/`#7BC4AE`/`#4CAF88`) — 본 문서 본문 곳곳의 "오션(Ocean)/틸" 색 명칭·hex(`#2AB8D0`/`#1A8FAD`/`#0E5C82`)는 모두 **구 팔레트 기록**이며 현행 v2로 읽는다(틸 fill = `#7BC4AE`/`#4CAF88`). 레이아웃/형태 구조 서술은 유효하되 픽셀 SSoT는 `/styleguide`.
+
+> **1차 완성안 시안(구):** `app_UI.png`, `web_ui.png` — **폐기.** (과거에는 "이미지가 SSoT"였으나 2026-06 와꾸 SOO-96 + design-system-lock v2로 대체됨.)
 > **마스코트 캐릭터: 작업명 "순공이", 형태 "듀공(dugong)" — 모두 가안.** Midjourney(이미지 생성) + Canva(편집/통일) 워크플로우로 Mike가 직접 제작. **외주 발주 없음.** 작업 가이드는 `docs/visual-assets/2026-05-14-soongong-asset-inventory.md` 참조.
 > **용어**: 본 문서에서 "회독"은 학습 메커니즘 명칭, "회독퀘스트"는 사용자에게 노출되는 UI 라벨이다. 같은 개념을 가리킨다.
 > 분류: **제품 UX·게임화**
@@ -78,7 +80,7 @@ PRIMARY 레퍼런스 = 듀오링고. 단일 차용은 "베끼기"가 되고, 단
 | 듀오링고 글로벌 패턴 | 우리 결정 | 이유 / 적용처 |
 |---|---|---|
 | 마스코트 전 화면 노출 | **차용** | 이미 10/10 적용 (Day 7 design synthesis 검증 완료). 듀공 "순공이"가 학습 동반자 역할. |
-| Primary green #58cc02 + 액센트 노랑 #ffc800 | **변형** | 우리 = 오션 #2AB8D0 + soft golden #F2C94C. 저채도 light-saturation, "Light Study Garden" 톤 합치. (색 SSoT = lock v1.0) |
+| Primary green #58cc02 + 액센트 노랑 #ffc800 | **변형** | 우리 = v2 Teal/Mint `#4CAF88`/`#7BC4AE` + soft golden. 저채도 light-saturation, "Light Study Garden" 톤 합치. (색 SSoT = tokens.css / lock v2.1) |
 | Feather Bold (표제) + DIN Round (본문) — 표제/본문 폰트 분리 | **차용 (한글 적용)** | 표제 = Rockon 둥근체 (Heavy/Black/Ultra Bold), 본문 = Pretendard. 분리 원칙 동일, 패밀리는 한국화. |
 | Bouncy spring 애니메이션 전반 | **부분 차용** | 마스코트 등장 (framer-motion spring, result-rewards Day 5 적용) 한정. 과한 bouncing button/card 거절 — 게이미피케이션 -20dB. |
 | 빨강 하트(생명, 5개 한정) | **변형** | 우리 = 위험도 데사처드 (#E29B9B 등) + 기억 HP (0-100 점수형). 손실 회피 자극 부드럽게. |
@@ -124,7 +126,7 @@ Light Study Garden
 |---|---|
 | 배경 | 크림 / 화이트 |
 | 카드 | 순백 + 16~20px 라운드 + 부드러운 그림자 |
-| 포인트 | 소프트 오션 (틸 `#2AB8D0`) |
+| 포인트 | v2 Teal/Mint (틸 `#7BC4AE`/`#4CAF88`, 구 오션 `#2AB8D0` 폐기) |
 | 캐릭터 | **순공이 (가안, 듀공 형태)** — 친근 100%, 압박 0% |
 | 버튼 | 큰 라운드 CTA, 풍선 그림자 |
 | 텍스트 | Pretendard 한글, 친근하고 짧은 문장 |
@@ -135,9 +137,9 @@ Light Study Garden
 
 # 3. 컬러 팔레트
 
-> ⚠️ **색 팔레트 최종 권위 = `docs/design-system/2026-06-09-design-system-lock.md` v1.0 (Ocean).** 2026-06-09 SOO-17에서 색=바다(Ocean)로 확정되었고 SOO-16에서 `tokens.css`에 실적용 완료. **아래 코드블록의 `#7CC97C` 그린 계열 값은 v2.3 당시 기록(폐기) — 신규 작업은 Ocean(`#2AB8D0`/`#1A8FAD`/`#0E5C82`)을 쓴다.** 본 §3 그린 hex 전면 재기록은 별도 작업으로 보류 중.
+> ⚠️ **색 팔레트 최종 권위 = `apps/web/src/shared/styles/tokens.css` + `docs/design-system/2026-06-09-design-system-lock.md` v2.1 (v2 Teal/Mint).** 2026-06-16 SOO-260616-01에서 색=구 Ocean → **v2 Teal/Mint**(`#A8DCCB`/`#7BC4AE`/`#4CAF88`)로 교체(Mike 명시 승인). **아래 코드블록의 `#7CC97C` 그린·`#2AB8D0` 오션 계열 값은 모두 과거 기록(폐기) — 신규 작업은 tokens.css의 v2 토큰을 쓴다.** 본 §3 hex 전면 재기록은 tokens.css 참조로 갈음.
 
-이미지 시안에서 추출한 팔레트. 단, **색은 위 Ocean lock이 우선** (CLAUDE.md §2 폐기정책 예외: 시안이 폐기정책 위반 시 정책 우선). 레이아웃/형태는 `app_UI.png` / `web_ui.png` 참조.
+팔레트·색 값은 **tokens.css가 유일 SSoT**다(두 번째 SSoT 금지). 레이아웃/형태 구조 참고는 본 문서 + `/styleguide`. (구 시안 `app_UI.png` / `web_ui.png`는 폐기.)
 
 ```text
 Background Primary:  #F8FBF7   /* 크림, 메인 배경 */
@@ -591,7 +593,7 @@ strong: 0 8px 24px rgba(0,0,0,0.12)
 | 상태 | 규칙 |
 |---|---|
 | Hover (웹) | 배경 5% 어둡게 또는 그림자 medium |
-| Focus | 오션 outline (`#1A8FAD`) 2px + offset 2px |
+| Focus | v2 teal outline (`#4CAF88`, 구 오션 `#1A8FAD` 폐기) 2px + offset 2px |
 | Active/Pressed | 배경 8% 어둡게, scale 0.98 |
 | Disabled | 텍스트/아이콘 `#BBBBBB`, 배경 `#F0F5EE` |
 | Loading | Skeleton: 옅은 그린 shimmer |
@@ -628,11 +630,11 @@ strong: 0 8px 24px rgba(0,0,0,0.12)
 캐릭터: 순공이 (가안 — 듀공 모티프, 추후 확정)
 톤: Light Study Garden — 듀오링고 리텐션 + 한국 학습앱 카드 메타 + 친근 마스코트 + 연두 정원
 핵심 화면: 오늘의 회독퀘스트 3개
-핵심 색: 크림 + 오션(틸) + 골드 / 위험도 빨강·주황·파랑 (소프트)
+핵심 색: 크림 + v2 Teal/Mint(틸 `#7BC4AE`/`#4CAF88`, 구 오션 폐기) + 골드 / 위험도 빨강·주황·파랑 (소프트)
 핵심 UI: 흰 카드 + 20px 라운드 + 부드러운 그림자
 핵심 감정: 응원감 + 매일 들어오는 가벼운 루틴
 용어: 회독(백서) = 회독퀘스트(UI 라벨)
-SSoT: app_UI.png / web_ui.png (텍스트와 충돌 시 이미지 우선)
+SSoT: /styleguide + design-system-lock v2.1 + tokens.css (구 시안 app_UI.png / web_ui.png는 폐기)
 ```
 
 ---
@@ -659,7 +661,7 @@ Brand:
 - UI label: 회독퀘스트 (= 회독, internal term)
 
 Color tokens:
-bg #F8FBF7, surface #FFFFFF, primary #2AB8D0, primary-strong #1A8FAD,  /* Ocean — lock v1.0 */
+bg(크림 기반), surface #FFFFFF, primary #4CAF88, primary-strong #2E7D5B,  /* v2 Teal/Mint — lock v2.1 (구 Ocean #2AB8D0/#1A8FAD 폐기). 실값은 tokens.css */
 accent #7DD8EA, danger #E85C5C / danger-bg #FCE8E8,
 warning #F5A85E / warning-bg #FFF1DF, info #6FA9E8 / info-bg #E6F0FC,
 reward-gold #F5C242, text #2E2E2E, text-sub #6E6E6E.
@@ -712,4 +714,4 @@ Korean UI labels:
 
 > **순공대장은 다크 던전이 아니라 매일 들어오는 밝은 회독퀘스트 정원이다.**
 > 순공이(가안, 듀공 모티프)가 옆에서 응원하고, 학생은 오늘 회독퀘스트 3개만 가볍게 깨면 된다.
-> 이미지 시안이 SSoT — 본 문서와 충돌 시 이미지가 우선이다.
+> 비주얼 SSoT = `/styleguide` + design-system-lock v2.1 + tokens.css. (구 시안 app_UI.png/web_ui.png는 폐기 — SSoT 아님.)

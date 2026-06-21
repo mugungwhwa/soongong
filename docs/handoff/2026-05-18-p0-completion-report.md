@@ -1,3 +1,5 @@
+> ⚠️ **구버전 스냅샷 (2026-05-18 기준).** 본 문서는 작성 시점 기록이며 현행 기준이 아니다. 현행 디자인 SSoT = `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1, **v2 Teal/Mint** 팔레트 `#A8DCCB`/`#7BC4AE`/`#4CAF88`) + `tokens.css`. 구 시안 `app_UI.png`/`web_ui.png`·Ocean(`#2AB8D0`)/민트 팔레트·구 다크 RPG 톤 방향은 폐기. (정합: SOO-118)
+
 # 순공대장 P0 Demo Skeleton 완료 보고
 
 > P0 와꾸 트랙 (Day 1-7) 압축 완주 보고. 듀오링고형 AI 회독 앱의 8개 화면을 mock-first로 연결, Vercel preview 직전 상태.
