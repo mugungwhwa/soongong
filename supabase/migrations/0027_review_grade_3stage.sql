@@ -25,9 +25,12 @@ begin
   elsif p_grade = 'blank' then
     v_delta    := -0.2;
     v_interval := interval '1 day';
-  else
+  elsif p_grade is null then
     v_delta    := p_accuracy_delta;
     v_interval := interval '1 day';
+  else
+    raise exception 'invalid p_grade: %', p_grade
+      using errcode = '22023';
   end if;
 
   update public.student_memory_items

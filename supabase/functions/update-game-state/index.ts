@@ -25,6 +25,7 @@ function rarityFor(key: string): string {
 }
 
 type ReviewGrade = "clear" | "fuzzy" | "blank";
+const VALID_GRADES = new Set<ReviewGrade>(["clear", "fuzzy", "blank"]);
 
 type QuestResult = {
   completed: boolean;
@@ -73,9 +74,12 @@ Deno.serve(async (req) => {
   // grade 제공 시: 또렷 +2 / 가물가물 0 / 막막 -1
   // grade 미제공 시: 기존 result 기반 동작 유지 (호환)
   let hp: number = cur.memory_hp;
-  if (quest_result.grade) {
-    if (quest_result.grade === "clear") hp = Math.min(5, hp + 2);
-    else if (quest_result.grade === "blank") hp = Math.max(0, hp - 1);
+  const resolvedGrade = quest_result.grade && VALID_GRADES.has(quest_result.grade)
+    ? quest_result.grade
+    : undefined;
+  if (resolvedGrade) {
+    if (resolvedGrade === "clear") hp = Math.min(5, hp + 2);
+    else if (resolvedGrade === "blank") hp = Math.max(0, hp - 1);
     // fuzzy → HP 변화 없음
   } else {
     if (quest_result.mode === "memory_defense" && quest_result.result === "correct") hp = Math.min(5, hp + 1);

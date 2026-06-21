@@ -1,6 +1,8 @@
 import { getAdminClient } from "../_shared/supabase.ts";
 
 type ReviewGrade = "clear" | "fuzzy" | "blank";
+const VALID_GRADES = new Set<ReviewGrade>(["clear", "fuzzy", "blank"]);
+const VALID_RESULTS = new Set(["correct", "wrong", "partial"]);
 
 Deno.serve(async (req) => {
   const { quest_id, result, grade, solve_time_seconds, hint_used, confidence } =
@@ -9,6 +11,18 @@ Deno.serve(async (req) => {
   if (!quest_id || (!result && !grade)) {
     return new Response(
       JSON.stringify({ error: "quest_id and result (or grade) are required" }),
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+  if (grade !== undefined && !VALID_GRADES.has(grade)) {
+    return new Response(
+      JSON.stringify({ error: `invalid grade: ${grade}` }),
+      { status: 400, headers: { "Content-Type": "application/json" } },
+    );
+  }
+  if (result !== undefined && !VALID_RESULTS.has(result)) {
+    return new Response(
+      JSON.stringify({ error: `invalid result: ${result}` }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
   }
@@ -28,8 +42,12 @@ Deno.serve(async (req) => {
     });
   }
 
-  // grade가 없으면 result(2단계)에서 파생 — 기존 호출자 호환
-  const resolvedGrade: ReviewGrade = grade ?? (result === "correct" ? "clear" : "blank");
+  // grade가 없으면 result에서 파생 — partial은 fuzzy(3일)로 처리
+  const resolvedGrade: ReviewGrade = grade ?? (
+    result === "correct" ? "clear" :
+    result === "partial" ? "fuzzy" :
+    "blank"
+  );
 
   // 퀘스트 결과 저장
   await supabase

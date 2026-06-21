@@ -113,7 +113,7 @@ export async function completeQuest(
     confidence?: number;
     grade?: ReviewGrade;  // 3단계 자가평가; 없으면 result로 폴백
   },
-): Promise<{ next_variation: string; next_days: number; grade?: string } | null> {
+): Promise<{ next_variation: string; next_days: number; grade?: ReviewGrade } | null> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!supabaseUrl) return null;
 

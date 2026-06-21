@@ -100,7 +100,11 @@ describe("gradeToInterval — SOO-115 3단계 회독 간격", () => {
     expect(gradeToInterval("clear", true, 30)).toBe(7);
   });
   it("또렷(clear) + 느림(≥60s) → 7일", () => {
+    expect(gradeToInterval("clear", false, 60)).toBe(7);  // 경계값 정확
     expect(gradeToInterval("clear", false, 90)).toBe(7);
+  });
+  it("또렷(clear) + 빠름(59s) → 14일 (경계 직전)", () => {
+    expect(gradeToInterval("clear", false, 59)).toBe(14);
   });
   it("간격 값이 잠긴 1/3/7/14일 내에만 있음", () => {
     const VALID = [1, 3, 7, 14];
