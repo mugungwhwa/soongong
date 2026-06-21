@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOO-94 · 리텐션 제안 P1~P5 화면 배치 목업 (Before/After)</title>
+<!--
+  순공대장 · SOO-94 리텐션 제안 시각 목업
+  목적: SOO-93 경쟁 티어다운에서 도출한 P1~P5 리텐션 제안을
+        "현재 순공이 실화면 어디에 어떻게 놓이는지" before/after로 시각화.
+
+  ⚠️ 브랜드 락(변경 없음): 색·로고·마스코트·토큰은 그대로. 배치·플로우·UX 패턴 레벨만 제안.
+  ⚠️ 이 파일의 색 값은 apps/web/src/shared/styles/tokens.css(유일 SSoT)를 '미러링'한 정적 시안용 사본이다.
+     앱 소스가 아니라 독립 디자인 아티팩트이므로 두 번째 SSoT를 만들지 않는다. 실제 구현은 항상 tokens.css 변수를 참조한다.
+-->
+<style>
+  /* ── tokens.css 미러 (시안 표시 전용) ───────────────────────── */
+  :root{
+    --bg:#F8FBF7; --surface:#FFFFFF; --sunken:#EFF5F1;
+    --teal-50:#ECF7F2; --teal-200:#A8DCCB; --teal-300:#7BC4AE; --cta:#4CAF88; --teal-700:#2E7D5B;
+    --risk-high:#FFB4B4; --risk-mid:#FFEBA3; --risk-low:#BFE3C9;
+    --text-strong:#2E2E2E; --text:#6E6E6E; --text-muted:#9B9B9B;
+    --xp:#F2C94C; --epic:#F5E0FC; --border:#E3EDE7;
+    --journey-a:#1C5942; --journey-b:#0E3326;
+    --radius:18px; --radius-sm:12px;
+    --shadow:0 1px 3px rgba(46,125,91,.08);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    background:var(--bg);color:var(--text-strong);line-height:1.5;-webkit-font-smoothing:antialiased}
+  a{color:var(--teal-700)}
+
+  /* 페이지 헤더 */
+  .page-head{background:linear-gradient(135deg,var(--teal-700),var(--cta));color:#fff;padding:34px 24px 30px}
+  .page-head h1{margin:0 0 6px;font-size:23px;letter-spacing:-.3px}
+  .page-head p{margin:0;opacity:.92;font-size:14px;max-width:760px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+
+  /* 범례 */
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 8px}
+  .legend .lg{background:var(--surface);border:1px solid var(--border);border-radius:999px;
+    padding:6px 12px;font-size:12.5px;color:var(--text);box-shadow:var(--shadow)}
+  .legend .lg b{color:var(--text-strong)}
+
+  .note{background:var(--teal-50);border:1px solid var(--teal-200);border-radius:var(--radius-sm);
+    padding:12px 14px;font-size:13px;color:var(--teal-700);margin:14px 0 0}
+
+  /* 제안 섹션 */
+  .case{margin-top:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);overflow:hidden}
+  .case-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+  .case-head .pid{font-weight:800;font-size:15px;background:var(--teal-700);color:#fff;border-radius:8px;padding:3px 9px}
+  .case-head h2{margin:0;font-size:17px;flex:1 1 240px;letter-spacing:-.2px}
+  .tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:3px 10px}
+  .tag.tier1{background:var(--risk-low);color:#1f5d33}
+  .tag.tier2{background:var(--epic);color:#7a3f95}
+  .tag.screen{background:var(--sunken);color:var(--text)}
+
+  .case-body{padding:22px}
+  .ba{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center}
+  @media(max-width:780px){.ba{grid-template-columns:1fr}.ba .arrow{transform:rotate(90deg);justify-self:center}}
+  .ba .col h3{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;text-align:center}
+  .ba .col.before h3{color:var(--text-muted)}
+  .ba .col.after h3{color:var(--cta)}
+  .arrow{font-size:26px;color:var(--cta);text-align:center}
+
+  /* 폰 프레임 */
+  .phone{width:300px;max-width:100%;margin:0 auto;background:var(--bg);border:8px solid #20302a;border-radius:30px;
+    overflow:hidden;box-shadow:0 8px 24px rgba(20,40,32,.18)}
+  .phone .status{height:22px;background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .phone .status::after{content:"";width:70px;height:7px;border-radius:99px;background:#20302a;opacity:.85}
+  .screen{padding:12px 12px 16px;min-height:480px;display:flex;flex-direction:column;gap:9px}
+  .after .phone{border-color:var(--cta)}
+  .frame-cap{text-align:center;font-size:11px;font-weight:700;color:var(--text-muted);margin:12px 0 6px}
+  .frame-cap:first-of-type{margin-top:0}
+
+  /* 화면 내부 공통 컴포넌트 */
+  .banner{background:var(--teal-50);border:1px solid var(--teal-200);border-radius:14px;padding:9px 11px;
+    font-size:12px;color:var(--teal-700);display:flex;gap:8px;align-items:center}
+  .hello{font-size:14px;font-weight:800;margin:2px 2px}
+  .tier-strip{background:linear-gradient(90deg,var(--teal-700),var(--cta));color:#fff;border-radius:14px;
+    padding:8px 11px;font-size:11px;display:flex;justify-content:space-between;align-items:center}
+  .tier-strip .bar{flex:1;height:6px;background:rgba(255,255,255,.35);border-radius:9px;margin:0 8px;overflow:hidden}
+  .tier-strip .bar i{display:block;height:100%;width:62%;background:#fff;border-radius:9px}
+
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+  .stats.six{grid-template-columns:repeat(3,1fr)}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:7px 3px;text-align:center}
+  .stat .ic{font-size:14px}
+  .stat .v{font-size:13px;font-weight:800;margin-top:1px}
+  .stat .l{font-size:8.5px;color:var(--text-muted);margin-top:1px}
+  .stat.due{background:var(--teal-50);border-color:var(--cta);outline:2px solid rgba(76,175,136,.25)}
+  .stat.due .v{color:var(--teal-700)}
+
+  .intake{background:linear-gradient(135deg,var(--surface),var(--teal-50));border:1px solid var(--teal-200);
+    border-radius:16px;padding:13px;text-align:center}
+  .intake .t{font-size:12.5px;font-weight:800}
+  .intake .s{font-size:10.5px;color:var(--text);margin:3px 0 9px}
+  .cta{background:var(--cta);color:#fff;border:none;border-radius:11px;padding:8px 14px;font-size:12px;
+    font-weight:800;width:100%;box-shadow:var(--shadow)}
+  .cta.ghost{background:var(--surface);color:var(--teal-700);border:1.5px solid var(--cta)}
+
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:10px 11px}
+  .card .ct{font-size:11.5px;font-weight:800;margin-bottom:5px}
+  .card .row{display:flex;justify-content:space-between;font-size:10.5px;color:var(--text);padding:2px 0}
+
+  .muted-box{flex:1;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:12px;
+    border:1px dashed var(--border);border-radius:14px;text-align:center;padding:18px}
+
+  /* 마스코트(순공이 듀공 — 시안 placeholder) */
+  .mascot{width:var(--ms,64px);height:var(--ms,64px);border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,var(--teal-200),var(--teal-300));
+    display:inline-flex;align-items:center;justify-content:center;position:relative;flex:none;
+    box-shadow:inset 0 -6px 12px rgba(46,125,91,.18)}
+  .mascot::before,.mascot::after{content:"";position:absolute;width:14%;height:14%;border-radius:50%;
+    background:#20302a;top:40%}
+  .mascot::before{left:30%}.mascot::after{right:30%}
+  .mascot .mouth{position:absolute;bottom:26%;width:26%;height:13%;border-radius:0 0 99px 99px}
+  /* mood 변형 */
+  .mascot.celebrate{--ms:74px} .mascot.celebrate .mouth{border:2px solid #20302a;border-top:none;height:18%}
+  .mascot.comfort .mouth{height:3%;background:#20302a;border-radius:99px}
+  .mascot.sleep::before,.mascot.sleep::after{height:3%;top:46%;background:none;border-top:2px solid #20302a}
+  .mascot.sleep .zzz{position:absolute;top:-6px;right:-8px;font-size:13px;color:var(--teal-700)}
+  .mascot.nudge .mouth{width:18%;height:9%;background:#20302a;border-radius:99px}
+
+  .ms-line{display:flex;gap:9px;align-items:center}
+  .ms-line .speech{background:var(--surface);border:1px solid var(--border);border-radius:13px;
+    padding:7px 10px;font-size:11px;color:var(--text-strong)}
+
+  /* 숙련 도트 (P5) */
+  .dots{display:inline-flex;gap:3px;vertical-align:middle}
+  .dots i{width:9px;height:9px;border-radius:50%;background:var(--border)}
+  .dots i.on{background:var(--cta)}
+  .pct-bar{height:7px;background:var(--sunken);border-radius:9px;overflow:hidden}
+  .pct-bar i{display:block;height:100%;background:var(--teal-300)}
+
+  /* 보호권 (P4) */
+  .freeze{display:flex;align-items:center;gap:7px;background:var(--teal-50);border:1px solid var(--teal-200);
+    border-radius:12px;padding:7px 9px;font-size:10.5px;color:var(--teal-700)}
+  .shield{font-size:14px}
+
+  /* 주석/배지 */
+  .annot{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:780px){.annot{grid-template-columns:1fr}}
+  .annot .blk h4{margin:0 0 6px;font-size:12.5px;color:var(--teal-700)}
+  .annot ul{margin:0;padding-left:17px;font-size:12.5px;color:var(--text)}
+  .annot li{margin:3px 0}
+  .badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+  .badge{font-size:11px;font-weight:700;border-radius:999px;padding:4px 10px;background:var(--risk-low);color:#1f5d33}
+  .badge.cap{background:var(--teal-50);color:var(--teal-700);border:1px solid var(--teal-200)}
+  .badge.x{background:#fdecec;color:#b23b3b}
+
+  .callout{position:relative;background:var(--xp);color:#5c4a00;font-size:10px;font-weight:800;
+    border-radius:8px;padding:3px 7px;display:inline-block;margin-bottom:5px}
+  footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--border);font-size:12.5px;color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="page-head">
+  <h1>SOO-94 · 리텐션 제안 P1~P5 화면 배치 목업</h1>
+  <p>SOO-93 경쟁 티어다운에서 도출한 리텐션 제안을, 현재 순공이 실화면 위에 <b>어디에 어떻게 놓이는지</b> Before/After로 시각화. 색·로고·마스코트·토큰은 그대로 두고 <b>배치·플로우·UX 패턴 레벨</b>만 제안합니다.</p>
+</div>
+
+<div class="wrap">
+  <div class="legend">
+    <span class="lg"><b>Before</b> = 현행 화면</span>
+    <span class="lg"><b>After</b> = 제안 배치(녹색 테두리)</span>
+    <span class="lg"><b class="tag tier1" style="padding:2px 8px">1차 권장</b> 고임팩트·저난이도(P1~P3)</span>
+    <span class="lg"><b class="tag tier2" style="padding:2px 8px">2차</b> P4~P5</span>
+  </div>
+  <div class="note">
+    🔒 <b>브랜드 락 준수:</b> 모든 시안은 기존 토큰(<code>#4CAF88</code> CTA / 크림 배경 / 듀공 "순공이") 안에서만 배치를 바꿉니다. 기억HP는 <b>0–5 정수</b>(백분율·하트 금지), 카피는 <b>동반자 톤</b>(공포·죄책감·passive-aggressive 금지), light-only(다크 네이비 0)·코어 회독 루프 무수정.
+  </div>
+
+  <!-- ───────────────── P1 ───────────────── -->
+  <section class="case">
+    <div class="case-head">
+      <span class="pid">P1</span>
+      <h2>비-처벌 빈 상태(Empty State)</h2>
+      <span class="tag tier1">1차 권장</span>
+      <span class="tag screen">화면: 홈(/today) 신규·due 없음 + 오답노트 빈상태</span>
+    </div>
+    <div class="case-body">
+      <div class="ba">
+        <div class="col before">
+          <h3>Before — 현행</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="muted-box">오늘 할 회독이 없어요.<br>(빈 화면 / 다음 행동 안내 약함)</div>
+            <div class="intake">
+              <div class="t">문제 사진만 올리면 회독 퀘스트로</div>
+              <div class="s">사진을 올려보세요</div>
+              <button class="cta">사진 올리기</button>
+            </div>
+          </div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col after">
+          <h3>After — 제안 배치</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="card" style="text-align:center;padding:16px 12px">
+              <span class="callout">① 비-처벌 빈상태</span>
+              <div style="display:flex;justify-content:center;margin:4px 0 8px">
+                <span class="mascot sleep" style="--ms:72px"><span class="zzz">Zz</span><span class="mouth"></span></span>
+              </div>
+              <div style="font-size:12.5px;font-weight:800">오늘은 쉬어가도 괜찮아요 🌿</div>
+              <div style="font-size:10.5px;color:var(--text);margin:4px 0 10px">밀린 것도, 혼낼 것도 없어요. 새 문제 하나만 올려볼까요?</div>
+              <button class="cta">새 문제 올리기</button>
+              <button class="cta ghost" style="margin-top:6px">지난 회독 다시 보기</button>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="annot">
+        <div class="blk">
+          <h4>무엇이 바뀌나</h4>
+          <ul>
+            <li>빈 화면 → <b>순공이(sleep mood)가 쉬는</b> 비-처벌 카드로 교체</li>
+            <li>"밀렸다/놓쳤다" 대신 <b>"쉬어가도 괜찮아요"</b> 동반자 카피</li>
+            <li>막다른 빈 상태 대신 <b>가벼운 다음 행동 2개</b>(새 문제 / 다시 보기)</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <h4>듀오링고 매트릭스</h4>
+          <ul>
+            <li>차용: 빈 상태에도 마스코트로 정서 유지</li>
+            <li>거절: 빨강·죄책감·"연속 깨짐!" 압박 ❌ 반영 안 함</li>
+          </ul>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">동반자 톤 ✅</span>
+        <span class="badge">마스코트 mood 일치(휴식=sleep) ✅</span>
+        <span class="badge cap">홈 게임성 강도 ≤50% 캡 내</span>
+        <span class="badge">하트·백분율 0 ✅</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── P2 ───────────────── -->
+  <section class="case">
+    <div class="case-head">
+      <span class="pid">P2</span>
+      <h2>동반자 톤 복습 리마인드</h2>
+      <span class="tag tier1">1차 권장</span>
+      <span class="tag screen">화면: 홈(/today) 상단 리마인드 카드</span>
+    </div>
+    <div class="case-body">
+      <div class="ba">
+        <div class="col before">
+          <h3>Before — 현행</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="banner">📣 회독 퀘스트가 준비됐어요!</div>
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="tier-strip"><span>🛡 견습</span><span class="bar"><i></i></span><span>62%</span></div>
+            <div class="muted-box" style="min-height:120px">복습 안내 없음<br>(어제 풀던 단원으로의 연결 고리 없음)</div>
+          </div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col after">
+          <h3>After — 제안 배치</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="banner">📣 회독 퀘스트가 준비됐어요!</div>
+            <div class="hello">안녕하세요, 민수님!</div>
+            <span class="callout">② 동반자 톤 복습 리마인드</span>
+            <div class="card" style="border-color:var(--teal-200);background:var(--teal-50)">
+              <div class="ms-line">
+                <span class="mascot comfort" style="--ms:46px"><span class="mouth"></span></span>
+                <div class="speech">어제 <b>이차함수</b> 같이 풀었죠?<br>오늘 5분만 다시 볼까요?</div>
+              </div>
+              <button class="cta" style="margin-top:9px">이차함수 복습 시작</button>
+              <div style="text-align:center;font-size:10px;color:var(--text-muted);margin-top:5px">나중에 할게요</div>
+            </div>
+            <div class="tier-strip"><span>🛡 견습</span><span class="bar"><i></i></span><span>62%</span></div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="annot">
+        <div class="blk">
+          <h4>무엇이 바뀌나</h4>
+          <ul>
+            <li>홈 상단에 <b>순공이가 말 거는 리마인드 카드</b> 1장 추가</li>
+            <li>"안 하면 깨져요" ❌ → <b>"같이 풀었죠? 5분만 볼까요?"</b> 동반 제안</li>
+            <li><b>"나중에 할게요"</b> 부담 없는 회피 경로 항상 노출(잦은 푸시·강요 ❌)</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <h4>듀오링고 매트릭스</h4>
+          <ul>
+            <li>변형 차용: 간격반복 리마인드는 가져오되 <b>빈도·어조 완화</b></li>
+            <li>거절: 잦은 푸시·passive-aggressive 알림 ❌</li>
+          </ul>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">동반자 톤 ✅</span>
+        <span class="badge">마스코트 노출(comfort) ✅</span>
+        <span class="badge cap">홈 게임성 강도 ≤50% 캡 내</span>
+        <span class="badge">회피 경로 제공 ✅</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── P3 ───────────────── -->
+  <section class="case">
+    <div class="case-head">
+      <span class="pid">P3</span>
+      <h2>오늘 복습 due 큐 — 정수 노출</h2>
+      <span class="tag tier1">1차 권장</span>
+      <span class="tag screen">화면: 홈(/today) StatsGrid + IntakeHero</span>
+    </div>
+    <div class="case-body">
+      <div class="ba">
+        <div class="col before">
+          <h3>Before — 현행 (5박스)</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="stats">
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">🕐</div><div class="v">12분</div><div class="l">학습</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <div class="intake">
+              <div class="t">문제 사진만 올리면 회독 퀘스트로</div>
+              <div class="s">오늘 할 일이 한눈에 안 보임</div>
+              <button class="cta">사진 올리기</button>
+            </div>
+          </div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col after">
+          <h3>After — due 큐 정수 노출</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <span class="callout">③ 오늘 복습 due = 정수</span>
+            <div class="stats">
+              <div class="stat due"><div class="ic">🔁</div><div class="v">3</div><div class="l">오늘 복습</div></div>
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <div class="intake">
+              <div class="t">오늘 복습할 문제 <b>3개</b>가 기다려요</div>
+              <div class="s">3개만 끝내면 오늘 치 끝! · 약 6분</div>
+              <button class="cta">복습 3개 시작</button>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="annot">
+        <div class="blk">
+          <h4>무엇이 바뀌나</h4>
+          <ul>
+            <li>StatsGrid 맨 앞에 <b>"오늘 복습 N"</b> 정수 박스 신설(강조 테두리)</li>
+            <li>IntakeHero 카피를 <b>구체 수치·완료감</b>("3개만 끝내면 끝")으로</li>
+            <li>퍼센트·게이지 ❌ → <b>끝이 보이는 작은 정수</b>(인지 부담↓)</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <h4>듀오링고 매트릭스</h4>
+          <ul>
+            <li>차용: "오늘 할 일 명확화 + 완료감"</li>
+            <li>거절: 무한 큐·끝없는 스트레스 게이지 ❌</li>
+          </ul>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">정수 노출(백분율 ❌) ✅</span>
+        <span class="badge">기억HP 0–5 정수 유지 ✅</span>
+        <span class="badge cap">홈 게임성 강도 ≤50% 캡 내</span>
+        <span class="badge">완료감 동반자 톤 ✅</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── P4 ───────────────── -->
+  <section class="case">
+    <div class="case-head">
+      <span class="pid">P4</span>
+      <h2>회독 보호권(스트릭 프리즈) — 무료·동반자 변형</h2>
+      <span class="tag tier2">2차</span>
+      <span class="tag screen">화면: 홈(/today) 스트릭 영역 + 결과(/result)</span>
+    </div>
+    <div class="case-body">
+      <div class="ba">
+        <div class="col before">
+          <h3>Before — 현행</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="stats">
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">🕐</div><div class="v">12분</div><div class="l">학습</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <div class="muted-box" style="min-height:120px">스트릭이 깨지면 그냥 0으로<br>(하루 못 하면 복구 수단 없음)</div>
+          </div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col after">
+          <h3>After — 보호권 배치</h3>
+          <div class="frame-cap">홈(/today) — 스트릭 영역</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="stats">
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">🕐</div><div class="v">12분</div><div class="l">학습</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <span class="callout">④ 회독 보호권</span>
+            <div class="freeze">
+              <span class="shield">🛡</span>
+              <div><b>회독 보호권 1개</b> 보유 — 하루 쉬어도 스트릭이 지켜져요.
+              <span style="color:var(--text-muted)">바빴던 날을 위해 순공이가 챙겨둠</span></div>
+            </div>
+            <div class="card">
+              <div class="ct">보호권 받는 법 (무료·동반자 변형)</div>
+              <div class="row"><span>· 7일 연속 회독 달성</span><span>🛡 +1</span></div>
+              <div class="row"><span>· 친구와 같이 복습한 날</span><span>🛡 +1</span></div>
+            </div>
+          </div></div>
+          <div class="frame-cap">결과(/result) — 회독 완료 직후 · 게임성 ≤50% 캡</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="ms-line">
+              <span class="mascot celebrate" style="--ms:46px"><span class="mouth"></span></span>
+              <div class="speech" style="font-size:10px">오늘 회독 3개 완료! 잘했어요 🎉</div>
+            </div>
+            <div class="card">
+              <div class="ct" style="display:flex;justify-content:space-between">획득 <span>+60 XP</span></div>
+              <div class="row"><span>🧠 기억 HP</span><span>4 → 5</span></div>
+              <div class="row"><span>🔥 스트릭</span><span>7일 유지</span></div>
+            </div>
+            <span class="callout">④ 결과에선 보호권 '소진 안 함'만 안내 (압박 ❌)</span>
+            <div class="freeze">
+              <span class="shield">🛡</span>
+              <div>오늘은 보호권 <b>안 썼어요</b> — 1개 그대로 보관 중.</div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="annot">
+        <div class="blk">
+          <h4>무엇이 바뀌나</h4>
+          <ul>
+            <li>스트릭 아래 <b>"회독 보호권"</b> 칩 + 획득 안내 카드</li>
+            <li><b>무료 변형</b>(연속 달성)·<b>동반자 변형</b>(같이 복습)으로 획득 — <b>아이템샵·결제 ❌</b></li>
+            <li>스트릭 0 추락의 <b>처벌감 완화</b> → 복귀 마찰↓</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <h4>듀오링고 매트릭스</h4>
+          <ul>
+            <li>변형 차용: streak freeze 개념만, <b>유료 상점 제거</b></li>
+            <li>거절: 보석/하트 결제·아이템샵·"보호권 사세요" 압박 ❌</li>
+          </ul>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">아이템샵·결제 0 ✅</span>
+        <span class="badge">빨강 하트 0 ✅</span>
+        <span class="badge cap">홈 게임성 강도 ≤50% 캡 내</span>
+        <span class="badge">동반자 톤 ✅</span>
+        <span class="badge x">결과 화면 캡(≤50%) 적용 시 연출 과함 주의</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────── P5 ───────────────── -->
+  <section class="case">
+    <div class="case-head">
+      <span class="pid">P5</span>
+      <h2>단원별 숙련도 시각화 — 백분율 금지·정수/은유</h2>
+      <span class="tag tier2">2차</span>
+      <span class="tag screen">화면: 여정(/journey) · 홈 하단 과목진도 카드</span>
+    </div>
+    <div class="case-body">
+      <div class="ba">
+        <div class="col before">
+          <h3>Before — 현행(백분율 게이지)</h3>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello" style="color:#fff;background:linear-gradient(90deg,var(--journey-a),var(--cta));border-radius:12px;padding:8px 11px">나의 학습 여정</div>
+            <div class="card">
+              <div class="ct">함수 단원</div>
+              <div class="pct-bar"><i style="width:73%"></i></div>
+              <div class="row"><span>숙련도</span><span>73%</span></div>
+            </div>
+            <div class="card">
+              <div class="ct">도형 단원</div>
+              <div class="pct-bar"><i style="width:41%"></i></div>
+              <div class="row"><span>숙련도</span><span>41%</span></div>
+            </div>
+            <div class="card">
+              <div class="ct">확률 단원</div>
+              <div class="pct-bar"><i style="width:88%"></i></div>
+              <div class="row"><span>숙련도</span><span>88%</span></div>
+            </div>
+            <div class="muted-box" style="min-height:40px">% 숫자는 압박감·비교 유발</div>
+          </div></div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="col after">
+          <h3>After — 정수 도트(0–5)·은유</h3>
+          <div class="frame-cap">여정(/journey) — 단원별 숙련도</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello" style="color:#fff;background:linear-gradient(90deg,var(--journey-a),var(--cta));border-radius:12px;padding:8px 11px">나의 학습 여정</div>
+            <span class="callout">⑤ 백분율 → 정수 도트·은유</span>
+            <div class="card">
+              <div class="ct" style="display:flex;justify-content:space-between">함수 단원
+                <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+              <div class="row"><span>탄탄해지는 중 · 5칸 중 4칸</span></div>
+            </div>
+            <div class="card">
+              <div class="ct" style="display:flex;justify-content:space-between">도형 단원
+                <span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div class="row"><span>아직 익히는 중 · 5칸 중 2칸</span></div>
+            </div>
+            <div class="card">
+              <div class="ct" style="display:flex;justify-content:space-between">확률 단원
+                <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+              <div class="row"><span>거의 다 왔어요 · 5칸 중 5칸 🎉</span></div>
+            </div>
+            <div class="ms-line" style="margin-top:2px">
+              <span class="mascot comfort" style="--ms:38px"><span class="mouth"></span></span>
+              <div class="speech" style="font-size:10px">한 칸씩 채워가면 돼요. 숫자에 쫓기지 말기!</div>
+            </div>
+          </div></div>
+          <div class="frame-cap">홈 하단 과목진도 카드 (/today)</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="stats">
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">🕐</div><div class="v">12분</div><div class="l">학습</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <span class="callout">⑤ 홈 하단에도 같은 0–5 도트 요약</span>
+            <div class="card">
+              <div class="ct">과목 진도</div>
+              <div class="row">함수 <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+              <div class="row">도형 <span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div class="row">확률 <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+              <div class="row"><span style="color:var(--text-muted)">탭하면 여정(/journey)에서 단원별로 자세히</span></div>
+            </div>
+          </div></div>
+        </div>
+      </div>
+
+      <div class="annot">
+        <div class="blk">
+          <h4>무엇이 바뀌나</h4>
+          <ul>
+            <li>73%/41%/88% 게이지 → <b>0–5 정수 도트</b>(기억HP와 같은 정수 언어)</li>
+            <li>"숙련도 73%" → <b>"탄탄해지는 중 · 5칸 중 4칸"</b> 은유 + 정수</li>
+            <li><b>식물 등급(씨앗/새싹/꽃) 은유는 마스코트 락으로 금지</b> → 중립 도트 채택</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <h4>듀오링고 매트릭스</h4>
+          <ul>
+            <li>차용: 진척 가시화로 동기 유지</li>
+            <li>거절: 백분율·리그 순위식 상대비교 압박 ❌</li>
+          </ul>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge">백분율 0 ✅</span>
+        <span class="badge">0–5 정수 도트 ✅</span>
+        <span class="badge">식물 등급 미도입(마스코트 락) ✅</span>
+        <span class="badge cap">여정 화면 — 게임성 강도 별도 캡 점검 필요</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>요약</b> — P1~P3(1차 권장, 고임팩트·저난이도)은 홈(/today) 한 화면에서 빈상태·리마인드·due 정수로 묶이고, P4~P5(2차)는 보호권·숙련도 시각화로 스트릭/여정 화면에 붙습니다. 전부 기존 토큰·마스코트 안의 <b>배치·카피·UX 패턴 변경</b>이며 코어 회독 루프·문제생성 로직은 손대지 않습니다.</p>
+    <p><b>SSoT 메모</b> — 이 파일의 색 값은 시안 표시용 미러일 뿐, 실제 구현은 <code>apps/web/src/shared/styles/tokens.css</code> 변수를 참조합니다. 본 목업은 "어디에 어떻게 놓일지" 합의용이며, 구현 착수는 별도 티켓.</p>
+    <p style="color:var(--text-muted)">SOO-94 · 순공이 UI·디자인 리드 · Before/After 배치 시안</p>
+  </footer>
+</div>
+</body>
+</html>
