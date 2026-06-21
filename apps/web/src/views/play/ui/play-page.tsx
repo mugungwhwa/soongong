@@ -57,14 +57,10 @@ const GRADES: {
 
 export function PlayPage({ questId }: { questId: string }) {
   const router = useRouter();
-  const session = useRecallSession(questId);
+  const { session, loading, error } = useRecallSession(questId);
   const [revealed, setRevealed] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const startedAtRef = useRef<number>(Date.now());
-
-  const pct = Math.round(
-    (session.progress.current / session.progress.total) * 100,
-  );
 
   function handleGrade(grade: ReviewGrade) {
     if (submitting) return;
@@ -86,6 +82,23 @@ export function PlayPage({ questId }: { questId: string }) {
     void persistPlaySubmission(submission);
     router.push(ROUTES.result);
   }
+
+  if (loading) {
+    return <PlayStatus message="회독을 불러오는 중이에요…" />;
+  }
+  if (error || !session) {
+    return (
+      <PlayStatus
+        message="지금 불러올 회독이 없어요"
+        sub="자료를 올리면 순공이가 회독으로 만들어 드려요."
+        onHome={() => router.push(ROUTES.today)}
+      />
+    );
+  }
+
+  const pct = Math.round(
+    (session.progress.current / session.progress.total) * 100,
+  );
 
   return (
     <div className="mx-auto flex min-h-[80vh] max-w-md flex-col p-4 lg:max-w-xl lg:p-6">
@@ -263,6 +276,40 @@ function Buddy({ revealed }: { revealed: boolean }) {
       <div className="rounded-[var(--radius-lg)] rounded-bl-[4px] border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] px-3 py-1.5 text-[11px] font-bold text-[var(--color-text-strong)] shadow-[var(--shadow-card)]">
         {revealed ? "어땠어요? 솔직하게 골라요" : "천천히 떠올려도 돼요"}
       </div>
+    </div>
+  );
+}
+
+/** 로딩 / 빈 상태 — 실데이터 미존재 시(미로그인·빈 큐) mock 으로 메우지 않고 안내. */
+function PlayStatus({
+  message,
+  sub,
+  onHome,
+}: {
+  message: string;
+  sub?: string;
+  onHome?: () => void;
+}) {
+  return (
+    <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-4 p-6 text-center">
+      <MascotReaction mood="idle" size="lg" reason="회독 대기" />
+      <div className="text-base font-extrabold text-[var(--color-text-strong)]">
+        {message}
+      </div>
+      {sub && (
+        <p className="max-w-[280px] text-[13px] font-semibold leading-relaxed text-[var(--color-text-default)]">
+          {sub}
+        </p>
+      )}
+      {onHome && (
+        <button
+          type="button"
+          onClick={onHome}
+          className="mt-2 rounded-[var(--radius-lg)] border border-[var(--color-border-strong)] bg-[var(--color-surface)] px-5 py-3 text-[14px] font-extrabold text-[var(--color-mint-900)] shadow-[var(--shadow-card)] transition-transform active:scale-[0.97]"
+        >
+          홈으로
+        </button>
+      )}
     </div>
   );
 }
