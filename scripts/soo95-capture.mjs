@@ -41,13 +41,20 @@ for (const fmt of FORMATS) {
     try {
       const resp = await page.goto(BASE + s.path, { waitUntil: "networkidle", timeout: 30000 });
       const status = resp ? resp.status() : 0;
+      if (!resp || !resp.ok()) {
+        // 404/500 페이지는 비교 근거로 부적합 — 스크린샷 누적 금지
+        results.push(`FAIL ${status}  ${fmt.ff.padEnd(4)} ${s.id}`);
+        console.log(`FAIL ${status} ${fmt.ff} ${s.id}`);
+        continue;
+      }
       await sleep(s.wait);
       await page.screenshot({ path: file, fullPage: true });
       results.push(`${status}  ${fmt.ff.padEnd(4)} ${s.id}`);
       console.log(`OK ${status} ${fmt.ff} ${s.id}`);
     } catch (e) {
-      results.push(`ERR ${fmt.ff.padEnd(4)} ${s.id}: ${e.message.split("\n")[0]}`);
-      console.log(`ERR ${fmt.ff} ${s.id}: ${e.message.split("\n")[0]}`);
+      const msg = (e instanceof Error ? e.message : String(e)).split("\n")[0];
+      results.push(`ERR ${fmt.ff.padEnd(4)} ${s.id}: ${msg}`);
+      console.log(`ERR ${fmt.ff} ${s.id}: ${msg}`);
     }
   }
   await ctx.close();
