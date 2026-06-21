@@ -565,7 +565,6 @@ function playHome(){
   // 진행바 + 카운트업
   QUESTS.forEach(q=>{ if(q.id===4) q.done=true; else q.done=false; });
   renderQuests();
-  document.querySelectorAll('#view-home .rv').forEach((el,i)=>{el.classList.add('in');el.style.transitionDelay=(60+i*45)+'ms';});
   setTimeout(()=>{ updateProgress(false); document.querySelectorAll('.stat .v[data-count]').forEach(countUp); }, 400);
 }
 
@@ -738,7 +737,6 @@ function setView(v){
   document.getElementById('segWidth').style.pointerEvents = (v==='dl')?'none':'auto';
   if(v==='home') playHome();
   else if(v==='synapse'){ requestAnimationFrame(()=>SYN.start()); }
-  else SYN.stop();
   if(v!=='synapse') SYN.stop();
 }
 document.querySelectorAll('#segView button').forEach(b=>{
