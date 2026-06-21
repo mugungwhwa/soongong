@@ -1,5 +1,6 @@
 import { createClient } from "@/shared/lib/supabase/client";
-import type { QuestRiskLevel } from "@/shared/contracts";
+import { SUBJECTS } from "@/shared/contracts";
+import type { Subject, QuestRiskLevel } from "@/shared/contracts";
 import type { RecallSession } from "./model/types";
 
 /**
@@ -21,20 +22,49 @@ const RISK_MAP: Record<string, QuestRiskLevel> = {
   high: "high",
 };
 
+/** 로컬 기준 오늘(YYYY-MM-DD). ddayLabel·오늘 큐 쿼리가 같은 기준을 쓰도록 통일(타임존 일관). */
+function localTodayStr(): string {
+  const d = new Date();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${d.getFullYear()}-${m}-${day}`;
+}
+
+/** YYYY-MM-DD 를 로컬 자정 Date 로 파싱(UTC 파싱 드리프트 방지). */
+function parseDateOnly(s: string): Date {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y ?? 1970, (m ?? 1) - 1, d ?? 1);
+}
+
+/** 계약 외 subject 값을 화이트리스트로 좁히고 fallback. (단언 캐스팅 대신 런타임 검증) */
+function toSubject(value: string | null | undefined): Subject {
+  return SUBJECTS.includes(value as Subject) ? (value as Subject) : "수학";
+}
+
 function ddayLabel(dueDate: string | null): string {
   if (!dueDate) return "D-day";
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const due = new Date(dueDate);
-  due.setHours(0, 0, 0, 0);
+  // ddayLabel 과 오늘 큐 쿼리 모두 '로컬 date-only' 기준으로 통일(타임존 경계 오차 방지).
+  const today = parseDateOnly(localTodayStr());
+  const due = parseDateOnly(dueDate);
   const days = Math.round((due.getTime() - today.getTime()) / 86400_000);
   if (days === 0) return "D-0";
   return days > 0 ? `D-${days}` : `D+${-days}`;
 }
 
+/** 실 쿼리 에러(권한·네트워크 등)는 전파하고, '행 없음'만 null 로 다룬다. */
+function throwOnError(
+  res: { error?: { message?: string } | null },
+  label: string,
+): void {
+  if (res.error) {
+    throw new Error(`recall-session ${label} 조회 실패: ${res.error.message ?? "unknown"}`);
+  }
+}
+
 /**
- * questId 의 자가 회상 세션을 조회. 미로그인/미존재/생성문항 없음 등은 graceful null
- * (호출 뷰가 빈 상태로 처리 — mock 으로 메우지 않는다).
+ * questId 의 자가 회상 세션을 조회.
+ * - 실패(인증/권한/네트워크): throw → 뷰의 error 상태.
+ * - 미로그인/행 없음/생성문항 없음: graceful null → 뷰의 빈 상태(mock 으로 메우지 않는다).
  */
 export async function fetchRecallSession(
   questId: string,
@@ -45,15 +75,20 @@ export async function fetchRecallSession(
     data: { user },
     error: authError,
   } = await supabase.auth.getUser();
-  if (authError || !user) return null;
+  if (authError) {
+    throw new Error(`recall-session 인증 확인 실패: ${authError.message}`);
+  }
+  if (!user) return null; // 미로그인은 에러가 아니라 빈 상태
 
-  // 1) 대상 퀘스트
-  const { data: quest, error: questError } = await supabase
+  // 1) 대상 퀘스트 — maybeSingle 로 '행 없음(null)'과 '실에러'를 분리
+  const questRes = await supabase
     .from("review_quests")
     .select("quest_id, object_id, memory_id, due_date")
     .eq("quest_id", questId)
-    .single();
-  if (questError || !quest) return null;
+    .maybeSingle();
+  throwOnError(questRes, "review_quests");
+  const quest = questRes.data;
+  if (!quest) return null;
 
   // 2) 학습객체(과목·단원·개념) / 3) 생성문항(질문·정답·해설) / 4) 위험도 — 병렬
   const [ploRes, gpRes, smiRes] = await Promise.all([
@@ -75,8 +110,12 @@ export async function fetchRecallSession(
           .select("forgetting_risk")
           .eq("memory_id", quest.memory_id)
           .maybeSingle()
-      : Promise.resolve({ data: null }),
+      : Promise.resolve({ data: null, error: null }),
   ]);
+  // 병렬 조회의 실에러는 무시하지 않고 전파(빈 데이터만 null 허용).
+  throwOnError(ploRes, "parsed_learning_objects");
+  throwOnError(gpRes, "generated_problems");
+  throwOnError(smiRes, "student_memory_items");
 
   const plo = ploRes.data as {
     subject?: string;
@@ -89,14 +128,14 @@ export async function fetchRecallSession(
     answer?: string;
     explanation?: string;
   } | null;
-  const smi = (smiRes as { data: { forgetting_risk?: string } | null }).data;
+  const smi = smiRes.data as { forgetting_risk?: string } | null;
 
   // 인출 프롬프트/정답은 생성문항이 정본. 없으면 회상 카드를 구성할 수 없으므로 null.
   if (!gp?.stem || !gp.answer) return null;
 
-  // 진행 표시(현재/전체) — 오늘 회독 큐 기준. 실패 시 단일 세션으로 표기.
+  // 진행 표시(현재/전체) — 오늘 회독 큐 기준(로컬 today, ddayLabel 과 동일 기준). 실패 시 단일 세션.
   let progress = { current: 1, total: 1 };
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localTodayStr();
   const { data: todayQuests } = await supabase
     .from("review_quests")
     .select("quest_id")
@@ -115,7 +154,7 @@ export async function fetchRecallSession(
   return {
     questId,
     progress,
-    subject: (plo?.subject as RecallSession["subject"]) ?? "수학",
+    subject: toSubject(plo?.subject),
     unit: plo?.unit ?? "—",
     dday: ddayLabel(quest.due_date),
     riskLevel: RISK_MAP[smi?.forgetting_risk ?? ""] ?? "mid",
