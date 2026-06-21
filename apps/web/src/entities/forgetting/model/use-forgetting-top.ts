@@ -28,17 +28,20 @@ export function useForgettingTop(): ForgettingItem[] {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("student_memory_items")
         .select(
           "memory_id, forgetting_risk, concept_key, parsed_learning_objects(subject, topic, unit)",
         )
         .eq("user_id", user.id)
         .in("forgetting_risk", ["high", "medium"])
-        .order("forgetting_risk", { ascending: false })
         .order("updated_at", { ascending: true })
-        .limit(3);
+        .limit(20);
 
+      if (error) {
+        console.error("[useForgettingTop]", error.message);
+        return;
+      }
       if (!data?.length) return;
 
       type SmiRow = {
@@ -52,16 +55,19 @@ export function useForgettingTop(): ForgettingItem[] {
         } | null;
       };
       setItems(
-        (data as unknown as SmiRow[]).map((row) => {
-          const plo = row.parsed_learning_objects;
-          const topic =
-            plo?.topic ?? plo?.unit ?? row.concept_key ?? "회독 개념";
-          return {
-            subject: (plo?.subject ?? "수학") as Subject,
-            topic,
-            risk: riskToScore(row.forgetting_risk),
-          };
-        }),
+        (data as unknown as SmiRow[])
+          .sort((a, b) => riskToScore(b.forgetting_risk) - riskToScore(a.forgetting_risk))
+          .slice(0, 3)
+          .map((row) => {
+            const plo = row.parsed_learning_objects;
+            const topic =
+              plo?.topic ?? plo?.unit ?? row.concept_key ?? "회독 개념";
+            return {
+              subject: (plo?.subject ?? "수학") as Subject,
+              topic,
+              risk: riskToScore(row.forgetting_risk),
+            };
+          }),
       );
     };
     load();

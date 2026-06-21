@@ -141,7 +141,7 @@ export async function stageMemorize(input: {
     .single();
 
   if (error || !data) {
-    // 이미 존재(중복)하는 경우 기존 행 조회 후 반환
+    // ignoreDuplicates로 인한 빈 결과 또는 실제 오류 → 기존 행 조회 시도
     const { data: existing, error: fetchErr } = await supabase
       .from("student_memory_items")
       .select("memory_id")
@@ -149,7 +149,7 @@ export async function stageMemorize(input: {
       .eq("concept_key", conceptKey)
       .single();
     if (fetchErr || !existing)
-      throw new Error(`[memorize] ${fetchErr?.message ?? "upsert failed"}`);
+      throw new Error(`[memorize] ${error?.message ?? fetchErr?.message ?? "upsert/fetch failed"}`);
     return { memoryId: existing.memory_id as string };
   }
 
