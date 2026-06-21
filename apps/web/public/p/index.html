@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — 프로토타입 인덱스</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --color-bg: #F8FBF7;
+    --color-surface: #FFFFFF;
+    --color-primary: #4CAF88;
+    --color-primary-bg: #EAF4EE;
+    --color-text: #1A2E22;
+    --color-text-secondary: #5A7A65;
+    --color-border: #D4EFE4;
+    --radius: 16px;
+  }
+  body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    padding: 40px 24px 80px;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  header {
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .logo-badge {
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+  }
+  .subtitle {
+    margin-top: 8px;
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    font-weight: 400;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .card {
+    background: var(--color-surface);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  }
+  .card:hover {
+    box-shadow: 0 8px 24px rgba(76, 175, 136, 0.12);
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+  }
+  .card-badge {
+    background: var(--color-primary-bg);
+    color: var(--color-primary);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .card-badge.latest {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-arrow {
+    color: var(--color-primary);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  footer {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+  }
+  .add-note {
+    background: var(--color-primary-bg);
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+  .add-note code {
+    background: #e0f0e8;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="logo-row">
+      <span class="logo-badge">PROTOTYPE</span>
+    </div>
+    <h1>순공대장 시안</h1>
+    <p class="subtitle">최신 디자인 프로토타입 — 최신순 정렬</p>
+  </header>
+
+  <div class="section-label">프로토타입 목록</div>
+
+  <a class="card" href="/p/soo-97/">
+    <span class="card-badge latest">SOO-97 · 최신</span>
+    <div class="card-body">
+      <div class="card-title">전 화면 상용화 퀄리티 확장</div>
+      <div class="card-desc">회독 진행·결과·오답·빈상태 — SOO-96 디자인 언어 전면 적용 (Phase 2)</div>
+    </div>
+    <span class="card-arrow">›</span>
+  </a>
+
+  <a class="card" href="/p/soo-96/">
+    <span class="card-badge">SOO-96</span>
+    <div class="card-body">
+      <div class="card-title">기준점 프로토타입</div>
+      <div class="card-desc">홈 + 순공냅스 — 상용화 퀄리티 디자인·모션 언어 기준점</div>
+    </div>
+    <span class="card-arrow">›</span>
+  </a>
+
+  <div class="add-note">
+    <strong>신규 프로토타입 추가 방법</strong><br/>
+    1. HTML 파일을 <code>apps/web/public/p/soo-XXX/index.html</code>에 복사<br/>
+    2. 이 인덱스 파일(<code>apps/web/public/p/index.html</code>)의 목록에 카드 1개 추가<br/>
+    3. PR 생성 → CodeRabbit 승인 후 머지
+  </div>
+
+  <footer>
+    순공대장 · 프로토타입 전용 뷰 · 로그인 불필요<br/>
+    피드백은 Multica 이슈로
+  </footer>
+</div>
+</body>
+</html>
