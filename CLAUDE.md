@@ -16,15 +16,15 @@
 
 순공대장: 수능생 듀오링고형 AI **회독 리텐션 엔진**. 학생이 문제사진/인강기록/캡처를 올리면 AI Agent가 1/3/7/14일 회독퀘스트로 변환. **콴다는 학생의 '막힘'을 풀고, 순공대장은 학생의 '까먹음'을 푼다** (전략정리 §0). SparkClaw 1인 창업 트랙 8주 MVP 1차.
 
-## 2. 잠긴 결정사항 (텍스트와 시안 충돌 시 시안 우선 — 단, 시안이 §8 폐기 정책을 위반하는 경우 텍스트(정책) 우선)
+## 2. 잠긴 결정사항 (디자인 값·스펙 충돌 시 `/styleguide` + `tokens.css` + design-system-lock v2.1 우선 — 구 시안 `app_UI.png`/`web_ui.png`는 폐기. §8 폐기 정책 위반 제안은 정책 우선)
 
 | 항목 | 값 | SSoT |
 |---|---|---|
 | 마스코트 | "순공이" (가안, **듀공** 모티프) | UI 설계.md §6 |
 | UI 라벨 | "회독퀘스트" / 백서 = "회독" / 저니탭(뉴럴 망각맵, /journey) = "순공냅스" | 핵심요약.md |
-| 톤 | Light Study Garden — **바다(Ocean) 컨셉** | UI 설계.md §1 |
+| 톤 | Light Study Garden — **Light 단일 톤** (구 바다/Ocean 컨셉 명칭 폐기) | UI 설계.md §1 |
 | 컬러 | 크림 `#F8FBF7` + **v2 Teal/Mint** `#A8DCCB`/`#7BC4AE`/`#4CAF88` + 위험도(소프트). 구 오션 폐기 | docs/design-system/2026-06-09-design-system-lock.md (v2.0, SOO-260616-01) |
-| 시안 | `app_UI.png` / `web_ui.png` | repo root |
+| 디자인 SSoT | `/styleguide` + `tokens.css` + design-system-lock v2.1 (구 시안 `app_UI.png`/`web_ui.png`는 **폐기 — SSoT 아님**) | docs/design-system/2026-06-09-design-system-lock.md |
 | 시각 자산 | Midjourney + Canva (Mike 직접, **외주 없음**) | docs/visual-assets/...asset-inventory.md |
 | 디자인 reference | 듀오링고 + 카카오 헤이바이브 + 클래스101 + Pretendard (토스 차용 X) | UI 설계.md §1-2 비교 레퍼런스 |
 | 스택 | Next.js 15 + FSD 2.1 + Tailwind + shadcn + Supabase + Anthropic | docs/...master.md |
@@ -124,10 +124,10 @@ docs/
 ├── visual-assets/2026-05-18-character-design-agent.md  ← DEPRECATED, ui-master §4로 이관 (stub만 유지)
 ├── superpowers/specs/2026-05-18-ui-master-design.md  ← UI master SSoT (디자인 시스템 + 캐릭터 production + 에이전트 dispatch + 리서치 + 모션 + 6게이트)
 ├── visual-assets/mascot-v0.1/                         ← Mike 작업본 reference (main.png, repeat_normal.png)
-├── design-system/2026-06-09-design-system-lock.md    ← 디자인 시스템 잠금 v1.0 (Ocean 팔레트·로고 A·레이아웃·반응형·마스코트 SSoT)
+├── design-system/2026-06-09-design-system-lock.md    ← 디자인 시스템 잠금 v2.1 (v2 Teal/Mint 팔레트·로고 A·레이아웃·반응형·마스코트 SSoT)
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
-app_UI.png / web_ui.png (이미지 SSoT)
+tokens.css + design-system-lock v2.1 (디자인 값/스펙 SSoT) — 구 app_UI.png / web_ui.png 시안은 폐기(SSoT 아님)
 /styleguide (preview 전용 고정 리뷰 URL: docs/ops/styleguide-review-access.md) ← 디자인·브랜드 가이드라인 시각적 출발점/근간
 ```
 

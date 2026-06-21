@@ -1,7 +1,7 @@
 # 순공대장 — 다음 세션 진입점 (RESUME)
 
 > **이 문서를 먼저 읽으세요.** 5분 안에 현재 상태 + 다음 액션이 파악되도록 잠금.
-> 작성일: 2026-05-14 / **최종 갱신: 2026-06-10 (코드 트랙 P0~P8 main 통합 + Ocean 디자인 적용 + Multica 운영 반영)**
+> 작성일: 2026-05-14 / **최종 갱신: 2026-06-21 (코드 트랙 P0~P8 main 통합 + 디자인 v2 Teal/Mint 적용 + 자동 머지 ON + Multica 운영 반영)**
 
 ---
 
@@ -11,7 +11,7 @@
 
 **2026-06-10 현재 상태 (5/19 이후 큰 변화):**
 - **코드 트랙 점화** — P0 와꾸 스켈레톤 → P1~P8 sub-plan이 전부 실제 코드로 main 머지됨 (Supabase 인증·DB·Edge Functions·홈/플레이/게임/관리자 UI). 더 이상 "문서만 있는" 상태가 아님.
-- **디자인 시스템 잠금 + 적용** — SOO-17로 Ocean 팔레트·로고 A·레이아웃 v3 스펙 잠금(`design-system-lock.md` v1.0) → SOO-16(PR #22)으로 `tokens.css` 민트→**오션 실적용 완료**. 구 민트 hex 0건.
+- **디자인 시스템 잠금 + 적용** — SOO-17로 팔레트·로고 A·레이아웃 v3 스펙 잠금 → tokens.css 실적용. **(2026-06-16 SOO-260616-01로 팔레트를 구 Ocean → 현행 v2 Teal/Mint(`#A8DCCB`/`#7BC4AE`/`#4CAF88`)로 교체. lock 문서는 v2.1.)**
 - **모바일 카메라 직행** — SOO-26(PR #23) "문제사진" 버튼이 모바일에서 후면 카메라 바로 호출(`capture="environment"`).
 - **Multica 운영 체계** — Orchestration Lead 중심 스쿼드 구조 v6 잠금(`2026-06-08-multica-squad-structure.md`). 에이전트가 이슈를 받아 PR 생성, Mike 승인 후 머지하는 루프 가동.
 
@@ -28,9 +28,9 @@
 | 한 줄 차별 | 콴다는 학생의 '막힘'을 풀고, 순공대장은 학생의 '까먹음'을 푼다 |
 | 마스코트 | **"순공이" (가안, 듀공 모티프)** — Midjourney/GPT-4o + Canva 직접 작업 |
 | UI 라벨 | 사용자 노출 = **"회독퀘스트"** / 백서 = "회독" |
-| 톤 | **Light Study Garden — 바다(Ocean) 컨셉** (Dark RPG 폐기됨) |
-| 시안 SSoT | `app_UI.png` / `web_ui.png` (텍스트와 충돌 시 이미지 우선, 단 §8 폐기정책 위반 시 정책 우선) |
-| 컬러 | 크림 `#F8FBF7` + **오션 `#2AB8D0`/`#1A8FAD`/`#0E5C82`** + 위험도(소프트) — 민트 `#7CC97C` 폐기 |
+| 톤 | **Light Study Garden — Light 단일 톤** (구 다크 RPG 톤 · 구 Ocean 컨셉 폐기됨) |
+| 디자인 SSoT | `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md` (v2.1) + `tokens.css`. **구 시안 `app_UI.png` / `web_ui.png`는 폐기 — SSoT 아님** (실앱/styleguide 우선) |
+| 컬러 | 크림 기반 + **v2 Teal/Mint `#A8DCCB`/`#7BC4AE`/`#4CAF88`** + 위험도(소프트) — 구 오션(`#2AB8D0`/`#1A8FAD`/`#0E5C82`)·민트 `#7CC97C` 폐기 (SOO-260616-01) |
 | 사업 정체성 | **엔진 회사** (콘텐츠 회사 X) |
 | 데이터 아키텍처 | Postgres = truth (온톨로지 트리) + pgvector = 검색 (장기 SSoT) / MVP 1차는 FTS 우선 (§10) |
 | 비즈니스 모델 | 듀오링고형 5티어 하이브리드 (Free/Super/Max/가족/B2B2C + 시즌 IAP) |
@@ -70,7 +70,7 @@
 2026-05-19-순공대장_전략_정리.md (root)                 ← 사업/엔진/포지셔닝 상위 SSoT (v1.1)
 docs/
 ├── RESUME.md                                          ← 지금 이 파일 (첫 진입점)
-├── design-system/2026-06-09-design-system-lock.md     ← Ocean 팔레트·로고 A·레이아웃 v3 잠금 v1.0
+├── design-system/2026-06-09-design-system-lock.md     ← v2 Teal/Mint 팔레트·로고 A·레이아웃 v3 잠금 v2.1
 ├── design-system/2026-06-09-interaction-spec.md        ← 전 화면 인터랙션 + 수식 표시 규칙 v1.0
 ├── design-tokens.md                                    ← 디자인 토큰 SSoT (lint:tokens 근거)
 ├── superpowers/plans/2026-05-14-soongong-mvp1-{master,p1..p8}.md  ← 9개 plan
@@ -130,7 +130,7 @@ docs/
 
 ```
 > [SOO-XX] 이슈를 담당 리드 에이전트에 위임. architect → executor → reviewer 3-stage.
-> DoD(lint:tokens / design-review ≥ 70 / arch-audit) 자가검증 후 PR. 자동 머지 OFF.
+> DoD(lint:tokens / design-review ≥ 70 / arch-audit) 자가검증 후 PR. 자동 머지 ON(무중단, 2026-06-20 Mike 결정 — 코드래빗 승인 + 필수 체크 green + Tech Lead 리뷰 충족 시, SOO-111).
 ```
 
 ### C. Sub-plan 보강
@@ -191,7 +191,7 @@ git config core.hooksPath          # 검증
 
 ---
 
-**한 줄 요약**: 문서 + 코드(P0~P8) 모두 main 통합 완료, Ocean 디자인 적용·모바일 카메라까지 라이브. 지금은 Multica에서 이슈 단위(SOO-26 ⓑ, SOO-24 등) 다듬기 + 학원 베타 검증 단계.
+**한 줄 요약**: 문서 + 코드(P0~P8) 모두 main 통합 완료, v2 Teal/Mint 디자인 적용·모바일 카메라까지 라이브. 지금은 Multica에서 이슈 단위(SOO-26 ⓑ, SOO-24 등) 다듬기 + 학원 베타 검증 단계.
 
 ---
 

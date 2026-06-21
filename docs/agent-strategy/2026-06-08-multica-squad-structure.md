@@ -75,7 +75,7 @@ Tech Lead  회독·망각    문제생성·AI   게임화        UI·디자인  
 - repo `CLAUDE.md` 자동 로드 → 잠긴 결정·§8 폐기 정책 준수.
 - 리드 런 안에서 `agent-tracks.md §3.2` P행대로 sub-agent 내부 디스패치.
 - git: `config user.* 수정 금지`, 커밋 일회용 `-c`, push는 SSH alias(`git@github.com-mugung:mugungwhwa/soongong.git`)로만.
-- 초기: PR만 생성, 자동 머지 OFF. Mike 직접 머지.
+- **자동 머지 ON** (2026-06-20 Mike 무중단 결정, SOO-111): 코드래빗 승인 + 필수 체크 green + (코드 PR은 Tech Lead 리뷰) 충족 시 자동 머지. force/admin·실패 체크 우회는 계속 금지(차터 룰7). (초기 운영은 PR만 생성·Mike 수동 머지였으나 전환됨.)
 - 이슈 DoD로 자가 검증. 보고는 한국어, 단일 추천안 + "OK / 다르게".
 
 ---
@@ -225,7 +225,7 @@ Tech Lead  회독·망각    문제생성·AI   게임화        UI·디자인  
 
 **설명**: P5/P6 화면 구현, 디자인 토큰, design-review 게이트, 시안 정합. 마스코트 제작 제외(Mike+GPT-4o).
 
-**모델**: Sonnet 4.6 *(UI master spec + 시안 SSoT 명확)*
+**모델**: Sonnet 4.6 *(UI master spec + 디자인 SSoT(styleguide/lock v2.1) 명확)*
 
 **지침**:
 ```
@@ -235,7 +235,7 @@ Tech Lead  회독·망각    문제생성·AI   게임화        UI·디자인  
 범위 밖: 마스코트(순공이) 제작 안 함. 순공이 production은 Mike + GPT-4o(UI master §4, 외주 금지). 본 리드는 완성 자산 배치·통합만.
 자동 거절: Dark RPG / 다크 네이비 / 회독마왕 / 토스 단일 reference.
 게이트: P5 design-review ≥ 70(상품화 ≥ 80~85), P6 E2E 7개 통과, pnpm lint:tokens.
-앵커: docs/superpowers/specs/2026-05-18-ui-master-design.md, 01_제품_UX_게임화/순공대장_UI_설계.md(v2.3), app_UI.png/web_ui.png(이미지 SSoT, 충돌 시 이미지 우선).
+앵커: /styleguide + docs/design-system/2026-06-09-design-system-lock.md(v2.1, v2 Teal/Mint) + tokens.css(값 SSoT), 01_제품_UX_게임화/순공대장_UI_설계.md(레이아웃 참고). 구 시안 app_UI.png/web_ui.png는 폐기(SSoT 아님).
 에스컬레이션: 시안과 충돌하는 디자인 결정.
 ```
 

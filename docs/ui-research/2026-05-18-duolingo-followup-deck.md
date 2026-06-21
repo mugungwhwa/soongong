@@ -1,3 +1,5 @@
+> ⚠️ **구버전 스냅샷 (2026-05-18 기준).** 본 문서는 작성 시점 기록이며 현행 기준이 아니다. 현행 디자인 SSoT = `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1, **v2 Teal/Mint** 팔레트 `#A8DCCB`/`#7BC4AE`/`#4CAF88`) + `tokens.css`. 구 시안 `app_UI.png`/`web_ui.png`·Ocean(`#2AB8D0`)/민트 팔레트·구 다크 RPG 톤 방향은 폐기. (정합: SOO-118)
+
 # Duolingo Follow-up 5앱 Deep-Dive Deck
 
 > **상태:** v0.2 — 5앱 deep-dive 채움 완료, design-system 토큰 정합 점검 대기.

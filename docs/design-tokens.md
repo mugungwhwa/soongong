@@ -42,7 +42,7 @@
 | Gradient | `--gradient-quest-map` | teal 재조율, 등록 gradient만 사용 (lint 통과 대상) |
 | Radius | `--radius-{sm,md,lg,xl,pill}` | 8/12/16/24/9999px |
 | Spacing | `--space-{1..12}` | 4px base, scale 1=4 / 2=8 / 4=16 / 6=24 / 12=48 |
-| Shadow | `--shadow-{card,elevated}` | 오션톤 alpha 기반 (rgba(14,92,130,…)) |
+| Shadow | `--shadow-{card,elevated}` | v2 teal alpha 기반 (rgba(46,125,91,…), `#2E7D5B`) — 구 오션톤(rgba(14,92,130,…)) 폐기 |
 | Motion | `--ease-out-soft`, `--duration-{fast,mid,slow}` | 160/240/380ms |
 | Typography | `--font-{display,body}` | Pretendard 단일 (v1.3.9 webfont) |
 

@@ -1,3 +1,5 @@
+> ⚠️ **구버전 스냅샷 (2026-05-14 기준).** 본 문서는 작성 시점 기록이며 현행 기준이 아니다. 현행 디자인 SSoT = `/styleguide` + `docs/design-system/2026-06-09-design-system-lock.md`(v2.1, **v2 Teal/Mint** 팔레트 `#A8DCCB`/`#7BC4AE`/`#4CAF88`) + `tokens.css`. 구 시안 `app_UI.png`/`web_ui.png`·Ocean(`#2AB8D0`)/민트 팔레트·구 다크 RPG 톤 방향은 폐기. (정합: SOO-118)
+
 # 순공대장 MVP 1차 — Master Implementation Plan
 
 > **For agentic workers:** 본 문서는 **마스터 플랜**(roadmap)이다. Task-level 실행은 각 서브 프로젝트(P1~P8)의 sub-plan 문서에서 정의된다. 본 문서는 (1) 8개 서브 프로젝트 outline (2) DB 스키마 (3) Agent 배치 매트릭스 (4) 의존성 그래프 (5) 실패 시나리오 + 체크포인트를 잠근다. Sub-plan 작성 시에는 `superpowers:writing-plans` skill을 사용하고, 실행은 `superpowers:subagent-driven-development`로 진행한다.
