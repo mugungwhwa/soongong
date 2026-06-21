@@ -209,12 +209,16 @@ function fmtPass(p: PassResult): string[] {
 declare const process: { exitCode?: number };
 
 // ── 게이트 정책 ────────────────────────────────────────────────────────────────
-// P3 OCR 정확도 임계(≥90%/10페이지)는 "리포팅 지표"로만 출력한다. 현재 결정론 V1/V2
-// 엔진의 실문항 정합이 낮은 것은 이미 상신된 MOAT 범위 밖 사안이라, 이 하네스가 CI를
-// 하드 게이트로 차단하지 않는다. 비정상 종료(exitCode≠0)는 오직 "하네스 자체 오류"
-//   (a) 픽스처 페이지 수 불일치 (b) 평가 중 예외 — 일 때만 발생시켜 파이프라인을 막는다.
+// SSoT(CLAUDE.md §4 위험 게이트): "P3 OCR 정확도 ≥ 90% (수학 점화식 10장) — 미달 시
+// P4 진입 금지 + manual 폴백 활성." → 이 하네스는 정확도 게이트를 실제로 강제한다.
+// 비정상 종료(exitCode≠0)는 다음 중 하나라도 해당할 때 발생시켜 파이프라인을 막는다:
+//   (a) P3 정확도 미달(< 임계) → P4 진입 차단 + 수동 폴백 신호(MANUAL_FALLBACK=ON)
+//   (b) 픽스처 페이지 수 불일치(하네스 무결성 오류)
+//   (c) 평가 중 예외(하네스 자체 오류)
+// 주: 결정론 V1/V2 엔진의 실문항 정합을 끌어올리는 것은 MOAT(범위 밖·기 상신)이며,
+//     본 게이트는 그 미달을 "차단 + 수동 폴백"으로 신호할 뿐 엔진을 수정하지 않는다.
 const EXPECTED_FIXTURE_COUNT = 10; // eval/fixtures/문제이미지/ 물리 페이지 수
-const P3_ACCURACY_THRESHOLD = 0.9; // 리포팅 기준선 (게이트 아님)
+const P3_ACCURACY_THRESHOLD = 0.9; // P3 OCR 정확도 게이트 임계 (SSoT: CLAUDE.md §4)
 
 // ── 집계: V1·V2 분리 + 합산(둘 중 하나라도 검증되면 "생성") ──────────────────────
 interface Agg {
@@ -269,12 +273,26 @@ console.log(`Pass B (전처리 후)      V1=${preAgg.v1} V2=${preAgg.v2} 합산(
 console.log(`→ 엔진은 진짜(stub 아님): 전처리 후 생성된 변형은 독립 오라클 재계산과 정답 일치.`);
 console.log(`→ 그러나 현 파이프라인엔 (a) OCR (b) 텍스트 전처리 단계가 없어, 실 OCR 자동 생성은 ${rawAgg.any}/${total}.`);
 
-// 정확도는 리포팅 지표 — PASS/BELOW 라벨만 출력하고 종료코드에 반영하지 않는다.
-const accuracyLabel = preAgg.any / total >= P3_ACCURACY_THRESHOLD ? "PASS" : "BELOW (엔진 정확도 향상=MOAT·범위 밖)";
-console.log(`[METRIC] P3 정확도(Pass B 합산) ${pct(preAgg.any)} vs 기준 ${P3_ACCURACY_THRESHOLD * 100}% → ${accuracyLabel}`);
+// ── P3 정확도 게이트 (SSoT: CLAUDE.md §4) ───────────────────────────────────────
+// 미달 시 P4 진입 차단 + 수동 폴백 활성. 리포팅(METRIC)은 유지하고, 게이트로 강제한다.
+const p3Accuracy = preAgg.any / total;
+const p3GateFailed = p3Accuracy < P3_ACCURACY_THRESHOLD;
+console.log(
+  `[METRIC] P3 정확도(Pass B 합산) ${pct(preAgg.any)} vs 기준 ${P3_ACCURACY_THRESHOLD * 100}% → ${p3GateFailed ? "FAIL" : "PASS"}`,
+);
+if (p3GateFailed) {
+  // 수동 폴백 신호 — CI/오케스트레이터가 감지하는 머신 마커.
+  console.error(
+    `[P3-GATE] FAIL: 정확도 ${pct(preAgg.any)} < 기준 ${P3_ACCURACY_THRESHOLD * 100}% → P4 진입 차단 · MANUAL_FALLBACK=ON`,
+  );
+  console.error(
+    `[P3-GATE] 엔진 정확도 향상은 MOAT(범위 밖·기 상신) — 게이트는 차단·폴백 신호만 발생시킨다.`,
+  );
+  process.exitCode = 1;
+}
 console.log("─".repeat(64) + "\n");
 
-// ── 종료코드: 하네스 자체 오류만 차단(정확도 미달은 차단하지 않음) ──────────────────
+// ── 하네스 무결성 게이트 (정확도 게이트와 별개로 차단) ──────────────────────────────
 if (FIXTURES.length !== EXPECTED_FIXTURE_COUNT) {
   console.error(`[GATE] 픽스처 페이지 수 불일치: ${FIXTURES.length}/${EXPECTED_FIXTURE_COUNT} — 하네스 무결성 오류`);
   process.exitCode = 1;
