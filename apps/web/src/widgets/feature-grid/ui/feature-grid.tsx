@@ -18,7 +18,7 @@ import type { ComponentType } from "react";
  * mockup(ui example.png)의 기능 카드 4종을 실제 라우트로 매핑한다.
  *
  * 디자인 검수 준수:
- * - 홈 게임성 강도 30% 캡: 네온/파티클 없이 카드+소프트 민트 아이콘 칩만.
+ * - 홈 게임성 강도 50% 캡(2026-06-20 Mike, 30→50): 활기 OK이되 미등록 네온/glow 남발·다크 금지.
  * - 순공리그는 MVP 1.5차(CLAUDE.md §2) → 잠금(disabled) 상태로만 노출.
  * - 색은 tokens.css 시맨틱 토큰만(raw hex 0). light-only.
  * - 카피는 동반자 톤(fear/passive-aggressive 금지).

@@ -8,7 +8,9 @@ import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { NudgeBanner, NotificationBell, NudgeProvider } from "@/widgets/nudge-banner";
 import { IntakeHero } from "@/features/upload-source";
-import { PartyPopper } from "lucide-react";
+import Link from "next/link";
+import { ROUTES } from "@/shared/config/routes";
+import { Brain, PartyPopper } from "lucide-react";
 
 export function TodayPage({
   isFirstEntry = false,
@@ -18,7 +20,7 @@ export function TodayPage({
   userName?: string;
 }) {
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-6">
+    <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-8">
       {isFirstEntry && (
         <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
           <MascotReaction mood="praise" size="md" reason="첫 회독 준비" />
@@ -55,7 +57,23 @@ export function TodayPage({
                   : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
               </p>
             </div>
-            <NotificationBell />
+            {/* 항시 노출 액션 — 순공냅스(시그니처) + 알림. 모바일에선 사이드바가 숨으므로 여기가 순공냅스 상시 진입점. (SOO-90 아이콘 승격) */}
+            <div className="flex shrink-0 items-center gap-2">
+              <Link
+                href={ROUTES.journey}
+                aria-label="순공냅스 — 뉴럴 망각맵"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] transition hover:bg-[var(--color-mint-100)]"
+              >
+                <Brain
+                  size={16}
+                  strokeWidth={1.5}
+                  color="var(--color-mint-700)"
+                  fill="none"
+                  aria-hidden="true"
+                />
+              </Link>
+              <NotificationBell />
+            </div>
           </div>
           <NudgeBanner />
           <TierJourneyHero />
