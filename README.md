@@ -23,7 +23,10 @@
 | ![모바일 UI](app_UI.png) | ![웹 대시보드](web_ui.png) |
 
 > ⚠️ 위 이미지는 **초창기 데모 시안**으로, 현재 리디자인(SOO-96)으로 교체 작업 중이다.
-> **디자인 기준(SSoT)이 아니다.** 현행 디자인 기준은 디자인 시스템(`/styleguide` · [`docs/design-system/2026-06-09-design-system-lock.md`](docs/design-system/2026-06-09-design-system-lock.md))과 SOO-96 리디자인이며, 충돌 시 이쪽이 우선한다.
+> **디자인 기준(SSoT)이 아니다.** 현행 디자인 기준은 디자인 시스템이며, 충돌 시 이쪽이 우선한다:
+> - **`/styleguide`** — dev 서버 라우트(저장소 루트 디렉터리가 아니다). 소스 [`apps/web/src/views/styleguide`](apps/web/src/views/styleguide), 라우트 `apps/web/src/app/styleguide`. 접근법은 [`docs/ops/styleguide-review-access.md`](docs/ops/styleguide-review-access.md) 참조.
+> - **디자인 시스템 잠금** [`docs/design-system/2026-06-09-design-system-lock.md`](docs/design-system/2026-06-09-design-system-lock.md) (v2.1, v2 Teal/Mint 팔레트)
+> - **SOO-96 리디자인** 프로토타입 [`docs/prototypes/SOO-96/index.html`](docs/prototypes/SOO-96/index.html)
 
 ---
 
