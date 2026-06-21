@@ -71,6 +71,8 @@
   .phone .status::after{content:"";width:70px;height:7px;border-radius:99px;background:#20302a;opacity:.85}
   .screen{padding:12px 12px 16px;min-height:480px;display:flex;flex-direction:column;gap:9px}
   .after .phone{border-color:var(--cta)}
+  .frame-cap{text-align:center;font-size:11px;font-weight:700;color:var(--text-muted);margin:12px 0 6px}
+  .frame-cap:first-of-type{margin-top:0}
 
   /* 화면 내부 공통 컴포넌트 */
   .banner{background:var(--teal-50);border:1px solid var(--teal-200);border-radius:14px;padding:9px 11px;
@@ -405,6 +407,7 @@
         <div class="arrow">→</div>
         <div class="col after">
           <h3>After — 보호권 배치</h3>
+          <div class="frame-cap">홈(/today) — 스트릭 영역</div>
           <div class="phone"><div class="status"></div><div class="screen">
             <div class="hello">안녕하세요, 민수님!</div>
             <div class="stats">
@@ -424,6 +427,23 @@
               <div class="ct">보호권 받는 법 (무료·동반자 변형)</div>
               <div class="row"><span>· 7일 연속 회독 달성</span><span>🛡 +1</span></div>
               <div class="row"><span>· 친구와 같이 복습한 날</span><span>🛡 +1</span></div>
+            </div>
+          </div></div>
+          <div class="frame-cap">결과(/result) — 회독 완료 직후 · 게임성 ≤50% 캡</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="ms-line">
+              <span class="mascot celebrate" style="--ms:46px"><span class="mouth"></span></span>
+              <div class="speech" style="font-size:10px">오늘 회독 3개 완료! 잘했어요 🎉</div>
+            </div>
+            <div class="card">
+              <div class="ct" style="display:flex;justify-content:space-between">획득 <span>+60 XP</span></div>
+              <div class="row"><span>🧠 기억 HP</span><span>4 → 5</span></div>
+              <div class="row"><span>🔥 스트릭</span><span>7일 유지</span></div>
+            </div>
+            <span class="callout">④ 결과에선 보호권 '소진 안 함'만 안내 (압박 ❌)</span>
+            <div class="freeze">
+              <span class="shield">🛡</span>
+              <div>오늘은 보호권 <b>안 썼어요</b> — 1개 그대로 보관 중.</div>
             </div>
           </div></div>
         </div>
@@ -491,6 +511,7 @@
         <div class="arrow">→</div>
         <div class="col after">
           <h3>After — 정수 도트(0–5)·은유</h3>
+          <div class="frame-cap">여정(/journey) — 단원별 숙련도</div>
           <div class="phone"><div class="status"></div><div class="screen">
             <div class="hello" style="color:#fff;background:linear-gradient(90deg,var(--journey-a),var(--cta));border-radius:12px;padding:8px 11px">나의 학습 여정</div>
             <span class="callout">⑤ 백분율 → 정수 도트·은유</span>
@@ -512,6 +533,25 @@
             <div class="ms-line" style="margin-top:2px">
               <span class="mascot comfort" style="--ms:38px"><span class="mouth"></span></span>
               <div class="speech" style="font-size:10px">한 칸씩 채워가면 돼요. 숫자에 쫓기지 말기!</div>
+            </div>
+          </div></div>
+          <div class="frame-cap">홈 하단 과목진도 카드 (/today)</div>
+          <div class="phone"><div class="status"></div><div class="screen">
+            <div class="hello">안녕하세요, 민수님!</div>
+            <div class="stats">
+              <div class="stat"><div class="ic">🔥</div><div class="v">7</div><div class="l">스트릭</div></div>
+              <div class="stat"><div class="ic">🧠</div><div class="v">4/5</div><div class="l">기억HP</div></div>
+              <div class="stat"><div class="ic">🕐</div><div class="v">12분</div><div class="l">학습</div></div>
+              <div class="stat"><div class="ic">⚡</div><div class="v">340</div><div class="l">XP</div></div>
+              <div class="stat"><div class="ic">🏆</div><div class="v">견습</div><div class="l">등급</div></div>
+            </div>
+            <span class="callout">⑤ 홈 하단에도 같은 0–5 도트 요약</span>
+            <div class="card">
+              <div class="ct">과목 진도</div>
+              <div class="row">함수 <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span></div>
+              <div class="row">도형 <span class="dots"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+              <div class="row">확률 <span class="dots"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span></div>
+              <div class="row"><span style="color:var(--text-muted)">탭하면 여정(/journey)에서 단원별로 자세히</span></div>
             </div>
           </div></div>
         </div>
