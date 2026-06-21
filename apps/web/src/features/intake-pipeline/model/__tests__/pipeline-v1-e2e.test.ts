@@ -12,7 +12,7 @@ vi.mock("@/shared/lib/supabase/service", () => ({
   createServiceClient: () => mockCreateServiceClient(),
 }));
 
-import { runIntakePipeline, stageGenerate } from "../pipeline";
+import { runIntakePipeline, stageGenerate, stageMemorize } from "../pipeline";
 
 // ── 인메모리 fake DB (테이블별 store + 자동 PK) ─────────────────────────────
 type Row = Record<string, unknown>;
@@ -38,6 +38,8 @@ function makeFakeDb() {
   function from(table: string) {
     const filters: Row = {};
     let insertedRow: Row | null = null;
+    // ignoreDuplicates 충돌로 "아무것도 안 일어남"을 single()에 전달하는 플래그.
+    let upsertDidNothing = false;
     const api = {
       select: () => api,
       eq: (col: string, val: unknown) => {
@@ -52,17 +54,31 @@ function makeFakeDb() {
         store[table].push(insertedRow);
         return api;
       },
-      // stageMemorize 의 upsert(...).select().single() 모사.
-      // onConflict/ignoreDuplicates: 동일 (user_id, concept_key) 행이 있으면 기존 행 반환,
-      // 없으면 새 행 삽입 — 실제 Supabase upsert 시맨틱과 정합.
-      upsert: (payload: Row, _opts?: unknown) => {
-        const existing = store[table].find(
-          (r) =>
-            payload.user_id !== undefined &&
-            r.user_id === payload.user_id &&
-            r.concept_key === payload.concept_key,
-        );
+      // stageMemorize 의 upsert(...).select().single() 모사 — 실제 Supabase 계약 준수.
+      //   - onConflict 컬럼으로 기존 행 판정.
+      //   - 충돌 + ignoreDuplicates:true → { data: null, error: null } (= 아무 행도 반환 안 함).
+      //     이렇게 해야 stageMemorize 의 fallback 조회 경로(error || !data)가 실제로 실행된다.
+      //   - 충돌 + ignoreDuplicates:false → 기존 행에 payload 병합(update-upsert).
+      //   - 미충돌 → 새 행 삽입.
+      upsert: (
+        payload: Row,
+        opts?: { onConflict?: string; ignoreDuplicates?: boolean },
+      ) => {
+        upsertDidNothing = false;
+        const conflictCols = (opts?.onConflict ?? "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const existing = conflictCols.length
+          ? store[table].find((r) => conflictCols.every((c) => r[c] === payload[c]))
+          : undefined;
         if (existing) {
+          if (opts?.ignoreDuplicates) {
+            insertedRow = null;
+            upsertDidNothing = true;
+            return api;
+          }
+          Object.assign(existing, payload);
           insertedRow = existing;
           return api;
         }
@@ -73,6 +89,7 @@ function makeFakeDb() {
         return api;
       },
       single: async () => {
+        if (upsertDidNothing) return { data: null, error: null };
         if (insertedRow) return { data: insertedRow, error: null };
         const row = store[table].find((r) =>
           Object.entries(filters).every(([k, v]) => r[k] === v),
@@ -80,6 +97,7 @@ function makeFakeDb() {
         return { data: row ?? null, error: null };
       },
       maybeSingle: async () => {
+        if (upsertDidNothing) return { data: null, error: null };
         if (insertedRow) return { data: insertedRow, error: null };
         const row = store[table].find((r) =>
           Object.entries(filters).every(([k, v]) => r[k] === v),
@@ -196,5 +214,44 @@ describe("stageGenerate — graceful fallback", () => {
     const quest = store.review_quests[0];
     expect(quest.variation_level).toBe("V1");
     expect(quest.object_id).toBe(store.parsed_learning_objects[1].object_id);
+  });
+});
+
+describe("stageMemorize — upsert(ignoreDuplicates) + fallback 계약", () => {
+  it("첫 호출은 새 student_memory_items 행을 만든다", async () => {
+    const { client, store } = makeFakeDb();
+    mockCreateServiceClient.mockReturnValue(client);
+
+    const out = await stageMemorize({ userId: "user-1", objectId: "obj-1", subject: "수학" });
+
+    expect(store.student_memory_items).toHaveLength(1);
+    const row = store.student_memory_items[0];
+    expect(row.memory_id).toBe(out.memoryId);
+    expect(row.concept_key).toBe("수학:obj-1"); // `${subject}:${objectId}`
+    expect(row.user_id).toBe("user-1");
+  });
+
+  it("동일 concept_key 재호출은 ignoreDuplicates로 행을 새로 만들지 않고, fallback 조회로 기존 memory_id를 돌려준다", async () => {
+    const { client, store } = makeFakeDb();
+    mockCreateServiceClient.mockReturnValue(client);
+
+    const first = await stageMemorize({ userId: "user-1", objectId: "obj-1", subject: "수학" });
+    const second = await stageMemorize({ userId: "user-1", objectId: "obj-1", subject: "수학" });
+
+    // upsert가 충돌 시 { data: null } 을 반환 → stageMemorize fallback 조회 경로가 실행되어야 한다.
+    // (fake upsert가 충돌 시 기존 행을 그대로 반환했다면 이 단언은 fallback을 검증하지 못한다.)
+    expect(store.student_memory_items).toHaveLength(1); // 중복 행 미생성
+    expect(second.memoryId).toBe(first.memoryId); // 같은 행을 가리킴
+  });
+
+  it("다른 concept_key는 별도 행을 만든다", async () => {
+    const { client, store } = makeFakeDb();
+    mockCreateServiceClient.mockReturnValue(client);
+
+    const a = await stageMemorize({ userId: "user-1", objectId: "obj-1", subject: "수학" });
+    const b = await stageMemorize({ userId: "user-1", objectId: "obj-2", subject: "수학" });
+
+    expect(store.student_memory_items).toHaveLength(2);
+    expect(b.memoryId).not.toBe(a.memoryId);
   });
 });
