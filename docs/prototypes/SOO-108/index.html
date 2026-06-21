@@ -174,9 +174,10 @@ body{
 .cal-dow.sun{color:#C96868} .cal-dow.sat{color:var(--color-info)}
 .cal-cell{aspect-ratio:1/1.06;border-radius:var(--radius-md);border:1px solid transparent;background:transparent;
   display:flex;flex-direction:column;align-items:center;padding:6px 2px 4px;cursor:default;position:relative;
+  font:inherit;color:inherit;width:100%;text-align:center;
   transition:background var(--duration-fast),border-color var(--duration-fast),transform var(--duration-fast)}
 .cal-cell.has{cursor:pointer;background:var(--color-surface);border-color:var(--color-border-default);box-shadow:var(--shadow-card)}
-.cal-cell.has:hover{transform:translateY(-2px);border-color:var(--color-border-strong)}
+.cal-cell.has:hover,.cal-cell.has:focus-visible{transform:translateY(-2px);border-color:var(--color-border-strong);outline:none}
 .cal-cell.has:active{transform:scale(.97)}
 .cal-cell .dn{font-size:12.5px;font-weight:700;color:var(--color-text-default)}
 .cal-cell.sun .dn{color:#C96868} .cal-cell.sat .dn{color:var(--color-info)}
@@ -634,7 +635,9 @@ function buildCalendar(){
     const dow=new Date(CAL_VIEW.year,CAL_VIEW.month,d).getDay();
     const k=key(CAL_VIEW.year,CAL_VIEW.month,d);
     const qs=SCHEDULE[k]||[];
-    const cell=document.createElement('div');
+    const cell=document.createElement('button');
+    cell.type='button';
+    cell.setAttribute('aria-label',`${CAL_VIEW.year}년 ${CAL_VIEW.month+1}월 ${d}일`);
     let cls='cal-cell'+(dow===0?' sun':dow===6?' sat':'');
     const isToday=(CAL_VIEW.year===TODAY.year&&CAL_VIEW.month===TODAY.month&&d===TODAY.day);
     if(isToday) cls+=' today';
@@ -644,7 +647,12 @@ function buildCalendar(){
     cell.innerHTML=`<span class="dn">${d}</span>`+
       (allDone?`<svg class="done-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`:'')+
       `<div class="dots">${qs.map(q=>`<i class="${CYC_CLASS[q.cyc]}"></i>`).join('')}</div>`;
-    if(qs.length){ cell.addEventListener('click',()=>selectDate(k,d)); }
+    if(qs.length){
+      cell.addEventListener('click',()=>selectDate(k,d));
+    } else {
+      cell.disabled=true;
+      cell.setAttribute('aria-disabled','true');
+    }
     grid.appendChild(cell);
   }
 }
