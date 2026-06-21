@@ -36,7 +36,7 @@ export async function sendSubscriptionToServer(
 ): Promise<void> {
   const key = subscription.getKey("p256dh");
   const auth = subscription.getKey("auth");
-  await fetch("/api/push/subscribe", {
+  const res = await fetch("/api/push/subscribe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -45,6 +45,9 @@ export async function sendSubscriptionToServer(
       auth: auth ? arrayBufferToBase64(auth) : "",
     }),
   });
+  if (!res.ok) {
+    throw new Error(`[Push] 서버 구독 저장 실패: ${res.status}`);
+  }
 }
 
 export async function unsubscribeFromPush(

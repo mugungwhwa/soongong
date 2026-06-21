@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     .from("push_subscriptions")
     .upsert(
       { user_id: user.id, endpoint, p256dh, auth },
-      { onConflict: "endpoint" },
+      { onConflict: "endpoint,user_id" },
     );
 
   if (error) {
@@ -46,11 +46,16 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "인증 필요" }, { status: 401 });
   }
 
-  await supabase
+  const { error: deleteError } = await supabase
     .from("push_subscriptions")
     .delete()
     .eq("user_id", user.id)
     .eq("endpoint", endpoint);
+
+  if (deleteError) {
+    console.error("[Push unsubscribe] DB 오류:", deleteError.message);
+    return NextResponse.json({ error: "해제 실패" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true });
 }

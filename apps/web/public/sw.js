@@ -35,7 +35,10 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("push", (event) => {
-  const data = event.data?.json() ?? {};
+  let data = {};
+  try {
+    data = event.data?.json() ?? {};
+  } catch (_) {}
   const title = data.title ?? "순공대장";
   const options = {
     body: data.body ?? "회독퀘스트가 기다리고 있어요!",
@@ -54,8 +57,9 @@ self.addEventListener("notificationclick", (event) => {
     clients
       .matchAll({ type: "window", includeUncontrolled: true })
       .then((clientList) => {
+        const absUrl = new URL(url, self.location.origin).href;
         for (const c of clientList) {
-          if (c.url === url && "focus" in c) return c.focus();
+          if (c.url === absUrl && "focus" in c) return c.focus();
         }
         return clients.openWindow(url);
       }),

@@ -39,14 +39,21 @@ export async function POST(req: NextRequest) {
   }
 
   const payload = JSON.stringify({ title, body, url: url ?? "/" });
-  const results = await Promise.allSettled(
-    (subs ?? []).map((sub) =>
-      webpush.sendNotification(
-        { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-        payload,
+  const BATCH_SIZE = 50;
+  const allSubs = subs ?? [];
+  const results: PromiseSettledResult<unknown>[] = [];
+  for (let i = 0; i < allSubs.length; i += BATCH_SIZE) {
+    const batch = allSubs.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.allSettled(
+      batch.map((sub) =>
+        webpush.sendNotification(
+          { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
+          payload,
+        ),
       ),
-    ),
-  );
+    );
+    results.push(...batchResults);
+  }
 
   const sent = results.filter((r) => r.status === "fulfilled").length;
   const failed = results.filter((r) => r.status === "rejected").length;
