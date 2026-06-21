@@ -21,6 +21,7 @@ export type AccuracyBreakdown = {
 
 export type PeriodStats = {
   xp: number;
+  xpLabel: string;
   delta: string;
   barTitle: string;
   barSum: string;
@@ -30,6 +31,7 @@ export type PeriodStats = {
 export const MOCK_PERIOD_STATS: Record<StatsPeriod, PeriodStats> = {
   week: {
     xp: 420,
+    xpLabel: "이번 주 XP",
     delta: "지난주 +18%",
     barTitle: "주간 XP 추이",
     barSum: "합계 420 XP",
@@ -45,6 +47,7 @@ export const MOCK_PERIOD_STATS: Record<StatsPeriod, PeriodStats> = {
   },
   month: {
     xp: 1680,
+    xpLabel: "이번 달 XP",
     delta: "지난달 +24%",
     barTitle: "월간 XP 추이 (주별)",
     barSum: "합계 1,680 XP",

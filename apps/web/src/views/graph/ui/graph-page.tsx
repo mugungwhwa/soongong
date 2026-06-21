@@ -147,7 +147,7 @@ export function GraphPage() {
 
       {/* 요약 4박스 */}
       <section className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4" aria-label="통계 요약">
-        <StatBox label="이번 주 XP" sub={stats.delta}>
+        <StatBox label={stats.xpLabel} sub={stats.delta}>
           {stats.xp.toLocaleString()}
         </StatBox>
         <StatBox label="정답률" sub="개념 적중 ↑">
