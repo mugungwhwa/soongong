@@ -21,6 +21,7 @@ const PK: Record<string, string> = {
   subject_routing_results: "routing_id",
   parsed_learning_objects: "object_id",
   review_quests: "quest_id",
+  student_memory_items: "memory_id",
 };
 
 function makeFakeDb() {
@@ -30,12 +31,15 @@ function makeFakeDb() {
     parsed_learning_objects: [],
     type_pattern_cards: [],
     review_quests: [],
+    student_memory_items: [],
   };
   let counter = 0;
 
   function from(table: string) {
     const filters: Row = {};
     let insertedRow: Row | null = null;
+    // ignoreDuplicates 충돌로 "아무것도 안 일어남"을 single()에 전달하는 플래그.
+    let upsertDidNothing = false;
     const api = {
       select: () => api,
       eq: (col: string, val: unknown) => {
@@ -50,7 +54,42 @@ function makeFakeDb() {
         store[table].push(insertedRow);
         return api;
       },
+      // stageMemorize 의 upsert(...).select().single() 모사 — 실제 Supabase 계약 준수.
+      //   - onConflict 컬럼으로 기존 행 판정.
+      //   - 충돌 + ignoreDuplicates:true → { data: null, error: null } (= 아무 행도 반환 안 함).
+      //     이렇게 해야 stageMemorize 의 fallback 조회 경로(error || !data)가 실제로 실행된다.
+      //   - 충돌 + ignoreDuplicates:false → 기존 행에 payload 병합(update-upsert).
+      //   - 미충돌 → 새 행 삽입.
+      upsert: (
+        payload: Row,
+        opts?: { onConflict?: string; ignoreDuplicates?: boolean },
+      ) => {
+        upsertDidNothing = false;
+        const conflictCols = (opts?.onConflict ?? "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const existing = conflictCols.length
+          ? store[table].find((r) => conflictCols.every((c) => r[c] === payload[c]))
+          : undefined;
+        if (existing) {
+          if (opts?.ignoreDuplicates) {
+            insertedRow = null;
+            upsertDidNothing = true;
+            return api;
+          }
+          Object.assign(existing, payload);
+          insertedRow = existing;
+          return api;
+        }
+        counter += 1;
+        const pk = PK[table];
+        insertedRow = pk ? { ...payload, [pk]: `${table}-${counter}` } : { ...payload };
+        store[table].push(insertedRow);
+        return api;
+      },
       single: async () => {
+        if (upsertDidNothing) return { data: null, error: null };
         if (insertedRow) return { data: insertedRow, error: null };
         const row = store[table].find((r) =>
           Object.entries(filters).every(([k, v]) => r[k] === v),
@@ -58,6 +97,7 @@ function makeFakeDb() {
         return { data: row ?? null, error: null };
       },
       maybeSingle: async () => {
+        if (upsertDidNothing) return { data: null, error: null };
         if (insertedRow) return { data: insertedRow, error: null };
         const row = store[table].find((r) =>
           Object.entries(filters).every(([k, v]) => r[k] === v),
