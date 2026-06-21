@@ -21,6 +21,7 @@ const PK: Record<string, string> = {
   subject_routing_results: "routing_id",
   parsed_learning_objects: "object_id",
   review_quests: "quest_id",
+  student_memory_items: "memory_id",
 };
 
 function makeFakeDb() {
@@ -30,6 +31,7 @@ function makeFakeDb() {
     parsed_learning_objects: [],
     type_pattern_cards: [],
     review_quests: [],
+    student_memory_items: [],
   };
   let counter = 0;
 
@@ -44,6 +46,26 @@ function makeFakeDb() {
       },
       limit: () => api,
       insert: (payload: Row) => {
+        counter += 1;
+        const pk = PK[table];
+        insertedRow = pk ? { ...payload, [pk]: `${table}-${counter}` } : { ...payload };
+        store[table].push(insertedRow);
+        return api;
+      },
+      // stageMemorize 의 upsert(...).select().single() 모사.
+      // onConflict/ignoreDuplicates: 동일 (user_id, concept_key) 행이 있으면 기존 행 반환,
+      // 없으면 새 행 삽입 — 실제 Supabase upsert 시맨틱과 정합.
+      upsert: (payload: Row, _opts?: unknown) => {
+        const existing = store[table].find(
+          (r) =>
+            payload.user_id !== undefined &&
+            r.user_id === payload.user_id &&
+            r.concept_key === payload.concept_key,
+        );
+        if (existing) {
+          insertedRow = existing;
+          return api;
+        }
         counter += 1;
         const pk = PK[table];
         insertedRow = pk ? { ...payload, [pk]: `${table}-${counter}` } : { ...payload };
