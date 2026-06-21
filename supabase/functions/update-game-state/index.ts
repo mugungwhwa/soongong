@@ -24,12 +24,16 @@ function rarityFor(key: string): string {
   return BADGE_RARITY[key] ?? "common";
 }
 
+type ReviewGrade = "clear" | "fuzzy" | "blank";
+const VALID_GRADES = new Set<ReviewGrade>(["clear", "fuzzy", "blank"]);
+
 type QuestResult = {
   completed: boolean;
   result: "correct" | "wrong";
   mode: "today" | "wrong_recovery" | "memory_defense";
   hint_used: boolean;
   repeat_wrong?: boolean;
+  grade?: ReviewGrade;  // 3단계 자가평가; 없으면 result로 폴백
 };
 
 Deno.serve(async (req) => {
@@ -67,9 +71,20 @@ Deno.serve(async (req) => {
   }
 
   // 기억 HP — 0-5 정수 (SSoT §4-2)
+  // grade 제공 시: 또렷 +2 / 가물가물 0 / 막막 -1
+  // grade 미제공 시: 기존 result 기반 동작 유지 (호환)
   let hp: number = cur.memory_hp;
-  if (quest_result.mode === "memory_defense" && quest_result.result === "correct") hp = Math.min(5, hp + 1);
-  if (quest_result.result === "wrong" && quest_result.repeat_wrong) hp = Math.max(0, hp - 1);
+  const resolvedGrade = quest_result.grade && VALID_GRADES.has(quest_result.grade)
+    ? quest_result.grade
+    : undefined;
+  if (resolvedGrade) {
+    if (resolvedGrade === "clear") hp = Math.min(5, hp + 2);
+    else if (resolvedGrade === "blank") hp = Math.max(0, hp - 1);
+    // fuzzy → HP 변화 없음
+  } else {
+    if (quest_result.mode === "memory_defense" && quest_result.result === "correct") hp = Math.min(5, hp + 1);
+    if (quest_result.result === "wrong" && quest_result.repeat_wrong) hp = Math.max(0, hp - 1);
+  }
 
   const newXp = cur.total_xp + xpDelta;
   const { data: newRank } = await supabase.rpc("update_rank", { p_xp: newXp });

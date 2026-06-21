@@ -1,5 +1,6 @@
 import { createClient } from "@/shared/lib/supabase/client";
 import type { Quest } from "./model";
+import type { ReviewGrade } from "@/shared/contracts";
 
 export interface QuestEnriched {
   quest: Quest;
@@ -110,8 +111,9 @@ export async function completeQuest(
     solve_time_seconds?: number;
     hint_used?: boolean;
     confidence?: number;
+    grade?: ReviewGrade;  // 3단계 자가평가; 없으면 result로 폴백
   },
-): Promise<{ next_variation: string; next_days: number } | null> {
+): Promise<{ next_variation: string; next_days: number; grade?: ReviewGrade } | null> {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!supabaseUrl) return null;
 

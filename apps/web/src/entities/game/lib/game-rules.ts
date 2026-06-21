@@ -1,6 +1,29 @@
 // 순수 게임 룰 함수 — Supabase/Edge 의존 없이 단위 테스트 가능
 // SSoT: 01_제품_UX_게임화/게임성_기획_구조.md v1.0
 import type { Rank, BadgeRarity } from "../model";
+import type { ReviewGrade } from "@/shared/contracts";
+export type { ReviewGrade };
+
+// 복습 간격 — Karpicke & Roediger(2008) / Cepeda(2006)
+// 또렷: hint 있거나 느리면 7일 / 빠르면 14일
+// 가물가물: 3일, 막막: 1일
+export function gradeToInterval(
+  grade: ReviewGrade,
+  hintUsed: boolean,
+  solveSeconds: number,
+): number {
+  if (grade === "blank") return 1;
+  if (grade === "fuzzy") return 3;
+  if (hintUsed || solveSeconds >= 60) return 7;
+  return 14;
+}
+
+// 기억 HP 변화량 (SSoT §4-2: HP 0-5 정수)
+export function gradeToHpDelta(grade: ReviewGrade): number {
+  if (grade === "clear") return 2;
+  if (grade === "blank") return -1;
+  return 0; // fuzzy
+}
 
 export const XP_RULES = {
   today_quest_done: 20,

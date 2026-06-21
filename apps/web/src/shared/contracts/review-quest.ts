@@ -6,6 +6,9 @@
  */
 import type { Subject } from "./common";
 
+/** 회독 퀘스트 자가평가 3단계 (SOO-115). */
+export type ReviewGrade = "clear" | "fuzzy" | "blank";
+
 /** 회독 주기 (일). */
 export type ReviewCycle = 1 | 3 | 7 | 14;
 

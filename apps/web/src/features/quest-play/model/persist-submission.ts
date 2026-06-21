@@ -4,6 +4,7 @@ import {
   type VariationLevel,
 } from "@/entities/solve-event";
 import { completeQuest } from "@/entities/quest";
+import type { ReviewGrade } from "@/entities/game";
 import { recordGameProgress } from "./game-progress";
 
 export interface PlaySubmission {
@@ -14,6 +15,8 @@ export interface PlaySubmission {
   hintUsed: boolean;
   /** today=일반 회독, wrong_recovery=오답회수, memory_defense=기억방어. */
   mode: "today" | "wrong_recovery" | "memory_defense";
+  /** 3단계 자가평가 — 없으면 isCorrect로 2단계 폴백. */
+  grade?: ReviewGrade;
   variationLevel?: VariationLevel | null;
   /** 캔버스에서 추출한 plain 데이터(레이어 분리: view가 추출). */
   strokeJSON?: unknown;
@@ -63,11 +66,12 @@ export async function persistPlaySubmission(s: PlaySubmission): Promise<void> {
       result: s.isCorrect ? "correct" : "wrong",
       solve_time_seconds: s.elapsedSeconds,
       hint_used: s.hintUsed,
+      grade: s.grade,
     });
   } catch {
     /* no-op */
   }
 
   // 4) 게임 상태 갱신 (P7 update-game-state) — best-effort
-  await recordGameProgress(s.mode, s.isCorrect, s.hintUsed);
+  await recordGameProgress(s.mode, s.isCorrect, s.hintUsed, s.grade);
 }

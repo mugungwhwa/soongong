@@ -1,6 +1,6 @@
 // DoD: 잠금값 검증 — SSoT §4-2 / §5-3 / §6-1
 import { describe, it, expect } from "vitest";
-import { xpToRank, clampHp, calcStreak, rarityFor, badgeCandidates, XP_RULES } from "../lib/game-rules";
+import { xpToRank, clampHp, calcStreak, rarityFor, badgeCandidates, XP_RULES, gradeToInterval, gradeToHpDelta } from "../lib/game-rules";
 
 describe("xpToRank — SSoT §6-1 (rank 6단)", () => {
   it("0 XP → 순공입문", () => expect(xpToRank(0)).toBe("순공입문"));
@@ -84,5 +84,43 @@ describe("badgeCandidates — 뱃지 후보 결정 로직", () => {
   });
   it("memory_defense + correct → defense_7 뱃지", () => {
     expect(badgeCandidates(1, 3, "memory_defense", "correct", true)).toContain("defense_7");
+  });
+});
+
+describe("gradeToInterval — SOO-115 3단계 회독 간격", () => {
+  it("막막(blank) → 1일", () => expect(gradeToInterval("blank", false, 30)).toBe(1));
+  it("가물가물(fuzzy) → 3일 (힌트·속도 무관)", () => {
+    expect(gradeToInterval("fuzzy", true, 30)).toBe(3);
+    expect(gradeToInterval("fuzzy", false, 200)).toBe(3);
+  });
+  it("또렷(clear) + 빠름(<60s) + 힌트 없음 → 14일", () => {
+    expect(gradeToInterval("clear", false, 30)).toBe(14);
+  });
+  it("또렷(clear) + 힌트 사용 → 7일", () => {
+    expect(gradeToInterval("clear", true, 30)).toBe(7);
+  });
+  it("또렷(clear) + 느림(≥60s) → 7일", () => {
+    expect(gradeToInterval("clear", false, 60)).toBe(7);  // 경계값 정확
+    expect(gradeToInterval("clear", false, 90)).toBe(7);
+  });
+  it("또렷(clear) + 빠름(59s) → 14일 (경계 직전)", () => {
+    expect(gradeToInterval("clear", false, 59)).toBe(14);
+  });
+  it("간격 값이 잠긴 1/3/7/14일 내에만 있음", () => {
+    const VALID = [1, 3, 7, 14];
+    expect(VALID).toContain(gradeToInterval("blank", false, 30));
+    expect(VALID).toContain(gradeToInterval("fuzzy", false, 30));
+    expect(VALID).toContain(gradeToInterval("clear", false, 30));
+    expect(VALID).toContain(gradeToInterval("clear", true, 30));
+  });
+});
+
+describe("gradeToHpDelta — SOO-115 기억 HP 변화량 (SSoT §4-2)", () => {
+  it("또렷(clear) → +2", () => expect(gradeToHpDelta("clear")).toBe(2));
+  it("가물가물(fuzzy) → 0", () => expect(gradeToHpDelta("fuzzy")).toBe(0));
+  it("막막(blank) → -1", () => expect(gradeToHpDelta("blank")).toBe(-1));
+  it("HP clamp 후 0-5 범위 유지", () => {
+    expect(clampHp(5 + gradeToHpDelta("clear"))).toBe(5);  // 5+2 → clamp to 5
+    expect(clampHp(0 + gradeToHpDelta("blank"))).toBe(0);  // 0-1 → clamp to 0
   });
 });
