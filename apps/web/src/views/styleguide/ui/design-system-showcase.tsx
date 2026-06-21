@@ -32,6 +32,7 @@ import {
 import {
   PatternsLayout,
   PatternsInteraction,
+  PatternsMotion,
   DomainMemoryHp,
   DomainRisk,
   DomainIntensityCaps,
@@ -41,6 +42,12 @@ import {
   PrinciplesGuardrails,
   PrinciplesVoice,
 } from "./showcase-principles";
+import {
+  PlatformStack,
+  PlatformDelivery,
+  PlatformMergeGate,
+  PlatformPrinciples,
+} from "./showcase-platform";
 
 interface Leaf {
   id: string;
@@ -99,6 +106,7 @@ const NAV: NavGroup[] = [
     leaves: [
       { id: "layout", label: "레이아웃", render: () => <PatternsLayout /> },
       { id: "interaction", label: "상호작용", render: () => <PatternsInteraction /> },
+      { id: "motion", label: "모션 언어 (SOO-96)", render: () => <PatternsMotion /> },
       { id: "hp", label: "기억HP 게이지", render: () => <DomainMemoryHp /> },
       { id: "risk", label: "위험도 pill", render: () => <DomainRisk /> },
       { id: "intensity", label: "게임성 강도 캡", render: () => <DomainIntensityCaps /> },
@@ -110,6 +118,15 @@ const NAV: NavGroup[] = [
       { id: "matrix", label: "Duolingo 매트릭스", render: () => <PrinciplesMatrix /> },
       { id: "guardrails", label: "잠긴 결정 · 폐기 회귀", render: () => <PrinciplesGuardrails /> },
       { id: "voice", label: "Voice 원칙", render: () => <PrinciplesVoice /> },
+    ],
+  },
+  {
+    category: "Platform · 개발 가이드",
+    leaves: [
+      { id: "stack", label: "스택 & FSD 레이어", render: () => <PlatformStack /> },
+      { id: "delivery", label: "배포 · PWA · 2026 전략", render: () => <PlatformDelivery /> },
+      { id: "merge-gate", label: "머지 게이트 · 브랜치", render: () => <PlatformMergeGate /> },
+      { id: "platform-principles", label: "서비스화 · 상시 원칙", render: () => <PlatformPrinciples /> },
     ],
   },
 ];
