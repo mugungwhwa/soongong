@@ -1,6 +1,6 @@
 import { createClient } from "@/shared/lib/supabase/client";
 import type { Quest } from "./model";
-import type { ReviewGrade } from "@/entities/game";
+import type { ReviewGrade } from "@/shared/contracts";
 
 export interface QuestEnriched {
   quest: Quest;

@@ -28,6 +28,7 @@ export type {
   ReviewQuest,
   ReviewCycle,
   ReviewQuestStatus,
+  ReviewGrade,
 } from "./review-quest";
 
 export type {

@@ -1,10 +1,8 @@
 // 순수 게임 룰 함수 — Supabase/Edge 의존 없이 단위 테스트 가능
 // SSoT: 01_제품_UX_게임화/게임성_기획_구조.md v1.0
 import type { Rank, BadgeRarity } from "../model";
-
-// SOO-115: 회독 자가평가 3단계
-// 또렷(clear) / 가물가물(fuzzy) / 막막(blank)
-export type ReviewGrade = "clear" | "fuzzy" | "blank";
+import type { ReviewGrade } from "@/shared/contracts";
+export type { ReviewGrade };
 
 // 복습 간격 — Karpicke & Roediger(2008) / Cepeda(2006)
 // 또렷: hint 있거나 느리면 7일 / 빠르면 14일
