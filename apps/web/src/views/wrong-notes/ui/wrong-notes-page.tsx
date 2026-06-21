@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { Play } from "lucide-react";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { MemoryHp } from "@/shared/ui/memory-hp";
@@ -29,14 +29,22 @@ export function WrongNotesPage() {
   const { items, summary } = useWrongNoteReview();
   const router = useRouter();
 
+  const reduceMotion = useReducedMotion();
+
   function startReview() {
     const first = items[0];
-    router.push(first ? ROUTES.recovery(first.objectId) : ROUTES.today);
+    router.push(
+      first?.objectId ? ROUTES.recovery(first.objectId) : ROUTES.today,
+    );
   }
 
   return (
     <div className="mx-auto max-w-md p-4 lg:max-w-2xl lg:p-8">
-      <motion.div variants={container} initial="hidden" animate="show">
+      <motion.div
+        variants={container}
+        initial={reduceMotion ? false : "hidden"}
+        animate="show"
+      >
         {/* 헤더 — 마스코트 이리와(복습 due) + 동반자 카피 */}
         <motion.header variants={item} className="flex items-center gap-3.5">
           <MascotReaction
@@ -70,7 +78,11 @@ export function WrongNotesPage() {
             <ReviewRow
               key={it.id}
               item={it}
-              onClick={() => router.push(ROUTES.recovery(it.objectId))}
+              onClick={() =>
+                router.push(
+                  it.objectId ? ROUTES.recovery(it.objectId) : ROUTES.today,
+                )
+              }
             />
           ))}
         </div>
