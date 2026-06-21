@@ -1,0 +1,47 @@
+name: arch-lint
+
+# soongong 네이티브 FSD 아키텍처 게이트 (SOO-67)
+# 레이어 단방향 의존 위반 시 PR 실패. Treenod arch-guard 외부 스킬 대체.
+# 아키텍처 한정 — 디자인/토큰 가드는 별도.
+
+on:
+  pull_request:
+    # PR 과 main push 가 동일 경로를 감시하도록 YAML 앵커로 고정(드리프트 방지).
+    paths: &arch_paths
+      - "apps/web/src/**"
+      - "apps/web/.dependency-cruiser.cjs"
+      - "apps/web/package.json"
+      - "apps/web/tsconfig.json"
+      - "package.json"
+      - ".github/workflows/arch-lint.yml"
+  push:
+    branches: [main]
+    paths: *arch_paths
+
+jobs:
+  fsd-arch:
+    name: FSD layer boundaries
+    runs-on: ubuntu-latest
+    steps:
+      # 공급망 보안: 액션은 변경 가능한 태그 대신 불변 커밋 SHA 로 고정(zizmor unpinned-uses).
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          # Node 24: pnpm 11.x 는 시작 시 node:sqlite(스토어 인덱스)를 hard-require 하며,
+          # 이는 Node >= 22.5 에서만 존재하고 Node 24 부터 플래그 없이 로드된다.
+          # Node 20 으로 고정하면 pnpm 초기화 단계에서 ERR_UNKNOWN_BUILTIN_MODULE 로 죽는다.
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: FSD architecture lint
+        run: pnpm lint:arch

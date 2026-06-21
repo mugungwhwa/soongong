@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StyleguidePage } from "@/views/styleguide";
+import { DesignSystemShowcase } from "@/views/styleguide";
 
 // dev 전용 — 검색엔진 인덱싱 차단.
 export const metadata: Metadata = {
-  title: "디자인 토큰 플레이그라운드 · 순공대장",
+  title: "디자인 시스템 · 순공대장",
   robots: { index: false, follow: false },
 };
 
@@ -24,5 +24,5 @@ export default function Page() {
   if (!isStyleguideVisible()) {
     notFound();
   }
-  return <StyleguidePage />;
+  return <DesignSystemShowcase />;
 }

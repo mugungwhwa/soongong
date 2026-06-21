@@ -28,7 +28,7 @@
 | 시각 자산 | Midjourney + Canva (Mike 직접, **외주 없음**) | docs/visual-assets/...asset-inventory.md |
 | 디자인 reference | 듀오링고 + 카카오 헤이바이브 + 클래스101 + Pretendard (토스 차용 X) | UI 설계.md §1-2 비교 레퍼런스 |
 | 스택 | Next.js 15 + FSD 2.1 + Tailwind + shadcn + Supabase + Anthropic | docs/...master.md |
-| 게임화 강도 | Dark RPG 대비 -20dB (라이트 단일, 다크모드 X) | UI 설계.md §12, §14 |
+| 게임화 강도 | Dark RPG 대비 -20dB (라이트 단일, 다크모드 X). **홈 게임성 상한 50%** (2026-06-20 Mike 결정, 기존 30%→50% — 활기 OK, 다크/네온 남발은 여전히 §8 폐기) | UI 설계.md §12, §14 · 게임성_기획_구조.md §9 |
 | **사업 정체성** | **엔진 회사** (콘텐츠 회사 X). 콘텐츠는 사용자 자료 + 평가원 발간 학습목표 | 전략정리.md §3.1 |
 | **데이터 아키텍처** | **Postgres = truth (온톨로지 트리) + pgvector = 검색 (학습 객체 임베딩)** | 전략정리.md §3.9 |
 | **온톨로지 트리** | 과목→영역→단원→개념→유형→풀이전략→오답패턴(+변형축). 초기 단일 분류 + 사용자 다중 태그 | 전략정리.md §3.3, §3.8 |
@@ -66,7 +66,7 @@
   - 커밋은 일회용 -c 옵션으로 개인 identity 강제: `git -c user.name="Mike" -c user.email="mikeikhoonkim1208@gmail.com" commit ...`
   - push는 SSH alias remote(`git@github.com-mugung:mugungwhwa/soongong.git`)로만 → mugungwhwa로 나감. gh active가 treenod-mike여도 alias라 영향 없음.
 - runtime(데몬) 시작 시 remote 확인: `git remote -v` → mugung alias 맞는지.
-- 초기 운영: 에이전트는 PR만 생성, 자동 머지 OFF. Mike 직접 리뷰 후 머지.
+- 운영: **자동 머지 ON** (Mike 무중단 결정, 2026-06-20). `agent/<role>/<id>` 브랜치 + 코드래빗 승인 + 필수 체크 green + (코드 PR은 Tech Lead 아키텍처 리뷰) 충족 시 자동 머지. **force/admin 머지·실패 체크 우회는 계속 금지(차터 룰7).** 게이트 미충족 PR은 자동 머지되지 않고 대기.
 - 각 이슈에 완료 기준(DoD) 명시 (예: design-review ≥ 91 / arch-audit ≥ 89) → 에이전트 자가 검증.
 - 폐기 방향(§8) 회귀 차단은 본 CLAUDE.md가 자동 가드레일 — Multica의 Claude Code 에이전트가 repo CLAUDE.md를 읽으므로 별도 설정 불필요.
 
@@ -195,6 +195,10 @@ cd apps/web && pnpm dev
    도메인 리드에 배분. "작은 작업이라 직접 처리"는 Mike 승인 필수.
 4. Tech Lead의 역할 = 아키텍처 정합성 리뷰. 결과는 반드시 **PR 코멘트로** 남긴다
    (커밋 본문 서술 무효). 코드래빗 = 라인 단위 게이트 / Tech Lead = 구조 리뷰로 분담.
+5. **자동 머지 ON (2026-06-20, Mike 무중단 결정).** 위 룰1~4를 모두 충족한 PR
+   — `agent/<role>/<id>` 브랜치 + 코드래빗 approve + 필수 체크 green + (코드 PR은 Tech Lead 아키텍처 리뷰 통과)
+   — 은 자동 머지된다. 잠금(룰1~4·PR-only·코드래빗 필수·Tech Lead 구조 리뷰)은 그대로이고 **자동화 트리거만 켜진다.**
+   **force/admin 머지·실패 체크 우회는 계속 금지(차터 룰7).** 게이트 미충족 PR은 자동 머지되지 않고 대기한다.
 
 ## 9. 변경 이력
 
@@ -211,6 +215,8 @@ cd apps/web && pnpm dev
 | **v1.8** | **2026-06-10** | **'머지 게이트' 섹션 추가 (강제 전환) — PR-only + `agent/<role>/<id>` 브랜치 한정 머지, GitHub PR review(코드래빗 approve)만 인정·커밋 본문 자기서술 무효, Orchestration Lead 직접 구현 금지, Tech Lead 구조 리뷰는 PR 코멘트 강제. 06-10 머지 게이트 감사(`docs/audits/2026-06-10-merge-gate-audit.md`) 후속. 코드래빗 강제 리뷰 게이트(`.coderabbit.yaml` `request_changes_workflow`) 도입.** |
 | **v1.9** | **2026-06-16** | **§2 컬러 행 오션 → v2 Teal/Mint(`#A8DCCB`/`#7BC4AE`/`#4CAF88`). §8 폐기 항목 방향 반전 — 구 Ocean 회귀 금지, v2가 정식(SOO-260616-01, Mike 명시 승인). 다크네이비 주석 v2 기준 갱신. primary CTA 후보 B `#4CAF88` 확정. 팔레트 본체는 #58(SOO-45)로 선반영됐고 본 변경은 가드레일(§2/§8)·CTA·design-system-lock v2.0 동기화 후속(#58이 누락한 SSoT 정합).** |
 | **v2.0** | **2026-06-17** | **§5 핵심 문서 경로에 `/styleguide` 1줄 추가 — preview 전용 고정 리뷰 URL(docs/ops/styleguide-review-access.md)이 디자인·브랜드 가이드라인 시각적 출발점/근간임을 명문화 (SOO-54, Mike 결정).** |
+| **v2.1** | **2026-06-20** | **머지 게이트 자동 머지 ON 전환 (Mike "무중단" 결정). §3 운영 문구 'PR-only·자동 머지 OFF' → '자동 머지 ON' 동기화, 머지 게이트 룰5 신설(룰1~4 충족 PR 자동 머지). 다른 잠금(PR-only·코드래빗 필수·Tech Lead 구조 리뷰·force/admin 우회 금지=차터 룰7)은 유지, 자동화 트리거만 변경 (SOO-111).** |
+| **v2.2** | **2026-06-20** | **§2 게임화 강도 행에 홈 게임성 상한 30%→50% 상향 명기 (SOO-90, Mike 결정). 활기 있게 한 단계 업 — 50% 한도 내 축하 모먼트·마스코트 모션·연출 OK, 다크/네온 남발은 여전히 §8 폐기. 정본 수치는 `게임성_기획_구조.md §9` 동기화, design-review 스킬 §2-3 표 동시 갱신.** |
 
 ---
 

@@ -47,8 +47,8 @@ function computeTierInfo(xp: number) {
 
 /**
  * 오늘 홈 상단 컴팩트 strip — 현재 등급 + 진행바 + 다음 목표를 한 줄 띠로.
- * design-review §2-3: 홈 게임성 강도 30% — 그라데이션 헤더/네온/파티클 금지,
- * 차분한 단일 카드만. 여정 서사(6노드/CTA)는 /journey 화면 담당.
+ * design-review §2-3: 홈 게임성 강도 50%(2026-06-20 Mike, 30→50) — 활기 OK이되
+ * 다크/미등록 네온·glow 남발 금지. 여정 서사(6노드/CTA)는 /journey 화면 담당.
  */
 export function TierJourneyHero() {
   const { totalXp } = useGameState();

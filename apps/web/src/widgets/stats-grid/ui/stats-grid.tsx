@@ -6,7 +6,7 @@ import { Flame, Brain, Clock, Zap, Trophy } from "lucide-react";
 export function StatsGrid() {
   const s = useGameState();
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       <StatCard Icon={Flame} label="스트릭" value={s.streakDays} suffix="일" />
       <StatCard Icon={Brain} label="기억 HP" value={s.memoryHp} suffix="/5" />
       <StatCard Icon={Clock} label="오늘 학습" value={s.todayMinutes} suffix="분" />
