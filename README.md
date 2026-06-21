@@ -4,7 +4,7 @@
 > 문제를 풀어주는 AI가 아니라, **다시 풀게 만드는 AI** — 한국 수능에서 시작하는 학습 리텐션 엔진.
 
 <sub>한국 수능생 · 인강 중심 독학재수생 · 오답관리가 약한 학생 대상 B2C 구독 SaaS.
-1인 창업자가 **둥지(Soongong Nest) 에이전트 조직**(도메인 리드 8 + Orchestration/Tech Lead 통제 구조)을 운용해 8주 안에 동작시키는 AI-native 제품.</sub>
+1인 창업자가 **둥지(Soongong Nest) 에이전트 조직**(도메인 리드 6 + Orchestration/Tech Lead 통제 구조)을 운용해 8주 안에 동작시키는 AI-native 제품.</sub>
 
 ---
 
@@ -22,7 +22,11 @@
 |---|---|
 | ![모바일 UI](app_UI.png) | ![웹 대시보드](web_ui.png) |
 
-(시안 SSoT — 텍스트와 충돌 시 이미지가 우선)
+> ⚠️ 위 이미지는 **초창기 데모 시안**으로, 현재 리디자인(SOO-96)으로 교체 작업 중이다.
+> **디자인 기준(SSoT)이 아니다.** 현행 디자인 기준은 디자인 시스템이며, 충돌 시 이쪽이 우선한다:
+> - **`/styleguide`** — dev 서버 라우트(저장소 루트 디렉터리가 아니다). 소스 [`apps/web/src/views/styleguide`](apps/web/src/views/styleguide), 라우트 `apps/web/src/app/styleguide`. 접근법은 [`docs/ops/styleguide-review-access.md`](docs/ops/styleguide-review-access.md) 참조.
+> - **디자인 시스템 잠금** [`docs/design-system/2026-06-09-design-system-lock.md`](docs/design-system/2026-06-09-design-system-lock.md) (v2.1, v2 Teal/Mint 팔레트)
+> - **SOO-96 리디자인** 프로토타입 [`docs/prototypes/SOO-96/index.html`](docs/prototypes/SOO-96/index.html)
 
 ---
 
@@ -49,7 +53,7 @@
 
 핵심 운용 원칙:
 - **MOAT 영역(온톨로지 구조 · 베이지안 prior · retention 지표)은 에이전트 실행 0회** — 창업자가 직접 설계하는 비위임 레이어. 이것이 AI 래퍼와의 구조적 차이.
-- 머지 플로우: 도메인 리드 빌드 → Tech Lead 리뷰 → Orchestration 보고 → **Mike 승인 머지** (PR-only, auto-merge OFF)
+- 머지 플로우: 도메인 리드 빌드(`agent/<role>/<id>` 브랜치) → 코드래빗 승인 + (코드 PR은) Tech Lead 아키텍처 리뷰 + 필수 체크 green → **자동 머지(무중단, 2026-06-20 Mike 결정)**. PR-only · force/admin 머지·실패 체크 우회 금지(차터 룰7)
 - 유형 리서치 에이전트는 제안만 출력, 온톨로지 자율 변경 금지
 
 상세: [`2026-06-08-multica-squad-structure.md`](docs/agent-strategy/2026-06-08-multica-squad-structure.md)
