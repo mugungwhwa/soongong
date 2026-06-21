@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — 회독 캘린더·등급 저니·그래프·순공일지 · SOO-108 Phase 2c</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+/* ============================================================================
+   DESIGN TOKENS — MIRRORED from apps/web/src/shared/styles/tokens.css
+   ⚠️ 프로토타입 전용 미러. 프로덕션 SSoT 아님. 값 변경은 tokens.css 에서.
+   (SOO-108 Phase 2c — SOO-96 기준점 + SOO-97/103 디자인·모션 언어 계승. 자체 완결형 githack 단일 파일)
+   등급 6단·기억HP 0–5·XP 임계값 = 게임성_기획_구조.md v1.0 §4-2/§6-1 (shared/contracts/game-state.ts 미러)
+   ============================================================================ */
+:root{
+  --color-primary-cta:#4CAF88; --color-primary-bg:#EAF4EE;
+  --color-bg:#F8FBF7; --color-bg-elevated:#FFFFFF; --color-bg-sunken:#EFF5F1;
+  --color-background:var(--color-bg); --color-surface:var(--color-bg-elevated);
+  --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
+  --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
+  --color-risk-low:#BFE3C9; --color-risk-mid:#FFEBA3; --color-risk-high:#FFB4B4;
+  --color-info:#6BA6FF; --color-danger:#FFB4B4; --color-warning:#FFEBA3; --color-neutral:#8E8E93;
+  --color-xp:#F2C94C; --color-xp-soft:#FBE7A6;
+  --color-epic-bg:#F5E0FC; --color-epic-text:#8B5CF6;
+  --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
+  --color-text-disabled:#BBBBBB; --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
+  --color-risk-bg:#FFEFEF; --color-warning-bg:#FFF8E0; --color-info-bg:#EAF2FF;
+  --color-border-default:#E3EDE7; --color-border-strong:#9CCBB7;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
+  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+  --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
+  /* MOTION — SOO-96/97/103 계승: 기본 ease-out-soft / 마스코트·로고 등장만 spring */
+  --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+  --duration-fast:160ms; --duration-mid:240ms; --duration-slow:380ms;
+  --font-display:"Pretendard",system-ui,sans-serif; --font-body:"Pretendard",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:var(--font-body);
+  background:
+    radial-gradient(1200px 600px at 15% -10%, #EEF7F1 0%, transparent 60%),
+    radial-gradient(1000px 500px at 110% 10%, #F0F6EE 0%, transparent 55%),
+    #EDF3EE;
+  color:var(--color-text-strong);
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;min-height:100vh;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ── 상단 컨트롤 바 ───────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;
+  padding:14px clamp(16px,4vw,40px);
+  background:rgba(255,255,255,.72);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--color-border-default);
+}
+.topbar .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:16px;letter-spacing:-.02em}
+.topbar .brand .dot{width:22px;height:22px;border-radius:8px;background:linear-gradient(135deg,var(--color-mint-500),var(--color-mint-700));box-shadow:var(--shadow-card)}
+.topbar .meta{font-size:12px;color:var(--color-text-muted);font-weight:600}
+.spacer{flex:1}
+.seg{display:inline-flex;background:var(--color-bg-sunken);border-radius:var(--radius-pill);padding:4px;gap:2px;flex-wrap:wrap}
+.seg button{
+  border:0;background:transparent;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:13px;color:var(--color-text-default);
+  padding:7px 13px;border-radius:var(--radius-pill);transition:color var(--duration-fast),background var(--duration-mid)
+}
+.seg button.on{background:#fff;color:var(--color-mint-900);box-shadow:var(--shadow-card)}
+.seg.width button{padding:7px 12px;font-size:12px}
+.replay{
+  display:inline-flex;align-items:center;gap:6px;border:1px solid var(--color-border-default);
+  background:#fff;border-radius:var(--radius-pill);padding:7px 13px;cursor:pointer;
+  font-family:inherit;font-weight:700;font-size:12px;color:var(--color-mint-900);transition:transform var(--duration-fast)
+}
+.replay:active{transform:scale(.95)}
+
+/* ── 무대 ─────────────────────────────────────────────────────────── */
+.stage{flex:1;display:flex;justify-content:center;align-items:flex-start;padding:clamp(20px,4vw,48px) 16px 72px}
+.device{width:100%;max-width:412px;transition:max-width var(--duration-slow) var(--ease-out-soft)}
+.device.web{max-width:1040px}
+.screen{display:none}
+.screen.show{display:block}
+
+/* phone frame (앱 모드) */
+.device:not(.web) .frame{
+  background:var(--color-background);border-radius:38px;overflow:hidden;
+  box-shadow:var(--shadow-elevated);
+  border:9px solid #fff;outline:1px solid var(--color-border-default);
+  min-height:800px;position:relative;display:flex;flex-direction:column
+}
+.device.web .frame{
+  background:var(--color-background);border-radius:var(--radius-xl);overflow:hidden;
+  box-shadow:var(--shadow-elevated);border:1px solid var(--color-border-default);min-height:700px;position:relative
+}
+
+/* reveal 모션 (스태거 페이드업) — SOO-96/97/103 계승 */
+.rv{opacity:0;transform:translateY(14px)}
+.rv.in{opacity:1;transform:none;transition:opacity var(--duration-slow) var(--ease-out-soft),transform var(--duration-slow) var(--ease-out-soft)}
+
+/* 공통 마스코트 */
+.mascot{object-fit:contain;display:block;filter:drop-shadow(0 6px 12px rgba(46,125,91,.18))}
+.mascot.floaty{animation:floaty 3.4s var(--ease-out-soft) infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-7px) rotate(1deg)}}
+.mascot-pop{animation:mascotPop var(--duration-slow) var(--ease-spring) both}
+@keyframes mascotPop{0%{opacity:0;transform:scale(.5) translateY(10px)}100%{opacity:1;transform:scale(1)}}
+
+/* 공통 기억HP pips (0–5 정수) — SOO-96/97/103 계승 (백분율·하트 금지) */
+.hp{display:flex;gap:3px;align-items:center}
+.hp i{width:8px;height:13px;border-radius:3px;background:var(--color-border-default);display:block;transition:background var(--duration-mid),transform var(--duration-mid)}
+.hp i.on{background:var(--color-mint-500)}
+.hp i.pulse{animation:hpPulse var(--duration-slow) var(--ease-spring)}
+@keyframes hpPulse{0%{transform:scaleY(.4)}60%{transform:scaleY(1.25)}100%{transform:scaleY(1)}}
+
+/* 공통 pill */
+.pill{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:var(--radius-pill);letter-spacing:-.01em}
+.pill.high{background:var(--color-risk-bg);color:#C96868}
+.pill.mid{background:var(--color-warning-bg);color:#A98A2E}
+.pill.low{background:var(--color-mint-50);color:var(--color-mint-900)}
+.pill.soft{background:var(--color-bg-sunken);color:var(--color-text-default)}
+
+/* 공통 1차 CTA */
+.cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  border:0;cursor:pointer;font-family:inherit;
+  background:var(--color-primary-cta);color:#fff;font-weight:800;font-size:15px;
+  padding:16px;border-radius:var(--radius-lg);box-shadow:0 6px 16px rgba(76,175,136,.28);
+  transition:transform var(--duration-fast) var(--ease-out-soft),box-shadow var(--duration-mid)
+}
+.cta:hover{box-shadow:0 10px 22px rgba(76,175,136,.34);transform:translateY(-1px)}
+.cta:active{transform:scale(.97)}
+.cta.ghost{background:#fff;color:var(--color-mint-900);border:1px solid var(--color-border-strong);box-shadow:var(--shadow-card)}
+.cta.ghost:hover{background:var(--color-mint-50);box-shadow:var(--shadow-card)}
+
+/* 공통 화면 헤더 (마스코트 + 타이틀) */
+.shead{display:flex;align-items:center;gap:13px;padding:var(--space-5) var(--space-5) var(--space-3)}
+.shead .sh-m{width:60px;height:60px;flex-shrink:0}
+.shead h1{font-size:20px;font-weight:800;letter-spacing:-.025em;line-height:1.3}
+.shead p{font-size:12px;font-weight:600;color:var(--color-text-default);margin-top:4px;line-height:1.5}
+
+/* 공통 셸 (스크롤 바디) */
+.shell{display:flex;flex-direction:column;min-height:inherit;height:100%}
+.device:not(.web) .shell{min-height:800px}
+.device.web .shell{min-height:700px}
+.body{flex:1;overflow:hidden}
+.device.web .body{padding:0 var(--space-6) var(--space-8)}
+.device:not(.web) .body{padding:0 0 var(--space-8)}
+
+/* ============================ 1) 회독 캘린더 ============================ */
+.cal{padding:0 var(--space-5)}
+.device.web .cal{max-width:920px;margin:0 auto}
+.cal-bar{display:flex;align-items:center;justify-content:space-between;margin:var(--space-2) 2px var(--space-4)}
+.cal-bar .mnav{display:flex;align-items:center;gap:6px}
+.cal-bar .mnav button{width:34px;height:34px;border-radius:var(--radius-md);border:1px solid var(--color-border-default);
+  background:#fff;color:var(--color-mint-900);cursor:pointer;display:grid;place-items:center;transition:transform var(--duration-fast),background var(--duration-mid)}
+.cal-bar .mnav button:hover{background:var(--color-mint-50)}
+.cal-bar .mnav button:active{transform:scale(.92)}
+.cal-bar .mnav button svg{width:16px;height:16px}
+.cal-bar .mtitle{font-size:17px;font-weight:800;letter-spacing:-.02em}
+.cal-bar .today-btn{font-size:11.5px;font-weight:800;color:var(--color-mint-700);background:var(--color-mint-50);
+  border:1px solid var(--color-border-strong);border-radius:var(--radius-pill);padding:6px 12px;cursor:pointer;font-family:inherit;transition:transform var(--duration-fast)}
+.cal-bar .today-btn:active{transform:scale(.95)}
+.cal-legend{display:flex;flex-wrap:wrap;gap:11px;justify-content:center;margin-bottom:var(--space-4)}
+.cal-legend span{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;color:var(--color-text-default)}
+.cal-legend i{width:9px;height:9px;border-radius:50%;display:block}
+.cal-legend .c1{background:var(--color-mint-700)} .cal-legend .c3{background:var(--color-mint-500)}
+.cal-legend .c7{background:var(--color-mint-300)} .cal-legend .c14{background:var(--color-info)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal-dow{text-align:center;font-size:10.5px;font-weight:800;color:var(--color-text-muted);padding:0 0 7px}
+.cal-dow.sun{color:#C96868} .cal-dow.sat{color:var(--color-info)}
+.cal-cell{aspect-ratio:1/1.06;border-radius:var(--radius-md);border:1px solid transparent;background:transparent;
+  display:flex;flex-direction:column;align-items:center;padding:6px 2px 4px;cursor:default;position:relative;
+  font:inherit;color:inherit;width:100%;text-align:center;
+  transition:background var(--duration-fast),border-color var(--duration-fast),transform var(--duration-fast)}
+.cal-cell.has{cursor:pointer;background:var(--color-surface);border-color:var(--color-border-default);box-shadow:var(--shadow-card)}
+.cal-cell.has:hover,.cal-cell.has:focus-visible{transform:translateY(-2px);border-color:var(--color-border-strong);outline:none}
+.cal-cell.has:active{transform:scale(.97)}
+.cal-cell .dn{font-size:12.5px;font-weight:700;color:var(--color-text-default)}
+.cal-cell.sun .dn{color:#C96868} .cal-cell.sat .dn{color:var(--color-info)}
+.cal-cell.muted .dn{color:var(--color-text-disabled)}
+.cal-cell.today{border-color:var(--color-mint-700);background:var(--color-mint-50)}
+.cal-cell.today .dn{color:var(--color-mint-900);font-weight:800}
+.cal-cell.sel{border-color:var(--color-mint-700);box-shadow:0 0 0 3px var(--color-mint-50),var(--shadow-card)}
+.cal-cell .dots{display:flex;gap:2.5px;margin-top:auto;flex-wrap:wrap;justify-content:center;max-width:100%}
+.cal-cell .dots i{width:5.5px;height:5.5px;border-radius:50%;display:block}
+.cal-cell .dots i.c1{background:var(--color-mint-700)} .cal-cell .dots i.c3{background:var(--color-mint-500)}
+.cal-cell .dots i.c7{background:var(--color-mint-300)} .cal-cell .dots i.c14{background:var(--color-info)}
+.cal-cell .done-chk{position:absolute;top:4px;right:5px;color:var(--color-mint-500);width:11px;height:11px}
+/* 선택 날짜 퀘스트 패널 (슬라이드업) */
+.qpanel{margin-top:var(--space-5);background:var(--color-surface);border:1px solid var(--color-border-default);
+  border-radius:var(--radius-xl) var(--radius-xl) 0 0;box-shadow:var(--shadow-elevated);padding:var(--space-5) var(--space-5) var(--space-6);
+  transform:translateY(16px);opacity:0;transition:transform var(--duration-slow) var(--ease-out-soft),opacity var(--duration-slow)}
+.device.web .qpanel{border-radius:var(--radius-xl)}
+.qpanel.in{transform:none;opacity:1}
+.qpanel .qp-grab{width:38px;height:4px;border-radius:var(--radius-pill);background:var(--color-border-default);margin:0 auto var(--space-4)}
+.device.web .qpanel .qp-grab{display:none}
+.qpanel .qp-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--space-4)}
+.qpanel .qp-h .qd{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.qpanel .qp-h .qc{font-size:11.5px;font-weight:800;color:var(--color-mint-700)}
+.qlist{display:flex;flex-direction:column;gap:10px}
+.qrow{display:flex;align-items:center;gap:12px;background:var(--color-bg-sunken);border-radius:var(--radius-lg);padding:12px 13px;
+  transition:transform var(--duration-fast) var(--ease-out-soft)}
+.qrow.done{opacity:.66}
+.qrow .qcyc{display:flex;flex-direction:column;align-items:center;justify-content:center;width:40px;height:40px;flex-shrink:0;border-radius:11px;background:#fff;box-shadow:var(--shadow-card)}
+.qrow .qcyc .d{font-size:13px;font-weight:800;color:var(--color-mint-900);line-height:1}
+.qrow .qcyc .u{font-size:8px;font-weight:800;color:var(--color-mint-700);margin-top:1px}
+.qrow .qb{flex:1;min-width:0}
+.qrow .qt{font-size:13px;font-weight:800;letter-spacing:-.01em}
+.qrow .qs{font-size:10.5px;font-weight:600;color:var(--color-text-muted);margin-top:2px}
+.qrow .qgo{flex-shrink:0;border:0;background:var(--color-primary-cta);color:#fff;font-family:inherit;font-weight:800;font-size:12px;
+  border-radius:var(--radius-pill);padding:8px 15px;cursor:pointer;box-shadow:0 4px 11px rgba(76,175,136,.26);transition:transform var(--duration-fast)}
+.qrow .qgo:active{transform:scale(.94)}
+.qrow .qdone-tag{flex-shrink:0;font-size:10.5px;font-weight:800;color:var(--color-mint-700);display:inline-flex;align-items:center;gap:4px}
+.qempty{text-align:center;padding:var(--space-6) var(--space-4);font-size:12.5px;font-weight:700;color:var(--color-text-muted)}
+
+/* ============================ 2) 등급 저니 ============================ */
+.jny{padding:0 var(--space-5)}
+.device.web .jny{max-width:760px;margin:0 auto}
+/* 현재 등급 요약 카드 */
+.jny-now{background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-card);padding:var(--space-5);display:flex;align-items:center;gap:15px}
+.jny-now .jn-badge{width:64px;height:64px;flex-shrink:0;border-radius:var(--radius-xl);background:var(--color-mint-50);
+  border:1px solid var(--color-border-strong);display:grid;place-items:center;font-size:32px;box-shadow:var(--shadow-card)}
+.jny-now .jn-b{flex:1;min-width:0}
+.jny-now .jn-lab{font-size:11px;font-weight:800;color:var(--color-mint-700);letter-spacing:.02em}
+.jny-now .jn-name{font-size:21px;font-weight:800;letter-spacing:-.03em;margin-top:1px}
+.jny-now .jn-xp{font-size:11.5px;font-weight:700;color:var(--color-text-muted);margin-top:3px}
+/* 다음 등급 진행바 */
+.jny-prog{margin-top:var(--space-5);background:var(--color-mint-50);border:1px solid var(--color-border-strong);border-radius:var(--radius-lg);padding:14px 15px}
+.jny-prog .jp-top{display:flex;align-items:baseline;justify-content:space-between;font-size:12px;font-weight:800;color:var(--color-mint-900)}
+.jny-prog .jp-top .jp-rem{font-weight:800;color:var(--color-mint-700)}
+.jny-prog .jp-track{height:11px;border-radius:var(--radius-pill);background:#fff;overflow:hidden;margin-top:10px;box-shadow:inset 0 1px 2px rgba(46,125,91,.06)}
+.jny-prog .jp-fill{height:100%;border-radius:var(--radius-pill);width:0;background:linear-gradient(90deg,var(--color-mint-500),var(--color-mint-700));transition:width 900ms var(--ease-out-soft)}
+.jny-prog .jp-say{font-size:11px;font-weight:700;color:var(--color-mint-900);opacity:.85;margin-top:9px;line-height:1.45}
+/* 6단 여정 노드 */
+.jny-sec{font-size:12.5px;font-weight:800;color:var(--color-text-muted);letter-spacing:.02em;margin:var(--space-6) 2px var(--space-3)}
+.jny-path{position:relative;display:flex;flex-direction:column;gap:0}
+.jny-path::before{content:"";position:absolute;left:31px;top:24px;bottom:24px;width:3px;border-radius:var(--radius-pill);
+  background:linear-gradient(180deg,var(--color-mint-500),var(--color-border-default))}
+.device.web .jny-path{flex-direction:row;gap:0;justify-content:space-between}
+.device.web .jny-path::before{left:40px;right:40px;top:31px;bottom:auto;width:auto;height:3px;
+  background:linear-gradient(90deg,var(--color-mint-500),var(--color-border-default))}
+.jnode{position:relative;display:flex;align-items:center;gap:14px;padding:11px 0;z-index:1}
+.device.web .jnode{flex-direction:column;text-align:center;gap:9px;flex:1;padding:0}
+.jnode .jdot{width:64px;height:64px;flex-shrink:0;border-radius:50%;background:#fff;border:3px solid var(--color-border-default);
+  display:grid;place-items:center;font-size:27px;transition:transform var(--duration-mid) var(--ease-spring);position:relative}
+.jnode.done .jdot{border-color:var(--color-mint-500);background:var(--color-mint-50)}
+.jnode.cur .jdot{border-color:var(--color-mint-700);background:#fff;box-shadow:0 0 0 5px var(--color-mint-50),0 8px 18px rgba(76,175,136,.22)}
+.jnode.lock .jdot{filter:grayscale(.7) opacity(.55)}
+.jnode .jdot .jchk{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--color-mint-700);
+  display:grid;place-items:center;border:2px solid #fff}
+.jnode .jdot .jchk svg{width:12px;height:12px;color:#fff}
+.jnode .jdot .jlk{position:absolute;right:-2px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:var(--color-bg-sunken);
+  display:grid;place-items:center;border:2px solid #fff;font-size:10px}
+.jnode .jinfo{flex:1;min-width:0}
+.jnode .jname{font-size:15px;font-weight:800;letter-spacing:-.02em}
+.device.web .jnode .jname{font-size:13px}
+.jnode.lock .jname{color:var(--color-text-muted)}
+.jnode .jxp{font-size:11px;font-weight:700;color:var(--color-text-muted);margin-top:2px}
+.jnode .jtag{margin-left:auto;flex-shrink:0}
+.device.web .jnode .jtag{margin-left:0;margin-top:1px}
+.jnode .jtag .now{font-size:10px;font-weight:800;color:#fff;background:var(--color-mint-700);border-radius:var(--radius-pill);padding:3px 10px}
+.jny-foot{margin-top:var(--space-6);background:var(--color-surface);border:1px dashed var(--color-border-strong);border-radius:var(--radius-lg);
+  padding:13px 15px;display:flex;gap:11px;align-items:center}
+.jny-foot img{width:42px;height:42px;flex-shrink:0}
+.jny-foot p{font-size:11.5px;font-weight:700;color:var(--color-text-default);line-height:1.5}
+
+/* ============================ 3) 그래프 (대시보드) ============================ */
+.gph{padding:0 var(--space-5)}
+.device.web .gph{max-width:920px;margin:0 auto}
+.gph-period{display:inline-flex;background:var(--color-bg-sunken);border-radius:var(--radius-pill);padding:3px;gap:2px;margin-bottom:var(--space-5)}
+.gph-period button{border:0;background:transparent;font-family:inherit;font-weight:800;font-size:12px;color:var(--color-text-default);
+  padding:7px 16px;border-radius:var(--radius-pill);cursor:pointer;transition:color var(--duration-fast),background var(--duration-mid)}
+.gph-period button.on{background:#fff;color:var(--color-mint-900);box-shadow:var(--shadow-card)}
+/* 통계 4박스 (홈 stats 계승) */
+.gph-stats{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.device.web .gph-stats{grid-template-columns:repeat(4,1fr)}
+.gbox{background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:14px 15px}
+.gbox .gl{font-size:10.5px;font-weight:800;color:var(--color-text-muted);letter-spacing:.01em}
+.gbox .gv{font-size:23px;font-weight:800;letter-spacing:-.03em;margin-top:6px;line-height:1}
+.gbox .gv small{font-size:12px;font-weight:800;color:var(--color-text-muted)}
+.gbox .gsub{font-size:10px;font-weight:700;color:var(--color-mint-700);margin-top:5px}
+.gbox .hp{margin-top:8px}
+/* 카드 공통 */
+.gcard{background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
+  padding:var(--space-5);margin-top:var(--space-4)}
+.gcard .gc-h{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--space-4)}
+.gcard .gc-h .gc-t{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.gcard .gc-h .gc-m{font-size:11px;font-weight:700;color:var(--color-mint-700)}
+.device.web .gph-row{display:grid;grid-template-columns:1.5fr 1fr;gap:var(--space-4);align-items:start}
+/* 주간 XP 막대 */
+.bars{display:flex;align-items:flex-end;justify-content:space-between;gap:7px;height:124px;padding-top:8px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;height:100%;justify-content:flex-end}
+.bar .col{width:100%;max-width:26px;border-radius:7px 7px 4px 4px;background:linear-gradient(180deg,var(--color-mint-500),var(--color-mint-300));
+  height:0;transition:height 800ms var(--ease-out-soft)}
+.bar.peak .col{background:linear-gradient(180deg,var(--color-mint-700),var(--color-mint-500))}
+.bar .bl{font-size:10px;font-weight:700;color:var(--color-text-muted)}
+.bar.peak .bl{color:var(--color-mint-900);font-weight:800}
+/* 정답률 도넛 ring */
+.ring-wrap{display:flex;align-items:center;gap:16px}
+.ring{position:relative;width:104px;height:104px;flex-shrink:0}
+.ring svg{transform:rotate(-90deg)}
+.ring .rc-bg{stroke:var(--color-bg-sunken)}
+.ring .rc-fg{stroke:var(--color-mint-700);stroke-linecap:round;transition:stroke-dashoffset 900ms var(--ease-out-soft)}
+.ring .rcen{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .rcen .rn{font-size:24px;font-weight:800;letter-spacing:-.03em}
+.ring .rcen .rl{font-size:9.5px;font-weight:700;color:var(--color-text-muted)}
+.ring-side .rs-row{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;font-weight:700;padding:6px 0;border-bottom:1px solid var(--color-border-default)}
+.ring-side .rs-row:last-child{border-bottom:0}
+.ring-side .rs-row b{font-weight:800;color:var(--color-mint-900)}
+/* 망각방어 바 리스트 */
+.def-row{display:flex;align-items:center;gap:11px;padding:9px 0}
+.def-row .dlab{flex-shrink:0;width:64px;font-size:11.5px;font-weight:700;color:var(--color-text-default)}
+.def-row .dtrack{flex:1;height:9px;border-radius:var(--radius-pill);background:var(--color-bg-sunken);overflow:hidden}
+.def-row .dfill{height:100%;border-radius:var(--radius-pill);width:0;transition:width 850ms var(--ease-out-soft)}
+.def-row .dfill.ok{background:var(--color-mint-500)} .def-row .dfill.warn{background:var(--color-risk-mid)} .def-row .dfill.risk{background:var(--color-risk-high)}
+.def-row .dval{flex-shrink:0;width:34px;text-align:right;font-size:11px;font-weight:800;color:var(--color-text-default)}
+
+/* ============================ 4) 순공일지 ============================ */
+.dia{padding:0 var(--space-5)}
+.device.web .dia{max-width:680px;margin:0 auto}
+/* 오늘 카드 (순공이 코멘트) */
+.dia-today{background:linear-gradient(160deg,var(--color-mint-50),var(--color-surface));border:1px solid var(--color-border-strong);
+  border-radius:var(--radius-xl);box-shadow:var(--shadow-card);padding:var(--space-5)}
+.dia-today .dt-top{display:flex;align-items:center;gap:13px}
+.dia-today .dt-top img{width:54px;height:54px;flex-shrink:0}
+.dia-today .dt-d{font-size:11px;font-weight:800;color:var(--color-mint-700)}
+.dia-today .dt-say{font-size:14px;font-weight:800;letter-spacing:-.02em;line-height:1.45;margin-top:3px;color:var(--color-text-strong)}
+.dia-today .dt-stats{display:flex;gap:9px;margin-top:var(--space-4)}
+.dia-today .dchip{flex:1;background:rgba(255,255,255,.7);border:1px solid var(--color-border-default);border-radius:var(--radius-md);padding:10px;text-align:center}
+.dia-today .dchip .dcv{font-size:16px;font-weight:800;letter-spacing:-.02em} .dia-today .dchip .dcv small{font-size:10px;color:var(--color-text-muted)}
+.dia-today .dchip .dcl{font-size:9.5px;font-weight:700;color:var(--color-text-muted);margin-top:3px}
+/* 일지 타임라인 */
+.dia-sec{font-size:12.5px;font-weight:800;color:var(--color-text-muted);letter-spacing:.02em;margin:var(--space-6) 2px var(--space-3)}
+.dtl{position:relative;padding-left:22px}
+.dtl::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;border-radius:var(--radius-pill);background:var(--color-border-default)}
+.dentry{position:relative;padding:0 0 var(--space-5)}
+.dentry::before{content:"";position:absolute;left:-21px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid var(--color-mint-500)}
+.dentry:last-child{padding-bottom:0}
+.dentry .de-d{font-size:11px;font-weight:800;color:var(--color-text-default)}
+.dentry .de-card{background:var(--color-surface);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:13px 14px;margin-top:7px}
+.dentry .de-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.dentry .de-tags .st{font-size:10px;font-weight:800;color:var(--color-mint-900);background:var(--color-mint-50);border-radius:var(--radius-pill);padding:3px 9px}
+.dentry .de-say{font-size:12px;font-weight:600;color:var(--color-text-default);line-height:1.55}
+.dentry .de-foot{display:flex;align-items:center;gap:12px;margin-top:9px;font-size:10.5px;font-weight:700;color:var(--color-text-muted)}
+.dentry .de-foot .xp{color:var(--color-mint-700);font-weight:800}
+
+.foot{text-align:center;font-size:11px;color:var(--color-text-muted);font-weight:600;padding:0 16px 28px}
+
+/* toast (가벼운 피드백) — SOO-97/103 계승 */
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,18px);opacity:0;
+  background:var(--color-text-strong);color:#fff;font-size:12.5px;font-weight:700;
+  padding:10px 16px;border-radius:var(--radius-pill);box-shadow:var(--shadow-elevated);z-index:80;
+  transition:opacity var(--duration-mid),transform var(--duration-mid) var(--ease-out-soft);pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span> 순공대장 <span class="meta">· 캘린더·등급·그래프·일지 (Phase 2c)</span></div>
+  <div class="spacer"></div>
+  <div class="seg view" id="segView">
+    <button data-view="calendar" class="on">회독 캘린더</button>
+    <button data-view="journey">등급 저니</button>
+    <button data-view="graph">그래프</button>
+    <button data-view="diary">순공일지</button>
+  </div>
+  <div class="seg width" id="segWidth">
+    <button data-w="app" class="on">📱 앱</button>
+    <button data-w="web">🖥 웹</button>
+  </div>
+  <button class="replay" id="replay">↻ 모션 다시보기</button>
+</div>
+
+<div class="stage">
+  <div class="device" id="device">
+
+    <!-- ======================= 1) 회독 캘린더 ======================= -->
+    <section class="screen show" id="view-calendar">
+      <div class="frame">
+        <div class="shell">
+          <div class="shead rv">
+            <img class="mascot sh-m" alt="순공이" src="../../../apps/web/public/mascot/main-half-good-alpha.png"
+                 onerror="this.onerror=null;this.src='../../../apps/web/public/mascot/main-half-alpha.png'"/>
+            <div>
+              <h1>회독 캘린더</h1>
+              <p>1·3·7·14일 회독을 시험날까지 한눈에. 날짜를 누르면 그날 회독이 열려요.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="cal">
+              <div class="cal-bar rv">
+                <div class="mtitle" id="calTitle">2026년 6월</div>
+                <div class="mnav">
+                  <button id="calPrev" aria-label="이전 달"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+                  <button class="today-btn" id="calToday">오늘</button>
+                  <button id="calNext" aria-label="다음 달"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+                </div>
+              </div>
+              <div class="cal-legend rv">
+                <span><i class="c1"></i>1일차</span><span><i class="c3"></i>3일차</span>
+                <span><i class="c7"></i>7일차</span><span><i class="c14"></i>14일차</span>
+              </div>
+              <div class="cal-grid rv" id="calGrid"><!-- JS injects --></div>
+              <div class="qpanel" id="qpanel">
+                <div class="qp-grab"></div>
+                <div class="qp-h"><span class="qd" id="qpDate">6월 20일 (오늘)</span><span class="qc" id="qpCnt">2개 회독</span></div>
+                <div class="qlist" id="qlist"><!-- JS injects --></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 2) 등급 저니 ======================= -->
+    <section class="screen" id="view-journey">
+      <div class="frame">
+        <div class="shell">
+          <div class="shead rv">
+            <img class="mascot sh-m" id="jnyMascot" alt="순공이 응원" src="../../../apps/web/public/mascot/main-half-cheer-alpha.png"
+                 onerror="this.onerror=null;this.src='../../../apps/web/public/mascot/main-half-good-alpha.png'"/>
+            <div>
+              <h1>등급 저니</h1>
+              <p>순공입문부터 순공전설까지 6단계. 회독을 쌓을수록 한 칸씩 나아가요.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="jny">
+              <div class="jny-now rv">
+                <div class="jn-badge" id="jnBadge">⚓</div>
+                <div class="jn-b">
+                  <div class="jn-lab">지금 내 등급</div>
+                  <div class="jn-name" id="jnName">순공대장</div>
+                  <div class="jn-xp" id="jnXp">누적 2,340 XP · 연속 12일</div>
+                </div>
+              </div>
+
+              <div class="jny-prog rv">
+                <div class="jp-top"><span id="jpLabel">다음 · 순공도사</span><span class="jp-rem" id="jpRem">1,160 XP 남음</span></div>
+                <div class="jp-track"><div class="jp-fill" id="jpFill"></div></div>
+                <div class="jp-say">조급해하지 않아도 돼요. 오늘 회독 한 칸이면 충분히 가까워져요 🌱</div>
+              </div>
+
+              <div class="jny-sec rv">전체 여정</div>
+              <div class="jny-path rv" id="jnyPath"><!-- JS injects --></div>
+
+              <div class="jny-foot rv">
+                <img class="mascot" alt="순공이" src="../../../apps/web/public/mascot/main-half-good-alpha.png" onerror="this.style.display='none'"/>
+                <p>등급은 줄 세우기가 아니라 <b>나의 회독 흔적</b>이에요. 비교 대신 나의 어제와만 견줘요.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 3) 그래프 (대시보드) ======================= -->
+    <section class="screen" id="view-graph">
+      <div class="frame">
+        <div class="shell">
+          <div class="shead rv">
+            <img class="mascot sh-m" alt="순공이" src="../../../apps/web/public/mascot/main-half-good-alpha.png"
+                 onerror="this.onerror=null;this.src='../../../apps/web/public/mascot/main-half-alpha.png'"/>
+            <div>
+              <h1>그래프</h1>
+              <p>회독이 만든 변화를 숫자로. 잘하고 있는지 한눈에 확인해요.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="gph">
+              <div class="gph-period rv" id="gphPeriod">
+                <button data-p="week" class="on">주간</button>
+                <button data-p="month">월간</button>
+              </div>
+
+              <div class="gph-stats rv">
+                <div class="gbox"><div class="gl">이번 주 XP</div><div class="gv" id="gWxp">420</div><div class="gsub" id="gWxpD">지난주 +18%</div></div>
+                <div class="gbox"><div class="gl">정답률</div><div class="gv">86<small>%</small></div><div class="gsub">개념 적중 ↑</div></div>
+                <div class="gbox"><div class="gl">기억 HP</div><div class="hp" id="gHp" aria-label="기억 HP 4 / 5"></div><div class="gsub">5점 만점 중 4점</div></div>
+                <div class="gbox"><div class="gl">연속 순공</div><div class="gv">12<small>일</small></div><div class="gsub">최장 18일</div></div>
+              </div>
+
+              <div class="gph-row">
+                <div class="gcard rv">
+                  <div class="gc-h"><span class="gc-t" id="barTitle">주간 XP 추이</span><span class="gc-m" id="barSum">합계 420 XP</span></div>
+                  <div class="bars" id="bars"><!-- JS injects --></div>
+                </div>
+
+                <div class="gcard rv">
+                  <div class="gc-h"><span class="gc-t">개념 정답률</span><span class="gc-m">최근 7일</span></div>
+                  <div class="ring-wrap">
+                    <div class="ring">
+                      <svg width="104" height="104" viewBox="0 0 104 104">
+                        <circle class="rc-bg" cx="52" cy="52" r="44" fill="none" stroke-width="11"/>
+                        <circle class="rc-fg" id="ringFg" cx="52" cy="52" r="44" fill="none" stroke-width="11" stroke-dasharray="276.5" stroke-dashoffset="276.5"/>
+                      </svg>
+                      <div class="rcen"><span class="rn">86%</span><span class="rl">정답률</span></div>
+                    </div>
+                    <div class="ring-side">
+                      <div class="rs-row"><span>맞힌 개념</span><b>43개</b></div>
+                      <div class="rs-row"><span>다시 볼 개념</span><b>7개</b></div>
+                      <div class="rs-row"><span>이번 주 신규</span><b>11개</b></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gcard rv">
+                <div class="gc-h"><span class="gc-t">망각방어</span><span class="gc-m">제때 회독으로 지킨 개념</span></div>
+                <div id="defList"><!-- JS injects --></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= 4) 순공일지 ======================= -->
+    <section class="screen" id="view-diary">
+      <div class="frame">
+        <div class="shell">
+          <div class="shead rv">
+            <img class="mascot sh-m" alt="순공이" src="../../../apps/web/public/mascot/main-half-comeon-alpha.png"
+                 onerror="this.onerror=null;this.src='../../../apps/web/public/mascot/main-half-good-alpha.png'"/>
+            <div>
+              <h1>순공일지</h1>
+              <p>오늘 무엇을 회독했는지, 순공이가 한 줄로 남겨드려요.</p>
+            </div>
+          </div>
+          <div class="body">
+            <div class="dia">
+              <div class="dia-today rv">
+                <div class="dt-top">
+                  <img class="mascot" alt="순공이" src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" onerror="this.style.display='none'"/>
+                  <div>
+                    <div class="dt-d">6월 20일 · 오늘</div>
+                    <div class="dt-say">미분계수 다시 또렷해졌어요. 흐려지기 직전에 잡았네요 — 딱 좋은 타이밍이었어요 🌱</div>
+                  </div>
+                </div>
+                <div class="dt-stats">
+                  <div class="dchip"><div class="dcv">60<small> XP</small></div><div class="dcl">오늘 획득</div></div>
+                  <div class="dchip"><div class="dcv">32<small> 분</small></div><div class="dcl">순공 시간</div></div>
+                  <div class="dchip"><div class="dcv">3<small> 개</small></div><div class="dcl">회독 완료</div></div>
+                </div>
+              </div>
+
+              <div class="dia-sec rv">지난 기록</div>
+              <div class="dtl rv" id="dtl"><!-- JS injects --></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="foot">SOO-108 Phase 2c · 회독 캘린더·등급 저니·그래프·순공일지 · SOO-96/97/103 디자인·모션 언어 계승 · 머지 없이 githack 라이브 · 등급/HP/XP는 게임화 SSoT 미러</div>
+
+<script>
+/* ============================================================================
+   공통 — 스태거 reveal / 토스트 / 마스코트 pop (SOO-96/97/103 계승)
+   ============================================================================ */
+function playReveal(scopeSel){
+  const rvs=document.querySelectorAll(scopeSel+' .rv');
+  rvs.forEach((el,i)=>{ el.classList.remove('in'); el.style.transitionDelay=(60+i*55)+'ms'; });
+  requestAnimationFrame(()=>rvs.forEach(el=>el.classList.add('in')));
+}
+function popMascot(el){ if(!el) return; el.classList.remove('mascot-pop'); void el.offsetWidth; el.classList.add('mascot-pop'); }
+let toastT=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1700);
+}
+/* 기억 HP pips 채우기 (0–5 정수) */
+function fillHp(el,val){
+  el.innerHTML='';
+  for(let i=0;i<5;i++){ const b=document.createElement('i'); if(i<val) b.classList.add('on'); el.appendChild(b); }
+}
+
+/* ============================================================================
+   게임화 SSoT 미러 — shared/contracts/game-state.ts + 게임성_기획_구조.md §4-2/§6-1
+   ============================================================================ */
+const GAME={ streakDays:12, memoryHp:4, totalXp:2340, todayXp:60, todayMinutes:32, rank:'순공대장' };
+const RANKS=[
+  {name:'순공입문', minXp:0,     emoji:'🧭', say:'시작이 절반. 첫 회독부터 함께해요.'},
+  {name:'순공러',   minXp:500,   emoji:'🌊', say:'리듬이 붙었어요. 회독이 습관이 되는 중.'},
+  {name:'순공대장', minXp:1500,  emoji:'⚓', say:'흔들리지 않는 회독. 든든해요.'},
+  {name:'순공도사', minXp:3500,  emoji:'🐬', say:'잊기 전에 먼저 움직이는 경지.'},
+  {name:'순공마왕', minXp:7000,  emoji:'🦈', say:'망각을 압도하는 회독력.'},
+  {name:'순공전설', minXp:12000, emoji:'🏆', say:'끝까지 함께한 회독의 전설.'},
+];
+
+/* ============================================================================
+   1) 회독 캘린더 — 월 그리드 + 날짜별 회독 패널 (1·3·7·14일 주기)
+   ============================================================================ */
+const CAL_VIEW={year:2026, month:5}; // month: 0-base (5=6월)
+const TODAY={year:2026, month:5, day:20};
+// 회독 스케줄 목 데이터: "YYYY-M-D" → 퀘스트[] (cyc:회독 주기 일차, done 여부)
+const SCHEDULE={
+  '2026-5-15':[{cyc:7,t:'등비수열의 합',sub:'수학 · 수열',risk:'low',done:true}],
+  '2026-5-17':[{cyc:3,t:'근의 공식',sub:'수학 · 방정식',risk:'mid',done:true},{cyc:1,t:'순열과 조합',sub:'확률과 통계',risk:'high',done:true}],
+  '2026-5-18':[{cyc:7,t:'지수법칙',sub:'수학 · 지수로그',risk:'low',done:true}],
+  '2026-5-20':[{cyc:1,t:'미분계수',sub:'수학 · 미분',risk:'high',done:true},{cyc:3,t:'확률의 곱셈정리',sub:'확률과 통계',risk:'mid',done:false}],
+  '2026-5-22':[{cyc:1,t:'정적분의 정의',sub:'수학 · 적분',risk:'high',done:false}],
+  '2026-5-24':[{cyc:14,t:'근의 공식',sub:'수학 · 방정식',risk:'low',done:false},{cyc:3,t:'미분계수',sub:'수학 · 미분',risk:'mid',done:false}],
+  '2026-5-27':[{cyc:7,t:'확률의 곱셈정리',sub:'확률과 통계',risk:'mid',done:false}],
+  '2026-5-30':[{cyc:14,t:'순열과 조합',sub:'확률과 통계',risk:'low',done:false}],
+};
+const CYC_CLASS={1:'c1',3:'c3',7:'c7',14:'c14'};
+const RISK_LABEL={high:'지금 위험',mid:'곧 흐려져요',low:'여유 있어요'};
+const MONTH_NAMES=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+let selKey=null;
+
+function key(y,m,d){ return y+'-'+m+'-'+d; }
+function buildCalendar(){
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  document.getElementById('calTitle').textContent=CAL_VIEW.year+'년 '+MONTH_NAMES[CAL_VIEW.month];
+  ['일','월','화','수','목','금','토'].forEach((d,i)=>{
+    const h=document.createElement('div'); h.className='cal-dow'+(i===0?' sun':i===6?' sat':''); h.textContent=d; grid.appendChild(h);
+  });
+  const first=new Date(CAL_VIEW.year,CAL_VIEW.month,1).getDay();
+  const days=new Date(CAL_VIEW.year,CAL_VIEW.month+1,0).getDate();
+  for(let i=0;i<first;i++){ const e=document.createElement('div'); e.className='cal-cell muted'; grid.appendChild(e); }
+  for(let d=1;d<=days;d++){
+    const dow=new Date(CAL_VIEW.year,CAL_VIEW.month,d).getDay();
+    const k=key(CAL_VIEW.year,CAL_VIEW.month,d);
+    const qs=SCHEDULE[k]||[];
+    const cell=document.createElement('button');
+    cell.type='button';
+    cell.setAttribute('aria-label',`${CAL_VIEW.year}년 ${CAL_VIEW.month+1}월 ${d}일`);
+    let cls='cal-cell'+(dow===0?' sun':dow===6?' sat':'');
+    const isToday=(CAL_VIEW.year===TODAY.year&&CAL_VIEW.month===TODAY.month&&d===TODAY.day);
+    if(isToday) cls+=' today';
+    if(qs.length){ cls+=' has'; }
+    cell.className=cls;
+    const allDone=qs.length>0 && qs.every(q=>q.done);
+    cell.innerHTML=`<span class="dn">${d}</span>`+
+      (allDone?`<svg class="done-chk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`:'')+
+      `<div class="dots">${qs.map(q=>`<i class="${CYC_CLASS[q.cyc]}"></i>`).join('')}</div>`;
+    if(qs.length){
+      cell.addEventListener('click',()=>selectDate(k,d));
+    } else {
+      cell.disabled=true;
+      cell.setAttribute('aria-disabled','true');
+    }
+    grid.appendChild(cell);
+  }
+}
+function selectDate(k,d){
+  selKey=k;
+  document.querySelectorAll('#calGrid .cal-cell').forEach(c=>c.classList.remove('sel'));
+  [...document.querySelectorAll('#calGrid .cal-cell.has')].forEach(c=>{ if(c.querySelector('.dn')?.textContent==String(d)) c.classList.add('sel'); });
+  const qs=SCHEDULE[k]||[];
+  const isToday=(k===key(TODAY.year,TODAY.month,TODAY.day));
+  document.getElementById('qpDate').textContent=MONTH_NAMES[CAL_VIEW.month]+' '+d+'일'+(isToday?' (오늘)':'');
+  document.getElementById('qpCnt').textContent=qs.length?qs.length+'개 회독':'';
+  const ql=document.getElementById('qlist'); ql.innerHTML='';
+  if(!qs.length){ ql.innerHTML='<div class="qempty">이 날은 회독 일정이 없어요.</div>'; }
+  qs.forEach(q=>{
+    const el=document.createElement('div'); el.className='qrow'+(q.done?' done':'');
+    el.innerHTML=`
+      <div class="qcyc"><span class="d">${q.cyc}</span><span class="u">일차</span></div>
+      <div class="qb"><div class="qt">${q.t}</div><div class="qs">${q.sub} · ${RISK_LABEL[q.risk]}</div></div>
+      ${q.done
+        ? `<span class="qdone-tag"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 완료</span>`
+        : `<button class="qgo">풀기</button>`}`;
+    if(!q.done) el.querySelector('.qgo').addEventListener('click',()=>toast('회독 시작 → /play/'+encodeURIComponent(q.t)+' (프로토타입)'));
+    ql.appendChild(el);
+  });
+  const p=document.getElementById('qpanel'); p.classList.remove('in'); void p.offsetWidth; p.classList.add('in');
+}
+document.getElementById('calPrev').addEventListener('click',()=>{ CAL_VIEW.month--; if(CAL_VIEW.month<0){CAL_VIEW.month=11;CAL_VIEW.year--;} buildCalendar(); document.getElementById('qpanel').classList.remove('in'); });
+document.getElementById('calNext').addEventListener('click',()=>{ CAL_VIEW.month++; if(CAL_VIEW.month>11){CAL_VIEW.month=0;CAL_VIEW.year++;} buildCalendar(); document.getElementById('qpanel').classList.remove('in'); });
+document.getElementById('calToday').addEventListener('click',()=>{ CAL_VIEW.year=TODAY.year; CAL_VIEW.month=TODAY.month; buildCalendar(); selectDate(key(TODAY.year,TODAY.month,TODAY.day),TODAY.day); });
+function playCalendar(){
+  popMascot(document.querySelector('#view-calendar .sh-m'));
+  buildCalendar();
+  playReveal('#view-calendar');
+  selectDate(key(TODAY.year,TODAY.month,TODAY.day),TODAY.day);
+}
+
+/* ============================================================================
+   2) 등급 저니 — 6단 노드 + 다음 등급 진행바
+   ============================================================================ */
+function tierInfo(xp){
+  const x=Number.isFinite(xp)?Math.max(0,xp):0;
+  let idx=0; for(let i=0;i<RANKS.length;i++){ if(x>=RANKS[i].minXp) idx=i; }
+  const cur=RANKS[idx], isMax=idx===RANKS.length-1, next=isMax?null:RANKS[idx+1];
+  let pct=100, rem=0;
+  if(!isMax){ const span=next.minXp-cur.minXp; pct=Math.min(100,Math.round((x-cur.minXp)/span*100)); rem=next.minXp-x; }
+  return {idx,cur,next,isMax,pct,rem};
+}
+function buildJourney(){
+  const ti=tierInfo(GAME.totalXp);
+  document.getElementById('jnBadge').textContent=ti.cur.emoji;
+  document.getElementById('jnName').textContent=ti.cur.name;
+  document.getElementById('jnXp').textContent='누적 '+GAME.totalXp.toLocaleString()+' XP · 연속 '+GAME.streakDays+'일';
+  if(ti.isMax){
+    document.getElementById('jpLabel').textContent='최고 등급 달성';
+    document.getElementById('jpRem').textContent='순공전설';
+  }else{
+    document.getElementById('jpLabel').textContent='다음 · '+ti.next.name;
+    document.getElementById('jpRem').textContent=ti.rem.toLocaleString()+' XP 남음';
+  }
+  const path=document.getElementById('jnyPath'); path.innerHTML='';
+  RANKS.forEach((r,i)=>{
+    const state=i<ti.idx?'done':i===ti.idx?'cur':'lock';
+    const el=document.createElement('div'); el.className='jnode '+state;
+    el.innerHTML=`
+      <div class="jdot">${r.emoji}
+        ${state==='done'?'<span class="jchk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>':''}
+        ${state==='lock'?'<span class="jlk">🔒</span>':''}
+      </div>
+      <div class="jinfo"><div class="jname">${r.name}</div><div class="jxp">${r.minXp.toLocaleString()} XP</div></div>
+      ${state==='cur'?'<div class="jtag"><span class="now">지금 여기</span></div>':''}`;
+    path.appendChild(el);
+  });
+  // 진행바는 reveal 뒤 살짝 늦게 채워 모션 강조
+  const fill=document.getElementById('jpFill'); fill.style.width='0';
+  setTimeout(()=>{ fill.style.width=(ti.isMax?100:ti.pct)+'%'; }, 360);
+}
+function playJourney(){
+  popMascot(document.getElementById('jnyMascot'));
+  buildJourney();
+  playReveal('#view-journey');
+}
+
+/* ============================================================================
+   3) 그래프 — 주간/월간 통계 (XP 막대 · 정답률 ring · 망각방어)
+   ============================================================================ */
+const GPH={
+  week:{ xp:420, delta:'지난주 +18%', barTitle:'주간 XP 추이', barSum:'합계 420 XP',
+    bars:[{l:'월',v:60},{l:'화',v:40},{l:'수',v:80},{l:'목',v:50},{l:'금',v:90},{l:'토',v:60},{l:'일',v:40}] },
+  month:{ xp:1680, delta:'지난달 +24%', barTitle:'월간 XP 추이 (주별)', barSum:'합계 1,680 XP',
+    bars:[{l:'1주',v:340},{l:'2주',v:420},{l:'3주',v:520},{l:'4주',v:400}] },
+};
+const DEFENSE=[
+  {lab:'미분',pct:90,cls:'ok'},{lab:'적분',pct:72,cls:'warn'},{lab:'확률',pct:84,cls:'ok'},
+  {lab:'수열',pct:95,cls:'ok'},{lab:'방정식',pct:58,cls:'risk'},
+];
+let gphPeriod='week';
+function buildBars(){
+  const d=GPH[gphPeriod];
+  document.getElementById('gWxp').textContent=d.xp.toLocaleString();
+  document.getElementById('gWxpD').textContent=d.delta;
+  document.getElementById('barTitle').textContent=d.barTitle;
+  document.getElementById('barSum').textContent=d.barSum;
+  const max=Math.max(...d.bars.map(b=>b.v));
+  const peak=d.bars.reduce((a,b)=>b.v>a.v?b:a,d.bars[0]);
+  const wrap=document.getElementById('bars'); wrap.innerHTML='';
+  d.bars.forEach((b,i)=>{
+    const el=document.createElement('div'); el.className='bar'+(b===peak?' peak':'');
+    el.innerHTML=`<div class="col"></div><span class="bl">${b.l}</span>`;
+    wrap.appendChild(el);
+    setTimeout(()=>{ el.querySelector('.col').style.height=Math.round(b.v/max*100)+'%'; }, 120+i*55);
+  });
+}
+function buildDefense(){
+  const list=document.getElementById('defList'); list.innerHTML='';
+  DEFENSE.forEach((r,i)=>{
+    const el=document.createElement('div'); el.className='def-row';
+    el.innerHTML=`<span class="dlab">${r.lab}</span><div class="dtrack"><div class="dfill ${r.cls}"></div></div><span class="dval">${r.pct}%</span>`;
+    list.appendChild(el);
+    setTimeout(()=>{ el.querySelector('.dfill').style.width=r.pct+'%'; }, 200+i*70);
+  });
+}
+function buildRing(){
+  const fg=document.getElementById('ringFg'); const C=2*Math.PI*44; // 276.5
+  fg.setAttribute('stroke-dasharray',C.toFixed(1));
+  fg.setAttribute('stroke-dashoffset',C.toFixed(1));
+  setTimeout(()=>{ fg.setAttribute('stroke-dashoffset',(C*(1-0.86)).toFixed(1)); }, 360);
+}
+document.querySelectorAll('#gphPeriod button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#gphPeriod button').forEach(x=>x.classList.toggle('on',x===b));
+  gphPeriod=b.dataset.p; buildBars();
+}));
+function playGraph(){
+  popMascot(document.querySelector('#view-graph .sh-m'));
+  fillHp(document.getElementById('gHp'),GAME.memoryHp);
+  buildBars(); buildDefense(); buildRing();
+  playReveal('#view-graph');
+}
+
+/* ============================================================================
+   4) 순공일지 — 오늘 카드 + 지난 기록 타임라인
+   ============================================================================ */
+const DIARY=[
+  {d:'6월 19일 · 어제', subs:['수학','확률과 통계'], say:'근의 공식 14일차 회독 완료. 2주 전 개념인데도 거뜬했어요 — 회독이 효과 보는 중이에요.', xp:80, min:41, q:4},
+  {d:'6월 18일', subs:['수학'], say:'지수법칙 7일차. 살짝 헷갈렸지만 다시 또렷해졌어요. 7일 주기가 잘 맞아요.', xp:50, min:24, q:2},
+  {d:'6월 17일', subs:['수학','확률과 통계'], say:'순열과 조합 1일차 — 처음이라 어려웠죠. 1·3·7일에 다시 만나면 익숙해질 거예요.', xp:70, min:38, q:3},
+  {d:'6월 15일', subs:['수학'], say:'등비수열의 합 7일차 완료. 꾸준함이 보여요 🌱', xp:40, min:19, q:1},
+];
+function buildDiary(){
+  const tl=document.getElementById('dtl'); tl.innerHTML='';
+  DIARY.forEach(e=>{
+    const el=document.createElement('div'); el.className='dentry';
+    el.innerHTML=`
+      <div class="de-d">${e.d}</div>
+      <div class="de-card">
+        <div class="de-tags">${e.subs.map(s=>`<span class="st">${s}</span>`).join('')}</div>
+        <div class="de-say">${e.say}</div>
+        <div class="de-foot"><span class="xp">+${e.xp} XP</span><span>${e.min}분</span><span>회독 ${e.q}개</span></div>
+      </div>`;
+    tl.appendChild(el);
+  });
+}
+function playDiary(){
+  popMascot(document.querySelector('#view-diary .dt-top img'));
+  buildDiary();
+  playReveal('#view-diary');
+}
+
+/* ============================================================================
+   뷰 / 폭 토글 — 화면 간 일관 전환 (SOO-96/97/103 계승)
+   ============================================================================ */
+const device=document.getElementById('device');
+let curView='calendar';
+function setView(v){
+  curView=v;
+  document.querySelectorAll('#segView button').forEach(b=>b.classList.toggle('on', b.dataset.view===v));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('show'));
+  document.getElementById('view-'+v).classList.add('show');
+  if(v==='calendar') playCalendar();
+  else if(v==='journey') playJourney();
+  else if(v==='graph') playGraph();
+  else if(v==='diary') playDiary();
+}
+document.querySelectorAll('#segView button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+document.querySelectorAll('#segWidth button').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#segWidth button').forEach(x=>x.classList.toggle('on',x===b));
+  device.classList.toggle('web', b.dataset.w==='web');
+}));
+document.getElementById('replay').addEventListener('click',()=>setView(curView));
+
+/* 초기 진입 — ?view=calendar|journey|graph|diary, ?w=app|web 딥링크 지원 */
+(function initFromQuery(){
+  const p=new URLSearchParams(location.search);
+  const w=p.get('w');
+  if(w==='web'){ device.classList.add('web'); document.querySelectorAll('#segWidth button').forEach(x=>x.classList.toggle('on',x.dataset.w==='web')); }
+  const v=p.get('view');
+  const valid=['calendar','journey','graph','diary'];
+  const start=valid.includes(v)?v:'calendar';
+  requestAnimationFrame(()=>{ setTimeout(()=>setView(start),120); });
+})();
+</script>
+</body>
+</html>
