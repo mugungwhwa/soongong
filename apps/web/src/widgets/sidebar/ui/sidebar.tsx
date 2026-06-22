@@ -53,7 +53,7 @@ export function Sidebar() {
         aria-label="순공대장 홈"
         className="mb-7 flex items-center rounded-[var(--radius-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2"
       >
-        <Logo lang="ko" variant="light" className="h-9 w-auto" priority />
+        <Logo lang="ko" variant="light" className="h-14 w-auto" priority />
       </Link>
 
       {/* 순공냅스 = 리텐션 엔진 시그니처 — 목록에서 빼 상단 고정 아이콘 엔트리로 승격 (SOO-90). */}

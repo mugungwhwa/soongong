@@ -313,7 +313,7 @@ export async function DashboardPage() {
   const { gameState, badges, today, forgetting } = data;
 
   return (
-    <div className="p-4 lg:p-6 max-w-[640px] mx-auto">
+    <div className="p-4 lg:p-6 max-w-[1440px] mx-auto">
       {/* 헤더 */}
       <header className="flex items-center gap-3 mb-6">
         <Mascot mood="cheer" size="md" />
@@ -330,8 +330,8 @@ export async function DashboardPage() {
         </div>
       </header>
 
-      {/* 카드 2×2 */}
-      <section className="grid grid-cols-2 gap-3 sm:gap-4" aria-label="학습 현황 요약">
+      {/* 카드: 모바일 2×2 → 데스크톱 4열 한 줄 (design-lock §3-1 유동 컬럼 / design-review §2-2 stats 4박스) */}
+      <section className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" aria-label="학습 현황 요약">
         <StreakCard streak={gameState.streak_days} />
         <TodayCard today={today} />
         <HpCard hp={gameState.memory_hp} forgetting={forgetting} />
@@ -341,7 +341,7 @@ export async function DashboardPage() {
       {/* 빠른 액션 */}
       <Link
         href={ROUTES.today}
-        className="mt-6 flex items-center justify-center gap-2 w-full rounded-[var(--radius-xl)] bg-[var(--color-mint-500)] px-6 py-4 text-base font-bold text-[var(--color-text-inverse)] shadow-[var(--shadow-elevated)] hover:bg-[var(--color-mint-700)] transition-colors"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[var(--radius-xl)] bg-[var(--color-mint-500)] px-6 py-4 text-base font-bold text-[var(--color-text-inverse)] shadow-[var(--shadow-elevated)] transition-colors hover:bg-[var(--color-mint-700)] sm:mx-auto sm:w-auto sm:px-12"
         aria-label="오늘 퀘스트 시작하기"
       >
         오늘 퀘스트 시작하기
