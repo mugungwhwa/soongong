@@ -1,6 +1,6 @@
 import { Sidebar } from "@/widgets/sidebar";
 import { BottomNav } from "@/widgets/bottom-nav";
-import { GlobalUploadSheet } from "@/features/upload-source";
+import { GlobalUploadSheet, CameraCaptureFab } from "@/features/upload-source";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +13,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="mx-auto w-full max-w-[1440px]">{children}</div>
       </main>
       <BottomNav />
+      {/* 웹(데스크톱) 상시 노출 카메라 hero — 스크롤 무관 floating (SOO-124). lg 전용은 컴포넌트 내부에서 처리. */}
+      <CameraCaptureFab />
       <GlobalUploadSheet />
     </div>
   );
