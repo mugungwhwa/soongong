@@ -1,17 +1,17 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
 import {
   Home,
-  Camera,
   NotebookPen,
   BarChart3,
   Calendar,
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import { useUploadSheetStore } from "@/features/upload-source";
+import { useUploadSheetStore, CAMERA_CAPTURE_ASSET } from "@/features/upload-source";
 
 type NavItem = {
   href: string;
@@ -45,22 +45,25 @@ export function BottomNav() {
     >
       {ITEMS.map((item) => {
         if (item === null) {
-          // 중앙 카메라 FAB
+          // 중앙 카메라 hero FAB — 순공이+카메라 브랜드 자산(SOO-124).
+          // 회독 목록 위 하단 네비 중앙에서 위로 돌출(-mt-7)해 가장 눈에 띄는 hero로.
+          // 자산이 둥근 버블 형태라 별도 배경 원형 없이 이미지만 띄운다.
           return (
             <button
               key="camera-fab"
               type="button"
-              className="flex items-center justify-center w-14 h-14 rounded-full -mt-5 shadow-lg"
-              style={{ background: "var(--color-mint-900)" }}
-              aria-label="카메라"
+              className="group flex items-center justify-center -mt-7 active:scale-95 transition-transform"
+              aria-label="카메라로 문제 출제하기"
               onClick={openSheet}
             >
-              <Camera
-                size={22}
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                color="white"
+              <Image
+                src={CAMERA_CAPTURE_ASSET}
+                alt=""
+                width={64}
+                height={64}
+                priority
+                className="object-contain drop-shadow-[var(--shadow-elevated)]"
+                style={{ width: 64, height: 64 }}
               />
             </button>
           );
