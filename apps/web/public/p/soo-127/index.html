@@ -178,6 +178,7 @@ section{padding:clamp(56px,9vh,104px) 0}
   border-radius:var(--radius-pill);background:none;color:var(--color-text-default);transition:all var(--duration-fast)}
 .toggle button.on{background:var(--color-primary-cta);color:#fff;box-shadow:var(--shadow-card)}
 .pane{display:none}.pane.show{display:flex;justify-content:center}
+.pane.show>div{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center}
 .slot{position:relative;background:#fff;border:2px dashed var(--color-border-strong);border-radius:var(--radius-lg);overflow:hidden}
 .slot .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
   background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
@@ -186,10 +187,10 @@ section{padding:clamp(56px,9vh,104px) 0}
 .mock-phone,.mock-browser{position:relative}
 .mock-phone .ribbon,.mock-browser .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
   background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
-.mock-phone{width:262px;background:#1C2B25;border-radius:38px;padding:9px}
+.mock-phone{width:262px;margin:0 auto;background:#1C2B25;border-radius:38px;padding:9px}
 .mock-phone .ph-scr{border-radius:30px;overflow:hidden;background:var(--color-bg);max-height:520px}
 .mock-phone .ph-scr img{width:100%;display:block}
-.mock-browser{width:min(660px,100%);background:#fff;border-radius:var(--radius-lg);overflow:hidden}
+.mock-browser{width:100%;max-width:720px;margin:0 auto;background:#fff;border-radius:var(--radius-lg);overflow:hidden}
 .mock-browser .bar{background:var(--color-bg-sunken);padding:10px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--color-border-default)}
 .mock-browser .bar i{width:11px;height:11px;border-radius:50%;background:var(--color-border-strong)}
 .mock-browser .bar .url{margin-left:10px;background:#fff;border-radius:var(--radius-pill);font-size:12px;color:var(--color-text-muted);padding:5px 14px;flex:1}
