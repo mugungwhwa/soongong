@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
 import {
   Home,
-  Camera,
   NotebookPen,
   BarChart3,
   Calendar,
@@ -45,22 +45,25 @@ export function BottomNav() {
     >
       {ITEMS.map((item) => {
         if (item === null) {
-          // 중앙 카메라 FAB
+          // 중앙 카메라 hero FAB — 순공이가 카메라를 안은 브랜드 자산(Mike 제공, SOO-125).
+          // 하단 네비 중앙에서 위로 돌출(-mt-9)해 바와 살짝 머징 → 제품 핵심 행동(문제 촬영·공급)을
+          // 가장 눈에 띄는 진입점으로. 자산 자체가 글로시 캡처 버튼 비주얼이라 별도 민트 원 래퍼 없이
+          // 흰 elevated 디스크 위에 얹어 떠 보이게만 한다(디자인 변경 X, 배치·최적화만).
           return (
             <button
               key="camera-fab"
               type="button"
-              className="flex items-center justify-center w-14 h-14 rounded-full -mt-5 shadow-lg"
-              style={{ background: "var(--color-mint-900)" }}
-              aria-label="카메라"
+              className="relative -mt-9 flex items-center justify-center rounded-full bg-[var(--color-bg-elevated)] shadow-[var(--shadow-elevated)] ring-4 ring-[var(--color-bg-elevated)] transition-transform active:scale-95"
+              aria-label="문제 촬영·업로드"
               onClick={openSheet}
             >
-              <Camera
-                size={22}
-                strokeWidth={1.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                color="white"
+              <Image
+                src="/brand/soongong-camera-alpha.png"
+                alt=""
+                width={132}
+                height={132}
+                priority
+                className="h-[60px] w-[60px] object-contain drop-shadow-[var(--shadow-card)]"
               />
             </button>
           );

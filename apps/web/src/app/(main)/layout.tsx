@@ -1,6 +1,6 @@
 import { Sidebar } from "@/widgets/sidebar";
 import { BottomNav } from "@/widgets/bottom-nav";
-import { GlobalUploadSheet } from "@/features/upload-source";
+import { GlobalUploadSheet, FloatingCaptureButton } from "@/features/upload-source";
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +13,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
         <div className="mx-auto w-full max-w-[1440px]">{children}</div>
       </main>
       <BottomNav />
+      {/* 데스크톱 상시 카메라 진입 (SOO-125) — 스크롤해도 우하단 고정. 모바일은 BottomNav 중앙 FAB. */}
+      <FloatingCaptureButton />
       <GlobalUploadSheet />
     </div>
   );

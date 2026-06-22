@@ -12,8 +12,9 @@ import { useUploadSheetStore } from "../model/upload-sheet-store";
  * 디자인 검수 준수:
  * - §2-3 홈 게임성 50% 캡(2026-06-20, 30→50): "크게"는 정보 위계(핵심 행동)지 게임 연출이 아님.
  *   네온/파티클/glow 없이 차분한 민트 surface + 단일 그림자.
- * - §2-1 마스코트: 정본 자산 /brand/soongong-main.png만 사용(placeholder 미사용).
- *   전용 "카메라 든 순공이" 일러스트는 /brand에 없어 마스코트+카메라 아이콘으로 연출.
+ * - §2-1 마스코트: 전용 "카메라 든 순공이" 브랜드 자산 /brand/soongong-camera-alpha.png 사용
+ *   (Mike 제공, SOO-125). 이전 placeholder(soongong-main + 카메라 아이콘) 대체 — 핵심 행동(촬영)을
+ *   마스코트가 직접 안고 있어 카메라 hero 의도를 그대로 렌더.
  * - 색은 tokens.css 시맨틱 토큰만(raw hex 0), light-only, 동반자 톤.
  */
 export function IntakeHero() {
@@ -26,10 +27,10 @@ export function IntakeHero() {
     >
       <div className="flex flex-col items-center gap-5 text-center lg:flex-row lg:gap-7 lg:text-left">
         <Image
-          src="/brand/soongong-main.png"
-          alt="순공대장 마스코트 순공이"
-          width={160}
-          height={160}
+          src="/brand/soongong-camera-alpha.png"
+          alt="카메라를 안고 있는 순공대장 마스코트 순공이"
+          width={176}
+          height={176}
           priority
           className="h-28 w-28 shrink-0 object-contain drop-shadow-[var(--shadow-elevated)] lg:h-32 lg:w-32"
         />
