@@ -14,7 +14,8 @@ import {
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import { MascotReaction } from "@/shared/ui/mascot-reaction";
+import { cn } from "@/shared/lib/cn";
+import { Logo } from "@/shared/ui/logo";
 
 const ICON_STYLE: LucideProps = {
   size: 18,
@@ -43,37 +44,39 @@ const ADMIN_ITEMS: NavItem[] = [
   { href: ROUTES.admin, label: "검수", Icon: ShieldCheck },
 ];
 
+// 활성/비활성 nav row 공통 스타일. 활성: o100 배경 + o900 텍스트 + 700 (design-lock §3-1).
+// 비활성: hover 시 o50 배경으로 affordance (design-lock §3-1 hover 규칙).
+function navRowClass(isActive: boolean) {
+  return cn(
+    "flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-sm transition",
+    isActive
+      ? "font-bold"
+      : "hover:bg-[var(--color-mint-50)]",
+  );
+}
+
+function navRowStyle(isActive: boolean) {
+  return isActive
+    ? {
+        background: "var(--color-mint-100)",
+        color: "var(--color-mint-900)",
+      }
+    : { color: "var(--color-text-default)" };
+}
+
 export function Sidebar() {
   const pathname = usePathname();
 
   return (
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
-      <div className="mb-6 flex items-center gap-2">
-        <MascotReaction mood="idle" size="sm" className="shrink-0" />
-        <svg
-          viewBox="0 0 245 44"
-          style={{ width: "100%", maxWidth: 200, overflow: "visible" }}
-          role="img"
-          aria-label="SOONGONG"
-        >
-          <text
-            x="2"
-            y="35"
-            fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
-            fontSize="36"
-            fontWeight={900}
-            letterSpacing="3"
-            fill="var(--color-mint-900)"
-            stroke="var(--color-mint-900)"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            style={{ paintOrder: "stroke" }}
-          >
-            SOONGONG
-          </text>
-        </svg>
-      </div>
+      {/* 브랜드 — SOO-105 확정 로고(공식 SVG)를 단일 <Logo>로 슬롯인. 옛 하드코딩 SOONGONG 텍스트 폐기 (SOO-120). */}
+      <Link
+        href={ROUTES.today}
+        aria-label="순공대장 홈"
+        className="mb-6 inline-flex w-fit items-center rounded-[var(--radius-md)] transition hover:opacity-80"
+      >
+        <Logo lang="ko" variant="light" className="h-12" priority />
+      </Link>
 
       {/* 순공냅스 = 리텐션 엔진 시그니처 — 목록에서 빼 상단 고정 아이콘 엔트리로 승격 (SOO-90). */}
       <Link
@@ -115,18 +118,8 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 transition text-sm"
-              style={
-                isActive
-                  ? {
-                      background: "var(--color-mint-100)",
-                      color: "var(--color-mint-900)",
-                      fontWeight: 700,
-                    }
-                  : {
-                      color: "var(--color-text-default)",
-                    }
-              }
+              className={navRowClass(isActive)}
+              style={navRowStyle(isActive)}
               aria-current={isActive ? "page" : undefined}
             >
               <item.Icon
@@ -147,18 +140,8 @@ export function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 transition text-sm"
-                style={
-                  isActive
-                    ? {
-                        background: "var(--color-mint-100)",
-                        color: "var(--color-mint-900)",
-                        fontWeight: 700,
-                      }
-                    : {
-                        color: "var(--color-text-muted)",
-                      }
-                }
+                className={navRowClass(isActive)}
+                style={navRowStyle(isActive)}
                 aria-current={isActive ? "page" : undefined}
               >
                 <item.Icon
