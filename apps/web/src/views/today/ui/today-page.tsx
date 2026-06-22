@@ -30,7 +30,7 @@ export function TodayPage({
   userName?: string;
 }) {
   return (
-    <div className="mx-auto max-w-[1200px] space-y-8 p-4 lg:space-y-10 lg:p-8">
+    <div className="mx-auto max-w-[1440px] space-y-8 p-4 lg:space-y-10 lg:p-8">
       {isFirstEntry && (
         <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
           <MascotReaction mood="praise" size="md" reason="첫 회독 준비" />
