@@ -1,6 +1,6 @@
 # 순공대장 디자인 토큰 SSoT
 
-> **시각적 출발점**: 모든 디자인·브랜드 가이드라인의 근간은 `/styleguide` (preview 전용). 고정 접근 URL 설정 → [docs/ops/styleguide-review-access.md](ops/styleguide-review-access.md)
+> **시각적 출발점**: 모든 디자인·브랜드 가이드라인의 근간은 `/styleguide` (공개 live guide · noindex unlisted, SOO-106). 접근 → [docs/ops/styleguide-review-access.md](ops/styleguide-review-access.md)
 
 본 문서는 순공대장 디자인 토큰의 단일 진실 공급원(SSoT)이다.
 

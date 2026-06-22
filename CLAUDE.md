@@ -128,7 +128,7 @@ docs/
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
 tokens.css + design-system-lock v2.1 (디자인 값/스펙 SSoT) — 구 app_UI.png / web_ui.png 시안은 폐기(SSoT 아님)
-/styleguide (preview 전용 고정 리뷰 URL: docs/ops/styleguide-review-access.md) ← 디자인·브랜드 가이드라인 시각적 출발점/근간
+/styleguide (공개 라이브 가이드 URL · noindex unlisted, 접근: docs/ops/styleguide-review-access.md) ← 디자인·브랜드 가이드라인 시각적 출발점/근간
 ```
 
 ## 6. 자주 쓸 명령
@@ -217,6 +217,7 @@ cd apps/web && pnpm dev
 | **v2.0** | **2026-06-17** | **§5 핵심 문서 경로에 `/styleguide` 1줄 추가 — preview 전용 고정 리뷰 URL(docs/ops/styleguide-review-access.md)이 디자인·브랜드 가이드라인 시각적 출발점/근간임을 명문화 (SOO-54, Mike 결정).** |
 | **v2.1** | **2026-06-20** | **머지 게이트 자동 머지 ON 전환 (Mike "무중단" 결정). §3 운영 문구 'PR-only·자동 머지 OFF' → '자동 머지 ON' 동기화, 머지 게이트 룰5 신설(룰1~4 충족 PR 자동 머지). 다른 잠금(PR-only·코드래빗 필수·Tech Lead 구조 리뷰·force/admin 우회 금지=차터 룰7)은 유지, 자동화 트리거만 변경 (SOO-111).** |
 | **v2.2** | **2026-06-20** | **§2 게임화 강도 행에 홈 게임성 상한 30%→50% 상향 명기 (SOO-90, Mike 결정). 활기 있게 한 단계 업 — 50% 한도 내 축하 모먼트·마스코트 모션·연출 OK, 다크/네온 남발은 여전히 §8 폐기. 정본 수치는 `게임성_기획_구조.md §9` 동기화, design-review 스킬 §2-3 표 동시 갱신.** |
+| **v2.3** | **2026-06-21** | **§5 `/styleguide` 설명 'preview 전용 고정 리뷰 URL' → '공개 라이브 가이드 URL · noindex unlisted'. SOO-106 자산화로 `/styleguide`가 통합 라이브 가이드 + Mike 체크포인트 열람 수단이 되어, `page.tsx` env 게이트(production 404)를 제거하고 모든 환경 공개로 전환(검색 비노출 noindex 유지). 접근 가이드 `docs/ops/styleguide-review-access.md` 동기 갱신 (SOO-106 후속, Orchestration Lead 경유 Mike 요청).** |
 
 ---
 
