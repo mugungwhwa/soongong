@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import {
-  CalendarCheck,
   RotateCcw,
   Brain,
   Trophy,
@@ -34,14 +33,8 @@ type Feature = {
   lockNote?: string;
 };
 
+// "오늘의 회독"은 같은 페이지의 전용 섹션과 중복되므로 바로가기에서 제외 (SOO-121 de-dup).
 const FEATURES: Feature[] = [
-  {
-    key: "today",
-    title: "오늘의 회독",
-    desc: "까먹기 직전 타이밍에 다시 만나요",
-    href: "#today-quests",
-    Icon: CalendarCheck,
-  },
   {
     key: "recovery",
     title: "오답 회수",
@@ -124,7 +117,7 @@ export function FeatureGrid() {
       <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
         오늘 뭐부터 할까요?
       </h2>
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         {FEATURES.map((feature) =>
           feature.locked ? (
             <div
