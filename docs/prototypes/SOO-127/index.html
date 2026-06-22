@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>순공대장 — 랜딩 제안 v3 (재설계 프로토타입) · SOO-127</title>
+<title>순공대장 — 랜딩 제안 v4 (재설계 프로토타입) · SOO-127</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
@@ -87,46 +87,62 @@ section{padding:clamp(56px,9vh,104px) 0}
 .btn-primary:hover{transform:translateY(-2px)}
 .btn-primary .mi{color:#fff;width:22px;height:22px}
 
-/* ── HERO (점3 — 마케팅 히어로 자산 최상단 + 옛 로고 가림) ──────────── */
-.hero{text-align:center;padding-top:clamp(28px,5vh,52px)}
-.hero .asset-frame{position:relative;max-width:980px;margin:0 auto;border-radius:var(--radius-xl);
-  overflow:hidden;box-shadow:var(--shadow-elevated);background:var(--hero-asset-bg);line-height:0}
-.hero .asset-frame img{width:100%;height:auto}
-/* 좌상단 옛 로고 가림 — 자산 배경(#F6F8F3) 평탄색 박스. 측정 bbox x6.5-22.9% y13.2-18.8% */
-.hero .logo-mask{position:absolute;top:10.5%;left:3%;width:25%;height:11%;
-  background:var(--hero-asset-bg);border-radius:6px}
-.hero .asset-fallback{display:none;padding:48px 24px}
-.hero .asset-fallback.on{display:block}
-.hero .actions{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:14px}
-.hero .trust{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
-  font-size:14px;color:var(--color-text-muted)}
+/* ── HERO (v4 — 이전 목업 카메라 캡처 카드 복원, 이미지 확대 + 모션 유지) ── */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center;
+  padding-top:clamp(36px,6vh,72px);padding-bottom:clamp(36px,6vh,64px)}
+.hero .copy h1{font-size:clamp(33px,5.2vw,57px);font-weight:800;letter-spacing:-.035em;line-height:1.12;margin:18px 0 0}
+.hero .copy h1 .hl{background:linear-gradient(180deg,transparent 62%,var(--color-mint-100) 62%);padding:0 4px;border-radius:4px;color:var(--color-mint-900)}
+.hero .copy .sub{font-size:clamp(16px,2vw,19px);color:var(--color-text-default);line-height:1.6;margin:22px 0 0;max-width:520px}
+.hero .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn-ghost{display:inline-flex;align-items:center;background:#fff;color:var(--color-mint-900);font-weight:700;font-size:17px;font-family:inherit;
+  padding:15px 26px;border-radius:var(--radius-pill);border:1.5px solid var(--color-border-strong);cursor:pointer;transition:background var(--duration-fast)}
+.btn-ghost:hover{background:var(--color-mint-50)}
+.hero .trust{display:flex;align-items:center;gap:14px;margin-top:24px;font-size:14px;color:var(--color-text-muted);flex-wrap:wrap}
 .hero .trust b{color:var(--color-text-strong)}
 .hero .trust .dot{width:4px;height:4px;border-radius:50%;background:var(--color-border-strong)}
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:460px}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(closest-side,rgba(123,196,174,.28),transparent 72%);filter:blur(6px)}
+.capture-card{position:relative;z-index:2;width:min(420px,90%);background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-elevated);
+  padding:26px 26px 24px;border:1px solid var(--color-border-default);animation:floaty 6s var(--ease-out-soft) infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.capture-card .cam-mascot{width:178px;margin:-80px auto 8px;filter:drop-shadow(0 12px 20px rgba(46,125,91,.18))}
+.capture-card .shot{background:var(--color-mint-50);border:1px dashed var(--color-border-strong);border-radius:var(--radius-lg);padding:16px;display:flex;gap:12px;align-items:center}
+.capture-card .shot .ic{width:46px;height:46px;border-radius:12px;background:var(--color-primary-cta);display:grid;place-items:center;flex:none}
+.capture-card .shot .ic .mi{width:24px;height:24px;color:#fff}
+.capture-card .shot .t b{display:block;font-size:15px;color:var(--color-text-strong)}
+.capture-card .shot .t span{font-size:13px;color:var(--color-text-default)}
+.capture-card .arrow{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--color-mint-500);font-size:14px;font-weight:700;margin:10px 0}
+.capture-card .arrow .mi{width:18px;height:18px;color:var(--color-mint-500)}
+.quest-row{display:flex;gap:8px}
+.quest-chip{flex:1;text-align:center;background:var(--color-mint-100);border-radius:var(--radius-md);padding:11px 4px;font-weight:700;font-size:14px;color:var(--color-mint-900)}
+.quest-chip span{display:block;font-size:11px;font-weight:600;color:var(--color-text-default);margin-top:2px}
+.float-badge{position:absolute;z-index:3;background:#fff;border-radius:var(--radius-pill);box-shadow:var(--shadow-elevated);
+  padding:10px 16px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;border:1px solid var(--color-border-default)}
+.float-badge .hp-dots{display:flex;gap:3px}
+.float-badge .hp-dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}
+.float-badge .hp-dots i.off{background:var(--color-border-default)}
+.fb-1{top:6%;left:-2%}
+.fb-2{bottom:9%;right:-3%}
+@media(max-width:840px){
+  .hero{grid-template-columns:1fr;text-align:center}
+  .hero .copy .sub{margin-left:auto;margin-right:auto}
+  .hero .actions{justify-content:center}
+  .hero .trust{justify-content:center}
+  .hero-visual{min-height:380px;margin-top:24px}
+}
 
-/* ── 가치 섹션 (점1 — 경쟁사명 0, 가치 문장만) ─────────────────────── */
-.value{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
-  border:1px solid var(--color-border-default);padding:clamp(28px,5vw,56px);display:grid;
-  grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,48px);align-items:center}
-.value h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.28}
-.value p{font-size:16px;color:var(--color-text-default);line-height:1.7;margin-top:16px}
-.value .pt{display:flex;gap:11px;align-items:flex-start;margin-top:14px;font-size:15.5px}
-.value .pt .mi{width:24px;height:24px;margin-top:1px}
-.value .pt b{color:var(--color-text-strong)}
-.curve{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:22px 18px 14px;border:1px solid var(--color-border-default)}
-.curve .cap{font-size:13px;font-weight:700;color:var(--color-mint-900);margin-bottom:8px;text-align:center}
-.curve svg{width:100%;height:auto;display:block}
-@media(max-width:760px){.value{grid-template-columns:1fr}}
-
-/* ── 포지셔닝 (점8 — 경쟁사 적정 언급 + 차별점, "다음 진화" 톤) ─────── */
-.pos2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.5vw,22px)}
-.pcard{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);
-  border:1px solid var(--color-border-default);padding:28px 26px}
-.pcard .ico{width:50px;height:50px;border-radius:14px;background:var(--color-mint-50);display:grid;place-items:center;margin-bottom:14px}
-.pcard .ico .mi{width:27px;height:27px}
-.pcard h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:9px}
-.pcard p{font-size:15px;color:var(--color-text-default);line-height:1.65}
-.pcard p b{color:var(--color-text-strong)}
-@media(max-width:760px){.pos2{grid-template-columns:1fr}}
+/* ── 왜 순공대장인가 (막힘 vs 까먹음 — 이전 목업 변형) ─────────────────── */
+.positioning{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);padding:clamp(28px,5vw,52px);border:1px solid var(--color-border-default)}
+.pos-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,36px);align-items:center}
+.pos-col{text-align:center}
+.pos-col .tag{font-size:13px;font-weight:700;color:var(--color-text-muted);letter-spacing:.02em}
+.pos-col h3{font-size:clamp(20px,2.6vw,26px);font-weight:800;margin:8px 0 10px;letter-spacing:-.02em}
+.pos-col p{font-size:15px;color:var(--color-text-default);line-height:1.55}
+.pos-col.them h3{color:var(--color-text-strong)}
+.pos-col.us{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:24px 18px;border:1.5px solid var(--color-mint-300)}
+.pos-col.us h3{color:var(--color-mint-900)}
+.pos-vs{font-weight:800;color:var(--color-border-strong);font-size:15px}
+@media(max-width:760px){.pos-grid{grid-template-columns:1fr}.pos-vs{transform:rotate(90deg)}}
 
 /* ── 작동 방식 ────────────────────────────────────────────────────── */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,22px)}
@@ -263,7 +279,7 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
 </head>
 <body>
 
-<div class="proto-note">🧪 <b>재설계 제안 프로토타입 v3 (SOO-127)</b> · 랜딩 페이지 · 실앱 아님, Mike 승인용 목업 · 앱·웹 미리보기 = 승인 목업(SOO-96) 그대로, 개발 후 실화면 교체</div>
+<div class="proto-note">🧪 <b>재설계 제안 프로토타입 v4 (SOO-127)</b> · 랜딩 페이지 · 실앱 아님, Mike 승인용 목업 · 앱·웹 미리보기 = 승인 목업(SOO-96) 그대로, 개발 후 실화면 교체</div>
 
 <!-- 점2: 흰바탕 한글 로고 1종으로 통일 / 점0: 로고 크게 -->
 <nav class="nav">
@@ -276,93 +292,73 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
 
 <div id="top"></div>
 
-<!-- ============ HERO — 점3: 마케팅 히어로 자산 최상단 + 좌상단 옛 로고 가림 ============ -->
+<!-- ============ HERO (v4 — 이전 목업 카메라 캡처 카드 복원, 확대 + 모션 유지) ============ -->
 <div class="wrap">
   <header class="hero">
-    <div class="asset-frame">
-      <!-- 마케팅 히어로 자산 (헤드라인·민트 아이콘·마스코트 베이크드) -->
-      <img src="../../../apps/web/public/brand/main_concepting_.png"
-           alt="다시 풀 때, 성적이 오른다 — AI가 만든 나만의 회독 루틴, 순공이"
-           onerror="document.querySelector('.asset-frame .logo-mask').style.display='none';this.style.display='none';document.querySelector('.asset-fallback').classList.add('on')" />
-      <!-- 좌상단에 박힌 옛 로고 가림 (자산 평탄 배경색 #F6F8F3 박스) -->
-      <div class="logo-mask"></div>
-      <!-- 자산 로드 실패 시 텍스트 폴백 -->
-      <div class="asset-fallback">
-        <div class="eyebrow">AI 회독 리텐션 엔진</div>
-        <h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:16px 0 8px;line-height:1.2">다시 풀 때,<br>성적이 오른다.</h2>
-        <p style="color:var(--color-text-default)">AI가 만든 나만의 회독 루틴</p>
+    <div class="copy">
+      <span class="eyebrow">AI 회독 리텐션 엔진</span>
+      <h1>막힘은 AI 문제 풀이가 풀고,<br><span class="hl">까먹음은 순공대장이</span> 풉니다</h1>
+      <p class="sub">문제를 사진 한 장으로 올리면, AI가 <b>1·3·7·14일 회독퀘스트</b>로 바꿔
+        까먹기 직전에 다시 꺼내줍니다. 새로 외우지 마세요 — 잊지 않게 도와줄게요.</p>
+      <div class="actions">
+        <button class="btn-primary" onclick="location.hash='#final'">
+          <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+          문제 찍고 시작하기
+        </button>
+        <button class="btn-ghost" onclick="location.hash='#how'">어떻게 도와주나요?</button>
       </div>
-    </div>
-    <div class="actions">
-      <button class="btn-primary" onclick="location.hash='#final'">
-        <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
-        지금 문제 찍고 시작하기
-      </button>
       <div class="trust">
         <span><b>가입은 나중에</b> · 먼저 회독부터</span>
         <span class="dot"></span>
         <span>광고·압박 알림 <b>없음</b></span>
         <span class="dot"></span>
-        <span>다정한 동반자 톤</span>
+        <span>라이트 동반자 톤</span>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-glow"></div>
+      <div class="float-badge fb-1">🔥 7일 연속</div>
+      <div class="float-badge fb-2"><span class="hp-dots"><i></i><i></i><i></i><i></i><i class="off"></i></span> 기억HP 4</div>
+      <div class="capture-card">
+        <img class="cam-mascot" src="../../../apps/web/public/mascot/camera-capture-alpha.png" alt="순공이가 카메라로 문제를 담는 모습" onerror="this.style.display='none'" />
+        <div class="shot">
+          <div class="ic"><span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span></div>
+          <div class="t"><b>틀린 문제 한 장</b><span>찍어서 올리면 끝</span></div>
+        </div>
+        <div class="arrow"><span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>AI가 회독퀘스트로 변환</div>
+        <div class="quest-row">
+          <div class="quest-chip">1일<span>내일</span></div>
+          <div class="quest-chip">3일<span>모레+</span></div>
+          <div class="quest-chip">7일<span>다음주</span></div>
+          <div class="quest-chip">14일<span>2주</span></div>
+        </div>
       </div>
     </div>
   </header>
 </div>
 
-<!-- ============ 가치 — 점1: 경쟁사명 0, 가치 문장 ============ -->
+<!-- ============ 왜 순공대장인가 (이전 목업 — 막힘 vs 까먹음) ============ -->
 <section id="why">
   <div class="wrap">
-    <div class="value rv">
-      <div>
-        <span class="eyebrow">왜 ‘다시’ 풀어야 할까</span>
-        <h2>이해는 한 번이면 되지만,<br>기억은 <span class="grad">매일 새어 나갑니다.</span></h2>
-        <p>한 번 푼 문제도 시간이 지나면 잊습니다. 다시 외우는 게 아니라, <b>잊기 직전에 다시 만나</b>
-          기억을 붙잡는 것 — 그게 순공대장이 하는 일입니다.</p>
-        <div class="pt"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span>
-          <div><b>망각 주기에 맞춘 회독</b> — 1·3·7·14일, 잊을 만하면 한 번 더</div></div>
-        <div class="pt"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h5v5"/></svg></span>
-          <div><b>풀수록 또렷해지는 기억</b> — 내 약점이 진짜 내 것으로</div></div>
-      </div>
-      <div class="curve">
-        <div class="cap">한 번만 보면 — 기억은 이렇게 새어 나갑니다</div>
-        <svg viewBox="0 0 280 150" preserveAspectRatio="none" aria-hidden="true">
-          <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#A8DCCB" stop-opacity=".5"/><stop offset="1" stop-color="#A8DCCB" stop-opacity="0"/>
-          </linearGradient></defs>
-          <line x1="20" y1="125" x2="270" y2="125" stroke="#E3EDE7" stroke-width="1.5"/>
-          <line x1="20" y1="20" x2="20" y2="125" stroke="#E3EDE7" stroke-width="1.5"/>
-          <!-- 한 번만 본 망각곡선 (가파른 하강) -->
-          <path d="M20 26 C 70 95, 120 112, 270 120" fill="none" stroke="#9B9B9B" stroke-width="2" stroke-dasharray="5 5"/>
-          <!-- 회독 반복 시 유지되는 기억 (계단식 회복) -->
-          <path d="M20 26 C 55 70, 70 70, 80 50 C 110 88, 120 88, 130 64 C 165 92, 175 92, 185 70 C 220 90, 235 90, 270 78" fill="none" stroke="#4CAF88" stroke-width="2.5"/>
-          <path d="M20 26 C 55 70, 70 70, 80 50 C 110 88, 120 88, 130 64 C 165 92, 175 92, 185 70 C 220 90, 235 90, 270 78 L 270 125 L 20 125 Z" fill="url(#g)" stroke="none"/>
-          <g fill="#4CAF88"><circle cx="80" cy="50" r="3.5"/><circle cx="130" cy="64" r="3.5"/><circle cx="185" cy="70" r="3.5"/></g>
-        </svg>
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-top:4px;font-weight:600">
-          <span style="color:var(--color-mint-700)">━ 회독하면 유지</span><span>┄ 한 번만 보면</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 포지셔닝 — 점8: 경쟁사 적정 언급 + 차별점("다음 진화" 톤) ============ -->
-<section id="position">
-  <div class="wrap">
     <div class="section-head rv">
-      <span class="eyebrow">익숙한 방식, 그다음 단계</span>
-      <h2>검증된 학습의 힘을, <span class="grad">수능 공부에 맞게</span></h2>
-      <p>좋은 건 이어받고 부족한 곳을 채웁니다 — 카피가 아니라 ‘다음 진화’로.</p>
+      <span class="eyebrow">왜 순공대장인가</span>
+      <h2>공부의 진짜 적은 <span class="grad">막힘</span>이 아니라 <span class="grad">까먹음</span>입니다</h2>
+      <p>이해는 한 번이면 되지만, 기억은 계속 새어 나갑니다. 에빙하우스 망각곡선은
+        하루만 지나도 절반을 지워버리죠. 순공대장은 그 곡선을 거슬러, 까먹기 직전에 다시 만나게 합니다.</p>
     </div>
-    <div class="pos2 rv">
-      <div class="pcard">
-        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span></div>
-        <h3>매일의 습관 → 수능 회독으로</h3>
-        <p>외국어를 매일 조금씩 익히는 <b>듀오링고식 반복</b>의 힘은 이미 증명됐습니다. 순공대장은 그 방식을 정해진 코스가 아니라 <b>내가 틀린 문제</b>로 가져옵니다 — 콘텐츠는 학생이 공급, 회독은 순공이가 설계.</p>
-      </div>
-      <div class="pcard">
-        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M9.5 3a3 3 0 0 0-3 3 3 3 0 0 0-1 5.8A3 3 0 0 0 8 17a2.5 2.5 0 0 0 4 0M9.5 3A2.5 2.5 0 0 1 12 5.5v11M9.5 3a3 3 0 0 1 3 3M14.5 3a3 3 0 0 1 3 3 3 3 0 0 1 1 5.8A3 3 0 0 1 16 17a2.5 2.5 0 0 1-4 0"/></svg></span></div>
-        <h3>막힘 다음은 — 까먹음</h3>
-        <p>모르는 문제(<b>막힘</b>)는 콴다 같은 풀이 도구가 이미 잘 풀어줍니다. 순공대장이 푸는 건 그다음 — <b>아는 줄 알았는데 잊는 것(까먹음)</b>입니다. 두 문제는 다르고, 우리는 후자에 집중합니다.</p>
+    <div class="positioning rv">
+      <div class="pos-grid">
+        <div class="pos-col them">
+          <div class="tag">지금 쓰는 도구</div>
+          <h3>막힘을 푼다</h3>
+          <p>모르는 문제를 그 자리에서 해설해 줍니다. 좋습니다 — 하지만 <b>해설을 본 그 순간</b>에 끝나죠.</p>
+        </div>
+        <div class="pos-vs">VS</div>
+        <div class="pos-col us">
+          <div class="tag">순공대장</div>
+          <h3>까먹음을 푼다</h3>
+          <p>맞힌 문제도 <b>시간이 지나면 잊습니다.</b> 잊기 직전마다 회독으로 다시 꺼내 — 진짜 내 것으로 굳혀줍니다.</p>
+        </div>
       </div>
     </div>
   </div>
