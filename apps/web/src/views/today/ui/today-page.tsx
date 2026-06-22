@@ -12,6 +12,16 @@ import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import { Brain, PartyPopper } from "lucide-react";
 
+/**
+ * 오늘 화면 (홈 대시보드).
+ *
+ * SOO-121 — SOO-97 목업 감각으로 정합: 심플리시티(과밀 덜고 핵심만)·명확함
+ * (여백·타이포 위계)·최소 모션. 핵심 행동(자료 흡수)을 페이지 선두로 올리고,
+ * 게임화 상태(등급·스탯)는 차분한 컨텍스트 밴드로 후퇴시킨다.
+ *
+ * 위계: 인사 → (넛지) → 인테이크 히어로(핵심) → 내 상태 → 오늘의 회독 → 바로가기 → 보조.
+ * 섹션 간 넉넉한 수직 리듬(space-y-8/10)으로 밀도를 낮춰 "과밀" 해소.
+ */
 export function TodayPage({
   isFirstEntry = false,
   userName,
@@ -20,7 +30,7 @@ export function TodayPage({
   userName?: string;
 }) {
   return (
-    <div className="mx-auto max-w-[1400px] space-y-6 p-4 lg:p-8">
+    <div className="mx-auto max-w-[1200px] space-y-8 p-4 lg:space-y-10 lg:p-8">
       {isFirstEntry && (
         <div className="flex items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] p-4">
           <MascotReaction mood="praise" size="md" reason="첫 회독 준비" />
@@ -44,61 +54,64 @@ export function TodayPage({
 
       {/* NudgeProvider: useNudgeTrigger를 1회만 실행 — NudgeBanner/NotificationBell/QuestList가 context로 소비 */}
       <NudgeProvider>
-        {/* 1. 상단 상태 밴드 — 진도·등급·뇌(기억HP)·불(스트릭)을 한눈에 (SOO-81, Mike 구조 지시 2026-06-20) */}
-        <section aria-label="내 상태" className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <h1 className="text-lg font-bold text-[var(--color-text-strong)] lg:text-xl">
-                {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
-              </h1>
-              <p className="mt-0.5 text-sm text-[var(--color-text-muted)]">
-                {isFirstEntry
-                  ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
-                  : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
-              </p>
-            </div>
-            {/* 항시 노출 액션 — 순공냅스(시그니처) + 알림. 모바일에선 사이드바가 숨으므로 여기가 순공냅스 상시 진입점. (SOO-90 아이콘 승격) */}
-            <div className="flex shrink-0 items-center gap-2">
-              <Link
-                href={ROUTES.journey}
-                aria-label="순공냅스 — 뉴럴 망각맵"
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] transition hover:bg-[var(--color-mint-100)]"
-              >
-                <Brain
-                  size={16}
-                  strokeWidth={1.5}
-                  color="var(--color-mint-700)"
-                  fill="none"
-                  aria-hidden="true"
-                />
-              </Link>
-              <NotificationBell />
-            </div>
+        {/* 1. 인사 + 항시 액션 — 가볍게, 여백 두고 */}
+        <header className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl font-extrabold tracking-tight text-[var(--color-text-strong)] lg:text-2xl">
+              {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
+            </h1>
+            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
+              {isFirstEntry
+                ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
+                : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
+            </p>
           </div>
-          <NudgeBanner />
+          {/* 순공냅스(시그니처) + 알림. 모바일에선 사이드바가 숨으므로 여기가 상시 진입점 (SOO-90). */}
+          <div className="flex shrink-0 items-center gap-2">
+            <Link
+              href={ROUTES.journey}
+              aria-label="순공냅스 — 뉴럴 망각맵"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--color-mint-300)] bg-[var(--color-mint-50)] transition-colors hover:bg-[var(--color-mint-100)]"
+            >
+              <Brain
+                size={16}
+                strokeWidth={1.5}
+                color="var(--color-mint-700)"
+                fill="none"
+                aria-hidden="true"
+              />
+            </Link>
+            <NotificationBell />
+          </div>
+        </header>
+
+        <NudgeBanner />
+
+        {/* 2. 핵심 한 가지 — 자료 흡수를 페이지 선두 행동으로 */}
+        <IntakeHero />
+
+        {/* 3. 내 상태 — 등급 strip + 스탯 4박스(차분한 컨텍스트). design-review §2-2 */}
+        <section aria-label="내 상태" className="space-y-3">
           <TierJourneyHero />
           <StatsGrid />
         </section>
 
-        {/* 2. 중앙 대형 인테이크 히어로 — 핵심 행동(문제 사진 흡수) 승격 */}
-        <IntakeHero />
+        {/* 4. 오늘의 회독 — 매일의 핵심 콘텐츠를 명확히 노출 */}
+        <section id="today-quests" aria-label="오늘의 회독" className="space-y-3 scroll-mt-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+            오늘의 회독
+          </h2>
+          <QuestList />
+        </section>
 
-        {/* 3. 보조 바로가기 */}
+        {/* 5. 보조 바로가기 */}
         <FeatureGrid />
 
-        {/* 4. 하단 — 오늘의 회독 / 회독맵 / 약점 */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px] lg:gap-6">
-          <div className="min-w-0 space-y-4 lg:space-y-6">
-            <section id="today-quests" className="space-y-3 scroll-mt-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
-                오늘의 회독 캠프
-              </h2>
-              <QuestList />
-            </section>
-
+        {/* 6. 하단 — 회독맵 / 과목별 진행 · 약점 */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
+          <div className="min-w-0">
             <ReviewMap />
           </div>
-
           <aside className="space-y-4">
             <SubjectProgress />
             <ForgettingTop3 />

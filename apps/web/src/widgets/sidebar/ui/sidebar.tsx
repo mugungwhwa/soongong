@@ -14,7 +14,7 @@ import {
   type LucideProps,
 } from "lucide-react";
 import type { ComponentType } from "react";
-import { MascotReaction } from "@/shared/ui/mascot-reaction";
+import { Logo } from "@/shared/ui/logo";
 
 const ICON_STYLE: LucideProps = {
   size: 18,
@@ -48,32 +48,13 @@ export function Sidebar() {
 
   return (
     <aside className="hidden lg:flex w-[220px] flex-col gap-2 border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] p-6">
-      <div className="mb-6 flex items-center gap-2">
-        <MascotReaction mood="idle" size="sm" className="shrink-0" />
-        <svg
-          viewBox="0 0 245 44"
-          style={{ width: "100%", maxWidth: 200, overflow: "visible" }}
-          role="img"
-          aria-label="SOONGONG"
-        >
-          <text
-            x="2"
-            y="35"
-            fontFamily="'Arial Black','Helvetica Neue',Arial,sans-serif"
-            fontSize="36"
-            fontWeight={900}
-            letterSpacing="3"
-            fill="var(--color-mint-900)"
-            stroke="var(--color-mint-900)"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            style={{ paintOrder: "stroke" }}
-          >
-            SOONGONG
-          </text>
-        </svg>
-      </div>
+      <Link
+        href={ROUTES.today}
+        aria-label="순공대장 홈"
+        className="mb-7 flex items-center rounded-[var(--radius-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2"
+      >
+        <Logo lang="ko" variant="light" className="h-9 w-auto" priority />
+      </Link>
 
       {/* 순공냅스 = 리텐션 엔진 시그니처 — 목록에서 빼 상단 고정 아이콘 엔트리로 승격 (SOO-90). */}
       <Link
