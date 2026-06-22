@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>순공대장 — 랜딩 제안 v2 (재설계 프로토타입) · SOO-127</title>
+<title>순공대장 — 랜딩 제안 v3 (재설계 프로토타입) · SOO-127</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
@@ -64,8 +64,10 @@ img{display:block;max-width:100%}
 .nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
   gap:16px;padding:14px clamp(18px,5vw,64px);
   background:rgba(255,255,255,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--color-border-default)}
-.nav .logo img{height:44px;width:auto}
-.nav .logo .fallback{font-weight:800;font-size:24px;color:var(--color-mint-900);letter-spacing:-.02em}
+.nav{padding-top:12px;padding-bottom:12px}
+.nav .logo img{height:60px;width:auto}
+.nav .logo .fallback{font-weight:800;font-size:30px;color:var(--color-mint-900);letter-spacing:-.02em}
+@media(max-width:560px){.nav .logo img{height:48px}}
 .nav .cta{background:var(--color-primary-cta);color:#fff;font-weight:700;font-size:15px;
   padding:11px 22px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card);
   transition:transform var(--duration-fast) var(--ease-out-soft)}
@@ -114,6 +116,17 @@ section{padding:clamp(56px,9vh,104px) 0}
 .curve .cap{font-size:13px;font-weight:700;color:var(--color-mint-900);margin-bottom:8px;text-align:center}
 .curve svg{width:100%;height:auto;display:block}
 @media(max-width:760px){.value{grid-template-columns:1fr}}
+
+/* ── 포지셔닝 (점8 — 경쟁사 적정 언급 + 차별점, "다음 진화" 톤) ─────── */
+.pos2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.5vw,22px)}
+.pcard{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);
+  border:1px solid var(--color-border-default);padding:28px 26px}
+.pcard .ico{width:50px;height:50px;border-radius:14px;background:var(--color-mint-50);display:grid;place-items:center;margin-bottom:14px}
+.pcard .ico .mi{width:27px;height:27px}
+.pcard h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:9px}
+.pcard p{font-size:15px;color:var(--color-text-default);line-height:1.65}
+.pcard p b{color:var(--color-text-strong)}
+@media(max-width:760px){.pos2{grid-template-columns:1fr}}
 
 /* ── 작동 방식 ────────────────────────────────────────────────────── */
 .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,22px)}
@@ -169,6 +182,18 @@ section{padding:clamp(56px,9vh,104px) 0}
 .slot .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
   background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
 .slot-cap{text-align:center;font-size:13px;color:var(--color-text-default);margin-top:14px;font-weight:600}
+/* 점6 — 승인 목업(SOO-96/97) 화면을 그대로 임베드하는 이미지 슬롯 */
+.mock-phone,.mock-browser{position:relative}
+.mock-phone .ribbon,.mock-browser .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
+  background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
+.mock-phone{width:262px;background:#1C2B25;border-radius:38px;padding:9px}
+.mock-phone .ph-scr{border-radius:30px;overflow:hidden;background:var(--color-bg);max-height:520px}
+.mock-phone .ph-scr img{width:100%;display:block}
+.mock-browser{width:min(660px,100%);background:#fff;border-radius:var(--radius-lg);overflow:hidden}
+.mock-browser .bar{background:var(--color-bg-sunken);padding:10px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--color-border-default)}
+.mock-browser .bar i{width:11px;height:11px;border-radius:50%;background:var(--color-border-strong)}
+.mock-browser .bar .url{margin-left:10px;background:#fff;border-radius:var(--radius-pill);font-size:12px;color:var(--color-text-muted);padding:5px 14px;flex:1}
+.mock-browser .web-shot{width:100%;display:block}
 
 /* phone slot */
 .phone{width:264px;background:#1C2B25;border-radius:38px;padding:10px}
@@ -237,7 +262,7 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
 </head>
 <body>
 
-<div class="proto-note">🧪 <b>재설계 제안 프로토타입 v2 (SOO-127)</b> · 랜딩 페이지 · 실앱 아님, Mike 승인용 목업 · 앱/웹 미리보기는 개발 후 실제 화면으로 교체</div>
+<div class="proto-note">🧪 <b>재설계 제안 프로토타입 v3 (SOO-127)</b> · 랜딩 페이지 · 실앱 아님, Mike 승인용 목업 · 앱·웹 미리보기 = 승인 목업(SOO-96) 그대로, 개발 후 실화면 교체</div>
 
 <!-- 점2: 흰바탕 한글 로고 1종으로 통일 / 점0: 로고 크게 -->
 <nav class="nav">
@@ -314,6 +339,29 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
         </svg>
         <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-top:4px;font-weight:600">
           <span style="color:var(--color-mint-700)">━ 회독하면 유지</span><span>┄ 한 번만 보면</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 포지셔닝 — 점8: 경쟁사 적정 언급 + 차별점("다음 진화" 톤) ============ -->
+<section id="position">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">익숙한 방식, 그다음 단계</span>
+      <h2>검증된 학습의 힘을, <span class="grad">수능 공부에 맞게</span></h2>
+      <p>좋은 건 이어받고 부족한 곳을 채웁니다 — 카피가 아니라 ‘다음 진화’로.</p>
+    </div>
+    <div class="pos2 rv">
+      <div class="pcard">
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span></div>
+        <h3>매일의 습관 → 수능 회독으로</h3>
+        <p>외국어를 매일 조금씩 익히는 <b>듀오링고식 반복</b>의 힘은 이미 증명됐습니다. 순공대장은 그 방식을 정해진 코스가 아니라 <b>내가 틀린 문제</b>로 가져옵니다 — 콘텐츠는 학생이 공급, 회독은 순공이가 설계.</p>
+      </div>
+      <div class="pcard">
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M9.5 3a3 3 0 0 0-3 3 3 3 0 0 0-1 5.8A3 3 0 0 0 8 17a2.5 2.5 0 0 0 4 0M9.5 3A2.5 2.5 0 0 1 12 5.5v11M9.5 3a3 3 0 0 1 3 3M14.5 3a3 3 0 0 1 3 3 3 3 0 0 1 1 5.8A3 3 0 0 1 16 17a2.5 2.5 0 0 1-4 0"/></svg></span></div>
+        <h3>막힘 다음은 — 까먹음</h3>
+        <p>모르는 문제(<b>막힘</b>)는 콴다 같은 풀이 도구가 이미 잘 풀어줍니다. 순공대장이 푸는 건 그다음 — <b>아는 줄 알았는데 잊는 것(까먹음)</b>입니다. 두 문제는 다르고, 우리는 후자에 집중합니다.</p>
       </div>
     </div>
   </div>
@@ -416,7 +464,7 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
     <div class="section-head rv">
       <span class="eyebrow">앱 · 웹 어디서나</span>
       <h2>주머니 속 앱으로, <span class="grad">책상 위 웹으로</span></h2>
-      <p>같은 회독, 같은 순공이. 아래 화면은 미리보기이며, 개발이 끝나면 실제 화면으로 교체됩니다.</p>
+      <p>같은 회독, 같은 순공이. 아래는 <b>지난 승인 목업(SOO-96)</b> 화면 그대로이며, 실앱 개발이 끝나면 실제 화면으로 교체됩니다.</p>
     </div>
     <div class="showcase">
       <div class="toggle">
@@ -424,58 +472,26 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bott
         <button id="tWeb" onclick="setPane('web')">데스크톱 웹</button>
       </div>
 
-      <!-- SLOT:app-preview — 개발 후 실제 /today 모바일 화면으로 교체 -->
+      <!-- SLOT:app-preview — 지난 승인 목업(SOO-96) 홈(앱) 화면 그대로. 실앱 개발 시 실화면으로 교체 -->
       <div id="paneApp" class="pane show">
         <div>
-          <div class="slot phone">
-            <div class="ribbon">미리보기 · 실제 화면 교체 예정</div>
-            <div class="scr">
-              <div class="app-top"><div><b>좋은 아침이에요</b><small>오늘도 잊지 않게 도와줄게요</small></div><div class="streak">🔥 7</div></div>
-              <div class="app-stats">
-                <div class="s"><small>오늘 회독</small><b>6개</b></div>
-                <div class="s"><small>기억HP</small><div class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></div></div>
-              </div>
-              <div class="app-due"><small>지금 잊기 직전</small><div class="r"><b>미적분 · 극한 3개</b><span class="go">회독 시작</span></div></div>
-              <div class="app-card"><img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="순공이" onerror="this.style.display='none'"><div><b>오답 2개가 모였어요</b><small>같이 회수하러 갈까요?</small></div></div>
-              <div class="app-nav">
-                <div class="i act"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>홈</div>
-                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="11" cy="17" r="2.5"/><path d="M8 8l8 1M9 15l7-5"/></svg></span>순공냅스</div>
-                <div class="fab"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span></div>
-                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 12h8M8 16h5"/></svg></span>오답</div>
-                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span>순공이</div>
-              </div>
-            </div>
+          <div class="mock-phone">
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
+            <div class="ph-scr"><img src="assets/mock-app.png" alt="순공대장 앱 홈 화면 — 승인 목업 SOO-96 (스트릭·기억HP·오늘의 회독·회독퀘스트)" onerror="this.parentElement.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;color:#fff\'>승인 목업 SOO-96 홈</div>'" /></div>
           </div>
-          <div class="slot-cap">하단 중앙 = 문제 촬영(핵심 행동)</div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 홈 화면 그대로 · 하단 중앙 = 문제 촬영</div>
         </div>
       </div>
 
-      <!-- SLOT:web-preview — 개발 후 실제 데스크톱 화면으로 교체 (사이드바 없는 상단바 레이아웃) -->
+      <!-- SLOT:web-preview — 지난 승인 목업(SOO-96 웹 모드) 데스크톱 화면 그대로. 실앱 개발 시 실화면으로 교체 -->
       <div id="paneWeb" class="pane">
         <div>
-          <div class="slot browser">
-            <div class="ribbon">미리보기 · 실제 화면 교체 예정</div>
+          <div class="mock-browser">
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
             <div class="bar"><i></i><i></i><i></i><div class="url">soongong.app/today</div></div>
-            <div class="webtop">
-              <div class="l"><span class="lg">순공대장</span>
-                <div class="tabs"><a class="on">오늘의 회독</a><a>순공냅스</a><a>오답노트</a><a>그래프</a></div></div>
-              <div class="pf"></div>
-            </div>
-            <div class="webbody">
-              <h4>오늘의 회독</h4><div class="muted">잊기 직전 항목부터 챙겨요</div>
-              <div class="web-stats">
-                <div class="s"><small>오늘 회독</small><b>6개</b></div>
-                <div class="s"><small>🔥 연속</small><b>7일</b></div>
-                <div class="s"><small>기억HP</small><b>4 / 5</b></div>
-                <div class="s"><small>이번주 XP</small><b>320</b></div>
-              </div>
-              <div class="web-row">
-                <div class="web-due"><small>지금 잊기 직전</small><b>미적분 · 극한 3개</b><span class="go">회독 시작 →</span></div>
-                <div class="web-mascot"><img src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" alt="순공이" onerror="this.style.display='none'"><span>“오늘 6개만<br>같이 해봐요!”</span></div>
-              </div>
-            </div>
+            <img class="web-shot" src="assets/mock-web.png" alt="순공대장 웹(데스크톱) 홈 — 승인 목업 SOO-96 (좌측 네비·stats·오늘의 회독)" onerror="this.outerHTML='<div style=\'padding:48px;text-align:center;color:var(--color-text-default)\'>승인 목업 SOO-96 웹 홈</div>'" />
           </div>
-          <div class="slot-cap">상단바 레이아웃 · 넓은 데스크톱 · 우하단 상시 촬영 버튼(개발 시)</div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 웹 데스크톱 화면 그대로 · 넓은 레이아웃</div>
         </div>
       </div>
     </div>
