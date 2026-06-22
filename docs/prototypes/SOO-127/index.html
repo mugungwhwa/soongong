@@ -3,36 +3,34 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>순공대장 — 랜딩 제안 (재설계 프로토타입) · SOO-127</title>
+<title>순공대장 — 랜딩 제안 v2 (재설계 프로토타입) · SOO-127</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
 <style>
 /* ============================================================================
    DESIGN TOKENS — MIRRORED from apps/web/src/shared/styles/tokens.css
    ⚠️ 프로토타입 전용 미러. 프로덕션 SSoT 아님. 값 변경은 tokens.css 에서.
-   (SOO-127 랜딩 제안 — SOO-96/97 감각 계승. 자체 완결형 githack 단일 파일.)
+   (SOO-127 랜딩 제안 v2 — Mike 피드백 8건 반영. 자체 완결형 githack 단일 파일.)
    ============================================================================ */
 :root{
   --color-primary-cta:#4CAF88; --color-primary-bg:#EAF4EE;
   --color-bg:#F8FBF7; --color-bg-elevated:#FFFFFF; --color-bg-sunken:#EFF5F1;
-  --color-background:var(--color-bg); --color-surface:var(--color-bg-elevated);
   --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
   --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
   --color-risk-low:#BFE3C9; --color-risk-mid:#FFEBA3; --color-risk-high:#FFB4B4;
-  --color-info:#6BA6FF; --color-danger:#FFB4B4; --color-warning:#FFEBA3; --color-neutral:#8E8E93;
-  --color-xp:#F2C94C; --color-xp-soft:#FBE7A6;
+  --color-info:#6BA6FF; --color-xp:#F2C94C;
   --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
-  --color-text-disabled:#BBBBBB; --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
-  --color-risk-bg:#FFEFEF; --color-warning-bg:#FFF8E0; --color-info-bg:#EAF2FF;
+  --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
+  --color-warning-bg:#FFF8E0;
   --color-border-default:#E3EDE7; --color-border-strong:#9CCBB7;
   --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
-  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px;
-  --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+  --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px;
   --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
   --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);
-  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
   --duration-fast:160ms; --duration-mid:240ms; --duration-slow:380ms;
-  --font-display:"Pretendard",system-ui,sans-serif; --font-body:"Pretendard",system-ui,sans-serif;
+  --font-body:"Pretendard",system-ui,sans-serif;
+  /* 마케팅 히어로 자산의 평탄 배경색 (좌상단 옛 로고 가림용 — 측정값 #F6F8F3) */
+  --hero-asset-bg:#F6F8F3;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -46,613 +44,477 @@ body{
   color:var(--color-text-strong);
   -webkit-font-smoothing:antialiased;
   line-height:1.5;
+  /* 점5 — 한글 줄바꿈: 단어 끊김 방지 */
+  word-break:keep-all; overflow-wrap:break-word;
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
+.nowrap{white-space:nowrap}
 
-/* ── 프로토타입 노트 배너 ──────────────────────────────────────────── */
-.proto-note{
-  background:var(--color-mint-900);color:#EAF7F0;font-size:13px;
-  text-align:center;padding:8px var(--space-4);letter-spacing:.01em;
-}
+/* 민트 라인 아이콘 (점4 — 브랜드 가이드: stroke 1.5 / round / fill none / o700 민트) */
+.mi{display:inline-block;color:var(--color-mint-700);flex:none}
+.mi svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* 프로토타입 노트 */
+.proto-note{background:var(--color-mint-900);color:#EAF7F0;font-size:13px;text-align:center;padding:8px 16px}
 .proto-note b{color:#fff}
 
-/* ── 상단 네비 ─────────────────────────────────────────────────────── */
-.nav{
-  position:sticky;top:0;z-index:60;
-  display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);
-  padding:14px clamp(16px,5vw,56px);
-  background:rgba(255,255,255,.78);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--color-border-default);
-}
-.nav .brand{display:flex;align-items:center;gap:10px}
-.nav .brand img{height:30px;width:auto}
-.nav .brand .wordmark{font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--color-mint-900)}
-.nav .links{display:flex;align-items:center;gap:clamp(14px,2vw,28px)}
-.nav .links a{font-size:15px;font-weight:600;color:var(--color-text-default)}
-.nav .links a:hover{color:var(--color-mint-900)}
-.nav .cta{
-  background:var(--color-primary-cta);color:#fff;font-weight:700;font-size:15px;
-  padding:10px 20px;border-radius:var(--radius-pill);
-  box-shadow:var(--shadow-card);transition:transform var(--duration-fast) var(--ease-out-soft),box-shadow var(--duration-fast);
-}
+/* ── 네비 (점0 — 심플, 로고 크게 / 점2 — 흰바탕 한글 로고 1종) ───────── */
+.nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:14px clamp(18px,5vw,64px);
+  background:rgba(255,255,255,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--color-border-default)}
+.nav .logo img{height:44px;width:auto}
+.nav .logo .fallback{font-weight:800;font-size:24px;color:var(--color-mint-900);letter-spacing:-.02em}
+.nav .cta{background:var(--color-primary-cta);color:#fff;font-weight:700;font-size:15px;
+  padding:11px 22px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card);
+  transition:transform var(--duration-fast) var(--ease-out-soft)}
 .nav .cta:hover{transform:translateY(-1px);box-shadow:var(--shadow-elevated)}
-@media(max-width:860px){.nav .links a:not(.cta){display:none}}
 
-/* ── 레이아웃 컨테이너 ─────────────────────────────────────────────── */
-.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,5vw,40px)}
-section{padding:clamp(56px,9vh,108px) 0}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
-  color:var(--color-mint-900);background:var(--color-mint-50);
-  padding:6px 14px;border-radius:var(--radius-pill);
-}
-.section-head{max-width:680px;margin:0 auto clamp(36px,6vh,56px);text-align:center}
-.section-head h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.18;margin:16px 0 14px}
-.section-head p{font-size:clamp(16px,2vw,18px);color:var(--color-text-default);line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(18px,5vw,40px)}
+section{padding:clamp(56px,9vh,104px) 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.03em;
+  color:var(--color-mint-900);background:var(--color-mint-50);padding:7px 15px;border-radius:var(--radius-pill)}
+.section-head{max-width:660px;margin:0 auto clamp(36px,6vh,52px);text-align:center}
+.section-head h2{font-size:clamp(27px,4.2vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.22;margin:16px 0 14px}
+.section-head p{font-size:clamp(16px,2vw,18px);color:var(--color-text-default);line-height:1.65}
 .grad{color:var(--color-mint-700)}
-
-/* ── HERO ─────────────────────────────────────────────────────────── */
-.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,64px);align-items:center;
-  padding-top:clamp(40px,7vh,80px);padding-bottom:clamp(40px,7vh,72px)}
-.hero .copy h1{font-size:clamp(34px,5.4vw,60px);font-weight:800;letter-spacing:-.035em;line-height:1.1;margin:18px 0 0}
-.hero .copy h1 .hl{
-  background:linear-gradient(180deg,transparent 62%,var(--color-mint-100) 62%);
-  padding:0 4px;border-radius:4px;color:var(--color-mint-900);
-}
-.hero .copy .sub{font-size:clamp(17px,2.1vw,20px);color:var(--color-text-default);line-height:1.6;margin:22px 0 0;max-width:520px}
-.hero .actions{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:32px}
-.btn-primary{
-  background:var(--color-primary-cta);color:#fff;font-weight:700;font-size:17px;
-  padding:15px 30px;border-radius:var(--radius-pill);border:none;cursor:pointer;
-  box-shadow:var(--shadow-elevated);transition:transform var(--duration-fast) var(--ease-out-soft);
-}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--color-primary-cta);color:#fff;
+  font-weight:700;font-size:17px;font-family:inherit;padding:15px 30px;border-radius:var(--radius-pill);
+  border:none;cursor:pointer;box-shadow:var(--shadow-elevated);transition:transform var(--duration-fast) var(--ease-out-soft)}
 .btn-primary:hover{transform:translateY(-2px)}
-.btn-ghost{
-  background:#fff;color:var(--color-mint-900);font-weight:700;font-size:17px;
-  padding:15px 26px;border-radius:var(--radius-pill);border:1.5px solid var(--color-border-strong);cursor:pointer;
-  transition:background var(--duration-fast)}
-.btn-ghost:hover{background:var(--color-mint-50)}
-.hero .trust{display:flex;align-items:center;gap:14px;margin-top:24px;font-size:14px;color:var(--color-text-muted)}
+.btn-primary .mi{color:#fff;width:22px;height:22px}
+
+/* ── HERO (점3 — 마케팅 히어로 자산 최상단 + 옛 로고 가림) ──────────── */
+.hero{text-align:center;padding-top:clamp(28px,5vh,52px)}
+.hero .asset-frame{position:relative;max-width:980px;margin:0 auto;border-radius:var(--radius-xl);
+  overflow:hidden;box-shadow:var(--shadow-elevated);background:var(--hero-asset-bg);line-height:0}
+.hero .asset-frame img{width:100%;height:auto}
+/* 좌상단 옛 로고 가림 — 자산 배경(#F6F8F3) 평탄색 박스. 측정 bbox x6.5-22.9% y13.2-18.8% */
+.hero .logo-mask{position:absolute;top:10.5%;left:3%;width:25%;height:11%;
+  background:var(--hero-asset-bg);border-radius:6px}
+.hero .asset-fallback{display:none;padding:48px 24px}
+.hero .asset-fallback.on{display:block}
+.hero .actions{margin-top:32px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.hero .trust{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  font-size:14px;color:var(--color-text-muted)}
 .hero .trust b{color:var(--color-text-strong)}
 .hero .trust .dot{width:4px;height:4px;border-radius:50%;background:var(--color-border-strong)}
 
-/* HERO visual — camera capture as brand hero */
-.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:420px}
-.hero-glow{position:absolute;inset:0;background:
-  radial-gradient(closest-side,rgba(123,196,174,.28),transparent 72%);filter:blur(6px)}
-.capture-card{
-  position:relative;z-index:2;width:min(360px,84%);
-  background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-elevated);
-  padding:22px 22px 20px;border:1px solid var(--color-border-default);
-  animation:floaty 6s var(--ease-out-soft) infinite}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-.capture-card .cam-mascot{width:148px;margin:-66px auto 6px;filter:drop-shadow(0 10px 18px rgba(46,125,91,.18))}
-.capture-card .shot{
-  background:var(--color-mint-50);border:1px dashed var(--color-border-strong);
-  border-radius:var(--radius-lg);padding:14px;display:flex;gap:12px;align-items:center}
-.capture-card .shot .ic{
-  width:42px;height:42px;border-radius:12px;background:var(--color-primary-cta);color:#fff;
-  display:grid;place-items:center;font-size:20px;flex:none}
-.capture-card .shot .t b{display:block;font-size:14px;color:var(--color-text-strong)}
-.capture-card .shot .t span{font-size:12.5px;color:var(--color-text-default)}
-.capture-card .arrow{text-align:center;color:var(--color-mint-500);font-size:20px;margin:8px 0}
-.quest-row{display:flex;gap:8px}
-.quest-chip{flex:1;text-align:center;background:var(--color-mint-100);border-radius:var(--radius-md);
-  padding:10px 4px;font-weight:700;font-size:13px;color:var(--color-mint-900)}
-.quest-chip span{display:block;font-size:11px;font-weight:600;color:var(--color-text-default);margin-top:2px}
-.float-badge{
-  position:absolute;z-index:3;background:#fff;border-radius:var(--radius-pill);
-  box-shadow:var(--shadow-elevated);padding:9px 15px;font-weight:700;font-size:13px;
-  display:flex;align-items:center;gap:8px;border:1px solid var(--color-border-default)}
-.float-badge .hp{color:var(--color-risk-high)}
-.fb-1{top:8%;left:-2%}
-.fb-2{bottom:10%;right:-3%}
-@media(max-width:840px){
-  .hero{grid-template-columns:1fr;text-align:center}
-  .hero .copy .sub{margin-left:auto;margin-right:auto}
-  .hero .actions{justify-content:center}
-  .hero .trust{justify-content:center;flex-wrap:wrap}
-  .hero-visual{min-height:360px;margin-top:16px}
-}
+/* ── 가치 섹션 (점1 — 경쟁사명 0, 가치 문장만) ─────────────────────── */
+.value{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
+  border:1px solid var(--color-border-default);padding:clamp(28px,5vw,56px);display:grid;
+  grid-template-columns:1.1fr .9fr;gap:clamp(24px,4vw,48px);align-items:center}
+.value h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.28}
+.value p{font-size:16px;color:var(--color-text-default);line-height:1.7;margin-top:16px}
+.value .pt{display:flex;gap:11px;align-items:flex-start;margin-top:14px;font-size:15.5px}
+.value .pt .mi{width:24px;height:24px;margin-top:1px}
+.value .pt b{color:var(--color-text-strong)}
+.curve{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:22px 18px 14px;border:1px solid var(--color-border-default)}
+.curve .cap{font-size:13px;font-weight:700;color:var(--color-mint-900);margin-bottom:8px;text-align:center}
+.curve svg{width:100%;height:auto;display:block}
+@media(max-width:760px){.value{grid-template-columns:1fr}}
 
-/* ── 문제 정의 (콴다 vs 순공대장) ───────────────────────────────────── */
-.positioning{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
-  padding:clamp(28px,5vw,52px);border:1px solid var(--color-border-default)}
-.pos-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,36px);align-items:center}
-.pos-col{text-align:center}
-.pos-col .tag{font-size:13px;font-weight:700;color:var(--color-text-muted);letter-spacing:.02em}
-.pos-col h3{font-size:clamp(20px,2.6vw,26px);font-weight:800;margin:8px 0 10px;letter-spacing:-.02em}
-.pos-col p{font-size:15px;color:var(--color-text-default);line-height:1.55}
-.pos-col.them h3{color:var(--color-text-strong)}
-.pos-col.us{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:24px 18px;border:1.5px solid var(--color-mint-300)}
-.pos-col.us h3{color:var(--color-mint-900)}
-.pos-vs{font-weight:800;color:var(--color-border-strong);font-size:15px}
-@media(max-width:760px){.pos-grid{grid-template-columns:1fr}.pos-vs{transform:rotate(90deg)}}
-
-/* ── How it works ─────────────────────────────────────────────────── */
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,24px)}
+/* ── 작동 방식 ────────────────────────────────────────────────────── */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,22px)}
 .step{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);
-  padding:28px 24px;border:1px solid var(--color-border-default);position:relative;overflow:hidden}
+  padding:30px 26px;border:1px solid var(--color-border-default)}
 .step .n{font-size:13px;font-weight:800;color:var(--color-mint-500);letter-spacing:.08em}
-.step .ico{width:54px;height:54px;border-radius:16px;background:var(--color-mint-50);
-  display:grid;place-items:center;font-size:26px;margin:14px 0 16px}
-.step h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
-.step p{font-size:14.5px;color:var(--color-text-default);line-height:1.55}
-.step .quests{display:flex;gap:6px;margin-top:14px}
-.step .q{font-size:11px;font-weight:700;color:var(--color-mint-900);background:var(--color-mint-100);
-  padding:5px 8px;border-radius:var(--radius-pill)}
+.step .ico{width:56px;height:56px;border-radius:16px;background:var(--color-mint-50);
+  display:grid;place-items:center;margin:14px 0 16px}
+.step .ico .mi{width:30px;height:30px}
+.step h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:9px}
+.step p{font-size:14.5px;color:var(--color-text-default);line-height:1.6}
+.step .quests{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.step .q{font-size:11.5px;font-weight:700;color:var(--color-mint-900);background:var(--color-mint-100);padding:5px 9px;border-radius:var(--radius-pill)}
+.step .hp{display:inline-flex;gap:3px;margin-top:13px;align-items:center;font-size:12.5px;color:var(--color-text-default);font-weight:600}
+.step .hp i{width:12px;height:12px;border-radius:50%;background:var(--color-risk-high)}
+.step .hp i.off{background:var(--color-border-default)}
 @media(max-width:760px){.steps{grid-template-columns:1fr}}
 
-/* ── 듀오링고의 다음 진화 (차용/거절) ──────────────────────────────── */
-.evo{background:linear-gradient(180deg,#fff,#FBFEFB);border-radius:var(--radius-xl);
-  border:1px solid var(--color-border-default);box-shadow:var(--shadow-card);overflow:hidden}
-.evo-grid{display:grid;grid-template-columns:1fr 1fr}
-.evo-col{padding:clamp(24px,4vw,44px)}
-.evo-col.keep{background:var(--color-mint-50)}
-.evo-col.drop{background:#fff;border-left:1px solid var(--color-border-default)}
-.evo-col h3{font-size:19px;font-weight:800;display:flex;align-items:center;gap:9px;margin-bottom:6px}
-.evo-col .lead{font-size:14px;color:var(--color-text-default);margin-bottom:18px}
-.evo-col ul{list-style:none;display:flex;flex-direction:column;gap:11px}
-.evo-col li{display:flex;gap:10px;font-size:15px;line-height:1.45}
-.evo-col li .mk{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;
-  font-size:13px;font-weight:800;margin-top:1px}
-.keep li .mk{background:var(--color-mint-300);color:var(--color-mint-900)}
-.drop li .mk{background:var(--color-risk-bg);color:#C26B6B}
-.keep li b,.drop li b{color:var(--color-text-strong)}
-.keep li span,.drop li span{color:var(--color-text-default)}
-.evo-foot{text-align:center;padding:18px;font-size:14px;color:var(--color-mint-900);
-  background:var(--color-mint-100);font-weight:600}
-@media(max-width:760px){.evo-grid{grid-template-columns:1fr}.evo-col.drop{border-left:none;border-top:1px solid var(--color-border-default)}}
+/* ── 순공냅스 (점7 — 컨셉 수준) ───────────────────────────────────── */
+.naps{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,52px);align-items:center;
+  background:linear-gradient(180deg,#fff,#FBFEFB);border-radius:var(--radius-xl);
+  border:1px solid var(--color-border-default);box-shadow:var(--shadow-card);padding:clamp(28px,4vw,52px)}
+.naps h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.25}
+.naps p{font-size:15.5px;color:var(--color-text-default);line-height:1.7;margin-top:14px}
+.naps .concept-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--color-mint-900);
+  background:var(--color-mint-100);padding:4px 11px;border-radius:var(--radius-pill);margin-top:16px}
+.naps-vis{background:var(--color-mint-50);border-radius:var(--radius-lg);border:1px solid var(--color-border-default);padding:14px}
+.naps-vis svg{width:100%;height:auto;display:block}
+@media(max-width:760px){.naps{grid-template-columns:1fr}}
 
-/* ── 비교 테이블 ──────────────────────────────────────────────────── */
-.cmp{width:100%;border-collapse:separate;border-spacing:0;background:#fff;
-  border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-card);border:1px solid var(--color-border-default)}
-.cmp th,.cmp td{padding:16px 18px;text-align:left;font-size:14.5px;border-bottom:1px solid var(--color-border-default)}
-.cmp thead th{font-size:14px;font-weight:800;color:var(--color-text-strong);background:var(--color-bg-sunken)}
-.cmp thead th.us{background:var(--color-mint-500);color:#fff}
-.cmp td.us{background:var(--color-mint-50);font-weight:600;color:var(--color-mint-900)}
-.cmp td:first-child{font-weight:700;color:var(--color-text-strong)}
-.cmp tr:last-child td{border-bottom:none}
-.cmp td .x{color:var(--color-text-muted)}
-@media(max-width:760px){.cmp thead{display:none}.cmp,.cmp tbody,.cmp tr,.cmp td{display:block;width:100%}
-  .cmp tr{padding:8px 0;border-bottom:1px solid var(--color-border-default)}
-  .cmp td{border:none;padding:7px 16px}.cmp td:first-child{font-size:16px;padding-top:12px}
-  .cmp td.us{background:none}.cmp td::before{content:attr(data-l)" · ";font-weight:700;color:var(--color-text-muted)}}
+/* ── 동반자 ───────────────────────────────────────────────────────── */
+.companion{text-align:center;background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
+  border:1px solid var(--color-border-default);padding:clamp(30px,5vw,56px)}
+.companion .moods{display:flex;justify-content:center;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.companion .moods figure{width:104px}
+.companion .moods img{width:92px;margin:0 auto;filter:drop-shadow(0 8px 14px rgba(46,125,91,.16))}
+.companion .moods figcaption{font-size:12.5px;font-weight:700;color:var(--color-text-default);margin-top:4px}
+.companion h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.3;margin-top:14px}
+.companion .quotes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:24px}
+.quote{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:14px 20px;font-size:15.5px;
+  color:var(--color-mint-900);font-weight:600;border:1px solid var(--color-border-default);max-width:330px}
 
-/* ── 동반자(순공이) 섹션 ──────────────────────────────────────────── */
-.companion{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,4vw,56px);align-items:center;
-  background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
-  border:1px solid var(--color-border-default);padding:clamp(28px,4vw,52px)}
-.companion .moods{display:flex;justify-content:center;align-items:flex-end;gap:6px;flex-wrap:wrap}
-.companion .moods figure{text-align:center;width:96px}
-.companion .moods img{width:88px;margin:0 auto;filter:drop-shadow(0 8px 14px rgba(46,125,91,.16))}
-.companion .moods figcaption{font-size:12px;font-weight:700;color:var(--color-text-default);margin-top:4px}
-.companion h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.2}
-.companion .quotes{display:flex;flex-direction:column;gap:12px;margin-top:20px}
-.quote{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:14px 18px;
-  font-size:15.5px;color:var(--color-mint-900);font-weight:600;border-left:3px solid var(--color-mint-300)}
-.quote span{display:block;font-size:13px;font-weight:600;color:var(--color-text-muted);margin-top:3px}
-@media(max-width:760px){.companion{grid-template-columns:1fr;text-align:center}}
-
-/* ── 앱·웹 쇼케이스 ───────────────────────────────────────────────── */
+/* ── 앱·웹 미리보기 (점6 — 교체 가능 슬롯 / 점0 — 사이드바 없음) ─────── */
 .showcase{background:linear-gradient(180deg,#EAF4EE,#F4F8F3);border-radius:var(--radius-xl);
-  padding:clamp(32px,5vw,60px) clamp(20px,4vw,48px)}
-.toggle{display:flex;justify-content:center;gap:6px;margin:0 auto 36px;width:fit-content;
+  padding:clamp(32px,5vw,56px) clamp(18px,4vw,44px)}
+.toggle{display:flex;justify-content:center;gap:6px;margin:0 auto 32px;width:fit-content;
   background:#fff;padding:5px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card)}
-.toggle button{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;
-  padding:9px 24px;border-radius:var(--radius-pill);background:none;color:var(--color-text-default);
-  transition:all var(--duration-fast)}
+.toggle button{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:9px 22px;
+  border-radius:var(--radius-pill);background:none;color:var(--color-text-default);transition:all var(--duration-fast)}
 .toggle button.on{background:var(--color-primary-cta);color:#fff;box-shadow:var(--shadow-card)}
-.devices{display:flex;justify-content:center;align-items:flex-start;gap:clamp(20px,4vw,48px);flex-wrap:wrap}
-.pane{display:none}.pane.show{display:flex;justify-content:center;gap:clamp(18px,3vw,40px);flex-wrap:wrap;width:100%}
+.pane{display:none}.pane.show{display:flex;justify-content:center}
+.slot{position:relative;background:#fff;border:2px dashed var(--color-border-strong);border-radius:var(--radius-lg);overflow:hidden}
+.slot .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
+  background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
+.slot-cap{text-align:center;font-size:13px;color:var(--color-text-default);margin-top:14px;font-weight:600}
 
-/* phone frame */
-.phone{width:268px;background:#1C2B25;border-radius:38px;padding:11px;box-shadow:var(--shadow-elevated);flex:none}
-.phone .screen{background:var(--color-bg);border-radius:28px;overflow:hidden;height:540px;display:flex;flex-direction:column;position:relative}
-.phone .notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:96px;height:22px;background:#1C2B25;border-radius:0 0 14px 14px;z-index:5}
-.app-top{padding:30px 16px 12px;display:flex;align-items:center;justify-content:space-between}
-.app-top .greet b{font-size:15px}.app-top .greet span{font-size:12px;color:var(--color-text-muted);display:block}
-.app-top .streak{background:var(--color-warning-bg);color:var(--color-text-on-warm);font-weight:800;font-size:12px;padding:5px 10px;border-radius:var(--radius-pill)}
+/* phone slot */
+.phone{width:264px;background:#1C2B25;border-radius:38px;padding:10px}
+.phone .scr{background:var(--color-bg);border-radius:30px;overflow:hidden;height:524px;display:flex;flex-direction:column;position:relative}
+.app-top{padding:26px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.app-top b{font-size:15px}.app-top small{font-size:11.5px;color:var(--color-text-muted);display:block;font-weight:500}
+.app-top .streak{background:var(--color-warning-bg);color:var(--color-text-on-warm);font-weight:800;font-size:12px;padding:5px 11px;border-radius:var(--radius-pill)}
 .app-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px}
 .app-stats .s{background:#fff;border-radius:var(--radius-md);padding:11px 12px;box-shadow:var(--shadow-card)}
 .app-stats .s small{font-size:11px;color:var(--color-text-muted);font-weight:600}
 .app-stats .s b{display:block;font-size:18px;margin-top:3px}
-.hp-dots{display:flex;gap:3px;margin-top:5px}
-.hp-dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}
-.hp-dots i.off{background:var(--color-border-default)}
-.app-due{margin:14px 16px 0;background:var(--color-mint-700);border-radius:var(--radius-lg);padding:14px 16px;color:#fff}
-.app-due small{font-size:11px;opacity:.85;font-weight:600}
-.app-due .r{display:flex;justify-content:space-between;align-items:center;margin-top:3px}
-.app-due .r b{font-size:17px}
-.app-due .go{background:#fff;color:var(--color-mint-900);font-weight:800;font-size:12px;padding:7px 13px;border-radius:var(--radius-pill)}
-.app-card{margin:12px 16px 0;background:#fff;border-radius:var(--radius-lg);padding:12px;box-shadow:var(--shadow-card);display:flex;gap:10px;align-items:center}
-.app-card img{width:42px}
-.app-card .t b{font-size:13px;display:block}.app-card .t span{font-size:11.5px;color:var(--color-text-default)}
+.dots{display:flex;gap:3px;margin-top:6px}.dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}.dots i.off{background:var(--color-border-default)}
+.app-due{margin:13px 16px 0;background:var(--color-mint-700);border-radius:var(--radius-lg);padding:14px;color:#fff}
+.app-due small{font-size:11px;opacity:.88;font-weight:600}
+.app-due .r{display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+.app-due .r b{font-size:16px}.app-due .go{background:#fff;color:var(--color-mint-900);font-weight:800;font-size:11.5px;padding:7px 12px;border-radius:var(--radius-pill)}
+.app-card{margin:12px 16px 0;background:#fff;border-radius:var(--radius-lg);padding:11px;box-shadow:var(--shadow-card);display:flex;gap:10px;align-items:center}
+.app-card img{width:40px}.app-card b{font-size:13px;display:block}.app-card small{font-size:11.5px;color:var(--color-text-default)}
 .app-nav{margin-top:auto;display:flex;justify-content:space-around;align-items:center;padding:10px 8px 14px;background:#fff;border-top:1px solid var(--color-border-default)}
-.app-nav .i{font-size:11px;color:var(--color-text-muted);text-align:center;font-weight:600}
+.app-nav .i{font-size:10.5px;color:var(--color-text-muted);text-align:center;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:3px}
+.app-nav .i .mi{width:20px;height:20px;color:var(--color-text-muted)}
+.app-nav .i.act .mi,.app-nav .i.act{color:var(--color-mint-700)}
 .app-nav .fab{width:50px;height:50px;border-radius:50%;background:var(--color-primary-cta);display:grid;place-items:center;margin-top:-26px;box-shadow:var(--shadow-elevated);border:4px solid #fff}
-.app-nav .fab img{width:34px}
-.phone-cap{text-align:center;font-size:13px;font-weight:700;color:var(--color-mint-900);margin-top:14px}
+.app-nav .fab img{width:34px}.app-nav .fab .mi{width:26px;height:26px;color:#fff}
 
-/* browser frame (web desktop) */
-.browser{width:min(620px,100%);background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-elevated);overflow:hidden;flex:none}
+/* browser slot — 점0: 사이드바 없음, 상단바 레이아웃 */
+.browser{width:min(640px,100%);background:#fff;border-radius:var(--radius-lg);overflow:hidden}
 .browser .bar{background:var(--color-bg-sunken);padding:10px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--color-border-default)}
 .browser .bar i{width:11px;height:11px;border-radius:50%;background:var(--color-border-strong)}
 .browser .bar .url{margin-left:10px;background:#fff;border-radius:var(--radius-pill);font-size:12px;color:var(--color-text-muted);padding:5px 14px;flex:1}
-.web-app{display:grid;grid-template-columns:150px 1fr;height:404px}
-.web-side{background:var(--color-mint-900);padding:18px 12px;color:#D9F0E6;display:flex;flex-direction:column;gap:4px}
-.web-side .lg{font-weight:800;color:#fff;font-size:15px;margin-bottom:14px;display:flex;gap:6px;align-items:center}
-.web-side a{font-size:13px;font-weight:600;padding:8px 10px;border-radius:var(--radius-md);color:#Bfe4d4}
-.web-side a.on{background:rgba(255,255,255,.14);color:#fff}
-.web-main{padding:18px;overflow:hidden;background:var(--color-bg)}
-.web-main h4{font-size:17px;font-weight:800;margin-bottom:3px}
-.web-main .muted{font-size:12px;color:var(--color-text-muted);margin-bottom:14px}
+.webtop{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--color-border-default);background:#fff}
+.webtop .l{display:flex;align-items:center;gap:22px}
+.webtop .lg{font-weight:800;color:var(--color-mint-900);font-size:16px}
+.webtop .tabs{display:flex;gap:16px;font-size:13px;font-weight:600;color:var(--color-text-default)}
+.webtop .tabs a.on{color:var(--color-mint-700)}
+.webtop .pf{width:30px;height:30px;border-radius:50%;background:var(--color-mint-100)}
+.webbody{padding:20px;background:var(--color-bg);height:336px}
+.webbody h4{font-size:18px;font-weight:800}.webbody .muted{font-size:12.5px;color:var(--color-text-muted);margin:3px 0 16px}
 .web-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.web-stats .s{background:#fff;border-radius:var(--radius-md);padding:12px;box-shadow:var(--shadow-card)}
-.web-stats .s small{font-size:11px;color:var(--color-text-muted);font-weight:600}
-.web-stats .s b{display:block;font-size:18px;margin-top:4px}
-.web-row{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
-.web-due{background:var(--color-mint-700);border-radius:var(--radius-md);padding:14px;color:#fff}
-.web-due small{font-size:11px;opacity:.85}.web-due b{font-size:16px;display:block;margin:3px 0 8px}
-.web-due .go{background:#fff;color:var(--color-mint-900);font-weight:800;font-size:12px;padding:7px 12px;border-radius:var(--radius-pill);display:inline-block}
-.web-mascot{background:#fff;border-radius:var(--radius-md);padding:12px;box-shadow:var(--shadow-card);text-align:center}
-.web-mascot img{width:64px;margin:0 auto 4px}
-.web-mascot span{font-size:12px;color:var(--color-mint-900);font-weight:700;line-height:1.3}
-.browser-cap{text-align:center;font-size:13px;font-weight:700;color:var(--color-mint-900);margin-top:14px}
-@media(max-width:560px){.web-app{grid-template-columns:1fr}.web-side{display:none}.web-stats{grid-template-columns:1fr 1fr}}
+.web-stats .s{background:#fff;border-radius:var(--radius-md);padding:13px;box-shadow:var(--shadow-card)}
+.web-stats .s small{font-size:11px;color:var(--color-text-muted);font-weight:600}.web-stats .s b{display:block;font-size:19px;margin-top:4px}
+.web-row{display:grid;grid-template-columns:1.5fr 1fr;gap:12px}
+.web-due{background:var(--color-mint-700);border-radius:var(--radius-md);padding:16px;color:#fff}
+.web-due small{font-size:11px;opacity:.88}.web-due b{font-size:17px;display:block;margin:4px 0 10px}
+.web-due .go{background:#fff;color:var(--color-mint-900);font-weight:800;font-size:12px;padding:8px 13px;border-radius:var(--radius-pill);display:inline-block}
+.web-mascot{background:#fff;border-radius:var(--radius-md);padding:14px;box-shadow:var(--shadow-card);text-align:center}
+.web-mascot img{width:62px;margin:0 auto 5px}.web-mascot span{font-size:12.5px;color:var(--color-mint-900);font-weight:700;line-height:1.35}
+@media(max-width:560px){.web-stats{grid-template-columns:1fr 1fr}.webtop .tabs{display:none}}
 
 /* ── 최종 CTA ─────────────────────────────────────────────────────── */
-.final{background:linear-gradient(135deg,var(--color-mint-700),var(--color-mint-900));
-  border-radius:var(--radius-xl);text-align:center;color:#fff;padding:clamp(40px,7vw,72px) clamp(20px,5vw,40px);position:relative;overflow:hidden}
-.final img{width:128px;margin:0 auto 8px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.18))}
-.final h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.2}
-.final p{font-size:clamp(15px,2vw,18px);opacity:.92;margin:14px auto 0;max-width:520px;line-height:1.6}
-.final .btn-primary{background:#fff;color:var(--color-mint-900);margin-top:30px}
-.final .fine{font-size:13px;opacity:.8;margin-top:16px}
+.final{background:linear-gradient(135deg,var(--color-mint-700),var(--color-mint-900));border-radius:var(--radius-xl);
+  text-align:center;color:#fff;padding:clamp(42px,7vw,72px) clamp(20px,5vw,40px)}
+.final img{width:124px;margin:0 auto 8px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.18))}
+.final h2{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1.25}
+.final p{font-size:clamp(15px,2vw,18px);opacity:.92;margin:14px auto 0;max-width:500px;line-height:1.65}
+.final .btn-primary{background:#fff;color:var(--color-mint-900);margin-top:28px}
+.final .btn-primary .mi{color:var(--color-mint-900)}
+.final .fine{font-size:13px;opacity:.82;margin-top:16px}
 
-/* ── 푸터 ─────────────────────────────────────────────────────────── */
 footer{padding:40px 0 56px;text-align:center;color:var(--color-text-muted);font-size:13px}
-footer .brand{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bottom:8px}
+footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin-bottom:8px}
 
-/* reveal */
 .rv{opacity:0;transform:translateY(16px);transition:opacity var(--duration-slow) var(--ease-out-soft),transform var(--duration-slow) var(--ease-out-soft)}
 .rv.in{opacity:1;transform:none}
 </style>
 </head>
 <body>
 
-<div class="proto-note">🧪 <b>재설계 제안 프로토타입 (SOO-127)</b> · 랜딩 페이지 제안 — SOO-93 경쟁 티어다운 + SOO-95 비교덱 기반 · 실앱 아님, Mike 승인용 목업</div>
+<div class="proto-note">🧪 <b>재설계 제안 프로토타입 v2 (SOO-127)</b> · 랜딩 페이지 · 실앱 아님, Mike 승인용 목업 · 앱/웹 미리보기는 개발 후 실제 화면으로 교체</div>
 
-<!-- NAV -->
+<!-- 점2: 흰바탕 한글 로고 1종으로 통일 / 점0: 로고 크게 -->
 <nav class="nav">
-  <a class="brand" href="#top">
-    <img src="../../../apps/web/public/brand/logo/soongong-logo-ko-mint.svg" alt="순공대장" onerror="this.style.display='none'" />
-    <span class="wordmark">순공대장</span>
+  <a class="logo" href="#top">
+    <img src="../../../apps/web/public/brand/logo/soongong-logo-ko-light.svg" alt="순공대장"
+         onerror="this.outerHTML='<span class=\'fallback\'>순공대장</span>'" />
   </a>
-  <div class="links">
-    <a href="#how">작동 방식</a>
-    <a href="#evo">듀오링고의 다음</a>
-    <a href="#compare">비교</a>
-    <a href="#showcase">앱·웹</a>
-    <a class="cta" href="#final">무료로 시작</a>
-  </div>
+  <a class="cta" href="#final">무료로 시작</a>
 </nav>
 
 <div id="top"></div>
 
-<!-- HERO -->
+<!-- ============ HERO — 점3: 마케팅 히어로 자산 최상단 + 좌상단 옛 로고 가림 ============ -->
 <div class="wrap">
   <header class="hero">
-    <div class="copy">
-      <span class="eyebrow">🦭 AI 회독 리텐션 엔진</span>
-      <h1>막힘은 콴다가 풀고,<br><span class="hl">까먹음은 순공대장이</span> 풉니다</h1>
-      <p class="sub">문제를 사진 한 장으로 올리면, AI가 <b>1·3·7·14일 회독퀘스트</b>로 바꿔
-        까먹기 직전에 다시 꺼내줍니다. 새로 외우지 마세요 — 잊지 않게 도와줄게요.</p>
-      <div class="actions">
-        <button class="btn-primary" onclick="location.hash='#final'">📷 문제 찍고 시작하기</button>
-        <button class="btn-ghost" onclick="location.hash='#how'">어떻게 도와주나요?</button>
+    <div class="asset-frame">
+      <!-- 마케팅 히어로 자산 (헤드라인·민트 아이콘·마스코트 베이크드) -->
+      <img src="../../../apps/web/public/brand/main_concepting_.png"
+           alt="다시 풀 때, 성적이 오른다 — AI가 만든 나만의 회독 루틴, 순공이"
+           onerror="document.querySelector('.asset-frame .logo-mask').style.display='none';this.style.display='none';document.querySelector('.asset-fallback').classList.add('on')" />
+      <!-- 좌상단에 박힌 옛 로고 가림 (자산 평탄 배경색 #F6F8F3 박스) -->
+      <div class="logo-mask"></div>
+      <!-- 자산 로드 실패 시 텍스트 폴백 -->
+      <div class="asset-fallback">
+        <div class="eyebrow">AI 회독 리텐션 엔진</div>
+        <h2 style="font-size:34px;font-weight:800;letter-spacing:-.03em;margin:16px 0 8px;line-height:1.2">다시 풀 때,<br>성적이 오른다.</h2>
+        <p style="color:var(--color-text-default)">AI가 만든 나만의 회독 루틴</p>
       </div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" onclick="location.hash='#final'">
+        <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+        지금 문제 찍고 시작하기
+      </button>
       <div class="trust">
         <span><b>가입은 나중에</b> · 먼저 회독부터</span>
         <span class="dot"></span>
-        <span>광고·협박 푸시 <b>0</b></span>
+        <span>광고·압박 알림 <b>없음</b></span>
         <span class="dot"></span>
-        <span>라이트 동반자 톤</span>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-glow"></div>
-      <div class="float-badge fb-1">🔥 7일 연속</div>
-      <div class="float-badge fb-2"><span class="hp">♥♥♥♥</span>♡ 기억HP 4</div>
-      <div class="capture-card">
-        <img class="cam-mascot" src="../../../apps/web/public/mascot/camera-capture-alpha.png" alt="순공이가 카메라로 문제를 담는 모습" onerror="this.style.display='none'" />
-        <div class="shot">
-          <div class="ic">📷</div>
-          <div class="t"><b>틀린 문제 한 장</b><span>찍어서 올리면 끝</span></div>
-        </div>
-        <div class="arrow">↓ AI가 회독퀘스트로 변환</div>
-        <div class="quest-row">
-          <div class="quest-chip">1일<span>내일</span></div>
-          <div class="quest-chip">3일<span>모레+</span></div>
-          <div class="quest-chip">7일<span>다음주</span></div>
-          <div class="quest-chip">14일<span>2주</span></div>
-        </div>
+        <span>다정한 동반자 톤</span>
       </div>
     </div>
   </header>
 </div>
 
-<!-- POSITIONING -->
+<!-- ============ 가치 — 점1: 경쟁사명 0, 가치 문장 ============ -->
 <section id="why">
   <div class="wrap">
-    <div class="section-head rv">
-      <span class="eyebrow">왜 순공대장인가</span>
-      <h2>공부의 진짜 적은 <span class="grad">막힘</span>이 아니라 <span class="grad">까먹음</span>입니다</h2>
-      <p>이해는 한 번이면 되지만, 기억은 계속 새어 나갑니다. 에빙하우스 망각곡선은
-        하루만 지나도 절반을 지워버리죠. 순공대장은 그 곡선을 거슬러, 까먹기 직전에 다시 만나게 합니다.</p>
-    </div>
-    <div class="positioning rv">
-      <div class="pos-grid">
-        <div class="pos-col them">
-          <div class="tag">지금 쓰는 도구</div>
-          <h3>막힘을 푼다</h3>
-          <p>모르는 문제를 그 자리에서 해설해 줍니다. 좋습니다 — 하지만 <b>해설을 본 그 순간</b>에 끝나죠.</p>
-        </div>
-        <div class="pos-vs">VS</div>
-        <div class="pos-col us">
-          <div class="tag">순공대장</div>
-          <h3>까먹음을 푼다</h3>
-          <p>맞힌 문제도 <b>시간이 지나면 잊습니다.</b> 잊기 직전마다 회독으로 다시 꺼내 — 진짜 내 것으로 굳혀줍니다.</p>
-        </div>
+    <div class="value rv">
+      <div>
+        <span class="eyebrow">왜 ‘다시’ 풀어야 할까</span>
+        <h2>이해는 한 번이면 되지만,<br>기억은 <span class="grad">매일 새어 나갑니다.</span></h2>
+        <p>한 번 푼 문제도 시간이 지나면 잊습니다. 다시 외우는 게 아니라, <b>잊기 직전에 다시 만나</b>
+          기억을 붙잡는 것 — 그게 순공대장이 하는 일입니다.</p>
+        <div class="pt"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span>
+          <div><b>망각 주기에 맞춘 회독</b> — 1·3·7·14일, 잊을 만하면 한 번 더</div></div>
+        <div class="pt"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 4 8-8"/><path d="M16 8h5v5"/></svg></span>
+          <div><b>풀수록 또렷해지는 기억</b> — 내 약점이 진짜 내 것으로</div></div>
+      </div>
+      <div class="curve">
+        <div class="cap">한 번만 보면 — 기억은 이렇게 새어 나갑니다</div>
+        <svg viewBox="0 0 280 150" preserveAspectRatio="none" aria-hidden="true">
+          <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#A8DCCB" stop-opacity=".5"/><stop offset="1" stop-color="#A8DCCB" stop-opacity="0"/>
+          </linearGradient></defs>
+          <line x1="20" y1="125" x2="270" y2="125" stroke="#E3EDE7" stroke-width="1.5"/>
+          <line x1="20" y1="20" x2="20" y2="125" stroke="#E3EDE7" stroke-width="1.5"/>
+          <!-- 한 번만 본 망각곡선 (가파른 하강) -->
+          <path d="M20 26 C 70 95, 120 112, 270 120" fill="none" stroke="#9B9B9B" stroke-width="2" stroke-dasharray="5 5"/>
+          <!-- 회독 반복 시 유지되는 기억 (계단식 회복) -->
+          <path d="M20 26 C 55 70, 70 70, 80 50 C 110 88, 120 88, 130 64 C 165 92, 175 92, 185 70 C 220 90, 235 90, 270 78" fill="none" stroke="#4CAF88" stroke-width="2.5"/>
+          <path d="M20 26 C 55 70, 70 70, 80 50 C 110 88, 120 88, 130 64 C 165 92, 175 92, 185 70 C 220 90, 235 90, 270 78 L 270 125 L 20 125 Z" fill="url(#g)" stroke="none"/>
+          <g fill="#4CAF88"><circle cx="80" cy="50" r="3.5"/><circle cx="130" cy="64" r="3.5"/><circle cx="185" cy="70" r="3.5"/></g>
+        </svg>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-top:4px;font-weight:600">
+          <span style="color:var(--color-mint-700)">━ 회독하면 유지</span><span>┄ 한 번만 보면</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ============ 작동 방식 — 점4: 민트 라인 아이콘 ============ -->
 <section id="how">
   <div class="wrap">
     <div class="section-head rv">
-      <span class="eyebrow">작동 방식</span>
+      <span class="eyebrow">어떻게 도와주나요</span>
       <h2>찍고 → 맡기고 → 잊기 직전에 다시</h2>
-      <p>회독 1개는 1~2분. 하루 5분이면 충분합니다. 복습 일정은 순공이가 알아서 챙겨요.</p>
+      <p>회독 하나는 1~2분. 하루 5분이면 충분합니다. 복습 일정은 순공이가 챙겨요.</p>
     </div>
     <div class="steps">
       <div class="step rv">
         <div class="n">STEP 01</div>
-        <div class="ico">📷</div>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.4"/></svg></span></div>
         <h3>문제를 찍어 올린다</h3>
-        <p>틀린 문제·인강 캡처·필기 한 장이면 됩니다. 직접 타이핑할 필요 없이 사진 한 장으로 공급.</p>
+        <p>틀린 문제·인강 캡처·필기 한 장이면 됩니다. 타이핑 없이 사진 한 장으로 공급.</p>
       </div>
       <div class="step rv">
         <div class="n">STEP 02</div>
-        <div class="ico">🧠</div>
-        <h3>AI가 회독퀘스트로 변환</h3>
-        <p>순공이의 AI가 개념·유형을 읽고 망각 주기에 맞춘 회독 일정을 만들어 큐에 담아둡니다.</p>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></span></div>
+        <h3>AI가 회독 일정으로 변환</h3>
+        <p>개념과 유형을 읽고 망각 주기에 맞춘 회독 일정을 만들어 큐에 담아둡니다.</p>
         <div class="quests"><span class="q">1일</span><span class="q">3일</span><span class="q">7일</span><span class="q">14일</span></div>
       </div>
       <div class="step rv">
         <div class="n">STEP 03</div>
-        <div class="ico">🔁</div>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span></div>
         <h3>잊기 직전에 다시 만난다</h3>
-        <p>"오늘 회독 N개"가 정수로 또렷하게. 풀면 <b>기억HP가 0–5로</b> 차오르고, 순공이가 함께 축하해요.</p>
+        <p>“오늘 회독 N개”가 또렷하게. 풀면 <b>기억HP가 0–5로</b> 차오르고, 순공이가 함께 기뻐해요.</p>
+        <div class="hp"><i></i><i></i><i></i><i></i><i class="off"></i> 기억HP 4 / 5</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 듀오링고의 다음 진화 -->
-<section id="evo">
+<!-- ============ 순공냅스 — 점7: 컨셉 수준 ============ -->
+<section id="naps">
   <div class="wrap">
-    <div class="section-head rv">
-      <span class="eyebrow">차별점</span>
-      <h2>“한국형 듀오링고”가 아니라 <span class="grad">듀오링고의 다음 진화</span></h2>
-      <p>리텐션을 만드는 좋은 장치는 차용하되, 사람을 압박하는 다크패턴은 의식적으로 거절했습니다.</p>
-    </div>
-    <div class="evo rv">
-      <div class="evo-grid">
-        <div class="evo-col keep">
-          <h3>✅ 차용 — 동반자 톤은 살리고</h3>
-          <p class="lead">가치를 먼저 주고 신뢰로 보답받는, 검증된 리텐션 장치</p>
-          <ul>
-            <li><span class="mk">✓</span><div><b>Play-first 온보딩</b> <span>— 가입은 맨 끝, 먼저 첫 회독의 가치부터</span></div></li>
-            <li><span class="mk">✓</span><div><b>회독 보호권(무료 Freeze)</b> <span>— 하루 놓쳐도 순공이가 막아둬요</span></div></li>
-            <li><span class="mk">✓</span><div><b>마스코트 mood 연동</b> <span>— 결과엔 환호, 오답엔 위로</span></div></li>
-            <li><span class="mk">✓</span><div><b>돌봄 톤 리마인드</b> <span>— "○○단원에 물 줄 시간이래요"</span></div></li>
-            <li><span class="mk">✓</span><div><b>오늘 할 양 정수 노출</b> <span>— "오늘 회독 6개"처럼 또렷하게</span></div></li>
-          </ul>
-        </div>
-        <div class="evo-col drop">
-          <h3>🚫 거절 — 다크패턴은 버리고</h3>
-          <p class="lead">불안·죄책감·과금으로 사람을 옭아매는 설계는 쓰지 않습니다</p>
-          <ul>
-            <li><span class="mk">✕</span><div><b>죄책감 카피</b> <span>— "너 때문에 슬퍼" 식 압박 알림</span></div></li>
-            <li><span class="mk">✕</span><div><b>빨강 하트 차감</b> <span>— 생명을 깎는 손실 자극 대신 기억HP 0–5</span></div></li>
-            <li><span class="mk">✕</span><div><b>유료 streak 복구·하트 상점</b> <span>— 보호권은 무료</span></div></li>
-            <li><span class="mk">✕</span><div><b>잦은 압박 푸시</b> <span>— 회독 일정 알림(1/3/7/14일)만</span></div></li>
-            <li><span class="mk">✕</span><div><b>다크 게임 톤·캐릭터 데미지</b> <span>— 라이트 한 톤, 처벌 0</span></div></li>
-          </ul>
-        </div>
+    <div class="naps rv">
+      <div>
+        <span class="eyebrow">차별점 · 순공냅스</span>
+        <h2>흩어진 개념을 <span class="grad">뇌처럼 잇는</span> 망각맵</h2>
+        <p>회독한 개념들이 서로 이어지며 나만의 기억 지도가 자랍니다. 어디가 단단하고
+          어디가 흐려졌는지 한눈에 — 다음에 무엇을 다시 볼지 순공이가 짚어줘요.</p>
+        <span class="concept-tag">※ 시각 표현은 순공냅스 재설계와 함께 확정 — 현재 컨셉 단계</span>
       </div>
-      <div class="evo-foot">순공대장은 사람을 협박해서 붙잡지 않습니다. 매일 들어오고 싶은 <b>공부 정원</b>으로 머물게 합니다.</div>
+      <div class="naps-vis">
+        <svg viewBox="0 0 300 220" aria-hidden="true">
+          <!-- 시냅스형 노드+엣지 (민트). 단단=진한 채움 / 흐려짐=옅음 -->
+          <g stroke="#A8DCCB" stroke-width="1.6">
+            <line x1="80" y1="60" x2="150" y2="45"/><line x1="150" y1="45" x2="225" y2="70"/>
+            <line x1="80" y1="60" x2="110" y2="130"/><line x1="110" y1="130" x2="180" y2="150"/>
+            <line x1="150" y1="45" x2="180" y2="150"/><line x1="225" y1="70" x2="180" y2="150"/>
+            <line x1="110" y1="130" x2="70" y2="180"/><line x1="180" y1="150" x2="235" y2="175"/>
+          </g>
+          <g>
+            <circle cx="80" cy="60" r="14" fill="#4CAF88"/><circle cx="150" cy="45" r="17" fill="#4CAF88"/>
+            <circle cx="225" cy="70" r="12" fill="#7BC4AE"/><circle cx="110" cy="130" r="15" fill="#7BC4AE"/>
+            <circle cx="180" cy="150" r="16" fill="#4CAF88"/>
+            <circle cx="70" cy="180" r="11" fill="#D4EFE4" stroke="#A8DCCB" stroke-width="1.5"/>
+            <circle cx="235" cy="175" r="10" fill="#D4EFE4" stroke="#A8DCCB" stroke-width="1.5"/>
+          </g>
+          <g fill="#fff" font-family="Pretendard,sans-serif" font-size="9" font-weight="700" text-anchor="middle">
+            <text x="80" y="63">극한</text><text x="150" y="48">미분</text><text x="180" y="153">적분</text>
+          </g>
+          <g fill="#6E6E6E" font-family="Pretendard,sans-serif" font-size="8" font-weight="600" text-anchor="middle">
+            <text x="70" y="183">수열</text><text x="235" y="178">벡터</text></g>
+        </svg>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 비교 테이블 -->
-<section id="compare">
-  <div class="wrap">
-    <div class="section-head rv">
-      <span class="eyebrow">한눈 비교</span>
-      <h2>비슷해 보이지만, <span class="grad">푸는 문제가 다릅니다</span></h2>
-      <p>SOO-95 비교덱 기준 · 각 도구가 실제로 해결하는 구간</p>
-    </div>
-    <table class="cmp rv">
-      <thead>
-        <tr><th>무엇을</th><th>풀이 도구 (콴다류)</th><th>듀오링고</th><th class="us">순공대장</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>핵심이 푸는 것</td><td data-l="풀이 도구">그 순간의 막힘</td><td data-l="듀오링고">언어 습관화</td><td class="us" data-l="순공대장">내 약점의 까먹음</td></tr>
-        <tr><td>콘텐츠 출처</td><td data-l="풀이 도구">정해진 문제 풀이</td><td data-l="듀오링고">정해진 코스</td><td class="us" data-l="순공대장"><b>내가 찍은 내 문제</b></td></tr>
-        <tr><td>복습 설계</td><td data-l="풀이 도구"><span class="x">없음 (1회성)</span></td><td data-l="듀오링고">고정 반복</td><td class="us" data-l="순공대장">망각 주기 1·3·7·14일</td></tr>
-        <tr><td>숙련 표현</td><td data-l="풀이 도구"><span class="x">—</span></td><td data-l="듀오링고">빨강 하트(생명)</td><td class="us" data-l="순공대장">기억HP 0–5 정수</td></tr>
-        <tr><td>톤</td><td data-l="풀이 도구">도구적</td><td data-l="듀오링고">압박·죄책감 섞임</td><td class="us" data-l="순공대장">압박 0, 동반자</td></tr>
-        <tr><td>빈 화면일 때</td><td data-l="풀이 도구"><span class="x">빈 채로</span></td><td data-l="듀오링고">재촉</td><td class="us" data-l="순공대장">순공이가 기다려줌</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<!-- 동반자 -->
+<!-- ============ 동반자 ============ -->
 <section id="companion">
   <div class="wrap">
     <div class="companion rv">
       <div class="moods">
         <figure><img src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" alt="응원하는 순공이" onerror="this.style.display='none'"><figcaption>응원</figcaption></figure>
         <figure><img src="../../../apps/web/public/mascot/main-half-good-alpha.png" alt="기뻐하는 순공이" onerror="this.style.display='none'"><figcaption>축하</figcaption></figure>
-        <figure><img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="위로하는 순공이" onerror="this.style.display='none'"><figcaption>위로</figcaption></figure>
+        <figure><img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="다독이는 순공이" onerror="this.style.display='none'"><figcaption>다독임</figcaption></figure>
       </div>
-      <div>
-        <span class="eyebrow">🦭 순공이</span>
-        <h2>혼자 외우지 않아요.<br>순공이가 곁에 있어요.</h2>
-        <div class="quotes">
-          <div class="quote">"오늘은 쉬어도 괜찮아 — 여기서 기다릴게."<span>첫 회독 전 · 비-처벌 빈 상태</span></div>
-          <div class="quote">"○○단원에 물 줄 시간이래요 🌱"<span>돌봄 톤 회독 리마인드</span></div>
-          <div class="quote">"어제 못 했네 — 하루 막아뒀어, 괜찮아."<span>무료 회독 보호권(Freeze)</span></div>
-        </div>
+      <span class="eyebrow">순공이</span>
+      <h2>혼자 외우지 않아요. <span class="grad">순공이가 곁에 있어요.</span></h2>
+      <div class="quotes">
+        <div class="quote">“오늘 회독 6개, 같이 해봐요!”</div>
+        <div class="quote">“이만큼 했어요 — 잘하고 있어요.”</div>
+        <div class="quote">“이 단원, 슬슬 흐려질 때예요.”</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 앱·웹 쇼케이스 -->
+<!-- ============ 앱·웹 미리보기 — 점6: 교체 슬롯 / 점0: 사이드바 없음 ============ -->
 <section id="showcase">
   <div class="wrap">
     <div class="section-head rv">
       <span class="eyebrow">앱 · 웹 어디서나</span>
       <h2>주머니 속 앱으로, <span class="grad">책상 위 웹으로</span></h2>
-      <p>모바일은 찍어 올리기 쉽게, 데스크톱은 넓게 펼쳐 한눈에. 같은 회독, 같은 순공이.</p>
+      <p>같은 회독, 같은 순공이. 아래 화면은 미리보기이며, 개발이 끝나면 실제 화면으로 교체됩니다.</p>
     </div>
     <div class="showcase">
       <div class="toggle">
-        <button id="tApp" class="on" onclick="setPane('app')">📱 모바일 앱</button>
-        <button id="tWeb" onclick="setPane('web')">💻 데스크톱 웹</button>
+        <button id="tApp" class="on" onclick="setPane('app')">모바일 앱</button>
+        <button id="tWeb" onclick="setPane('web')">데스크톱 웹</button>
       </div>
 
-      <!-- APP PANE -->
+      <!-- SLOT:app-preview — 개발 후 실제 /today 모바일 화면으로 교체 -->
       <div id="paneApp" class="pane show">
         <div>
-          <div class="phone">
-            <div class="notch"></div>
-            <div class="screen">
-              <div class="app-top">
-                <div class="greet"><b>좋은 아침, 수험생님</b><span>오늘도 잊지 않게 도와줄게요</span></div>
-                <div class="streak">🔥 7</div>
-              </div>
+          <div class="slot phone">
+            <div class="ribbon">미리보기 · 실제 화면 교체 예정</div>
+            <div class="scr">
+              <div class="app-top"><div><b>좋은 아침이에요</b><small>오늘도 잊지 않게 도와줄게요</small></div><div class="streak">🔥 7</div></div>
               <div class="app-stats">
                 <div class="s"><small>오늘 회독</small><b>6개</b></div>
-                <div class="s"><small>기억HP</small><div class="hp-dots"><i></i><i></i><i></i><i></i><i class="off"></i></div></div>
+                <div class="s"><small>기억HP</small><div class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></div></div>
               </div>
-              <div class="app-due">
-                <small>지금 잊기 직전</small>
-                <div class="r"><b>미적분 · 극한 3개</b><span class="go">회독 시작</span></div>
-              </div>
-              <div class="app-card">
-                <img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="순공이" onerror="this.style.display='none'">
-                <div class="t"><b>"오답 던전에 2개 모였어요"</b><span>같이 회수하러 갈까요?</span></div>
-              </div>
+              <div class="app-due"><small>지금 잊기 직전</small><div class="r"><b>미적분 · 극한 3개</b><span class="go">회독 시작</span></div></div>
+              <div class="app-card"><img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="순공이" onerror="this.style.display='none'"><div><b>오답 2개가 모였어요</b><small>같이 회수하러 갈까요?</small></div></div>
               <div class="app-nav">
-                <div class="i">🏠<br>홈</div>
-                <div class="i">🗺️<br>순공냅스</div>
-                <div class="fab"><img src="../../../apps/web/public/mascot/camera-capture-alpha.png" alt="문제 촬영" onerror="this.parentElement.innerHTML='📷'"></div>
-                <div class="i">📚<br>오답</div>
-                <div class="i">🦭<br>순공이</div>
+                <div class="i act"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>홈</div>
+                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="18" cy="9" r="2.5"/><circle cx="11" cy="17" r="2.5"/><path d="M8 8l8 1M9 15l7-5"/></svg></span>순공냅스</div>
+                <div class="fab"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span></div>
+                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 12h8M8 16h5"/></svg></span>오답</div>
+                <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span>순공이</div>
               </div>
             </div>
           </div>
-          <div class="phone-cap">하단 중앙 = 문제 촬영(핵심 행동)</div>
+          <div class="slot-cap">하단 중앙 = 문제 촬영(핵심 행동)</div>
         </div>
       </div>
 
-      <!-- WEB PANE -->
+      <!-- SLOT:web-preview — 개발 후 실제 데스크톱 화면으로 교체 (사이드바 없는 상단바 레이아웃) -->
       <div id="paneWeb" class="pane">
         <div>
-          <div class="browser">
+          <div class="slot browser">
+            <div class="ribbon">미리보기 · 실제 화면 교체 예정</div>
             <div class="bar"><i></i><i></i><i></i><div class="url">soongong.app/today</div></div>
-            <div class="web-app">
-              <div class="web-side">
-                <div class="lg">🦭 순공대장</div>
-                <a class="on">🏠 오늘의 회독</a>
-                <a>🗺️ 순공냅스</a>
-                <a>📚 오답노트</a>
-                <a>📈 그래프</a>
-                <a>🔒 순공리그</a>
+            <div class="webtop">
+              <div class="l"><span class="lg">순공대장</span>
+                <div class="tabs"><a class="on">오늘의 회독</a><a>순공냅스</a><a>오답노트</a><a>그래프</a></div></div>
+              <div class="pf"></div>
+            </div>
+            <div class="webbody">
+              <h4>오늘의 회독</h4><div class="muted">잊기 직전 항목부터 챙겨요</div>
+              <div class="web-stats">
+                <div class="s"><small>오늘 회독</small><b>6개</b></div>
+                <div class="s"><small>🔥 연속</small><b>7일</b></div>
+                <div class="s"><small>기억HP</small><b>4 / 5</b></div>
+                <div class="s"><small>이번주 XP</small><b>320</b></div>
               </div>
-              <div class="web-main">
-                <h4>오늘의 회독</h4>
-                <div class="muted">잊기 직전 항목부터 챙겨요</div>
-                <div class="web-stats">
-                  <div class="s"><small>오늘 회독</small><b>6개</b></div>
-                  <div class="s"><small>🔥 연속</small><b>7일</b></div>
-                  <div class="s"><small>기억HP</small><b>4 / 5</b></div>
-                  <div class="s"><small>이번주 XP</small><b>320</b></div>
-                </div>
-                <div class="web-row">
-                  <div class="web-due">
-                    <small>지금 잊기 직전</small>
-                    <b>미적분 · 극한 3개</b>
-                    <span class="go">회독 시작 →</span>
-                  </div>
-                  <div class="web-mascot">
-                    <img src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" alt="순공이" onerror="this.style.display='none'">
-                    <span>"오늘 6개만<br>같이 해봐요!"</span>
-                  </div>
-                </div>
+              <div class="web-row">
+                <div class="web-due"><small>지금 잊기 직전</small><b>미적분 · 극한 3개</b><span class="go">회독 시작 →</span></div>
+                <div class="web-mascot"><img src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" alt="순공이" onerror="this.style.display='none'"><span>“오늘 6개만<br>같이 해봐요!”</span></div>
               </div>
             </div>
           </div>
-          <div class="browser-cap">우하단 상시 촬영 버튼 + 사이드바 220px · 넓은 데스크톱 레이아웃</div>
+          <div class="slot-cap">상단바 레이아웃 · 넓은 데스크톱 · 우하단 상시 촬영 버튼(개발 시)</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FINAL CTA -->
+<!-- ============ 최종 CTA ============ -->
 <section id="final">
   <div class="wrap">
     <div class="final rv">
       <img src="../../../apps/web/public/mascot/main-half-good-alpha.png" alt="순공이" onerror="this.style.display='none'">
-      <h2>오늘 틀린 한 문제,<br>내일은 잊지 않게.</h2>
+      <h2>오늘 푼 한 문제,<br>내일도 기억하게.</h2>
       <p>지금 문제 한 장만 찍어보세요. 가입은 첫 회독을 끝낸 뒤에 골라도 됩니다.</p>
-      <button class="btn-primary" onclick="alert('프로토타입 — 실앱 연결은 승인 후 구현 티켓에서')">📷 무료로 문제 찍어보기</button>
-      <div class="fine">신용카드 없이 시작 · 광고 없음 · 협박 푸시 없음</div>
+      <button class="btn-primary" onclick="alert('프로토타입 — 실앱 연결은 승인 후 구현 티켓에서')">
+        <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+        무료로 문제 찍어보기
+      </button>
+      <div class="fine">신용카드 없이 시작 · 광고 없음 · 압박 알림 없음</div>
     </div>
   </div>
 </section>
 
 <footer>
-  <div class="brand">🦭 순공대장</div>
-  <div>막힘은 콴다가, 까먹음은 순공대장이 — AI 회독 리텐션 엔진</div>
-  <div style="margin-top:8px;opacity:.7">SOO-127 랜딩 제안 프로토타입 · 디자인 SSoT: /styleguide + tokens.css · 실앱 아님</div>
+  <div class="b">순공대장</div>
+  <div>오늘 푼 문제, 내일도 기억하게 — AI 회독 리텐션 엔진</div>
+  <div style="margin-top:8px;opacity:.7">SOO-127 랜딩 제안 프로토타입 v2 · 디자인 SSoT: /styleguide + tokens.css · 실앱 아님</div>
 </footer>
 
 <script>
-/* 앱/웹 토글 */
 function setPane(which){
-  var app=document.getElementById('paneApp'), web=document.getElementById('paneWeb');
-  var tA=document.getElementById('tApp'), tW=document.getElementById('tWeb');
-  var isApp = which==='app';
-  app.classList.toggle('show',isApp); web.classList.toggle('show',!isApp);
-  tA.classList.toggle('on',isApp); tW.classList.toggle('on',!isApp);
+  var app=document.getElementById('paneApp'),web=document.getElementById('paneWeb');
+  var tA=document.getElementById('tApp'),tW=document.getElementById('tWeb');
+  var isApp=which==='app';
+  app.classList.toggle('show',isApp);web.classList.toggle('show',!isApp);
+  tA.classList.toggle('on',isApp);tW.classList.toggle('on',!isApp);
 }
-/* 스크롤 reveal — 최소 모션 */
 (function(){
   var io=new IntersectionObserver(function(es){
-    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
   },{threshold:.12});
   document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
 })();
