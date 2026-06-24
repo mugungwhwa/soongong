@@ -26,3 +26,23 @@ body {
   color: var(--color-text-default);
   font-family: var(--font-body);
 }
+
+/* 랜딩 히어로 카메라 캡처 카드 — 부드러운 부유 모션 (SOO-127 v4 계승, 마스코트 한정 차용).
+   모션 토큰(--ease-out-soft)은 tokens.css 참조. reduced-motion이면 정지. */
+@keyframes soongong-floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+.animate-soongong-floaty {
+  animation: soongong-floaty 6s var(--ease-out-soft) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-soongong-floaty {
+    animation: none;
+  }
+}
