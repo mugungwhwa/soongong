@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — 메인(홈/today) 구성 제안 · SOO-127 stage3</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+/* ============================================================================
+   DESIGN TOKENS — MIRRORED from apps/web/src/shared/styles/tokens.css
+   ⚠️ 프로토타입 전용 미러. 프로덕션 SSoT 아님. 값 변경은 tokens.css 에서.
+   (SOO-127 stage3 — 메인 홈/today: 카메라 = 메인 히어로 액션. SOO-96/97 감각 계승.)
+   ============================================================================ */
+:root{
+  --color-primary-cta:#4CAF88; --color-primary-bg:#EAF4EE;
+  --color-bg:#F8FBF7; --color-bg-elevated:#FFFFFF; --color-bg-sunken:#EFF5F1;
+  --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
+  --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
+  --color-risk-low:#BFE3C9; --color-risk-mid:#FFEBA3; --color-risk-high:#FFB4B4;
+  --color-xp:#F2C94C; --color-warning-bg:#FFF8E0;
+  --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
+  --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
+  --color-risk-bg:#FFEFEF; --color-warning-bg2:#FFF8E0;
+  --color-border-default:#E3EDE7; --color-border-strong:#9CCBB7;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
+  --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
+  --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);
+  --duration-fast:160ms; --duration-mid:240ms; --duration-slow:380ms;
+  --font-body:"Pretendard",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font-body);color:var(--color-text-strong);-webkit-font-smoothing:antialiased;
+  word-break:keep-all;overflow-wrap:break-word;
+  background:radial-gradient(1100px 560px at 12% -8%,#EEF7F1 0,transparent 60%),
+    radial-gradient(900px 480px at 112% 4%,#F0F6EE 0,transparent 55%),#F1F6F1;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+img{display:block;max-width:100%}
+.mi{display:inline-block;color:var(--color-mint-700);flex:none}
+.mi svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+
+.proto-note{align-self:stretch;background:var(--color-mint-900);color:#EAF7F0;font-size:13px;text-align:center;padding:8px 16px}
+.proto-note b{color:#fff}
+.ctrl{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;width:100%;max-width:1120px;padding:18px clamp(16px,4vw,32px)}
+.ctrl .brand{display:flex;align-items:center;gap:12px}
+.ctrl .brand img{height:40px}
+.ctrl .brand .ttl{font-weight:800;font-size:18px;letter-spacing:-.02em;color:var(--color-mint-900)}
+.ctrl .brand .ttl small{display:block;font-size:12px;font-weight:600;color:var(--color-text-muted)}
+.toggle{display:flex;gap:5px;background:#fff;padding:5px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card)}
+.toggle button{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;padding:9px 20px;border-radius:var(--radius-pill);background:none;color:var(--color-text-default);transition:all var(--duration-fast)}
+.toggle button.on{background:var(--color-primary-cta);color:#fff;box-shadow:var(--shadow-card)}
+
+.stage{width:100%;display:flex;justify-content:center;padding:8px clamp(12px,4vw,32px) 56px}
+.device.app{max-width:390px;width:100%}
+.device.web{max-width:1120px;width:100%}
+.device.app .frame{border-radius:34px;padding:10px;background:#1C2B25;box-shadow:var(--shadow-elevated)}
+.device.app .scr{background:var(--color-bg);border-radius:26px;overflow:hidden;position:relative;display:flex;flex-direction:column;min-height:768px}
+.device.web .frame{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-elevated);overflow:hidden;border:1px solid var(--color-border-default)}
+
+/* 공통 카드 */
+.card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);border:1px solid var(--color-border-default)}
+
+/* ── 앱 상단/게임바 ── */
+.h-top{padding:24px 18px 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.h-top .greet b{font-size:17px;letter-spacing:-.01em}
+.h-top .greet span{display:block;font-size:12.5px;color:var(--color-text-muted);font-weight:500;margin-top:1px}
+.h-top .streak{display:flex;align-items:center;gap:5px;background:var(--color-warning-bg);color:var(--color-text-on-warm);font-weight:800;font-size:13px;padding:7px 12px;border-radius:var(--radius-pill)}
+.gamebar{margin:8px 18px 0;display:flex;align-items:center;gap:14px;padding:11px 14px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-card)}
+.gamebar .g{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--color-text-default)}
+.gamebar .g .mi{width:17px;height:17px}
+.gamebar .dots{display:flex;gap:3px}
+.gamebar .dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}
+.gamebar .dots i.off{background:var(--color-border-default)}
+.gamebar .sep{width:1px;height:18px;background:var(--color-border-default)}
+.gamebar b.v{color:var(--color-mint-900)}
+
+/* ── 카메라 메인 히어로 액션 ── */
+.cam-hero{margin:14px 18px 0;border-radius:var(--radius-xl);padding:20px;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,var(--color-mint-100),#EAF6F0 70%);border:1px solid var(--color-mint-300)}
+.cam-hero .mascot{position:absolute;right:-6px;bottom:-6px;width:118px;opacity:.96;filter:drop-shadow(0 8px 14px rgba(46,125,91,.16))}
+.cam-hero .ey{font-size:12px;font-weight:800;color:var(--color-mint-900);letter-spacing:.02em}
+.cam-hero h2{font-size:20px;font-weight:800;letter-spacing:-.02em;line-height:1.28;margin:7px 0 6px;max-width:74%}
+.cam-hero p{font-size:13px;color:var(--color-text-default);line-height:1.5;max-width:70%}
+.cam-hero .cta{margin-top:16px;display:inline-flex;align-items:center;gap:9px;background:var(--color-primary-cta);color:#fff;
+  font-weight:800;font-size:16px;font-family:inherit;border:none;cursor:pointer;padding:14px 24px;border-radius:var(--radius-pill);box-shadow:var(--shadow-elevated)}
+.cam-hero .cta .mi{width:22px;height:22px;color:#fff}
+.cam-hero .alt{margin-top:10px;font-size:12px;color:var(--color-text-muted);font-weight:600}
+
+/* ── 오늘의 회독 ── */
+.sec{margin:20px 18px 0}
+.sec-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sec-h h3{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.sec-h h3 b{color:var(--color-mint-700)}
+.sec-h .more{font-size:12.5px;color:var(--color-mint-700);font-weight:700}
+.quest{display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border-radius:var(--radius-md);box-shadow:var(--shadow-card);margin-bottom:9px}
+.quest .pill{font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:var(--radius-pill);flex:none}
+.pill.risk{background:var(--color-risk-bg);color:#C26B6B}
+.pill.warn{background:var(--color-warning-bg);color:var(--color-text-on-warm)}
+.pill.safe{background:var(--color-mint-100);color:var(--color-mint-900)}
+.quest .qt{flex:1;min-width:0}
+.quest .qt b{display:block;font-size:14px}
+.quest .qt span{font-size:12px;color:var(--color-text-muted)}
+.quest .go{flex:none;background:var(--color-mint-50);color:var(--color-mint-900);font-weight:800;font-size:12.5px;padding:8px 14px;border-radius:var(--radius-pill);border:none;cursor:pointer;font-family:inherit}
+
+/* ── 앱 하단 네비 ── */
+.app-nav{margin-top:auto;display:flex;justify-content:space-around;align-items:flex-end;padding:9px 8px 13px;background:#fff;border-top:1px solid var(--color-border-default)}
+.app-nav .i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:600;color:var(--color-text-muted)}
+.app-nav .i .mi{width:21px;height:21px;color:var(--color-text-muted)}
+.app-nav .i.act,.app-nav .i.act .mi{color:var(--color-mint-700)}
+.app-nav .fab{width:56px;height:56px;border-radius:50%;background:var(--color-primary-cta);display:grid;place-items:center;margin-top:-30px;box-shadow:var(--shadow-elevated);border:4px solid #fff}
+.app-nav .fab .mi{width:28px;height:28px;color:#fff}
+.app-nav .fab-l{font-size:10px;font-weight:700;color:var(--color-mint-700);margin-top:2px}
+
+/* ── 웹 레이아웃 ── */
+.webtop{display:flex;align-items:center;justify-content:space-between;padding:15px 28px;border-bottom:1px solid var(--color-border-default);background:#fff}
+.webtop .l{display:flex;align-items:center;gap:26px}
+.webtop .lg{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--color-mint-900);font-size:17px}
+.webtop .lg img{height:30px}
+.webtop .tabs{display:flex;gap:20px;font-size:14px;font-weight:600;color:var(--color-text-default)}
+.webtop .tabs a.on{color:var(--color-mint-700)}
+.webtop .r{display:flex;align-items:center;gap:14px}
+.webtop .streak{display:flex;align-items:center;gap:5px;background:var(--color-warning-bg);color:var(--color-text-on-warm);font-weight:800;font-size:13px;padding:7px 12px;border-radius:var(--radius-pill)}
+.webtop .pf{width:34px;height:34px;border-radius:50%;background:var(--color-mint-100)}
+.webbody{padding:26px 28px 30px;background:var(--color-bg)}
+.webgrid{display:grid;grid-template-columns:1.55fr .95fr;gap:20px;align-items:start}
+/* 앱 모드: webbody/webgrid 중립화 (앱 요소는 자체 margin 사용) */
+.device.app .webbody{padding:0;background:transparent}
+.device.app .webgrid{display:block}
+.webbody h1{font-size:23px;font-weight:800;letter-spacing:-.02em}
+.webbody .day{font-size:13px;color:var(--color-text-muted);margin:3px 0 18px}
+.device.web .cam-hero{margin:0 0 20px;padding:26px 28px}
+.device.web .cam-hero .mascot{width:158px}
+.device.web .cam-hero h2{font-size:25px;max-width:70%}
+.device.web .cam-hero p{font-size:14.5px;max-width:62%}
+.device.web .sec{margin:0}
+.side-card{padding:18px}
+.side-card+.side-card{margin-top:16px}
+.side-card .sh{font-size:14px;font-weight:800;margin-bottom:14px}
+.statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.statgrid .s{background:var(--color-bg-sunken);border-radius:var(--radius-md);padding:12px}
+.statgrid .s small{font-size:11px;color:var(--color-text-muted);font-weight:600}
+.statgrid .s b{display:block;font-size:18px;margin-top:4px}
+.statgrid .s .dots{display:flex;gap:3px;margin-top:6px}
+.statgrid .s .dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}
+.statgrid .s .dots i.off{background:var(--color-border-default)}
+.nudge{display:flex;gap:12px;align-items:center}
+.nudge img{width:58px;flex:none}
+.nudge b{display:block;font-size:13.5px}
+.nudge span{font-size:12.5px;color:var(--color-text-default)}
+.web-fab{position:absolute;right:26px;bottom:24px;display:flex;align-items:center;gap:9px;background:var(--color-primary-cta);color:#fff;
+  font-weight:800;font-size:15px;padding:14px 22px;border-radius:var(--radius-pill);box-shadow:var(--shadow-elevated);border:none;cursor:pointer;font-family:inherit}
+.web-fab .mi{width:22px;height:22px;color:#fff}
+
+.note{font-size:11.5px;color:var(--color-text-muted);text-align:center;padding:14px 16px 0;max-width:760px}
+.app-only{display:block}.web-only{display:none}
+.device.web .app-only{display:none}.device.web .web-only{display:block}
+</style>
+</head>
+<body>
+
+<div class="proto-note">🧪 <b>재설계 제안 프로토타입 (SOO-127 · 3단계 메인 홈/today)</b> · 카메라 = 메인 히어로 액션 · 실앱 아님, Mike 승인용 목업 · SOO-96/97 감각 계승</div>
+
+<div class="ctrl">
+  <div class="brand">
+    <img src="../../../apps/web/public/brand/logo/soongong-logo-ko-light.svg" alt="순공대장" onerror="this.outerHTML='<span class=\'ttl\'>순공대장</span>'" />
+    <div class="ttl">메인 · 홈/today<small>카메라 퍼스트 재구성 제안</small></div>
+  </div>
+  <div class="toggle">
+    <button id="tApp" class="on" onclick="setW('app')">모바일 앱</button>
+    <button id="tWeb" onclick="setW('web')">데스크톱 웹</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="device app" id="device">
+    <div class="frame">
+
+      <!-- ===== 웹 상단바 ===== -->
+      <div class="web-only webtop">
+        <div class="l">
+          <span class="lg"><img src="../../../apps/web/public/brand/logo/soongong-logo-ko-light.svg" alt="" onerror="this.style.display='none'">순공대장</span>
+          <div class="tabs"><a class="on">오늘</a><a>순공냅스</a><a>오답노트</a><a>그래프</a></div>
+        </div>
+        <div class="r"><span class="streak">🔥 7일</span><span class="pf"></span></div>
+      </div>
+
+      <div class="scr">
+
+        <!-- ===== 앱 상단 ===== -->
+        <div class="app-only h-top">
+          <div class="greet"><b>좋은 아침이에요</b><span>오늘도 잊지 않게 도와줄게요</span></div>
+          <span class="streak">🔥 7일</span>
+        </div>
+        <div class="app-only gamebar">
+          <span class="g"><span class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></span> 기억HP <b class="v">4</b></span>
+          <span class="sep"></span>
+          <span class="g"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M8.5 13 7 21l5-2.5 5 2.5-1.5-8"/></svg></span> 순공러 <b class="v">1,840</b></span>
+        </div>
+
+        <div class="webbody">
+          <h1 class="web-only">오늘의 회독</h1>
+          <div class="day web-only">6월 20일 금요일 · 오늘도 잊지 않게 도와줄게요</div>
+          <div class="webgrid">
+            <div class="col-main">
+
+              <!-- ===== 카메라 메인 히어로 액션 ===== -->
+              <div class="cam-hero">
+                <img class="mascot" src="../../../apps/web/public/mascot/camera-capture-alpha.png" alt="순공이가 카메라로 문제를 담는 모습" onerror="this.style.display='none'" />
+                <div class="ey">오늘의 한 걸음</div>
+                <h2>틀린 문제,<br>찍어서 올려요</h2>
+                <p>사진 한 장이면 AI가 <b>1·3·7·14일 회독퀘스트</b>로 바꿔드려요.</p>
+                <button class="cta">
+                  <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+                  문제 찍기
+                </button>
+                <div class="alt">갤러리에서 올리기 · 인강 캡처도 OK</div>
+              </div>
+
+              <!-- ===== 오늘의 회독 ===== -->
+              <div class="sec">
+                <div class="sec-h">
+                  <h3 class="app-only">오늘의 회독 <b>6개</b></h3>
+                  <h3 class="web-only">지금 잊기 직전 <b>6개</b></h3>
+                  <span class="more">전체 보기</span>
+                </div>
+                <div class="quest">
+                  <span class="pill risk">위험</span>
+                  <div class="qt"><b>미적분 · 극한의 정의</b><span>3일째 안 봄 · 기억HP 1</span></div>
+                  <button class="go">회독</button>
+                </div>
+                <div class="quest">
+                  <span class="pill warn">주의</span>
+                  <div class="qt"><b>영어 · 어법 (관계대명사)</b><span>오늘이 7일차 회독</span></div>
+                  <button class="go">회독</button>
+                </div>
+                <div class="quest">
+                  <span class="pill safe">안정권</span>
+                  <div class="qt"><b>국어 · 비문학 추론</b><span>14일차 마지막 회독</span></div>
+                  <button class="go">회독</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== 웹 우측 사이드 ===== -->
+            <div class="col-side web-only">
+              <div class="card side-card">
+                <div class="sh">오늘의 순공</div>
+                <div class="statgrid">
+                  <div class="s"><small>연속 순공</small><b>7일</b></div>
+                  <div class="s"><small>순공 시간</small><b>26분</b></div>
+                  <div class="s"><small>기억HP</small><div class="dots"><i></i><i></i><i></i><i></i><i class="off"></i></div></div>
+                  <div class="s"><small>등급 · XP</small><b style="font-size:14px">순공러<br><span style="font-size:12px;color:var(--color-text-muted)">1,840 XP</span></b></div>
+                </div>
+              </div>
+              <div class="card side-card">
+                <div class="nudge">
+                  <img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="순공이" onerror="this.style.display='none'">
+                  <div><b>오답 던전에 2개 모였어요</b><span>같이 회수하러 갈까요?</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== 웹 상시 카메라 버튼 ===== -->
+        <button class="web-only web-fab">
+          <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+          문제 찍기
+        </button>
+
+        <!-- ===== 앱 하단 네비 (중앙 = 카메라) ===== -->
+        <div class="app-only app-nav">
+          <div class="i act"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>홈</div>
+          <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.4"/><circle cx="18" cy="9" r="2.4"/><circle cx="11" cy="17" r="2.4"/><path d="M8 8l8 1M9 15l7-5"/></svg></span>순공냅스</div>
+          <div class="i"><div class="fab"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span></div><span class="fab-l">찍기</span></div>
+          <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M8 12h8M8 16h5"/></svg></span>오답</div>
+          <div class="i"><span class="mi"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/></svg></span>순공이</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="note">카메라(문제 찍기)를 홈의 <b>메인 히어로 액션</b>으로 — 학생이 문제를 공급하면 AI가 회독으로 바꿉니다. 앱은 하단 중앙 FAB + 히어로 카드, 웹은 히어로 카드 + 우하단 상시 버튼. SOO-96/97 톤(Light Study Garden·기억HP 0–5·동반자 톤) 계승.</div>
+
+<script>
+function setW(w){
+  var d=document.getElementById('device'),a=document.getElementById('tApp'),b=document.getElementById('tWeb');
+  var app=w==='app';
+  d.classList.toggle('app',app);d.classList.toggle('web',!app);
+  a.classList.toggle('on',app);b.classList.toggle('on',!app);
+}
+</script>
+</body>
+</html>
