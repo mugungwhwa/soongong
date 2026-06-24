@@ -97,12 +97,12 @@ img{display:block;max-width:100%}
 .rank-info .nm{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--color-mint-900)}
 .rank-info .xp{font-size:12.5px;color:var(--color-text-default);margin-top:2px}
 .rank-info .xp b{color:var(--color-text-strong)}
-.xpbar{height:10px;border-radius:var(--radius-pill);background:var(--color-mint-100);margin-top:9px;overflow:hidden}
+.xpbar{height:10px;border-radius:var(--radius-pill);background:var(--color-mint-100);margin-top:12px;overflow:hidden}
 .xpbar i{display:block;height:100%;width:52%;border-radius:var(--radius-pill);
   background:linear-gradient(90deg,var(--color-mint-500),var(--color-mint-700))}
 
 /* 6단 path */
-.path{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;margin-top:6px;position:relative}
+.path{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;margin-top:30px;position:relative}
 .path::before{content:"";position:absolute;top:21px;left:8%;right:8%;height:3px;background:var(--color-border-default);border-radius:2px;z-index:0}
 .path .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;min-width:0}
 .path .node{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:800;
@@ -113,7 +113,7 @@ img{display:block;max-width:100%}
 .path .lbl{font-size:10px;font-weight:700;color:var(--color-text-default);text-align:center;line-height:1.15}
 .path .step.cur .lbl{color:var(--color-mint-900)}
 .path .step.locked .lbl{color:var(--color-text-muted)}
-.path .cur-tag{position:absolute;top:-16px;font-size:9px;font-weight:800;color:#fff;background:var(--color-mint-700);padding:2px 7px;border-radius:var(--radius-pill);white-space:nowrap}
+.path .cur-tag{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;color:#fff;background:var(--color-mint-700);padding:2px 7px;border-radius:var(--radius-pill);white-space:nowrap}
 
 /* ── 망각맵 (딥틸 캔버스) ── */
 .naps-card{background:radial-gradient(120% 100% at 50% 0%,var(--journey-canvas-bg-center),var(--journey-canvas-bg-edge));
@@ -141,9 +141,9 @@ img{display:block;max-width:100%}
 .concept .sbar{height:8px;border-radius:var(--radius-pill);background:var(--color-bg-sunken);margin-top:10px;overflow:hidden}
 .concept .sbar i{display:block;height:100%;width:68%;border-radius:var(--radius-pill);background:var(--color-mint-500)}
 .concept .scale{display:flex;justify-content:space-between;font-size:9.5px;color:var(--color-text-muted);margin-top:5px;font-weight:600}
-.concept .go{margin-top:14px;width:100%;border:none;cursor:pointer;font-family:inherit;background:var(--color-primary-cta);
-  color:#fff;font-weight:800;font-size:14px;padding:12px;border-radius:var(--radius-pill);display:flex;align-items:center;justify-content:center;gap:8px}
-.concept .go .mi{width:18px;height:18px;color:#fff}
+.concept .go{margin-top:16px;width:fit-content;min-height:44px;border:none;cursor:pointer;font-family:inherit;background:var(--color-primary-cta);
+  color:#fff;font-weight:700;font-size:14px;padding:11px 22px;border-radius:var(--radius-pill);display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.concept .go .mi{width:17px;height:17px;color:#fff}
 
 .note{font-size:11.5px;color:var(--color-text-muted);text-align:center;padding:4px 16px 0}
 </style>
