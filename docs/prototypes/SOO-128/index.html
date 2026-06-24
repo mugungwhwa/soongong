@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — P1 랜딩 v4 (SOO-128 실앱 반영 목업)</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+/* ============================================================================
+   DESIGN TOKENS — MIRRORED from apps/web/src/shared/styles/tokens.css
+   ⚠️ 프로토타입 전용 미러. 프로덕션 SSoT 아님. 값 변경은 tokens.css 에서.
+   (SOO-128 P1 — 메인 히어로 v3 고정 + 변경분은 히어로 아래만. 실앱 PR #133과 동일 설계.)
+   ============================================================================ */
+:root{
+  --color-primary-cta:#4CAF88; --color-primary-bg:#EAF4EE;
+  --color-bg:#F8FBF7; --color-bg-elevated:#FFFFFF; --color-bg-sunken:#EFF5F1;
+  --color-background:#F8FBF7; --color-surface:#FFFFFF;
+  --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
+  --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
+  --color-risk-low:#BFE3C9; --color-risk-mid:#FFEBA3; --color-risk-high:#FFB4B4;
+  --color-info:#6BA6FF; --color-xp:#F2C94C;
+  --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
+  --color-text-inverse:#FFFFFF; --color-text-on-warm:#3A2A10;
+  --color-warning-bg:#FFF8E0;
+  --color-border-default:#E3EDE7; --color-border-strong:#9CCBB7;
+  --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
+  --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px; --space-8:32px;
+  --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
+  --ease-out-soft:cubic-bezier(0.22,0.61,0.36,1);
+  --duration-fast:160ms; --duration-mid:240ms; --duration-slow:380ms;
+  --font-body:"Pretendard",system-ui,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  background:
+    radial-gradient(1200px 600px at 12% -8%, #EEF7F1 0%, transparent 60%),
+    radial-gradient(1000px 520px at 112% 6%, #F0F6EE 0%, transparent 55%),
+    #F4F8F3;
+  color:var(--color-text-strong);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.5;
+  word-break:keep-all; overflow-wrap:break-word;
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+.mi{display:inline-block;color:var(--color-mint-700);flex:none}
+.mi svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+.proto-note{background:var(--color-mint-900);color:#EAF7F0;font-size:13px;text-align:center;padding:8px 16px}
+.proto-note b{color:#fff}
+
+/* ── 네비 ─────────────────────────────────────────────────────────── */
+.nav{position:sticky;top:0;z-index:60;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:12px clamp(18px,5vw,64px);
+  background:rgba(255,255,255,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--color-border-default)}
+.nav .logo img{height:34px;width:auto}
+.nav .logo .fallback{font-weight:800;font-size:20px;color:var(--color-mint-900);letter-spacing:-.02em}
+.nav .cta{background:var(--color-primary-cta);color:#fff;font-weight:700;font-size:15px;
+  padding:10px 20px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card);
+  transition:transform var(--duration-fast) var(--ease-out-soft)}
+.nav .cta:hover{transform:translateY(-1px);box-shadow:var(--shadow-elevated)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 clamp(18px,5vw,40px)}
+section{padding:clamp(40px,7vh,80px) 0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.03em;
+  color:var(--color-mint-900);background:var(--color-mint-50);padding:7px 15px;border-radius:var(--radius-pill)}
+.section-head{max-width:640px;margin:0 auto clamp(28px,5vh,44px);text-align:center}
+.section-head h2{font-size:clamp(24px,4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.22;margin:16px 0 14px;color:var(--color-text-strong)}
+.section-head p{font-size:clamp(15px,2vw,17px);color:var(--color-text-default);line-height:1.65}
+.grad{color:var(--color-mint-700)}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--color-primary-cta);color:#fff;
+  font-weight:700;font-size:16px;font-family:inherit;padding:14px 28px;border-radius:var(--radius-pill);
+  border:none;cursor:pointer;box-shadow:var(--shadow-card);transition:transform var(--duration-fast) var(--ease-out-soft)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-elevated)}
+.btn-primary .mi{color:#fff;width:20px;height:20px}
+.btn-ghost{display:inline-flex;align-items:center;background:#fff;color:var(--color-mint-900);font-weight:700;font-size:16px;font-family:inherit;
+  padding:14px 24px;border-radius:var(--radius-pill);border:1.5px solid var(--color-border-strong);cursor:pointer;transition:background var(--duration-fast)}
+.btn-ghost:hover{background:var(--color-mint-50)}
+
+/* ── ★ 메인 히어로 (포스터) — 승인 v3 그대로 고정. 변경 금지 ─────────── */
+.poster-hero{text-align:center;display:flex;flex-direction:column;align-items:center;
+  padding-top:clamp(28px,5vh,56px);padding-bottom:8px}
+.poster-hero .eyebrow{border:1px solid var(--color-border-strong);font-weight:800}
+.poster-hero h1{font-size:clamp(27px,4.6vw,42px);font-weight:800;letter-spacing:-.035em;line-height:1.28;
+  margin:18px 0 0;color:var(--color-text-strong)}
+.poster-hero h1 b{color:var(--color-mint-700)}
+.poster-hero .sub{font-size:clamp(15px,2vw,17px);color:var(--color-text-default);line-height:1.6;margin:16px auto 0;max-width:480px}
+.poster-frame{margin:34px auto 0;width:100%;max-width:920px;border-radius:var(--radius-xl);overflow:hidden;
+  border:1px solid var(--color-border-default);background:#fff;box-shadow:var(--shadow-elevated)}
+.poster-frame img{width:100%;height:auto}
+.poster-cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.poster-fine{margin-top:12px;font-size:12px;color:var(--color-text-muted);font-weight:600}
+.divider-note{max-width:1080px;margin:clamp(20px,4vh,36px) auto 0;padding:0 clamp(18px,5vw,40px);text-align:center}
+.divider-note span{display:inline-block;font-size:12px;font-weight:700;color:var(--color-mint-900);
+  background:var(--color-mint-50);border:1px solid var(--color-border-default);padding:6px 14px;border-radius:var(--radius-pill)}
+
+/* ── A) 포지셔닝 + 카메라 캡처 카드 (콴다→AI 문제 풀이 · 확대 · 모션) ── */
+.capture{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,5vw,56px);align-items:center;
+  background:#fff;border:1px solid var(--color-border-default);border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-card);padding:clamp(28px,4vw,52px)}
+.capture .copy h2{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-.035em;line-height:1.18;margin:14px 0 0;color:var(--color-text-strong)}
+.capture .copy h2 .hl{background:linear-gradient(180deg,transparent 62%,var(--color-mint-100) 62%);padding:0 4px;border-radius:4px;color:var(--color-mint-900)}
+.capture .copy .sub{font-size:clamp(15px,2vw,18px);color:var(--color-text-default);line-height:1.6;margin:20px 0 0;max-width:520px}
+.capture .trust{display:flex;align-items:center;gap:14px;margin-top:26px;font-size:14px;color:var(--color-text-muted);flex-wrap:wrap}
+.capture .trust b{color:var(--color-text-strong)}
+.capture .trust .dot{width:4px;height:4px;border-radius:50%;background:var(--color-border-strong)}
+.capture-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:440px}
+.capture-glow{position:absolute;inset:0;background:radial-gradient(closest-side,rgba(123,196,174,.28),transparent 72%);filter:blur(6px)}
+.capture-card{position:relative;z-index:2;width:min(420px,90%);background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-elevated);
+  padding:26px 26px 24px;border:1px solid var(--color-border-default);animation:floaty 6s var(--ease-out-soft) infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.capture-card .cam-mascot{width:178px;margin:-80px auto 8px;filter:drop-shadow(0 12px 20px rgba(46,125,91,.18))}
+.capture-card .shot{background:var(--color-mint-50);border:1px dashed var(--color-border-strong);border-radius:var(--radius-lg);padding:16px;display:flex;gap:12px;align-items:center}
+.capture-card .shot .ic{width:46px;height:46px;border-radius:12px;background:var(--color-primary-cta);display:grid;place-items:center;flex:none}
+.capture-card .shot .ic .mi{width:24px;height:24px;color:#fff}
+.capture-card .shot .t b{display:block;font-size:15px;color:var(--color-text-strong)}
+.capture-card .shot .t span{font-size:13px;color:var(--color-text-default)}
+.capture-card .arrow{display:flex;align-items:center;justify-content:center;gap:7px;color:var(--color-mint-500);font-size:14px;font-weight:700;margin:10px 0}
+.capture-card .arrow .mi{width:18px;height:18px;color:var(--color-mint-500)}
+.quest-row{display:flex;gap:8px}
+.quest-chip{flex:1;text-align:center;background:var(--color-mint-100);border-radius:var(--radius-md);padding:11px 4px;font-weight:700;font-size:14px;color:var(--color-mint-900)}
+.quest-chip span{display:block;font-size:11px;font-weight:600;color:var(--color-text-default);margin-top:2px}
+.float-badge{position:absolute;z-index:3;background:#fff;border-radius:var(--radius-pill);box-shadow:var(--shadow-elevated);
+  padding:10px 16px;font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:8px;border:1px solid var(--color-border-default);color:var(--color-text-strong)}
+.float-badge .mi{width:15px;height:15px;color:var(--color-risk-high)}
+.float-badge .hp-dots{display:flex;gap:3px}
+.float-badge .hp-dots i{width:11px;height:11px;border-radius:50%;background:var(--color-risk-high)}
+.float-badge .hp-dots i.off{background:var(--color-border-default)}
+.fb-1{top:4%;left:-2%}
+.fb-2{bottom:7%;right:-3%}
+@media(max-width:840px){
+  .capture{grid-template-columns:1fr;text-align:center}
+  .capture .copy .sub{margin-left:auto;margin-right:auto}
+  .capture .trust{justify-content:center}
+  .capture-visual{min-height:380px;margin-top:8px}
+}
+
+/* ── B) 왜 순공대장인가 (막힘 vs 까먹음) ─────────────────────────────── */
+.positioning{background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);padding:clamp(28px,5vw,52px);border:1px solid var(--color-border-default)}
+.pos-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(16px,3vw,36px);align-items:center}
+.pos-col{text-align:center}
+.pos-col .tag{font-size:13px;font-weight:700;color:var(--color-text-muted);letter-spacing:.02em}
+.pos-col h3{font-size:clamp(20px,2.6vw,26px);font-weight:800;margin:8px 0 10px;letter-spacing:-.02em}
+.pos-col p{font-size:15px;color:var(--color-text-default);line-height:1.55}
+.pos-col.them h3{color:var(--color-text-strong)}
+.pos-col.us{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:24px 18px;border:1.5px solid var(--color-mint-300)}
+.pos-col.us h3{color:var(--color-mint-900)}
+.pos-vs{font-weight:800;color:var(--color-border-strong);font-size:15px}
+@media(max-width:760px){.pos-grid{grid-template-columns:1fr}.pos-vs{transform:rotate(90deg)}}
+
+/* ── C) 작동 방식 ─────────────────────────────────────────────────── */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.5vw,22px)}
+.step{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);
+  padding:30px 26px;border:1px solid var(--color-border-default)}
+.step .n{font-size:13px;font-weight:800;color:var(--color-mint-500);letter-spacing:.08em}
+.step .ico{width:56px;height:56px;border-radius:16px;background:var(--color-mint-50);
+  display:grid;place-items:center;margin:14px 0 16px}
+.step .ico .mi{width:30px;height:30px}
+.step h3{font-size:19px;font-weight:800;letter-spacing:-.02em;margin-bottom:9px;color:var(--color-text-strong)}
+.step p{font-size:14.5px;color:var(--color-text-default);line-height:1.6}
+.step .quests{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.step .q{font-size:11.5px;font-weight:700;color:var(--color-mint-900);background:var(--color-mint-100);padding:5px 9px;border-radius:var(--radius-pill)}
+.step .hp{display:inline-flex;gap:3px;margin-top:13px;align-items:center;font-size:12.5px;color:var(--color-text-default);font-weight:600}
+.step .hp i{width:12px;height:12px;border-radius:50%;background:var(--color-risk-high)}
+.step .hp i.off{background:var(--color-border-default)}
+@media(max-width:760px){.steps{grid-template-columns:1fr}}
+
+/* ── D) 순공냅스 ──────────────────────────────────────────────────── */
+.naps{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,52px);align-items:center;
+  background:linear-gradient(180deg,#fff,#FBFEFB);border-radius:var(--radius-xl);
+  border:1px solid var(--color-border-default);box-shadow:var(--shadow-card);padding:clamp(28px,4vw,52px)}
+.naps h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.03em;line-height:1.25;color:var(--color-text-strong)}
+.naps p{font-size:15.5px;color:var(--color-text-default);line-height:1.7;margin-top:14px}
+.naps .concept-tag{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--color-mint-900);
+  background:var(--color-mint-100);padding:6px 13px;border-radius:var(--radius-pill);margin-top:16px}
+.naps-vis{background:var(--color-mint-50);border-radius:var(--radius-lg);border:1px solid var(--color-border-default);padding:14px}
+.naps-vis svg{width:100%;height:auto;display:block}
+@media(max-width:760px){.naps{grid-template-columns:1fr}}
+
+/* ── E) 동반자 ────────────────────────────────────────────────────── */
+.companion{text-align:center;background:#fff;border-radius:var(--radius-xl);box-shadow:var(--shadow-card);
+  border:1px solid var(--color-border-default);padding:clamp(30px,5vw,56px)}
+.companion .moods{display:flex;justify-content:center;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.companion .moods figure{width:104px}
+.companion .moods img{width:92px;margin:0 auto;filter:drop-shadow(0 8px 14px rgba(46,125,91,.16))}
+.companion .moods figcaption{font-size:12.5px;font-weight:700;color:var(--color-text-default);margin-top:4px}
+.companion h2{font-size:clamp(22px,3.4vw,32px);font-weight:800;letter-spacing:-.03em;line-height:1.3;margin-top:14px;color:var(--color-text-strong)}
+.companion .quotes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:24px}
+.quote{background:var(--color-mint-50);border-radius:var(--radius-lg);padding:14px 20px;font-size:15.5px;
+  color:var(--color-mint-900);font-weight:600;border:1px solid var(--color-border-default);max-width:330px}
+
+/* ── F) 앱·웹 미리보기 ─────────────────────────────────────────────── */
+.showcase{background:linear-gradient(180deg,#EAF4EE,#F4F8F3);border-radius:var(--radius-xl);
+  padding:clamp(32px,5vw,56px) clamp(18px,4vw,44px)}
+.toggle{display:flex;justify-content:center;gap:6px;margin:0 auto 32px;width:fit-content;
+  background:#fff;padding:5px;border-radius:var(--radius-pill);box-shadow:var(--shadow-card)}
+.toggle button{border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:15px;padding:9px 22px;
+  border-radius:var(--radius-pill);background:none;color:var(--color-text-default);transition:all var(--duration-fast)}
+.toggle button.on{background:var(--color-primary-cta);color:#fff;box-shadow:var(--shadow-card)}
+.pane{display:none}.pane.show{display:flex;justify-content:center}
+.pane.show>div{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center}
+.slot-cap{text-align:center;font-size:13px;color:var(--color-text-default);margin-top:14px;font-weight:600}
+/* 점6 — 승인 목업(SOO-96) 임베드 자리. "개발 후 실화면 교체" 리본으로 자동 교체 슬롯 명시 */
+.mock-phone,.mock-browser{position:relative}
+.mock-phone .ribbon,.mock-browser .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
+  background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
+.mock-phone{width:262px;margin:0 auto;background:#2E2E2E;border-radius:38px;padding:9px}
+.mock-phone .ph-scr{border-radius:30px;overflow:hidden;background:var(--color-bg);max-height:540px}
+.mock-phone .ph-scr img{width:100%;display:block}
+.mock-browser{width:100%;max-width:720px;margin:0 auto;background:#fff;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-elevated)}
+.mock-browser .bar{background:var(--color-bg-sunken);padding:10px 14px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--color-border-default)}
+.mock-browser .bar i{width:11px;height:11px;border-radius:50%;background:var(--color-border-strong)}
+.mock-browser .bar .url{margin-left:10px;background:#fff;border-radius:var(--radius-pill);font-size:12px;color:var(--color-text-muted);padding:5px 14px;flex:1}
+.mock-browser .web-shot{width:100%;display:block}
+
+/* ── G) 최종 CTA ──────────────────────────────────────────────────── */
+.final{background:linear-gradient(135deg,var(--color-mint-700),var(--color-mint-900));border-radius:var(--radius-xl);
+  text-align:center;color:#fff;padding:clamp(42px,7vw,72px) clamp(20px,5vw,40px)}
+.final img{width:124px;margin:0 auto 8px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.18))}
+.final h2{font-size:clamp(24px,4vw,38px);font-weight:800;letter-spacing:-.03em;line-height:1.25}
+.final p{font-size:clamp(15px,2vw,18px);opacity:.92;margin:14px auto 0;max-width:500px;line-height:1.65}
+.final .btn-primary{background:#fff;color:var(--color-mint-900);margin-top:28px;box-shadow:var(--shadow-elevated)}
+.final .btn-primary .mi{color:var(--color-mint-900)}
+.final .fine{font-size:13px;opacity:.82;margin-top:16px}
+
+footer{padding:clamp(40px,7vh,80px) 0 56px;text-align:center;color:var(--color-text-muted);font-size:13px}
+footer .pos{max-width:460px;margin:0 auto;font-size:14px;font-weight:600;color:var(--color-text-default);line-height:1.6}
+footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin:18px 0 6px}
+
+.rv{opacity:0;transform:translateY(16px);transition:opacity var(--duration-slow) var(--ease-out-soft),transform var(--duration-slow) var(--ease-out-soft)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div class="proto-note">🧪 <b>SOO-128 P1 랜딩 v4 목업</b> · 메인 히어로(포스터)=승인 v3 고정, 변경분은 히어로 아래만 · 실앱 PR #133과 동일 설계 · 디자인 SSoT: /styleguide + tokens.css</div>
+
+<nav class="nav">
+  <a class="logo" href="#top">
+    <img src="../../../apps/web/public/brand/logo/soongong-logo-ko-light.svg" alt="순공대장"
+         onerror="this.outerHTML='<span class=\'fallback\'>순공대장</span>'" />
+  </a>
+  <a class="cta" href="#final">무료로 시작</a>
+</nav>
+
+<div id="top"></div>
+
+<!-- ============ ★ 메인 히어로 (포스터) — 승인 v3 그대로 고정. 변경 금지 ============ -->
+<div class="wrap">
+  <header class="poster-hero">
+    <span class="eyebrow rv">수능생 AI 회독 리텐션 엔진</span>
+    <h1 class="rv">푼 문제, <b>까먹지 않게</b><br>순공이가 회독을 챙겨요</h1>
+    <p class="sub rv">문제 사진·인강 캡처·필기를 올리면 AI가 회독퀘스트로 바꿔 1·3·7·14일에 딱 맞춰 다시 꺼내줘요. 망각이 시작되기 직전에요.</p>
+    <div class="poster-frame rv">
+      <img src="../../../apps/web/public/brand/main_concepting_.png" alt="순공대장 — 푼 문제를 까먹지 않게, 순공이가 1·3·7·14일 회독을 챙기는 AI 회독 리텐션 엔진" />
+    </div>
+    <div class="poster-cta rv">
+      <button class="btn-primary" onclick="location.hash='#final'">무료로 시작하기
+        <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </button>
+      <button class="btn-ghost" onclick="location.hash='#how'">데모 보기</button>
+    </div>
+    <p class="poster-fine rv">카드 등록 없이 시작 · 자동결제 OFF가 기본</p>
+  </header>
+</div>
+
+<div class="divider-note rv"><span>↓ 여기부터 히어로 아래 — v4 변경분 (콴다→AI 문제 풀이 · 확대 · 모션)</span></div>
+
+<!-- ============ A) 포지셔닝 + 카메라 캡처 카드 ============ -->
+<section id="capture">
+  <div class="wrap">
+    <div class="capture rv">
+      <div class="copy">
+        <span class="eyebrow">막힘 vs 까먹음</span>
+        <h2>막힘은 AI 문제 풀이가 풀고,<br><span class="hl">까먹음은 순공대장이</span> 풉니다</h2>
+        <p class="sub">문제를 사진 한 장으로 올리면, AI가 <b>1·3·7·14일 회독퀘스트</b>로 바꿔
+          까먹기 직전에 다시 꺼내줍니다. 새로 외우지 마세요 — 잊지 않게 도와줄게요.</p>
+        <div class="trust">
+          <span><b>가입은 나중에</b> · 먼저 회독부터</span>
+          <span class="dot"></span>
+          <span>광고·압박 알림 <b>없음</b></span>
+        </div>
+      </div>
+      <div class="capture-visual">
+        <div class="capture-glow"></div>
+        <div class="float-badge fb-1">
+          <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c.5 3 2.5 4.3 3.7 5.8A6 6 0 1 1 6 12.5c0-1 .4-1.8 1-2.5.6 1 1.5 1.3 2 1.2C8.3 8.6 10 6 12 3Z"/></svg></span>
+          7일 연속
+        </div>
+        <div class="float-badge fb-2"><span class="hp-dots"><i></i><i></i><i></i><i></i><i class="off"></i></span> 기억HP 4</div>
+        <div class="capture-card">
+          <img class="cam-mascot" src="../../../apps/web/public/mascot/camera-capture-alpha.png" alt="순공이가 카메라로 문제를 담는 모습" onerror="this.style.display='none'" />
+          <div class="shot">
+            <div class="ic"><span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span></div>
+            <div class="t"><b>틀린 문제 한 장</b><span>찍어서 올리면 끝</span></div>
+          </div>
+          <div class="arrow"><span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg></span>AI가 회독퀘스트로 변환</div>
+          <div class="quest-row">
+            <div class="quest-chip">1일<span>내일</span></div>
+            <div class="quest-chip">3일<span>모레+</span></div>
+            <div class="quest-chip">7일<span>다음주</span></div>
+            <div class="quest-chip">14일<span>2주</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ B) 왜 순공대장인가 (막힘 vs 까먹음) ============ -->
+<section id="why">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">왜 순공대장인가</span>
+      <h2>공부의 진짜 적은 <span class="grad">막힘</span>이 아니라 <span class="grad">까먹음</span>입니다</h2>
+      <p>이해는 한 번이면 되지만, 기억은 계속 새어 나갑니다. 에빙하우스 망각곡선은
+        하루만 지나도 절반을 지워버리죠. 순공대장은 그 곡선을 거슬러, 까먹기 직전에 다시 만나게 합니다.</p>
+    </div>
+    <div class="positioning rv">
+      <div class="pos-grid">
+        <div class="pos-col them">
+          <div class="tag">지금 쓰는 도구</div>
+          <h3>막힘을 푼다</h3>
+          <p>모르는 문제를 그 자리에서 해설해 줍니다. 좋습니다 — 하지만 <b>해설을 본 그 순간</b>에 끝나죠.</p>
+        </div>
+        <div class="pos-vs">VS</div>
+        <div class="pos-col us">
+          <div class="tag">순공대장</div>
+          <h3>까먹음을 푼다</h3>
+          <p>맞힌 문제도 <b>시간이 지나면 잊습니다.</b> 잊기 직전마다 회독으로 다시 꺼내 — 진짜 내 것으로 굳혀줍니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ C) 작동 방식 — STEP 01·02·03 ============ -->
+<section id="how">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">어떻게 도와주나요</span>
+      <h2>찍고 → 맡기고 → 잊기 직전에 다시</h2>
+      <p>회독 하나는 1~2분. 하루 5분이면 충분합니다. 복습 일정은 순공이가 챙겨요.</p>
+    </div>
+    <div class="steps">
+      <div class="step rv">
+        <div class="n">STEP 01</div>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.4"/></svg></span></div>
+        <h3>문제를 찍어 올린다</h3>
+        <p>틀린 문제·인강 캡처·필기 한 장이면 됩니다. 타이핑 없이 사진 한 장으로 공급.</p>
+      </div>
+      <div class="step rv">
+        <div class="n">STEP 02</div>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3"/></svg></span></div>
+        <h3>AI가 회독 일정으로 변환</h3>
+        <p>개념과 유형을 읽고 망각 주기에 맞춘 회독 일정을 만들어 큐에 담아둡니다.</p>
+        <div class="quests"><span class="q">1일</span><span class="q">3일</span><span class="q">7일</span><span class="q">14일</span></div>
+      </div>
+      <div class="step rv">
+        <div class="n">STEP 03</div>
+        <div class="ico"><span class="mi"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg></span></div>
+        <h3>잊기 직전에 다시 만난다</h3>
+        <p>“오늘 회독 N개”가 또렷하게. 풀면 <b>기억HP가 0–5로</b> 차오르고, 순공이가 함께 기뻐해요.</p>
+        <div class="hp"><i></i><i></i><i></i><i></i><i class="off"></i> 기억HP 4 / 5</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ D) 순공냅스 — 망각맵 (P2 예고) ============ -->
+<section id="naps">
+  <div class="wrap">
+    <div class="naps rv">
+      <div>
+        <span class="eyebrow">차별점 · 순공냅스</span>
+        <h2>흩어진 개념을 <span class="grad">뇌처럼 잇는</span> 망각맵</h2>
+        <p>회독한 개념들이 서로 이어지며 나만의 기억 지도가 자랍니다. 어디가 단단하고
+          어디가 흐려졌는지 한눈에 — 다음에 무엇을 다시 볼지 순공이가 짚어줘요.</p>
+        <span class="concept-tag">P2에서 유저 저니 + 뇌 채우기 게이미피케이션으로 확정</span>
+      </div>
+      <div class="naps-vis">
+        <svg viewBox="0 0 300 220" aria-hidden="true">
+          <g stroke="#A8DCCB" stroke-width="1.6">
+            <line x1="80" y1="60" x2="150" y2="45"/><line x1="150" y1="45" x2="225" y2="70"/>
+            <line x1="80" y1="60" x2="110" y2="130"/><line x1="110" y1="130" x2="180" y2="150"/>
+            <line x1="150" y1="45" x2="180" y2="150"/><line x1="225" y1="70" x2="180" y2="150"/>
+            <line x1="110" y1="130" x2="70" y2="180"/><line x1="180" y1="150" x2="235" y2="175"/>
+          </g>
+          <g>
+            <circle cx="80" cy="60" r="14" fill="#4CAF88"/><circle cx="150" cy="45" r="17" fill="#4CAF88"/>
+            <circle cx="225" cy="70" r="12" fill="#7BC4AE"/><circle cx="110" cy="130" r="15" fill="#7BC4AE"/>
+            <circle cx="180" cy="150" r="16" fill="#4CAF88"/>
+            <circle cx="70" cy="180" r="11" fill="#D4EFE4" stroke="#A8DCCB" stroke-width="1.5"/>
+            <circle cx="235" cy="175" r="10" fill="#D4EFE4" stroke="#A8DCCB" stroke-width="1.5"/>
+          </g>
+          <g fill="#fff" font-family="Pretendard,sans-serif" font-size="9" font-weight="700" text-anchor="middle">
+            <text x="80" y="63">극한</text><text x="150" y="48">미분</text><text x="180" y="153">적분</text>
+          </g>
+          <g fill="#6E6E6E" font-family="Pretendard,sans-serif" font-size="8" font-weight="600" text-anchor="middle">
+            <text x="70" y="183">수열</text><text x="235" y="178">벡터</text></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ E) 동반자 ============ -->
+<section id="companion">
+  <div class="wrap">
+    <div class="companion rv">
+      <div class="moods">
+        <figure><img src="../../../apps/web/public/mascot/main-half-cheer-alpha.png" alt="응원하는 순공이" onerror="this.style.display='none'"><figcaption>응원</figcaption></figure>
+        <figure><img src="../../../apps/web/public/mascot/main-half-good-alpha.png" alt="기뻐하는 순공이" onerror="this.style.display='none'"><figcaption>축하</figcaption></figure>
+        <figure><img src="../../../apps/web/public/mascot/main-half-comeon-alpha.png" alt="다독이는 순공이" onerror="this.style.display='none'"><figcaption>다독임</figcaption></figure>
+      </div>
+      <span class="eyebrow">순공이</span>
+      <h2>혼자 외우지 않아요. <span class="grad">순공이가 곁에 있어요.</span></h2>
+      <div class="quotes">
+        <div class="quote">“오늘 회독 6개, 같이 해봐요!”</div>
+        <div class="quote">“이만큼 했어요 — 잘하고 있어요.”</div>
+        <div class="quote">“이 단원, 슬슬 흐려질 때예요.”</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ F) 앱·웹 미리보기 — 승인 목업(SOO-96) ============ -->
+<section id="showcase">
+  <div class="wrap">
+    <div class="section-head rv">
+      <span class="eyebrow">앱 · 웹 어디서나</span>
+      <h2>주머니 속 앱으로, <span class="grad">책상 위 웹으로</span></h2>
+      <p>같은 회독, 같은 순공이. 아래는 <b>지난 승인 목업(SOO-96)</b> 화면 그대로이며, 실앱 개발이 끝나면 실제 화면으로 자동 교체됩니다.</p>
+    </div>
+    <div class="showcase">
+      <div class="toggle">
+        <button id="tApp" class="on" onclick="setPane('app')">모바일 앱</button>
+        <button id="tWeb" onclick="setPane('web')">데스크톱 웹</button>
+      </div>
+      <!-- SLOT:app-preview — 지난 승인 목업(SOO-96) 홈(앱) 화면 그대로. 실앱 개발 시 실화면으로 자동 교체 -->
+      <div id="paneApp" class="pane show">
+        <div>
+          <div class="mock-phone">
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
+            <div class="ph-scr"><img src="../../../apps/web/public/brand/landing/preview-app.png" alt="순공대장 앱 홈 — 스트릭·기억HP·오늘의 회독·회독퀘스트 (승인 목업 SOO-96)" onerror="this.parentElement.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;color:#fff\'>승인 목업 SOO-96 홈</div>'" /></div>
+          </div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 홈 화면 그대로 · 하단 중앙 = 문제 촬영</div>
+        </div>
+      </div>
+      <!-- SLOT:web-preview — 지난 승인 목업(SOO-96 웹 모드) 데스크톱 화면 그대로. 실앱 개발 시 실화면으로 자동 교체 -->
+      <div id="paneWeb" class="pane">
+        <div>
+          <div class="mock-browser">
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
+            <div class="bar"><i></i><i></i><i></i><div class="url">soongong.app/today</div></div>
+            <img class="web-shot" src="../../../apps/web/public/brand/landing/preview-web.png" alt="순공대장 웹 데스크톱 홈 — 상단 네비·stats·오늘의 회독 (승인 목업 SOO-96)" onerror="this.outerHTML='<div style=\'padding:48px;text-align:center;color:var(--color-text-default)\'>승인 목업 SOO-96 웹 홈</div>'" />
+          </div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 웹 데스크톱 화면 그대로 · 넓은 레이아웃</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ G) 최종 CTA ============ -->
+<section id="final">
+  <div class="wrap">
+    <div class="final rv">
+      <img src="../../../apps/web/public/mascot/main-half-good-alpha.png" alt="기뻐하는 순공이" onerror="this.style.display='none'">
+      <h2>오늘 푼 한 문제,<br>내일도 기억하게.</h2>
+      <p>지금 문제 한 장만 찍어보세요. 가입은 첫 회독을 끝낸 뒤에 골라도 됩니다.</p>
+      <button class="btn-primary" onclick="alert('목업 — 실앱 연결은 PR #133에서 구현')">
+        <span class="mi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.2"/></svg></span>
+        무료로 문제 찍어보기
+      </button>
+      <div class="fine">신용카드 없이 시작 · 광고 없음 · 압박 알림 없음</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p class="pos rv">AI 문제 풀이는 학생의 ‘막힘’을 풀고, 순공대장은 학생의 ‘까먹음’을 풀어요.</p>
+  <div class="b">순공대장</div>
+  <div>오늘 푼 문제, 내일도 기억하게 — AI 회독 리텐션 엔진</div>
+  <div style="margin-top:8px;opacity:.7">SOO-128 P1 랜딩 v4 목업 · 실앱 PR #133 · 디자인 SSoT: /styleguide + tokens.css</div>
+</footer>
+
+<script>
+function setPane(which){
+  var app=document.getElementById('paneApp'),web=document.getElementById('paneWeb');
+  var tA=document.getElementById('tApp'),tW=document.getElementById('tWeb');
+  var isApp=which==='app';
+  app.classList.toggle('show',isApp);web.classList.toggle('show',!isApp);
+  tA.classList.toggle('on',isApp);tW.classList.toggle('on',!isApp);
+}
+(function(){
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+})();
+</script>
+</body>
+</html>
