@@ -114,6 +114,10 @@ img{display:block;max-width:100%}
 .cam-hero .ring{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
 .cam-hero .ci{width:62px;height:62px;border-radius:var(--radius-lg);background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
 .cam-hero .ci .mi{width:34px;height:34px;color:#fff}
+/* 카메라 든 순공이 마스코트 — 아이콘 자리 교체(Mike 채택). 배치·카피·버튼·배경 동일 */
+.cam-hero.mascot .ci{width:96px;height:96px;background:transparent;border-radius:0;overflow:visible;display:flex;align-items:center;justify-content:center}
+.cam-hero.mascot .ci img{width:104px;max-width:none;height:auto;filter:drop-shadow(0 6px 12px rgba(0,0,0,.18))}
+@media(max-width:420px){.cam-hero.mascot .ci{width:84px;height:84px}.cam-hero.mascot .ci img{width:92px}}
 .cam-hero .ct{flex:1;min-width:0;z-index:1}
 .cam-hero .ct b{display:block;font-size:18px;font-weight:800;letter-spacing:-.02em}
 .cam-hero .ct span{font-size:13px;opacity:.92}
@@ -202,9 +206,9 @@ img{display:block;max-width:100%}
             </div>
 
             <!-- 카메라 = 메인 히어로 액션 -->
-            <div class="cam-hero">
+            <div class="cam-hero mascot">
               <div class="ring"></div>
-              <div class="ci"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.4"/></svg></span></div>
+              <div class="ci"><img src="../../../apps/web/public/mascot/camera-capture-crown-alpha.png" alt="카메라를 든 순공이" /></div>
               <div class="ct"><b>문제 찍어 새 회독 만들기</b><span>틀린 문제·인강 캡처 한 장이면 AI가 회독퀘스트로</span></div>
               <div class="cgo">촬영하기</div>
             </div>
