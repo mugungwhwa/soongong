@@ -1,0 +1,656 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>순공대장 — 브랜드 &amp; 디자인 시스템</title>
+
+  <!-- 본문 폰트: Pretendard (기존 페이지와 동일 CDN) -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+
+  <!--
+    색·radius·간격의 단일 SSoT = 실제 tokens.css 를 직접 link.
+    값을 이 파일로 복사하지 않는다(두 번째 SSoT 금지). 모든 색은 var(--color-*) 로만 참조.
+    경로: page/ → brand/ → public/ → web(apps/web)/ → src/shared/styles/tokens.css
+  -->
+  <link rel="stylesheet" href="../../../src/shared/styles/tokens.css" />
+
+  <style>
+    /* ── reset / base ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+    body {
+      margin: 0;
+      font-family: var(--font-body), "Pretendard", system-ui, sans-serif;
+      background: var(--color-background);
+      color: var(--color-text-strong);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all; /* 한글 어절 단위 줄바꿈 (Voice & Tone 규칙) */
+    }
+    h1, h2, h3, h4 { font-family: var(--font-display), "Pretendard", sans-serif; line-height: 1.25; margin: 0; }
+    a { color: inherit; }
+    img { display: block; max-width: 100%; }
+    code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    /* ── layout: 좌측 섹션 네비 + 본문 (design.duolingo.com 형태) ─── */
+    .shell { display: grid; grid-template-columns: 248px 1fr; min-height: 100vh; }
+
+    .sidenav {
+      position: sticky; top: 0; align-self: start;
+      height: 100vh; overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border-default);
+      padding: 28px 20px;
+    }
+    .sidenav .brandmark { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .sidenav .brandmark img { height: 40px; width: auto; }
+    .sidenav .kicker { font-size: 12px; color: var(--color-text-muted); margin: 2px 0 22px; letter-spacing: .02em; }
+    .sidenav nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidenav nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: var(--radius-md);
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      color: var(--color-text-default);
+      transition: background var(--duration-fast) var(--ease-out-soft), color var(--duration-fast) var(--ease-out-soft);
+    }
+    .sidenav nav a .n { font-size: 11px; color: var(--color-text-muted); min-width: 16px; }
+    .sidenav nav a:hover { background: var(--color-mint-50); color: var(--color-mint-700); }
+    .sidenav nav a.active { background: var(--color-mint-100); color: var(--color-mint-900); font-weight: 700; }
+    .sidenav nav a.active .n { color: var(--color-mint-700); }
+    .sidenav .footnote { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-border-default); font-size: 11px; color: var(--color-text-muted); line-height: 1.7; }
+
+    main { padding: 0; max-width: 1100px; }
+    section { padding: 64px 56px; border-bottom: 1px solid var(--color-border-default); scroll-margin-top: 24px; }
+    section:last-child { border-bottom: 0; }
+    .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--color-mint-700); margin-bottom: 10px; }
+    section > h2 { font-size: 30px; font-weight: 800; letter-spacing: -.01em; }
+    section > .lede { font-size: 16px; color: var(--color-text-default); margin: 12px 0 0; max-width: 64ch; }
+    h3.sub { font-size: 17px; font-weight: 700; margin: 36px 0 14px; color: var(--color-text-strong); }
+
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-default);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 20px;
+    }
+    .grid { display: grid; gap: 16px; }
+    .g2 { grid-template-columns: repeat(2, 1fr); }
+    .g3 { grid-template-columns: repeat(3, 1fr); }
+    .g4 { grid-template-columns: repeat(4, 1fr); }
+    @media (max-width: 900px) { .g3, .g4 { grid-template-columns: repeat(2, 1fr); } }
+
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 700; }
+
+    /* ── hero ───────────────────────────────────────────────────── */
+    .hero { background: linear-gradient(180deg, var(--color-mint-50), var(--color-background)); }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; }
+    @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+    .hero h1 { font-size: 48px; font-weight: 800; letter-spacing: -.02em; }
+    .hero h1 .hl { color: var(--color-mint-700); }
+    .hero p.tag { font-size: 18px; color: var(--color-text-default); margin-top: 18px; max-width: 46ch; }
+    .hero .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+    .hero .hero-visual { display: flex; justify-content: center; }
+    .hero .hero-visual img { width: min(360px, 100%); filter: drop-shadow(0 18px 30px rgba(46,125,91,.16)); }
+
+    /* ── color swatches ─────────────────────────────────────────── */
+    .swatch { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--color-border-default); background: var(--color-surface); }
+    .swatch .chip { height: 76px; }
+    .swatch .meta { padding: 10px 12px; }
+    .swatch .name { font-size: 13px; font-weight: 700; }
+    .swatch .var { font-size: 11px; color: var(--color-text-muted); }
+    .swatch .hex { font-size: 12px; color: var(--color-text-default); text-transform: uppercase; letter-spacing: .03em; }
+
+    /* ── logo board ─────────────────────────────────────────────── */
+    .logo-cell { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 150px; padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--color-border-default); }
+    .logo-cell.on-light { background: var(--color-surface); }
+    .logo-cell.on-cream { background: var(--color-background); }
+    .logo-cell img { height: 76px; width: auto; }
+    .logo-cell .cap { font-size: 12px; color: var(--color-text-muted); }
+    .clearspace { position: relative; display: inline-block; padding: 28px; border-radius: var(--radius-md); background: var(--color-mint-50); outline: 1px dashed var(--color-mint-500); }
+    .clearspace img { height: 64px; }
+
+    /* ── mascot board ───────────────────────────────────────────── */
+    .mascot-hero { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: center; }
+    @media (max-width: 900px) { .mascot-hero { grid-template-columns: 1fr; } }
+    .mascot-hero .stage { background: radial-gradient(circle at 50% 40%, var(--color-mint-100), var(--color-mint-50)); border-radius: var(--radius-xl); padding: 24px; display: flex; justify-content: center; }
+    .mascot-hero .stage img { width: 220px; }
+    .mood-cell { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 12px; }
+    .mood-cell .puck { width: 100%; aspect-ratio: 1; border-radius: var(--radius-lg); background: var(--color-mint-50); display: flex; align-items: flex-end; justify-content: center; overflow: hidden; border: 1px solid var(--color-border-default); }
+    .mood-cell .puck img { width: 88%; }
+    .mood-cell .label { font-size: 13px; font-weight: 700; }
+    .mood-cell .desc { font-size: 11px; color: var(--color-text-muted); text-align: center; }
+
+    /* ── typography scale ───────────────────────────────────────── */
+    .type-row { display: flex; align-items: baseline; gap: 20px; padding: 14px 0; border-bottom: 1px solid var(--color-border-default); }
+    .type-row:last-child { border-bottom: 0; }
+    .type-row .spec { font-size: 11px; color: var(--color-text-muted); min-width: 120px; }
+    .type-sample { color: var(--color-text-strong); }
+
+    /* ── live components ────────────────────────────────────────── */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 700; font-size: 15px; border-radius: var(--radius-pill); padding: 12px 24px; border: 0; cursor: pointer; transition: filter var(--duration-fast) var(--ease-out-soft), background var(--duration-fast) var(--ease-out-soft); }
+    .btn-primary { background: var(--color-primary-cta); color: var(--color-text-inverse); box-shadow: 0 3px 0 var(--color-mint-900); }
+    .btn-primary:hover { filter: brightness(.93); }
+    .btn-secondary { background: var(--color-surface); color: var(--color-mint-900); border: 1.5px solid var(--color-border-strong); }
+    .btn-secondary:hover { background: var(--color-mint-50); }
+    .btn-ghost { background: transparent; color: var(--color-text-default); }
+    .btn-ghost:hover { background: var(--color-bg-sunken); }
+
+    /* stats 4박스 */
+    .stat { padding: 16px; border-radius: var(--radius-lg); background: var(--color-surface); border: 1px solid var(--color-border-default); box-shadow: var(--shadow-card); }
+    .stat .k { font-size: 12px; color: var(--color-text-muted); font-weight: 600; }
+    .stat .v { font-size: 26px; font-weight: 800; margin-top: 4px; color: var(--color-text-strong); }
+    .stat .v small { font-size: 13px; font-weight: 600; color: var(--color-text-muted); }
+
+    /* 기억HP 도트 (0–5 정수) */
+    .hp-dots { display: inline-flex; gap: 6px; }
+    .hp-dots .dot { width: 16px; height: 16px; border-radius: var(--radius-pill); background: var(--color-bg-sunken); border: 1px solid var(--color-border-default); }
+    .hp-dots .dot.on { background: var(--color-mint-500); border-color: var(--color-mint-700); }
+
+    /* 위험도 pill */
+    .risk-low  { background: var(--color-risk-low);  color: var(--color-mint-900); }
+    .risk-mid  { background: var(--color-risk-mid);  color: var(--color-text-on-warm); }
+    .risk-high { background: var(--color-risk-high); color: var(--color-text-strong); }
+
+    /* 좌측 네비 레일 (라이브 미니) */
+    .rail { width: 220px; background: var(--color-surface); border: 1px solid var(--color-border-default); border-radius: var(--radius-lg); padding: 14px; box-shadow: var(--shadow-card); }
+    .rail .item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; color: var(--color-text-default); }
+    .rail .item .ic { width: 18px; height: 18px; }
+    .rail .item.active { background: var(--color-mint-100); color: var(--color-mint-900); font-weight: 700; }
+    .rail .item:not(.active):hover { background: var(--color-mint-50); color: var(--color-mint-700); }
+
+    /* 순공냅스(망각맵) 미니 캔버스 — journey-canvas 토큰 전용 surface */
+    .napse { border-radius: var(--radius-lg); padding: 22px; min-height: 160px; position: relative; overflow: hidden;
+             background: radial-gradient(circle at 50% 45%, var(--journey-canvas-bg-center), var(--journey-canvas-bg-edge)); }
+    .napse .node { position: absolute; width: 16px; height: 16px; border-radius: var(--radius-pill); background: var(--color-mint-500); box-shadow: 0 0 14px 3px rgba(123,196,174,.55); }
+    .napse .node.dim { background: var(--color-mint-900); box-shadow: none; opacity: .8; }
+    .napse .edge { position: absolute; height: 2px; background: linear-gradient(90deg, rgba(123,196,174,.6), rgba(123,196,174,.05)); transform-origin: left center; }
+    .napse .cap { position: absolute; left: 16px; bottom: 12px; color: rgba(255,255,255,.82); font-size: 12px; font-weight: 600; }
+
+    /* flat icon demo */
+    .icon-demo { display: flex; gap: 18px; flex-wrap: wrap; }
+    .icon-demo .ic { width: 28px; height: 28px; color: var(--color-mint-700); }
+
+    /* do / don't */
+    .dd { border-radius: var(--radius-lg); padding: 16px 18px; border: 1px solid var(--color-border-default); }
+    .dd.do { background: var(--color-mint-50); }
+    .dd.dont { background: var(--color-risk-bg); }
+    .dd h4 { font-size: 14px; margin-bottom: 8px; }
+    .dd.do h4 { color: var(--color-mint-900); }
+    .dd.dont h4 { color: var(--color-text-strong); }
+    .dd ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--color-text-default); }
+    .dd li { margin: 4px 0; }
+
+    /* download */
+    .dl { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--radius-md); border: 1px solid var(--color-border-default); background: var(--color-surface); text-decoration: none; font-size: 13px; font-weight: 600; color: var(--color-text-strong); }
+    .dl:hover { border-color: var(--color-border-strong); background: var(--color-mint-50); }
+    .dl .tag { margin-left: auto; font-size: 11px; color: var(--color-text-muted); font-weight: 600; }
+
+    .note { font-size: 12px; color: var(--color-text-muted); margin-top: 10px; }
+    .src { font-size: 11px; color: var(--color-text-muted); margin-top: 6px; }
+    .src code { background: var(--color-bg-sunken); padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ───────────── 좌측 섹션 네비 ───────────── -->
+  <aside class="sidenav">
+    <div class="brandmark">
+      <img src="../logo/soongong-logo-ko-light.svg" alt="순공대장" />
+    </div>
+    <div class="kicker">Brand &amp; Design System</div>
+    <nav id="toc">
+      <a href="#story"><span class="n">01</span> 브랜드 스토리</a>
+      <a href="#logo"><span class="n">02</span> 로고</a>
+      <a href="#mascot"><span class="n">03</span> 마스코트 순공이</a>
+      <a href="#color"><span class="n">04</span> 컬러</a>
+      <a href="#type"><span class="n">05</span> 타이포그래피</a>
+      <a href="#icon"><span class="n">06</span> 아이콘 · 일러스트</a>
+      <a href="#components"><span class="n">07</span> 컴포넌트 (라이브)</a>
+      <a href="#motion"><span class="n">08</span> 모션</a>
+      <a href="#voice"><span class="n">09</span> Voice &amp; Tone</a>
+      <a href="#dodont"><span class="n">10</span> Do / Don't · 다운로드</a>
+    </nav>
+    <div class="footnote">
+      값 SSoT = <code>tokens.css</code> (직접 link).<br/>
+      이 페이지는 hex를 복사하지 않습니다 — 스와치 값은 런타임에 tokens.css에서 읽습니다.<br/>
+      픽셀 SSoT &gt; UI 설계 &gt; 검수 스킬.
+    </div>
+  </aside>
+
+  <!-- ───────────── 본문 ───────────── -->
+  <main>
+
+    <!-- 01. 브랜드 스토리 -->
+    <section id="story" class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">순공대장 · Soongong</div>
+          <h1>막힘이 아니라<br/><span class="hl">까먹음</span>을 푼다</h1>
+          <p class="tag">AI 문제 풀이가 학생의 <b>막힘</b>을 푼다면, 순공대장은 학생의 <b>까먹음</b>을 푼다. 올린 문제·인강·캡처를 1·3·7·14일 회독퀘스트로 바꾸는 AI 회독 리텐션 엔진.</p>
+          <div class="meta">
+            <span class="pill" style="background:var(--color-mint-100);color:var(--color-mint-900)">회독 리텐션 엔진</span>
+            <span class="pill" style="background:var(--color-primary-bg);color:var(--color-mint-900)">Light Study Garden</span>
+            <span class="pill" style="background:var(--color-xp-soft);color:var(--color-text-on-warm)">듀오링고의 다음 진화</span>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="../../mascot/camera-capture-alpha.png" alt="카메라를 든 순공이 마스코트" />
+        </div>
+      </div>
+
+      <h3 class="sub">포지셔닝 한 줄</h3>
+      <div class="grid g3">
+        <div class="card">
+          <div class="eyebrow">Problem</div>
+          <p style="margin:0;font-size:14px;color:var(--color-text-default)">학생은 풀어도 <b>잊는다</b>. 망각곡선은 며칠이면 기억을 지운다.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Engine</div>
+          <p style="margin:0;font-size:14px;color:var(--color-text-default)">AI가 올린 자료를 학습객체로 쪼개 <b>회독 일정</b>(1/3/7/14일)으로 변환.</p>
+        </div>
+        <div class="card">
+          <div class="eyebrow">Tone</div>
+          <p style="margin:0;font-size:14px;color:var(--color-text-default)">압박이 아니라 <b>동반</b>. 매일 들어오고 싶은 "공부 정원".</p>
+        </div>
+      </div>
+      <p class="src">출처: <code>전략정리.md §0</code> · <code>CLAUDE.md §1</code> · 톤 = <code>UI 설계.md §1</code></p>
+    </section>
+
+    <!-- 02. 로고 -->
+    <section id="logo">
+      <div class="eyebrow">02 — Logo</div>
+      <h2>로고</h2>
+      <p class="lede">통통 아웃라인 워드마크 + 상단 스파클(크라운) 마크. 한글(순공대장)·영문(SOONGONG) × 라이트/민트 배경 4종. 자산은 SVG 벡터(픽셀 SSoT).</p>
+
+      <h3 class="sub">4종 변형</h3>
+      <div class="grid g2">
+        <div class="logo-cell on-light"><img src="../logo/soongong-logo-ko-light.svg" alt="순공대장 로고 KO light"/><span class="cap">KO · light (밝은 표면용)</span></div>
+        <div class="logo-cell on-light"><img src="../logo/soongong-logo-en-light.svg" alt="SOONGONG 로고 EN light"/><span class="cap">EN · light</span></div>
+        <div class="logo-cell on-cream" style="background:var(--color-mint-500)"><img src="../logo/soongong-logo-ko-mint.svg" alt="순공대장 로고 KO mint"/><span class="cap" style="color:var(--color-text-inverse)">KO · mint (틴트 배경 동반)</span></div>
+        <div class="logo-cell on-cream" style="background:var(--color-mint-500)"><img src="../logo/soongong-logo-en-mint.svg" alt="SOONGONG 로고 EN mint"/><span class="cap" style="color:var(--color-text-inverse)">EN · mint</span></div>
+      </div>
+
+      <div class="grid g2" style="margin-top:28px">
+        <div>
+          <h3 class="sub" style="margin-top:0">여백 · 최소크기</h3>
+          <div class="clearspace"><img src="../logo/soongong-logo-ko-light.svg" alt="여백 규칙"/></div>
+          <p class="note">최소 여백(clear space) = 스파클 마크 높이만큼 사방 확보. 다른 요소를 그 안에 넣지 않는다.</p>
+          <ul style="font-size:13px;color:var(--color-text-default);padding-left:18px">
+            <li>최소 크기: 워드마크 높이 <b>24px</b> 이상 (사이드바 축소형 <code>.wordmark-sm</code> 기준)</li>
+            <li>기본: 헤더·사이드바 <code>.wordmark</code> / 랜딩·로딩 <code>.wordmark-lg</code></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="sub" style="margin-top:0">금지 사례</h3>
+          <ul style="font-size:13px;color:var(--color-text-default);padding-left:18px;line-height:2">
+            <li>❌ 임의 색으로 칠하기 (teal 외 색 금지)</li>
+            <li>❌ 비율 왜곡 · 기울이기 · 그림자 추가</li>
+            <li>❌ 다크 네이비/게임 톤 배경 위 배치 (폐기 톤)</li>
+            <li>❌ RockoUltraFLF 등 무라이선스 폰트로 재조판</li>
+            <li>❌ 스파클 마크 분리·재배치</li>
+          </ul>
+          <p class="src">출처: <code>design-system-lock v2.1 §2</code></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03. 마스코트 -->
+    <section id="mascot">
+      <div class="eyebrow">03 — Mascot</div>
+      <h2>마스코트 — 순공이</h2>
+      <p class="lede">듀공 모티프 단일 마스코트 "순공이". 채택본은 <b>카메라를 든 순공이</b>(업로드 = 핵심 행동의 상징). 손실 상황도 위협이 아니라 차분한 동반자 톤으로.</p>
+
+      <div class="mascot-hero card" style="margin-top:8px">
+        <div class="stage"><img src="../../mascot/camera-capture-alpha.png" alt="카메라 든 순공이 (채택본)"/></div>
+        <div>
+          <h3 class="sub" style="margin-top:0">시그니처 — 카메라 든 순공이</h3>
+          <p style="font-size:14px;color:var(--color-text-default);margin:0">문제 사진을 찍어 올리는 순간이 순공대장의 시작. 메인 히어로·업로드·랜딩에 쓰는 채택본.</p>
+          <div class="meta" style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+            <span class="pill" style="background:var(--color-mint-100);color:var(--color-mint-900)">듀공 모티프 잠금</span>
+            <span class="pill" style="background:var(--color-mint-100);color:var(--color-mint-900)">식물/등급 모티프 금지</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="sub">표정 · 무드 (mood 토큰)</h3>
+      <div class="grid g4">
+        <div class="mood-cell card" style="padding:0">
+          <div class="puck"><img src="../../mascot/main-half-alpha.png" alt="idle 무드"/></div>
+          <div style="padding:10px 8px 14px;text-align:center">
+            <div class="label">idle · 평상</div>
+            <div class="desc">홈 배너 기본 등장</div>
+          </div>
+        </div>
+        <div class="mood-cell card" style="padding:0">
+          <div class="puck"><img src="../../mascot/main-half-cheer-alpha.png" alt="cheer 무드"/></div>
+          <div style="padding:10px 8px 14px;text-align:center">
+            <div class="label">cheer · 격려</div>
+            <div class="desc">"오늘 N개로 망각 막아요"</div>
+          </div>
+        </div>
+        <div class="mood-cell card" style="padding:0">
+          <div class="puck"><img src="../../mascot/main-half-good-alpha.png" alt="praise 무드"/></div>
+          <div style="padding:10px 8px 14px;text-align:center">
+            <div class="label">praise · 축하</div>
+            <div class="desc">정답 결과 · 레벨업</div>
+          </div>
+        </div>
+        <div class="mood-cell card" style="padding:0">
+          <div class="puck"><img src="../../mascot/main-half-comeon-alpha.png" alt="nudge 무드"/></div>
+          <div style="padding:10px 8px 14px;text-align:center">
+            <div class="label">nudge · 위로/넛지</div>
+            <div class="desc">오답 회수 · 부드러운 권유</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid g2" style="margin-top:28px">
+        <div class="dd do">
+          <h4>사용 가이드 ✓</h4>
+          <ul>
+            <li>크기 슬롯: 24 / 36 / 52 / 72 / 100 / 130px (화면별)</li>
+            <li>결과=축하, 오답=위로, 빈 상태=휴식 무드로 맥락 일치</li>
+            <li>alpha(투명) 버전을 컬러 표면 위에 사용</li>
+          </ul>
+        </div>
+        <div class="dd dont">
+          <h4>금지 ✗</h4>
+          <ul>
+            <li>위협적·게으른 캐릭터로 변형</li>
+            <li>듀공이 아닌 다른 마스코트·식물 등급 도입</li>
+            <li>brand/ · mascot/ 밖에 자산 복제 (두 번째 SSoT)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="src">출처: <code>design-system-lock v2.1 §5-3</code> · <code>mascot-mood.ts</code> · 채택본 = SOO-128 Mike 확정</p>
+    </section>
+
+    <!-- 04. 컬러 -->
+    <section id="color">
+      <div class="eyebrow">04 — Color</div>
+      <h2>컬러 — v2 Teal/Mint</h2>
+      <p class="lede">크림 베이스 + 저채도 teal/mint 브랜드 + soft golden 보상 + 데사처드 위험도. 구 Ocean 팔레트는 폐기. 아래 hex는 <b>런타임에 tokens.css에서 직접 읽은 값</b>입니다.</p>
+
+      <h3 class="sub">브랜드 Teal/Mint</h3>
+      <div class="grid g3" data-swatches="--color-mint-50,--color-mint-100,--color-mint-300,--color-mint-500,--color-mint-700,--color-mint-900"></div>
+
+      <h3 class="sub">Primary CTA · Surface</h3>
+      <div class="grid g3" data-swatches="--color-primary-cta,--color-primary-bg,--color-background,--color-surface,--color-bg-sunken,--color-border-strong"></div>
+
+      <h3 class="sub">위험도 (데사처드) · 상태</h3>
+      <div class="grid g3" data-swatches="--color-risk-low,--color-risk-mid,--color-risk-high,--color-info,--color-warning,--color-neutral"></div>
+
+      <h3 class="sub">보상(XP) · 텍스트</h3>
+      <div class="grid g3" data-swatches="--color-xp,--color-xp-soft,--color-text-strong,--color-text-default,--color-text-muted,--color-text-disabled"></div>
+
+      <p class="src">SSoT: <code>apps/web/src/shared/styles/tokens.css</code> · 가드: <code>pnpm lint:tokens</code> (등록 외 hex 차단)</p>
+    </section>
+
+    <!-- 05. 타이포그래피 -->
+    <section id="type">
+      <div class="eyebrow">05 — Typography</div>
+      <h2>타이포그래피</h2>
+      <p class="lede">한글 본문·표제 = <b>Pretendard</b> (tokens.css <code>--font-display</code> / <code>--font-body</code>). 수식은 KaTeX 페어링. 모든 한글은 <code>word-break: keep-all</code>로 어절 줄바꿈.</p>
+
+      <div class="card" style="margin-top:8px">
+        <div class="type-row"><span class="spec">Display · 48 / 800</span><span class="type-sample" style="font-size:48px;font-weight:800;letter-spacing:-.02em">까먹음을 푼다</span></div>
+        <div class="type-row"><span class="spec">H2 · 30 / 800</span><span class="type-sample" style="font-size:30px;font-weight:800">오늘의 회독길</span></div>
+        <div class="type-row"><span class="spec">H3 · 20 / 700</span><span class="type-sample" style="font-size:20px;font-weight:700">기억HP가 차오르고 있어요</span></div>
+        <div class="type-row"><span class="spec">Body · 16 / 400</span><span class="type-sample" style="font-size:16px">올린 문제를 1·3·7·14일 회독퀘스트로 바꿔드려요. 가나다라마바사 0123456789</span></div>
+        <div class="type-row"><span class="spec">Small · 14 / 500</span><span class="type-sample" style="font-size:14px;font-weight:500;color:var(--color-text-default)">스트릭 7일 · 순공러 등급</span></div>
+        <div class="type-row"><span class="spec">Caption · 12 / 600</span><span class="type-sample" style="font-size:12px;font-weight:600;color:var(--color-text-muted)">자정까지 회독하면 기억이 2배 오래 남아요</span></div>
+      </div>
+      <p class="note">Weight: 400(본문) · 500/600(보조·캡션) · 700(제목) · 800(디스플레이). 표제는 자간 살짝 좁게(-.01~-.02em).</p>
+      <p class="src">로딩: Pretendard via jsDelivr CDN · 앱 번들 = <code>pretendard/dist/web/static/pretendard.css</code></p>
+    </section>
+
+    <!-- 06. 아이콘 / 일러스트 -->
+    <section id="icon">
+      <div class="eyebrow">06 — Icon &amp; Illustration</div>
+      <h2>아이콘 · 일러스트 스타일</h2>
+      <p class="lede">인앱 아이콘은 <b>플랫 선형(라인) 아이콘</b>. stroke 1.5px, fill none, round cap/join. 색은 컨텍스트에 따라 active=mint-700 / inactive=text-muted.</p>
+
+      <div class="grid g2" style="margin-top:8px">
+        <div class="card">
+          <h3 class="sub" style="margin-top:0">선형 아이콘 규칙</h3>
+          <div class="icon-demo">
+            <!-- 데모 아이콘: stroke 1.5, round, fill none -->
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5"/><path d="M5 10.5V19h14v-8.5"/><path d="M9.5 19v-4.5h5V19"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-7-3-7 3z"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V9M10 18V5M16 18v-7M22 18H2"/></svg>
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.2 5.3 5.8.5-4.4 3.8 1.3 5.6L12 16.9 7.1 19.8l1.3-5.6L4 10.4l5.8-.5z"/></svg>
+          </div>
+          <ul style="font-size:13px;color:var(--color-text-default);padding-left:18px;margin-top:14px">
+            <li>stroke-width 1.5px (강조 체크만 2px)</li>
+            <li>크기: 내비 20 / 사이드바 15 / 카드 14px</li>
+            <li>fill: none — 선형 전용</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 class="sub" style="margin-top:0">일러스트 = 마스코트 2트랙</h3>
+          <p style="font-size:14px;color:var(--color-text-default)">일러스트레이션은 순공이 무드 시트로 통일. 자산 트랙을 분리한다:</p>
+          <ul style="font-size:13px;color:var(--color-text-default);padding-left:18px">
+            <li><b>플랫(in-app UI)</b> — 선형 아이콘 + 순공이 평면 컷</li>
+            <li><b>3D/풀컬러(마케팅)</b> — 히어로·랜딩·서브 캐릭터</li>
+          </ul>
+          <p class="note">트랙을 섞지 않는다. 서브 캐릭터(sub-boy/girl)는 히어로·마케팅 전용(인앱 금지, <code>lint:sub-scope</code>).</p>
+        </div>
+      </div>
+      <p class="src">출처: <code>design-system-lock v2.1 §5-2</code> · 자산 2트랙 = <code>soongong-design</code> 규칙 4</p>
+    </section>
+
+    <!-- 07. 컴포넌트 (라이브) -->
+    <section id="components">
+      <div class="eyebrow">07 — Components (live)</div>
+      <h2>컴포넌트 (라이브)</h2>
+      <p class="lede">실제 토큰으로 렌더된 라이브 컴포넌트. 모두 <code>var(--*)</code> 참조 — 토큰을 바꾸면 여기도 같이 바뀝니다.</p>
+
+      <h3 class="sub">버튼</h3>
+      <div class="card" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-primary">문제 풀러 가기</button>
+        <button class="btn btn-secondary">홈으로</button>
+        <button class="btn btn-ghost">나중에</button>
+      </div>
+      <p class="note">Primary = <code>--color-primary-cta</code> fill, hover brightness .93 / Secondary = outline / Destructive 없음(MVP1).</p>
+
+      <h3 class="sub">홈 stats 4박스</h3>
+      <div class="grid g4">
+        <div class="stat"><div class="k">🔥 스트릭</div><div class="v">7<small> 일</small></div></div>
+        <div class="stat"><div class="k">🧠 기억HP</div><div class="v" style="display:flex;align-items:center;gap:8px"><span class="hp-dots"><i class="dot on"></i><i class="dot on"></i><i class="dot on"></i><i class="dot"></i><i class="dot"></i></span></div></div>
+        <div class="stat"><div class="k">⏱ 순공시간</div><div class="v">2.4<small> h</small></div></div>
+        <div class="stat"><div class="k">⭐ XP · 등급</div><div class="v">1,240<small> · 순공러</small></div></div>
+      </div>
+      <p class="note">기억HP는 <b>0–5 정수 도트</b>로만 표현 (백분율·하트 금지 — 게임화 잠긴 값).</p>
+
+      <h3 class="sub">위험도 pill (데사처드)</h3>
+      <div class="card" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <span class="pill risk-low">● 안전</span>
+        <span class="pill risk-mid">● 주의 · 3일째</span>
+        <span class="pill risk-high">● 위험 · 곧 잊혀요</span>
+      </div>
+
+      <div class="grid g2" style="margin-top:28px;align-items:start">
+        <div>
+          <h3 class="sub" style="margin-top:0">좌측 네비 레일</h3>
+          <div class="rail">
+            <div class="item active"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5M5 10.5V19h14v-8.5"/></svg> 오늘</div>
+            <div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 9h18M8 3v4M16 3v4"/></svg> 회독 캘린더</div>
+            <div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-7-3-7 3z"/></svg> 오답노트</div>
+            <div class="item"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18V9M10 18V5M16 18v-7M22 18H2"/></svg> 순공냅스</div>
+          </div>
+          <p class="note">Active = mint-100 배경 / mint-900 텍스트 / 700. Hover = mint-50.</p>
+        </div>
+        <div>
+          <h3 class="sub" style="margin-top:0">순공냅스 (뉴럴 망각맵)</h3>
+          <div class="napse">
+            <div class="edge" style="left:46px;top:54px;width:80px;transform:rotate(22deg)"></div>
+            <div class="edge" style="left:46px;top:54px;width:96px;transform:rotate(-14deg)"></div>
+            <div class="edge" style="left:130px;top:96px;width:72px;transform:rotate(-30deg)"></div>
+            <div class="node" style="left:40px;top:48px"></div>
+            <div class="node dim" style="left:118px;top:84px"></div>
+            <div class="node" style="left:142px;top:34px"></div>
+            <div class="node dim" style="left:196px;top:64px"></div>
+            <div class="cap">개념이 연결될수록 망각이 느려져요</div>
+          </div>
+          <p class="note">딥 틸 캔버스(<code>--journey-canvas-bg-*</code>)는 망각맵 surface 전용. 캔버스 밖 사용 금지(다크 톤 회귀 아님).</p>
+        </div>
+      </div>
+      <p class="src">출처: <code>interaction-spec §2</code> · <code>design-system-lock §3</code> · HP 단위 <code>게임성_기획_구조.md §4-2</code></p>
+    </section>
+
+    <!-- 08. 모션 -->
+    <section id="motion">
+      <div class="eyebrow">08 — Motion</div>
+      <h2>모션 가이드</h2>
+      <p class="lede">듀오링고급 <b>절제된</b> 모션. 마스코트 등장 bounce만 부분 차용, 버튼·카드 과한 bounce 금지. 강렬 피드백(진동·섬광) 금지 — subtle 색 변화만.</p>
+
+      <div class="card" style="margin-top:8px">
+        <table style="width:100%;border-collapse:collapse;font-size:14px">
+          <thead><tr style="text-align:left;color:var(--color-text-muted);font-size:12px">
+            <th style="padding:8px 0">전환</th><th>지속</th><th>이징</th></tr></thead>
+          <tbody style="color:var(--color-text-default)">
+            <tr style="border-top:1px solid var(--color-border-default)"><td style="padding:9px 0">버튼 hover</td><td>150ms</td><td>ease</td></tr>
+            <tr style="border-top:1px solid var(--color-border-default)"><td style="padding:9px 0">필터 칩 활성화</td><td>160ms</td><td>ease</td></tr>
+            <tr style="border-top:1px solid var(--color-border-default)"><td style="padding:9px 0">카드 hover</td><td>120ms</td><td>ease</td></tr>
+            <tr style="border-top:1px solid var(--color-border-default)"><td style="padding:9px 0">토스트</td><td>인 200ms · 3초 후 아웃</td><td>ease-out / in</td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:14px">토큰: <code>--duration-fast 160ms</code> · <code>--duration-mid 240ms</code> · <code>--duration-slow 380ms</code> · <code>--ease-out-soft</code></p>
+      </div>
+
+      <div class="grid g2" style="margin-top:20px">
+        <div class="dd do"><h4>허용 ✓</h4><ul><li>마스코트 등장 spring/bounce</li><li>XP 카운트업(결과 화면)</li><li>위젯별 스켈레톤 로딩</li></ul></div>
+        <div class="dd dont"><h4>금지 ✗</h4><ul><li>전체 화면 블로킹 스피너</li><li>제출 후 진동·섬광</li><li>자동 팝업/모달, 스트릭 카운트다운 타이머</li></ul></div>
+      </div>
+      <p class="src">출처: <code>interaction-spec §4</code></p>
+    </section>
+
+    <!-- 09. Voice & Tone -->
+    <section id="voice">
+      <div class="eyebrow">09 — Voice &amp; Tone</div>
+      <h2>Voice &amp; Tone</h2>
+      <p class="lede">압박·죄책감·공포 대신 함께 가는 <b>동반자 톤</b>. fear 카피 절대 금지. 한글은 <code>word-break: keep-all</code>로 어절 단위 줄바꿈.</p>
+
+      <h3 class="sub">동반자 톤 3원칙</h3>
+      <div class="grid g3">
+        <div class="card"><p style="font-weight:700;font-size:14px;margin:0">압박이 아니라 동반</p><p style="font-size:13px;color:var(--color-text-default);margin:6px 0 0">학습을 공포로 프레이밍하지 않는다. 위협 캐릭터·죄책감 카피 금지.</p></div>
+        <div class="card"><p style="font-weight:700;font-size:14px;margin:0">손실도 부드럽게</p><p style="font-size:13px;color:var(--color-text-default);margin:6px 0 0">streak loss는 순공이 차분한 무드로. 빨강 하트 대신 기억HP 변형.</p></div>
+        <div class="card"><p style="font-weight:700;font-size:14px;margin:0">알림은 최소·예측가능</p><p style="font-size:13px;color:var(--color-text-default);margin:6px 0 0">회독 일정(1/3/7/14일)만. 잦은 reminder 푸시는 거절.</p></div>
+      </div>
+
+      <div class="grid g2" style="margin-top:24px">
+        <div class="dd do">
+          <h4>이렇게 ✓</h4>
+          <ul>
+            <li>"순공이가 잠들고 있어요. 깨워줄까요?"</li>
+            <li>"오늘 하면 기억이 2배 오래 남아요"</li>
+            <li>"이번엔 아쉬웠어요. 오답노트에 담았어요"</li>
+          </ul>
+        </div>
+        <div class="dd dont">
+          <h4>이건 금지 ✗</h4>
+          <ul>
+            <li>"돌아와!", "안 하면 망한다"</li>
+            <li>"안 하면 점수 떨어집니다" (fear)</li>
+            <li>성적·합격 보장, passive-aggressive</li>
+          </ul>
+        </div>
+      </div>
+      <p class="src">출처: <code>design-review §2-5</code> · <code>interaction-spec §4-1</code> · 듀오링고 거절 매트릭스</p>
+    </section>
+
+    <!-- 10. Do/Don't + 다운로드 -->
+    <section id="dodont">
+      <div class="eyebrow">10 — Do / Don't · Downloads</div>
+      <h2>Do / Don't · 다운로드 자산</h2>
+
+      <div class="grid g2" style="margin-top:8px">
+        <div class="dd do">
+          <h4>시스템 전체 Do ✓</h4>
+          <ul>
+            <li>색은 tokens.css 변수로만 (<code>lint:tokens</code> 통과)</li>
+            <li>Light 단일 톤 — 라이트 한 가지</li>
+            <li>마스코트 = 듀공 "순공이" 단일</li>
+            <li>기억HP 0–5 정수 · 위험도 데사처드</li>
+          </ul>
+        </div>
+        <div class="dd dont">
+          <h4>회귀 금지 ✗ (폐기 정책)</h4>
+          <ul>
+            <li>다크모드 · 다크 네이비 · 다크 게임 톤</li>
+            <li>구 Ocean 팔레트(고채도 시안 톤)</li>
+            <li>하드코딩 hex · 토스풍 그림자 중첩</li>
+            <li>빨강 하트(생명) · 아이템샵 · 잦은 푸시</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 class="sub">다운로드</h3>
+      <div class="grid g2">
+        <a class="dl" href="../logo/soongong-logo-ko-light.svg" download>순공대장 로고 · KO light <span class="tag">SVG</span></a>
+        <a class="dl" href="../logo/soongong-logo-en-light.svg" download>SOONGONG 로고 · EN light <span class="tag">SVG</span></a>
+        <a class="dl" href="../logo/soongong-logo-ko-mint.svg" download>순공대장 로고 · KO mint <span class="tag">SVG</span></a>
+        <a class="dl" href="../logo/soongong-logo-en-mint.svg" download>SOONGONG 로고 · EN mint <span class="tag">SVG</span></a>
+        <a class="dl" href="../../mascot/camera-capture-alpha.png" download>순공이 · 카메라(채택본) <span class="tag">PNG · alpha</span></a>
+        <a class="dl" href="../../mascot/main-half-cheer-alpha.png" download>순공이 · cheer <span class="tag">PNG · alpha</span></a>
+        <a class="dl" href="../../mascot/main-half-good-alpha.png" download>순공이 · praise <span class="tag">PNG · alpha</span></a>
+        <a class="dl" href="../../mascot/main-half-comeon-alpha.png" download>순공이 · nudge <span class="tag">PNG · alpha</span></a>
+        <a class="dl" href="../../../src/shared/styles/tokens.css" download>디자인 토큰 (값 SSoT) <span class="tag">tokens.css</span></a>
+        <a class="dl" href="../icon.png" download>앱 아이콘 <span class="tag">PNG</span></a>
+      </div>
+
+      <p class="src" style="margin-top:22px">이 페이지는 이후 <b>사업계획서 · 에이전트 문서의 입력 SSoT</b>로 사용됩니다 (SOO-129). 값 정본은 항상 <code>tokens.css</code> · 픽셀 자산은 <code>public/brand</code> · <code>public/mascot</code>.</p>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // ── 컬러 스와치: hex 를 런타임에 tokens.css 에서 직접 읽어 주입(두 번째 SSoT 방지) ──
+  (function () {
+    const rs = getComputedStyle(document.documentElement);
+    const read = (v) => rs.getPropertyValue(v).trim();
+    document.querySelectorAll('[data-swatches]').forEach((box) => {
+      box.getAttribute('data-swatches').split(',').forEach((vRaw) => {
+        const v = vRaw.trim();
+        const hex = read(v) || '—';
+        const name = v.replace('--color-', '').replace('--', '');
+        const cell = document.createElement('div');
+        cell.className = 'swatch';
+        cell.innerHTML =
+          '<div class="chip" style="background:var(' + v + ')"></div>' +
+          '<div class="meta">' +
+            '<div class="name">' + name + '</div>' +
+            '<div class="var">var(' + v + ')</div>' +
+            '<div class="hex">' + hex + '</div>' +
+          '</div>';
+        box.appendChild(cell);
+      });
+    });
+  })();
+
+  // ── 좌측 네비 active 표시 (scroll spy) ──
+  (function () {
+    const links = Array.from(document.querySelectorAll('#toc a'));
+    const map = new Map(links.map((a) => [a.getAttribute('href').slice(1), a]));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          links.forEach((l) => l.classList.remove('active'));
+          const a = map.get(e.target.id);
+          if (a) a.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    document.querySelectorAll('main section').forEach((s) => obs.observe(s));
+  })();
+</script>
+</body>
+</html>
