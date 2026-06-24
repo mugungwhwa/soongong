@@ -118,11 +118,15 @@ img{display:block;max-width:100%}
 .device.web .naps-head p{font-size:14px}
 
 .cols{display:block;padding:14px}
-.device.web .cols{display:grid;grid-template-columns:1fr 1.2fr;gap:20px;padding:14px 28px 28px;align-items:start}
+/* 웹: 망각맵(좌, 큰 칼럼) + 여정·개념(우, 스택) 균형 그리드 — 좌측 빈공간 제거 */
+.device.web .cols{display:grid;grid-template-columns:1.12fr 0.88fr;grid-template-areas:"map journey" "map concept";gap:18px;padding:14px 28px 28px;align-items:start}
+.device.web .a-map{grid-area:map}
+.device.web .a-journey{grid-area:journey}
+.device.web .a-concept{grid-area:concept}
+.device.web .cols>*{margin-bottom:0}
 .device.app .cols{padding:14px}
 
 .card{background:#fff;border-radius:var(--radius-lg);box-shadow:var(--shadow-card);border:1px solid var(--color-border-default);margin-bottom:14px}
-.device.web .col-r .card:last-child{margin-bottom:0}
 .card .ch{padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between}
 .card .ch h2{font-size:16px;font-weight:800;letter-spacing:-.02em}
 .card .ch .hint{font-size:12px;color:var(--color-text-muted);font-weight:600}
@@ -143,7 +147,7 @@ img{display:block;max-width:100%}
   background:linear-gradient(90deg,var(--color-mint-500),var(--color-mint-700))}
 
 /* 6단 path */
-.path{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;margin-top:30px;position:relative}
+.path{display:flex;align-items:flex-start;justify-content:space-between;gap:2px;margin-top:42px;position:relative}
 .path::before{content:"";position:absolute;top:21px;left:8%;right:8%;height:3px;background:var(--color-border-default);border-radius:2px;z-index:0}
 .path .step{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;min-width:0}
 .path .node{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:15px;font-weight:800;
@@ -154,7 +158,7 @@ img{display:block;max-width:100%}
 .path .lbl{font-size:10px;font-weight:700;color:var(--color-text-default);text-align:center;line-height:1.15}
 .path .step.cur .lbl{color:var(--color-mint-900)}
 .path .step.locked .lbl{color:var(--color-text-muted)}
-.path .cur-tag{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;color:#fff;background:var(--color-mint-700);padding:2px 7px;border-radius:var(--radius-pill);white-space:nowrap}
+.path .cur-tag{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:800;color:#fff;background:var(--color-mint-700);padding:3px 8px;border-radius:var(--radius-pill);white-space:nowrap;box-shadow:0 2px 5px rgba(46,125,91,.25)}
 
 /* ── 망각맵 (딥틸 캔버스) ── */
 .naps-card{background:radial-gradient(120% 100% at 50% 0%,var(--journey-canvas-bg-center),var(--journey-canvas-bg-edge));
@@ -253,9 +257,8 @@ img{display:block;max-width:100%}
           </div>
 
           <div class="cols">
-            <!-- 좌: 유저 저니 -->
-            <div class="col-l">
-              <div class="card">
+            <!-- 유저 저니 (웹: 우상단 / 모바일: 최상단) -->
+            <div class="card a-journey">
                 <div class="ch"><h2>나의 순공 여정</h2><span class="hint">누적 XP 기반 6단계</span></div>
                 <div class="cb">
                   <div class="rank-now">
@@ -276,12 +279,10 @@ img{display:block;max-width:100%}
                     <div class="step locked last legend-gold"><div class="node"><span class="mi" style="width:17px;height:17px;color:var(--color-xp)"><svg viewBox="0 0 24 24"><path d="M5 16 3 6l5 4 4-6 4 6 5-4-2 10z"/></svg></span></div><div class="lbl">순공전설</div></div>
                   </div>
                 </div>
-              </div>
             </div>
 
-            <!-- 우: 망각맵 + 선택 개념 -->
-            <div class="col-r">
-              <div class="naps-card">
+            <!-- 망각맵 (웹: 좌측 큰 칼럼 / 모바일: 중간) -->
+            <div class="naps-card a-map">
                 <div class="nch"><h2>망각맵</h2><span class="fill">기억 채움 62%<span class="bar"><i></i></span></span></div>
                 <svg class="naps-svg" viewBox="0 0 360 300" aria-hidden="true">
                   <defs>
@@ -335,7 +336,7 @@ img{display:block;max-width:100%}
                 <div class="naps-foot">회독할수록 <b>뇌가 채워집니다.</b> 아래(안정권)부터 차오르고, 위쪽 흐려진 개념을 회독하면 빈 곳이 메워져요.</div>
               </div>
 
-              <div class="concept">
+              <div class="concept a-concept">
                 <div class="top">
                   <span class="nm">수학 · 수열 점화식</span>
                   <span class="pill safe">안정권 직전</span>
@@ -348,7 +349,6 @@ img{display:block;max-width:100%}
                   이 개념 회독하기
                 </button>
               </div>
-            </div>
           </div>
           <div class="note">앱·웹 같은 데이터·같은 순공이 · 등급(6단)·숙련(4단) 수치는 게임성 SSoT 고정</div>
         </div>
