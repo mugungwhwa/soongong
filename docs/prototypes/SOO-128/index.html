@@ -206,6 +206,10 @@ section{padding:clamp(40px,7vh,80px) 0}
 .pane{display:none}.pane.show{display:flex;justify-content:center}
 .pane.show>div{width:100%;max-width:720px;display:flex;flex-direction:column;align-items:center}
 .slot-cap{text-align:center;font-size:13px;color:var(--color-text-default);margin-top:14px;font-weight:600}
+/* 점6 — 승인 목업(SOO-96) 임베드 자리. "개발 후 실화면 교체" 리본으로 자동 교체 슬롯 명시 */
+.mock-phone,.mock-browser{position:relative}
+.mock-phone .ribbon,.mock-browser .ribbon{position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:9;
+  background:var(--color-mint-900);color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:var(--radius-pill);white-space:nowrap}
 .mock-phone{width:262px;margin:0 auto;background:#2E2E2E;border-radius:38px;padding:9px}
 .mock-phone .ph-scr{border-radius:30px;overflow:hidden;background:var(--color-bg);max-height:540px}
 .mock-phone .ph-scr img{width:100%;display:block}
@@ -432,28 +436,32 @@ footer .b{font-weight:800;color:var(--color-mint-900);font-size:16px;margin:18px
     <div class="section-head rv">
       <span class="eyebrow">앱 · 웹 어디서나</span>
       <h2>주머니 속 앱으로, <span class="grad">책상 위 웹으로</span></h2>
-      <p>같은 회독, 같은 순공이. 어디서 시작하든 회독 큐는 그대로 이어집니다.</p>
+      <p>같은 회독, 같은 순공이. 아래는 <b>지난 승인 목업(SOO-96)</b> 화면 그대로이며, 실앱 개발이 끝나면 실제 화면으로 자동 교체됩니다.</p>
     </div>
     <div class="showcase">
       <div class="toggle">
         <button id="tApp" class="on" onclick="setPane('app')">모바일 앱</button>
         <button id="tWeb" onclick="setPane('web')">데스크톱 웹</button>
       </div>
+      <!-- SLOT:app-preview — 지난 승인 목업(SOO-96) 홈(앱) 화면 그대로. 실앱 개발 시 실화면으로 자동 교체 -->
       <div id="paneApp" class="pane show">
         <div>
           <div class="mock-phone">
-            <div class="ph-scr"><img src="../../../apps/web/public/brand/landing/preview-app.png" alt="순공대장 앱 홈 — 스트릭·기억HP·오늘의 회독·회독퀘스트 (승인 목업 SOO-96)" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;color:#fff\'>승인 목업 SOO-96 홈</div>'" /></div>
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
+            <div class="ph-scr"><img src="../../../apps/web/public/brand/landing/preview-app.png" alt="순공대장 앱 홈 — 스트릭·기억HP·오늘의 회독·회독퀘스트 (승인 목업 SOO-96)" onerror="this.parentElement.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;color:#fff\'>승인 목업 SOO-96 홈</div>'" /></div>
           </div>
-          <div class="slot-cap">하단 중앙 = 문제 촬영, 메인 히어로 액션</div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 홈 화면 그대로 · 하단 중앙 = 문제 촬영</div>
         </div>
       </div>
+      <!-- SLOT:web-preview — 지난 승인 목업(SOO-96 웹 모드) 데스크톱 화면 그대로. 실앱 개발 시 실화면으로 자동 교체 -->
       <div id="paneWeb" class="pane">
         <div>
           <div class="mock-browser">
+            <div class="ribbon">승인 목업 SOO-96 · 개발 후 실화면 교체</div>
             <div class="bar"><i></i><i></i><i></i><div class="url">soongong.app/today</div></div>
             <img class="web-shot" src="../../../apps/web/public/brand/landing/preview-web.png" alt="순공대장 웹 데스크톱 홈 — 상단 네비·stats·오늘의 회독 (승인 목업 SOO-96)" onerror="this.outerHTML='<div style=\'padding:48px;text-align:center;color:var(--color-text-default)\'>승인 목업 SOO-96 웹 홈</div>'" />
           </div>
-          <div class="slot-cap">넓은 데스크톱 레이아웃 · 같은 회독 큐</div>
+          <div class="slot-cap">지난 승인 목업(SOO-96) 웹 데스크톱 화면 그대로 · 넓은 레이아웃</div>
         </div>
       </div>
     </div>

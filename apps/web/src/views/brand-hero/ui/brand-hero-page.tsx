@@ -545,7 +545,10 @@ export function BrandHeroPage() {
           <h2 className={HEAD_H2}>
             주머니 속 앱으로, <span className="text-[var(--color-mint-700)]">책상 위 웹으로</span>
           </h2>
-          <p className={HEAD_P}>같은 회독, 같은 순공이. 어디서 시작하든 회독 큐는 그대로 이어집니다.</p>
+          <p className={HEAD_P}>
+            같은 회독, 같은 순공이. 아래는 <b className="text-[var(--color-text-strong)]">지난 승인 목업(SOO-96)</b>{" "}
+            화면 그대로이며, 실앱 개발이 끝나면 실제 화면으로 자동 교체됩니다.
+          </p>
         </Reveal>
         <Reveal>
           <div className="rounded-[var(--radius-xl)] bg-[linear-gradient(180deg,var(--color-mint-50),var(--color-background))] px-[clamp(18px,4vw,44px)] py-[clamp(32px,5vw,56px)]">
@@ -570,7 +573,10 @@ export function BrandHeroPage() {
 
             {pane === "app" ? (
               <div className="flex flex-col items-center">
-                <div className="w-[262px] rounded-[38px] bg-[var(--color-text-strong)] p-[9px] shadow-[var(--shadow-elevated)]">
+                <div className="relative w-[262px] rounded-[38px] bg-[var(--color-text-strong)] p-[9px] shadow-[var(--shadow-elevated)]">
+                  <span className="absolute left-1/2 top-2.5 z-[9] -translate-x-1/2 whitespace-nowrap rounded-[var(--radius-pill)] bg-[var(--color-mint-900)] px-3 py-[5px] text-[11px] font-bold text-[var(--color-text-inverse)]">
+                    승인 목업 SOO-96 · 개발 후 실화면 교체
+                  </span>
                   <div className="overflow-hidden rounded-[30px] bg-[var(--color-background)]">
                     <Image
                       src="/brand/landing/preview-app.png"
@@ -582,12 +588,15 @@ export function BrandHeroPage() {
                   </div>
                 </div>
                 <div className="mt-3.5 text-[13px] font-semibold text-[var(--color-text-default)]">
-                  하단 중앙 = 문제 촬영, 메인 히어로 액션
+                  지난 승인 목업(SOO-96) 홈 화면 그대로 · 하단 중앙 = 문제 촬영
                 </div>
               </div>
             ) : (
               <div className="flex flex-col items-center">
-                <div className="w-full max-w-[720px] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--color-surface)] shadow-[var(--shadow-elevated)]">
+                <div className="relative w-full max-w-[720px] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--color-surface)] shadow-[var(--shadow-elevated)]">
+                  <span className="absolute left-1/2 top-2.5 z-[9] -translate-x-1/2 whitespace-nowrap rounded-[var(--radius-pill)] bg-[var(--color-mint-900)] px-3 py-[5px] text-[11px] font-bold text-[var(--color-text-inverse)]">
+                    승인 목업 SOO-96 · 개발 후 실화면 교체
+                  </span>
                   <div className="flex items-center gap-1.5 border-b border-[var(--color-border-default)] bg-[var(--color-bg-sunken)] px-3.5 py-2.5">
                     <i className="h-[11px] w-[11px] rounded-full bg-[var(--color-border-strong)]" />
                     <i className="h-[11px] w-[11px] rounded-full bg-[var(--color-border-strong)]" />
@@ -605,7 +614,7 @@ export function BrandHeroPage() {
                   />
                 </div>
                 <div className="mt-3.5 text-[13px] font-semibold text-[var(--color-text-default)]">
-                  넓은 데스크톱 레이아웃 · 같은 회독 큐
+                  지난 승인 목업(SOO-96) 웹 데스크톱 화면 그대로 · 넓은 레이아웃
                 </div>
               </div>
             )}
