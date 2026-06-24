@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>순공대장 — 카메라 히어로 카드 비교 (아이콘 vs 카메라 든 순공이) · SOO-128</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+/* SOO-128 카메라 히어로 카드 — 현행(아이콘) vs 카메라 든 순공이 적용 비교.
+   토큰 미러(tokens.css). 배치/카피/카드 형태는 현행 유지, 아이콘 자리만 마스코트로 교체. */
+:root{
+  --color-primary-cta:#4CAF88; --color-bg:#F8FBF7; --color-bg-sunken:#EFF5F1;
+  --color-mint-50:#ECF7F2; --color-mint-100:#D4EFE4; --color-mint-300:#A8DCCB;
+  --color-mint-500:#7BC4AE; --color-mint-700:#4CAF88; --color-mint-900:#2E7D5B;
+  --color-text-strong:#2E2E2E; --color-text-default:#6E6E6E; --color-text-muted:#9B9B9B;
+  --color-text-inverse:#FFFFFF; --color-border-default:#E3EDE7;
+  --radius-md:12px; --radius-lg:16px; --radius-xl:24px; --radius-pill:9999px;
+  --shadow-card:0 2px 8px rgba(46,125,91,.06); --shadow-elevated:0 8px 24px rgba(46,125,91,.10);
+  --font-body:"Pretendard",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);color:var(--color-text-strong);-webkit-font-smoothing:antialiased;word-break:keep-all;
+  background:radial-gradient(1100px 560px at 12% -8%,#EEF7F1 0,transparent 60%),#F1F6F1;min-height:100vh;padding-bottom:48px}
+img{display:block;max-width:100%}
+.mi{display:inline-block;color:#fff;flex:none}
+.mi svg{display:block;width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.proto-note{background:var(--color-mint-900);color:#EAF7F0;font-size:13px;text-align:center;padding:8px 16px}
+.proto-note b{color:#fff}
+.wrap{max-width:1040px;margin:0 auto;padding:28px clamp(16px,4vw,32px)}
+.head{text-align:center;margin-bottom:24px}
+.head h1{font-size:clamp(22px,3.4vw,30px);font-weight:800;letter-spacing:-.03em}
+.head p{font-size:14px;color:var(--color-text-default);margin-top:8px;line-height:1.6}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.col{background:#fff;border:1px solid var(--color-border-default);border-radius:var(--radius-xl);padding:22px;box-shadow:var(--shadow-card)}
+.col .tag{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:800;padding:5px 12px;border-radius:var(--radius-pill);margin-bottom:16px}
+.tag.now{background:var(--color-bg-sunken);color:var(--color-text-default)}
+.tag.new{background:var(--color-mint-100);color:var(--color-mint-900)}
+.cap{font-size:12.5px;color:var(--color-text-muted);font-weight:600;margin-top:14px;line-height:1.5}
+
+/* ── 카메라 히어로 카드 (SOO-128-main 현행과 동일) ── */
+.cam-hero{display:flex;align-items:center;gap:16px;background:linear-gradient(120deg,var(--color-mint-700),var(--color-mint-900));
+  border-radius:var(--radius-xl);padding:20px;color:#fff;box-shadow:var(--shadow-elevated);position:relative;overflow:hidden}
+.cam-hero .ring{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.07)}
+.cam-hero .ci{width:62px;height:62px;border-radius:var(--radius-lg);background:rgba(255,255,255,.16);display:grid;place-items:center;flex:none}
+.cam-hero .ci .mi{width:34px;height:34px;color:#fff}
+.cam-hero .ct{flex:1;min-width:0;z-index:1}
+.cam-hero .ct b{display:block;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.cam-hero .ct span{font-size:13px;opacity:.92}
+.cam-hero .cgo{background:#fff;color:var(--color-mint-900);font-weight:800;font-size:13.5px;padding:11px 16px;border-radius:var(--radius-pill);flex:none;z-index:1;white-space:nowrap}
+
+/* 마스코트 변형: 아이콘 자리를 카메라 든 순공이로 교체 (배경/카피/버튼 동일) */
+.cam-hero.mascot .ci{width:96px;height:96px;background:transparent;border-radius:0;overflow:visible}
+.cam-hero.mascot .ci img{width:104px;max-width:none;filter:drop-shadow(0 6px 12px rgba(0,0,0,.18))}
+@media(max-width:420px){.cam-hero .ct b{font-size:16px}.cam-hero.mascot .ci{width:84px;height:84px}.cam-hero.mascot .ci img{width:90px}}
+</style>
+</head>
+<body>
+<div class="proto-note">🧪 <b>SOO-128 카메라 히어로 카드 — 비교 시안</b> · 현행(아이콘) vs 카메라 든 순공이 적용 · 배치·카피·카드 형태 현행 유지, 아이콘 자리만 마스코트 교체 · 모바일 FAB 미적용</div>
+
+<div class="wrap">
+  <div class="head">
+    <h1>카메라 히어로 카드 — 아이콘 vs 카메라 든 순공이</h1>
+    <p>Mike 첨부 "카메라 든 순공이" 이미지를 배경 누끼(투명) 처리 후, 메인 카메라 히어로 카드의 아이콘 자리에 적용한 변형입니다. 카드 배치·카피·버튼은 그대로.</p>
+  </div>
+
+  <div class="grid">
+    <!-- 현행: 카메라 아이콘 -->
+    <div class="col">
+      <span class="tag now">현행 — 카메라 아이콘</span>
+      <div class="cam-hero">
+        <div class="ring"></div>
+        <div class="ci"><span class="mi"><svg viewBox="0 0 24 24"><path d="M3 9a2 2 0 0 1 2-2h1.5l1-2h7l1 2H18a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><circle cx="12" cy="13" r="3.4"/></svg></span></div>
+        <div class="ct"><b>문제 찍어 새 회독 만들기</b><span>틀린 문제·인강 캡처 한 장이면 AI가 회독퀘스트로</span></div>
+        <div class="cgo">촬영하기</div>
+      </div>
+      <div class="cap">현재 SOO-128-main 메인에 적용된 상태. 플랫 카메라 라인 아이콘.</div>
+    </div>
+
+    <!-- 제안: 카메라 든 순공이 -->
+    <div class="col">
+      <span class="tag new">제안 — 카메라 든 순공이</span>
+      <div class="cam-hero mascot">
+        <div class="ring"></div>
+        <div class="ci"><img src="../../../apps/web/public/mascot/camera-capture-crown-alpha.png" alt="카메라를 든 순공이" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-size:11px\'>마스코트</span>'" /></div>
+        <div class="ct"><b>문제 찍어 새 회독 만들기</b><span>틀린 문제·인강 캡처 한 장이면 AI가 회독퀘스트로</span></div>
+        <div class="cgo">촬영하기</div>
+      </div>
+      <div class="cap">누끼 처리한 마스코트로 아이콘 자리만 교체. "순공이가 문제를 담는다" 브랜드 스토리 강화. 배치·카피·버튼 동일.</div>
+    </div>
+  </div>
+
+  <p style="text-align:center;font-size:12px;color:var(--color-text-muted);margin-top:24px;line-height:1.6">
+    모바일 하단 카메라 FAB(56px)에는 미적용 — 작은 원에서 디테일 마스코트가 안 읽혀 단순 아이콘 유지.<br>
+    적용 결정 시 SOO-128-main 메인 카드에 반영합니다. 디자인: tokens · v2 Teal/Mint · 마스코트 순공이(듀공) 락 준수.
+  </p>
+</div>
+</body>
+</html>
