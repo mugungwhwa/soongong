@@ -99,6 +99,10 @@
     --space-10: 40px;
     --space-12: 48px;
 
+    /* ---- Layout — 좌측 네비 레일 로고 (메인 레일 ↔ 브랜드 페이지 공통 SSoT) ----
+       폭 기반(레일 폭 꽉 차게, 가운데). 고정 px 높이 방식 금지. 값 변경은 여기 한 곳. */
+    --rail-logo-max-w: 176px;
+
     /* Shadow (teal alpha 기반 — #2E7D5B) */
     --shadow-card: 0 2px 8px rgba(46, 125, 91, 0.06);
     --shadow-elevated: 0 8px 24px rgba(46, 125, 91, 0.10);

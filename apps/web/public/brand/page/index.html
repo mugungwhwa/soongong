@@ -45,9 +45,10 @@
       border-right: 1px solid var(--color-border-default);
       padding: 28px 20px;
     }
-    .sidenav .brandmark { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
-    .sidenav .brandmark img { height: 40px; width: auto; }
-    .sidenav .kicker { font-size: 12px; color: var(--color-text-muted); margin: 2px 0 22px; letter-spacing: .02em; }
+    /* 로고 = 메인 네비 레일과 동일 규칙: 폭 기반(레일 폭 꽉 차게) + 가운데. 값은 tokens.css --rail-logo-max-w 공통 SSoT. */
+    .sidenav .brandmark { display: flex; justify-content: center; margin-bottom: 6px; }
+    .sidenav .brandmark img { width: 100%; max-width: var(--rail-logo-max-w); height: auto; }
+    .sidenav .kicker { font-size: 12px; color: var(--color-text-muted); margin: 2px 0 22px; letter-spacing: .02em; text-align: center; }
     .sidenav nav { display: flex; flex-direction: column; gap: 2px; }
     .sidenav nav a {
       display: flex; align-items: center; gap: 10px;
