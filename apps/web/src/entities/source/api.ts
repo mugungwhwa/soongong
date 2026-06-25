@@ -1,5 +1,6 @@
 import { createClient } from "@/shared/lib/supabase/client";
 import type { Source, SourceType } from "./model";
+import { createIntakeQuest } from "./actions";
 
 export async function createSource(payload: {
   source_type: SourceType;
@@ -86,12 +87,28 @@ export async function runIntakePipeline(
   // 2) parse-ocr — 이미지 OCR → parsed_learning_objects 1건. text-only(raw_url 없음)는 422.
   const { data: plo, error: ocrErr } = await supabase.functions.invoke<{
     object_id: string;
+    subject: string;
+    user_id: string;
   }>("parse-ocr", { body: { source_id: sourceId } });
   if (ocrErr || !plo?.object_id) {
     console.info("[intake] parse-ocr 미적재(이미지 아님/실패) — 생성 단계 생략", ocrErr ?? "");
     return result;
   }
   result.objectId = plo.object_id;
+
+  // 2b) SMI + review_quests 즉시 생성 (service_role 서버 액션).
+  //     generate-problem 보다 먼저 실행해야 함:
+  //     generate-problem 내 get_target_difficulty RPC가 SMI 행을 조회하기 때문.
+  //     또한 오늘 플레이 큐를 daily-quest-builder 대기 없이 즉시 만든다.
+  if (plo.user_id && plo.subject) {
+    await createIntakeQuest({
+      objectId: plo.object_id,
+      userId: plo.user_id,
+      subject: plo.subject,
+    }).catch((e) =>
+      console.warn("[intake] createIntakeQuest 실패 (best-effort)", e),
+    );
+  }
 
   // 3) generate-problem — 적격성은 함수가 self-gate. 부적격(422/403)은 정상 흐름.
   const { data: generated, error: genErr } = await supabase.functions.invoke<{
