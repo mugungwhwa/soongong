@@ -1,19 +1,21 @@
 # 순공대장 — 다음 세션 진입점 (RESUME)
 
 > **이 문서를 먼저 읽으세요.** 5분 안에 현재 상태 + 다음 액션이 파악되도록 잠금.
-> 작성일: 2026-05-14 / **최종 갱신: 2026-06-21 (코드 트랙 P0~P8 main 통합 + 디자인 v2 Teal/Mint 적용 + 자동 머지 ON + Multica 운영 반영)**
+> 작성일: 2026-05-14 / **최종 갱신: 2026-06-25 (SOO-121/124/126/128 시리즈 반영 + 프로토타입 완성 + repo 최신화 작업 SOO-131)**
 
 ---
 
 ## 1. 현재 위치 (한 줄)
 
-순공대장 MVP 1차의 **문서 트랙 100% 완료 + 코드 트랙이 P0~P8 전부 main에 통합되어 가동 중**. 이제 Multica 에이전트 플랫폼 위에서 이슈 단위(SOO-XX)로 기능을 다듬는 단계.
+순공대장 MVP 1차의 **P0~P8 전부 main 통합 완료 + SOO-128 시리즈 프로토타입 완성**. Multica 에이전트 조직으로 이슈 단위 개선 + repo GitHub 제출 준비(SOO-131) 단계.
 
-**2026-06-10 현재 상태 (5/19 이후 큰 변화):**
-- **코드 트랙 점화** — P0 와꾸 스켈레톤 → P1~P8 sub-plan이 전부 실제 코드로 main 머지됨 (Supabase 인증·DB·Edge Functions·홈/플레이/게임/관리자 UI). 더 이상 "문서만 있는" 상태가 아님.
-- **디자인 시스템 잠금 + 적용** — SOO-17로 팔레트·로고 A·레이아웃 v3 스펙 잠금 → tokens.css 실적용. **(2026-06-16 SOO-260616-01로 팔레트를 구 Ocean → 현행 v2 Teal/Mint(`#A8DCCB`/`#7BC4AE`/`#4CAF88`)로 교체. lock 문서는 v2.1.)**
-- **모바일 카메라 직행** — SOO-26(PR #23) "문제사진" 버튼이 모바일에서 후면 카메라 바로 호출(`capture="environment"`).
-- **Multica 운영 체계** — Orchestration Lead 중심 스쿼드 구조 v6 잠금(`2026-06-08-multica-squad-structure.md`). 에이전트가 이슈를 받아 PR 생성, Mike 승인 후 머지하는 루프 가동.
+**2026-06-25 현재 상태:**
+- **P1~P8 코드 + 화면 구현 완료** — Supabase 인증·DB·Edge Functions·홈/회독/오답/게임/관리자 UI 전부 main. 더 이상 "코드 없는 문서" 상태 아님.
+- **UI 디자인 정합 완료** — SOO-121로 앱 셸·today를 SOO-97 목업 감각으로 재정합 (심플·명확·새 로고). SOO-124로 카메라 메인 hero (순공이+카메라 배치). SOO-126으로 사이드바·대시보드 폭 이슈 해소.
+- **SOO-128 프로토타입 시리즈 완성** — 랜딩 v4(P1, PR #133) + 순공냅스+좌측 네비(P2, PR #134) + 메인·회독·오답 통합 셸(P3, PR #137). `/docs/prototypes/SOO-128*/` 에 저장.
+- **스타일가이드 프로덕션 공개** — SOO-106으로 통합 Platform 개발 가이드 + 모션 언어 자산화. `/styleguide` 라우트 프로덕션 공개(noindex 유지).
+- **디자인 시스템** — v2 Teal/Mint(`#A8DCCB`/`#7BC4AE`/`#4CAF88`) 잠금, design-system-lock v2.1. 구 Ocean·app_UI.png/web_ui.png 폐기 완료.
+- **Multica 자동 머지 ON** — 2026-06-20 Mike 무중단 결정. 코드래빗 승인 + 필수 체크 green + Tech Lead 리뷰 충족 시 자동 머지.
 
 > ⚠️ **주의**: 본 §3은 마일스톤 요약이라 개별 커밋 해시는 생략. 정확한 최신 커밋은 항상 `git log --oneline -10` 로 확인.
 
@@ -59,8 +61,17 @@
 | **SOO-17** | 디자인 시스템 잠금 v1.0 + 인터랙션 스펙 (PR #20, #21) | ✅ main |
 | **SOO-19/23** | 듀오링고풍 비주얼 방향 목업 / 개인 학습 현황판 기획서·목업 | ✅ main |
 | **SOO-26** | 모바일 카메라 직행 `capture="environment"` (PR #23) | ✅ main |
+| **SOO-104** | 오답·복습 화면 SOO-97 시안 실앱 구현 + 회독 자가 회상 화면 + 3단계 grade wiring (PR #119, #122) | ✅ main |
+| **SOO-106** | 스타일가이드 통합 가이드라인 (Platform 개발 가이드 + 모션 언어) + 프로덕션 공개 (PR #124, #125) | ✅ main |
+| **SOO-114** | 그래프·순공일지 실앱 구현 — 시안→서비스 (PR #117) | ✅ main |
+| **SOO-115** | 회독 자가평가 2→3단계 확장 — 또렷/가물가물/막막 (PR #118) | ✅ main |
+| **SOO-119** | P3 E2E 스모크 — 실제 문제 PNG로 변형 생성·파이프라인 검증 (PR #123) | ✅ main |
+| **SOO-121** | 앱 셸·today를 SOO-97 목업 감각으로 정합 (심플·명확·새 로고) (PR #126) | ✅ main |
+| **SOO-124** | 카메라 메인 hero — 순공이+카메라 자산 배치 (앱 하단중앙/웹 상시) (PR #128) | ✅ main |
+| **SOO-126** | 사이드바 로고 확대 + 웹 메인/대시보드 폭 모바일폭 갇힘 해소 (PR #130) | ✅ main |
+| **SOO-128** | 랜딩 v4 실앱 반영(P1) + 순공냅스+좌측 네비(P2) + 메인/회독/오답 통합 셸(P3) 프로토타입 (PR #133, #134, #137) | ✅ main |
 
-**P3 (AI 파이프라인/OCR)** — 핵심 모트. sub-plan 잠금됨(`p3-ai-pipeline.md`, `p3-curriculum-rag.md`). OCR 스파이크 PR #5는 **Draft로 파킹 중** (현재 트랙 아님). §10 데이터 아키텍처 정합 메모 참조.
+**P3 (AI 파이프라인/OCR)** — sub-plan 잠금됨(`p3-ai-pipeline.md`, `p3-curriculum-rag.md`). SOO-119 E2E 스모크 통과. 장기 아키텍처는 §10 참조 (Postgres FTS 우선, pgvector 후속).
 
 ---
 
@@ -79,6 +90,8 @@ docs/
 ├── setup/2026-05-14-environment-decisions.md           ← Mike 환경 결정
 ├── visual-assets/2026-05-14-soongong-asset-inventory.md ← 시각 자산 가이드
 ├── visual-assets/mascot-v0.1/                           ← Mike 마스코트 작업본
+├── prototypes/SOO-128*/                                ← 최신 프로토타입 (랜딩·순공냅스·메인/회독/오답)
+├── sparkclaw/decks/                                    ← 사업소개서 PDF (Deck A·B)
 ├── mockups/soo-23-dashboard-spec.md                    ← 개인 학습 현황판 기획서
 └── agent-strategy/
     ├── 2026-05-14-agent-tracks.md                      ← 듀얼 Agent + 하네스
@@ -95,10 +108,10 @@ docs/
 
 | 우선순위 | 작업 | 비고 |
 |---|---|---|
-| 🔥 1 | **SOO-26 ⓑ — 카메라 FAB → 업로드 시트 전역 배선** | Track C UI Lead 진행 중. lint:tokens + design-review ≥ 70 + 전체 플로우 검증 후 PR |
-| 🔥 2 | **SOO-24 — 로그인 게이트 수정** | 비로그인 `/today` 접근 시 200 반환 버그 (미들웨어 보강) |
-| ⭐ 3 | **P3 데이터 아키텍처 정합 한 줄** (§10 (a)안) | p3-curriculum-rag.md에 "장기는 §3.9 하이브리드 수렴" 명시 (10분) |
-| 4 | **P3 OCR 스파이크 재개 시점 판단** (PR #5 Draft) | 카메라 트랙 안정화 후 P3 정식 착수 |
+| 🔥 1 | **SOO-128 프로토타입 → 실앱 배선** | 랜딩 v4·순공냅스·메인/회독/오답 화면 실앱 연결 |
+| 🔥 2 | **SparkClaw 제출 준비** | Deck A·B PDF 완성. 게임·회독 플레이 실스크린샷 placeholder 채우기 (Mike 직접) |
+| ⭐ 3 | **학원 베타** (학생 5~10명) | 회독 메커니즘 현장 검증 + 베타 데이터 hero slide 확보 |
+| 4 | **P3 OCR 정밀도 보강** | SOO-119 E2E 통과 기준 이상으로 정확도 ≥90% 게이트 확인 |
 
 ### 5.2 사업 트랙 — 다음 60일 (전략정리 §10)
 
@@ -191,7 +204,7 @@ git config core.hooksPath          # 검증
 
 ---
 
-**한 줄 요약**: 문서 + 코드(P0~P8) 모두 main 통합 완료, v2 Teal/Mint 디자인 적용·모바일 카메라까지 라이브. 지금은 Multica에서 이슈 단위(SOO-26 ⓑ, SOO-24 등) 다듬기 + 학원 베타 검증 단계.
+**한 줄 요약**: P0~P8 코드 main 통합 + SOO-128 프로토타입 시리즈(랜딩/순공냅스/메인·회독·오답) 완성. SparkClaw Deck A·B PDF 완료. repo GitHub 제출 준비(SOO-131) 완료. 지금은 Multica 에이전트로 이슈 단위 기능 다듬기 + SparkClaw 제출 + 학원 베타 검증 단계.
 
 ---
 

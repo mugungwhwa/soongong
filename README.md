@@ -16,17 +16,16 @@
 
 ---
 
-## 데모 시안
+## 화면 미리보기
 
-| 모바일 | 웹 대시보드 |
+| 모바일 앱 | 웹 |
 |---|---|
-| ![모바일 UI](app_UI.png) | ![웹 대시보드](web_ui.png) |
+| ![모바일 앱](apps/web/public/brand/landing/preview-app.png) | ![웹](apps/web/public/brand/landing/preview-web.png) |
 
-> ⚠️ 위 이미지는 **초창기 데모 시안**으로, 현재 리디자인(SOO-96)으로 교체 작업 중이다.
-> **디자인 기준(SSoT)이 아니다.** 현행 디자인 기준은 디자인 시스템이며, 충돌 시 이쪽이 우선한다:
-> - **`/styleguide`** — dev 서버 라우트(저장소 루트 디렉터리가 아니다). 소스 [`apps/web/src/views/styleguide`](apps/web/src/views/styleguide), 라우트 `apps/web/src/app/styleguide`. 접근법은 [`docs/ops/styleguide-review-access.md`](docs/ops/styleguide-review-access.md) 참조.
-> - **디자인 시스템 잠금** [`docs/design-system/2026-06-09-design-system-lock.md`](docs/design-system/2026-06-09-design-system-lock.md) (v2.1, v2 Teal/Mint 팔레트)
-> - **SOO-96 리디자인** 프로토타입 [`docs/prototypes/SOO-96/index.html`](docs/prototypes/SOO-96/index.html)
+현행 디자인 기준(SSoT):
+- **`/styleguide`** — 통합 라이브 가이드 (소스 [`apps/web/src/views/styleguide`](apps/web/src/views/styleguide)). 접근법: [`docs/ops/styleguide-review-access.md`](docs/ops/styleguide-review-access.md)
+- **디자인 시스템 잠금** [`docs/design-system/2026-06-09-design-system-lock.md`](docs/design-system/2026-06-09-design-system-lock.md) (v2.1, v2 Teal/Mint 팔레트)
+- **최신 프로토타입** [`docs/prototypes/SOO-128/index.html`](docs/prototypes/SOO-128/index.html) (메인·회독·오답·순공냅스 통합)
 
 ---
 
@@ -106,35 +105,39 @@ soongong/
 │   ├── RESUME.md                                ← 세션 재개 첫 진입점
 │   ├── superpowers/plans/                       ← 마스터 플랜 + P1-P8 sub-plan 9종
 │   ├── setup/                                   ← 환경 결정 + .env 템플릿
+│   ├── prototypes/                              ← 화면 프로토타입 (SOO-96/97/103/108/128)
+│   ├── design-system/                           ← 디자인 시스템 잠금 v2.1 + 인터랙션 스펙
 │   ├── visual-assets/                           ← Midjourney + Canva 가이드
 │   ├── agent-strategy/                          ← Agent 듀얼 트랙 매트릭스
-│   └── sparkclaw/                               ← SparkClaw 제출 자료 + Marp slide
+│   └── sparkclaw/decks/                         ← 사업소개서 PDF (Deck A·B) + HTML 소스
 ├── apps/web/                                    ← Next.js 15 + FSD 2.1
+│   └── public/brand/                            ← 로고 4종 · 마스코트 · 브랜드 자산
 ├── supabase/                                    ← migrations + Edge Functions
 ├── eval/                                        ← P2/P3 정확도 게이트 harness
 ├── 00_프로젝트_사업_전략/                         ← 사업/시장/SparkClaw 사업소개서
-├── 01_제품_UX_게임화/                            ← UI 설계 v2.3 + 오답회수 + 게임성
+├── 01_제품_UX_게임화/                            ← UI 설계 v2.4 + 오답회수 + 게임성
 ├── 02_AI_Agent_학습엔진/                         ← 16-Agent 백서
 ├── 03_데이터_RAG_보안_법무/                       ← Raw/Derived 분리 정책
-└── 04_개발_스택_구현/                            ← Next.js/Expo/Supabase/패드 캔버스
+└── 04_개발_스택_구현/                            ← Next.js/Supabase/패드 캔버스
 ```
 
 ---
 
-## 8주 로드맵
+## 개발 진척
 
-| 주 | Phase | 출력물 |
+| Phase | 출력물 | 상태 |
 |---|---|---|
-| W1 | P1 Foundation | Next.js + Supabase + 디자인 토큰 |
-| W1-2 | P2 Source Intake | 업로드 + Compliance Gate |
-| W2-3 | **P3 AI Pipeline** ⚠️ | 라우팅 + OCR + 학습 객체 (정확도 ≥90% 게이트) |
-| W4 | P4 Scheduling | 1/3/7/14일 cron |
-| W4-5 | P5 Home/Quest UI | 홈 + 퀘스트 카드 |
-| W5-6 | P6 Play+Recovery+Canvas | 회독 플레이 + 오답회수 + 풀이 캔버스 |
-| W6-7 | P7 Game System | XP / 스트릭 / HP / 뱃지 |
-| W7-8 | P8 Admin | 검수 화면 |
+| P1 Foundation | Next.js 15 + Supabase 인증 + 디자인 토큰 | ✅ main |
+| P2 Source Intake | 문제사진 업로드 + Compliance Gate | ✅ main |
+| P3 AI Pipeline | OCR + 학습 객체 라우팅 (E2E 검증 SOO-119) | ✅ main |
+| P4 Scheduling | 1/3/7/14일 cron + 망각위험 함수 | ✅ main |
+| P5 Home/Quest UI | 홈 위젯 + 퀘스트 카드 + 순공냅스 | ✅ main |
+| P6 Play+Recovery | 회독 플레이 3단계 + 오답회수 + 풀이 캔버스 | ✅ main |
+| P7 Game System | XP / 스트릭 / 기억HP / 뱃지 / 등급 | ✅ main |
+| P8 Admin | 검수 UI + audit_logs + 오류 신고 | ✅ main |
 
-각 phase는 [`docs/superpowers/plans/`](docs/superpowers/plans/)에 **실제 코드 수준 sub-plan**으로 잠겨있음 (~6,500줄).
+현재 단계: P1~P8 전부 main 통합 완료. [Multica](https://multica.ai) 에이전트 조직으로 이슈 단위(SOO-XX) 개선 중.
+각 phase 코드 수준 sub-plan: [`docs/superpowers/plans/`](docs/superpowers/plans/) (~6,500줄).
 
 ---
 
@@ -177,20 +180,14 @@ Mike가 Midjourney + Canva로 직접 제작 (외주 없음).
 
 ## SparkClaw
 
-> 5/14자 제출자료·슬라이드는 구버전 — `2026-06-08-순공대장_SparkClaw_1기_포지셔닝_보강.md` 기준으로 재작성 예정 (6/28 마감).
+SparkClaw 1인 창업 트랙 사업소개서 — v2 Teal/Mint 디자인 시스템 기반, HTML→PDF 빌드 완료.
 
-SparkClaw 1인 창업 트랙 제출 자료: [`docs/sparkclaw/2026-05-14-sparkclaw-submission.md`](docs/sparkclaw/2026-05-14-sparkclaw-submission.md)
-Marp 슬라이드 draft (11p): [`docs/sparkclaw/slide-deck-draft.md`](docs/sparkclaw/slide-deck-draft.md)
+| 산출물 | 파일 | 구성 |
+|---|---|---|
+| **사업소개서 (Deck A)** | [`docs/sparkclaw/decks/순공대장_사업소개서.pdf`](docs/sparkclaw/decks/순공대장_사업소개서.pdf) | 19슬라이드. 정체성→문제→솔루션→시장(망각곡선·듀오링고·TAM·경쟁맵)→BM→팀→비전 |
+| **에이전트 개발형태 (Deck B)** | [`docs/sparkclaw/decks/순공대장_에이전트_개발형태.pdf`](docs/sparkclaw/decks/순공대장_에이전트_개발형태.pdf) | 9슬라이드. "순공을 어떻게 만드는가" |
 
-PDF 변환:
-```bash
-# 본문 PDF
-pandoc docs/sparkclaw/2026-05-14-sparkclaw-submission.md -o submission.pdf \
-  --pdf-engine=xelatex -V CJKmainfont="Pretendard"
-
-# 슬라이드 PDF
-npx -y @marp-team/marp-cli docs/sparkclaw/slide-deck-draft.md --pdf
-```
+소스 HTML: [`docs/sparkclaw/decks/`](docs/sparkclaw/decks/). 재렌더·시장 수치 출처: [`docs/sparkclaw/decks/README.md`](docs/sparkclaw/decks/README.md)
 
 ---
 
