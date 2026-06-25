@@ -108,6 +108,21 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
 .shot img{width:100%;height:150px;object-fit:cover;object-position:top;display:block;background:var(--alt);}
 .shot .cap{padding:7px 10px;font-size:10px;font-weight:700;color:var(--dark);}
 .shot .cap span{display:block;font-size:8.6px;color:var(--gray);font-weight:500;margin-top:1px;}
+/* ===== DONE / NEXT 2단 (트랙션) ===== */
+.dn-done{background:linear-gradient(135deg,#2E7D5B,#4CAF88);border:1px solid transparent;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(46,125,91,.28);}
+.dn-done .dn-hd{padding:9px 14px;font-size:12.5px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.25);}
+.dn-done .dn-hd .chip{background:rgba(255,255,255,.22);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em;}
+.dn-done ul{list-style:none;padding:11px 14px;}
+.dn-done li{font-size:11px;color:#f3fbf7;line-height:1.45;padding:5px 0 5px 18px;position:relative;}
+.dn-done li::before{content:'✓';position:absolute;left:0;color:#fff;font-weight:900;}
+.dn-done li b{color:#fff;}
+.dn-next{background:var(--white);border:1.5px dashed var(--mint2);border-radius:10px;overflow:hidden;}
+.dn-next .dn-hd{padding:9px 14px;font-size:12.5px;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:8px;border-bottom:1px dashed var(--mint3);}
+.dn-next .dn-hd .chip{background:var(--alt);color:var(--dark);font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em;border:1px solid var(--mint3);}
+.dn-next ul{list-style:none;padding:11px 14px;}
+.dn-next li{font-size:11px;color:var(--text);line-height:1.45;padding:5px 0 5px 18px;position:relative;}
+.dn-next li::before{content:'○';position:absolute;left:0;color:var(--mint2);font-weight:900;font-size:9px;top:6px;}
+.dn-next li b{color:var(--dark);}
 /* ===== 미션/비전 풀블리드 ===== */
 .fb{position:absolute;inset:0;background:linear-gradient(135deg,#2E7D5B,#4CAF88);display:flex;align-items:center;}
 .fb .inner{position:relative;z-index:2;padding:0 64px;max-width:660px;}
@@ -222,7 +237,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
     <div class="slide-title">왜 지금인가</div>
     <div class="slide-sub">독학·혼공 확대 + 인프라 평준화 + AI OCR 성숙이 동시에 도래</div></div>
   <div style="padding:16px 44px 0;"><div class="cg cg-3">
-    <div class="card"><div class="card-hd">독학재수·혼공 확대 <span style="float:right" class="tag t-est">추정</span></div><div class="card-body"><p>독학재수·혼자 공부(혼공) 환경이 늘며, 스스로 학습을 관리해야 하는 학생층이 커지고 있다.</p></div></div>
+    <div class="card"><div class="card-hd">독학재수관 확산 · 혼공 확대 <span style="float:right" class="tag t-est">추정</span></div><div class="card-body"><p><b>독학재수관(독학재수 학원)</b>이 빠르게 늘고 있다. 혼공 환경 확대와 맞물려, <b>혼자 공부하지만 관리가 필요한 학생층</b>이 커지는 중이다.</p></div></div>
     <div class="card"><div class="card-hd green">인프라·콘텐츠 평준화 <span style="float:right" class="tag t-est">추정</span></div><div class="card-body"><p>인강·문제은행 등 교육 콘텐츠 접근성이 평준화됐다. 누구나 같은 자료를 본다.</p></div></div>
     <div class="card"><div class="card-hd lg">AI OCR 성숙 <span style="float:right" class="tag t-est">추정</span></div><div class="card-body"><p>손글씨·수식 인식 OCR과 AI가 실사용 수준에 도달 — "내 문제 캡처"가 비로소 가능해졌다.</p></div></div>
   </div>
@@ -265,10 +280,11 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
     <tr><td>사교육 참여율</td><td>78.3%</td><td>도달 가능 모집단</td><td><span class="tag t-ver">검증</span></td></tr>
     <tr><td>학생 1인 월평균 지출</td><td>41만 원</td><td>지불 의향 지표</td><td><span class="tag t-ver">검증</span></td></tr>
     <tr><td>국내 에듀테크 시장</td><td>7.3조('21) → 9.98조('25)</td><td>CAGR 8.5%</td><td><span class="tag t-est">추정</span></td></tr>
-    <tr class="hl"><td>독학재수 단독 규모</td><td>수집 중</td><td>핵심 진입 세그먼트</td><td><span class="tag t-asm">가정</span></td></tr>
+    <tr class="hl"><td>독학재수관 세그먼트</td><td>확대 중</td><td>핵심 진입 세그먼트 — 혼자 공부하지만 관리가 필요한 학생군</td><td><span class="tag t-asm">가정</span></td></tr>
   </table>
+  <div style="margin-top:8px;font-size:10.5px;color:var(--dark);line-height:1.5;"><b>독학재수관 확대 = 핵심 진입 세그먼트</b> — 혼자 공부하지만 관리가 필요한 학생군이 첫 타깃이다. <span class="tag t-est">추정</span></div>
   </div>
-  <div class="note">출처: 통계청 사교육비 조사 <span class="tag t-ver">검증</span> · 에듀테크 시장은 업계 추정 <span class="tag t-est">추정</span> · 독학재수 규모는 플레이스홀더 <span class="tag t-asm">가정</span></div>
+  <div class="note">출처: 통계청 사교육비 조사 <span class="tag t-ver">검증</span> · 에듀테크 시장은 업계 추정 <span class="tag t-est">추정</span> · 독학재수관 규모는 플레이스홀더 <span class="tag t-asm">가정</span></div>
   <div class="pn">8 / 15</div>
 </div>
 
@@ -335,34 +351,57 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
 <!-- ============ S12 · 팀 ============ -->
 <div class="s" id="s12">
   <div class="rh"><div class="badge">Section 10 · 팀</div>
-    <div class="slide-title">팀 — 진짜 MOAT 엔진을 만들려면 팀이 필요하다</div>
-    <div class="slide-sub">DE(데이터 엔지니어)·데이터 전문가를 쌓아간다</div></div>
-  <div style="padding:14px 44px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-    <div class="card"><div class="card-hd lg">Founder-Market Fit</div><div class="card-body"><p><b>독학재수 1년을 직접 관찰·경험</b>하며 "풀어도 까먹는" 문제를 몸으로 겪었다. 문제 정의가 책상이 아니라 현장에서 나왔다.</p></div></div>
-    <div class="card"><div class="card-hd green">팀 빌딩 방향</div><div class="card-body"><ul><li>데이터 엔지니어(DE) 확보</li><li>데이터/ML 전문가 축적</li><li>회독 엔진·플라이휠 전담</li></ul></div></div>
-    <div class="card" style="grid-column:1 / -1;"><div class="card-hd">현 구성 / 대표 이력 <span style="float:right" class="tag t-asm">가정</span></div><div class="card-body"><p>현 팀 구성 및 대표 이력은 <b>추후 확정</b> (플레이스홀더). 핵심 메시지: MOAT는 코드가 아니라 <b>데이터 역량을 쌓는 팀</b>에서 나온다.</p></div></div>
+    <div class="slide-title">팀 — 강한 Founder-Market Fit이 MOAT의 출발점</div>
+    <div class="slide-sub">게임에서 검증한 리텐션 설계를, 교육의 진짜 문제 "까먹음"에 적용한다</div></div>
+  <div style="padding:13px 44px 0;display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:11px;">
+    <div class="card"><div class="card-hd lg">내 이야기</div><div class="card-body"><ul>
+      <li><b>게임회사 출신</b> — 유저 <b>리텐션</b>(이탈 방지·재방문 설계)이 본업이었다.</li>
+      <li><b>독학재수관 투자·운영</b> — 교육 현장을 사업자로 직접 겪었다.</li>
+      <li><b>1년간 학생을 직접 관찰</b> — "풀어도 까먹는다"를 현장에서 발견했다(책상 위 가설이 아니다).</li>
+    </ul></div></div>
+    <div class="card"><div class="card-hd green">왜 우리가 이기나</div><div class="card-body"><p style="margin-bottom:6px;"><b>리텐션 DNA × 교육 현장 경험</b></p><ul>
+      <li>게임에서 단련한 <b>재방문·이탈방지 설계</b>를 학습에 이식</li>
+      <li>"까먹음"이라는 교육의 미해결 문제를 정조준</li>
+      <li>문제 정의가 데이터가 아니라 <b>현장</b>에서 나왔다</li>
+    </ul></div></div>
+    <div class="card"><div class="card-hd">팀 빌딩 방향</div><div class="card-body"><p style="margin-bottom:6px;">이 인사이트 위에 데이터 역량을 쌓아 <b>MOAT 엔진</b>을 완성한다.</p><ul>
+      <li><b>DE(데이터 엔지니어)</b> 확보</li>
+      <li><b>데이터/ML 전문가</b> 축적</li>
+      <li>회독 엔진·플라이휠 전담</li>
+    </ul></div></div>
   </div>
-  <div class="note"><span class="tag t-asm">가정</span> 팀 상세는 추후 확정 — founder-market fit은 실경험 기반</div>
+  <div style="padding:10px 44px 0;"><div style="background:linear-gradient(135deg,var(--alt),#fff);border:1px solid var(--line);border-radius:8px;padding:10px 15px;font-size:11.5px;color:var(--dark);line-height:1.45;">
+    <b>핵심:</b> MOAT는 코드가 아니라 <b>리텐션을 아는 창업자 + 데이터 역량을 쌓는 팀</b>에서 나온다. <span class="tag t-asm">가정</span> 대표 구체 이력 수치는 추후 확정.</div></div>
+  <div class="note"><span class="tag t-ver">검증</span> 게임 리텐션 경력·독학재수관 투자운영·1년 현장 관찰은 창업자 실경험 · <span class="tag t-asm">가정</span> 세부 이력 수치는 추후 확정</div>
   <div class="pn">12 / 15</div>
 </div>
 
 <!-- ============ S13 · 트랙션·로드맵 ============ -->
 <div class="s" id="s13">
   <div class="rh"><div class="badge lg">Section 11 · 트랙션 · 로드맵</div>
-    <div class="slide-title">현재 위치와 빌드 순서</div>
-    <div class="slide-sub">프로토타입 초기 · 브랜드 페이지·앱 화면 MVP 완성</div></div>
-  <div style="padding:16px 44px 0;">
-    <div style="background:var(--alt);border-radius:8px;padding:11px 15px;font-size:11.5px;color:var(--dark);line-height:1.5;margin-bottom:8px;">
-      <b>현재:</b> 프로토타입 베이스 초기 단계. 브랜드 페이지와 앱 화면 MVP 완성 <span class="tag t-ver">검증</span></div>
-    <div class="tl">
-      <div class="tlstep"><div class="ln"></div><div class="dot"></div><div class="tt">① 회독 엔진</div><div class="td">리텐션의 핵심<br>먼저 검증</div></div>
-      <div class="tlstep"><div class="ln"></div><div class="dot"></div><div class="tt">② 서비스 인프라</div><div class="td">캡처·처리<br>파이프라인</div></div>
-      <div class="tlstep"><div class="ln"></div><div class="dot"></div><div class="tt">③ 학생 어드민</div><div class="td">학습 관리<br>대시보드</div></div>
-      <div class="tlstep"><div class="dot"></div><div class="tt">④ 프로파일링</div><div class="td">개인화·플라이휠<br>가속</div></div>
+    <div class="slide-title">현재 완료 vs 이후 할 일</div>
+    <div class="slide-sub">기술 베이스·브랜드/UX 초기는 완성 — 다음은 MOAT 엔진 고도화</div></div>
+  <div style="padding:14px 44px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;">
+    <div class="dn-done">
+      <div class="dn-hd"><span class="chip">DONE</span> 현재 완료 <span style="margin-left:auto" class="tag t-ver">검증</span></div>
+      <ul>
+        <li>회독 엔진 <b>기초 파이프라인 + 기술적 베이스</b> 구축</li>
+        <li><b>브랜드 시스템·UX 흐름 초기</b> 완성 — 브랜드 페이지·앱 화면 MVP</li>
+      </ul>
     </div>
-    <div style="margin-top:16px;font-size:11px;color:var(--text);line-height:1.5;">엔진(리텐션 증명) → 인프라(스케일) → 어드민(관리) → 프로파일링(개인화)의 순서로, 가치 검증을 먼저 끝낸 뒤 확장한다.</div>
+    <div class="dn-next">
+      <div class="dn-hd"><span class="chip">NEXT</span> 이후 To-do <span style="margin-left:auto" class="tag t-asm">가정</span></div>
+      <ul>
+        <li>회독 엔진 <b>고도화</b> — 문제 인식 정확도 = MOAT</li>
+        <li>서비스 인프라 — 캡처·처리 파이프라인 스케일</li>
+        <li>학생 어드민 — 학습 관리 대시보드</li>
+        <li>학습 프로파일링 — 개인화·플라이휠 가속</li>
+        <li>실앱 배선 · 베타 출시</li>
+      </ul>
+    </div>
   </div>
-  <div class="note">현재 상태는 실제 빌드 기준 <span class="tag t-ver">검증</span> · 로드맵 순서는 계획 <span class="tag t-asm">가정</span></div>
+  <div style="padding:11px 44px 0;font-size:11px;color:var(--text);line-height:1.5;">기술 베이스와 브랜드/UX는 이미 손에 있다. 자금은 <b>까먹음을 푸는 회독 엔진(MOAT)</b> 고도화와 실앱 배선·베타에 투입한다.</div>
+  <div class="note">완료 항목은 실제 빌드 기준 <span class="tag t-ver">검증</span> · 이후 To-do는 계획 <span class="tag t-asm">가정</span></div>
   <div class="pn">13 / 15</div>
 </div>
 
