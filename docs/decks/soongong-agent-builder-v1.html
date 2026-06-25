@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AI 에이전트 빌더 역량 쇼케이스 · 순공대장 × Multica</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ===== 디자인 토큰 (순공대장 브랜드) ===== */
+:root{
+  --dark:#2E7D5B;    /* 딥 민트 */
+  --mid:#4CAF88;     /* 메인 민트 */
+  --hdr:#A8DCCB;     /* 표 헤더 배경 */
+  --alt:#ECF7F2;     /* 카드/박스 옅은 배경 */
+  --lg:#4CAF88;--lg-dk:#2E7D5B;--lg-sft:#ECF7F2;
+  --mint2:#7BC4AE;--mint3:#A8DCCB;--mint4:#D4EFE4;
+  --text:#2E2E2E;--gray:#6E6E6E;--gray3:#9B9B9B;--line:#e3ece7;--light:#F8FBF7;--white:#fff;
+  --warn:#e8552d;--gold:#b45309;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;overflow:hidden;}
+#vp-wrap{position:relative;transform-origin:center top;}
+.vp{width:960px;height:540px;position:relative;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6);}
+.vp::before{content:"순공대장 · AGENT BUILDER · SPARKCLAW";position:absolute;top:16px;left:22px;font-size:8.5px;color:var(--gray);letter-spacing:1.6px;font-weight:600;opacity:.5;z-index:50;pointer-events:none;text-transform:uppercase;mix-blend-mode:multiply;}
+.s{position:absolute;inset:0;background:#F8FBF7;visibility:hidden;pointer-events:none;display:flex;flex-direction:column;justify-content:center;}
+.s.on{visibility:visible;pointer-events:auto;z-index:1;}
+/* ===== 네비게이션 ===== */
+#nav{display:flex;align-items:center;gap:16px;margin-top:14px;}
+#nav button{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 22px;border-radius:6px;font-size:17px;cursor:pointer;font-family:inherit;transition:.15s;}
+#nav button:hover{background:rgba(255,255,255,.28);}
+#ctr{color:rgba(255,255,255,.7);font-size:15px;min-width:56px;text-align:center;}
+#prog{width:960px;height:3px;background:rgba(255,255,255,.15);display:flex;}
+#prog-bar{height:3px;background:var(--lg);transition:width .25s;}
+.pn{position:absolute;bottom:10px;right:18px;font-size:11px;color:#bbb;z-index:6;}
+/* ===== 슬라이드 헤더 ===== */
+.rh{padding:30px 44px 0;}
+.slide-title{font-size:25px;font-weight:800;color:var(--dark);margin-top:5px;line-height:1.18;}
+.slide-sub{font-size:12px;font-weight:600;color:var(--mid);margin-top:4px;}
+.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mid);font-weight:700;text-transform:uppercase;}
+.ul{width:34px;height:2px;background:var(--lg);margin-top:6px;}
+.badge{display:inline-block;background:var(--dark);color:var(--hdr);font-size:10px;font-weight:700;padding:3px 10px;border-radius:3px;letter-spacing:.5px;text-transform:uppercase;}
+.badge.lg{background:var(--lg);color:#fff;}
+.note{position:absolute;bottom:0;left:0;right:0;background:var(--alt);padding:6px 18px;font-size:9.5px;color:var(--dark);font-weight:600;line-height:1.45;}
+/* ===== 신뢰도 태그 ===== */
+.tag{display:inline-block;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.02em;}
+.t-fix{background:#e7f0ff;color:#1d4ed8;}
+.t-ver{background:#e6f7ec;color:#2E7D5B;}
+.t-est{background:#fff4e0;color:#b25e00;}
+.t-asm{background:#eef0f4;color:#5b6472;}
+/* ===== 카드 ===== */
+.cg{display:grid;gap:10px;}.cg-2{grid-template-columns:1fr 1fr;}.cg-3{grid-template-columns:1fr 1fr 1fr;}.cg-4{grid-template-columns:repeat(4,1fr);}
+.card{background:var(--alt);border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+.card-hd{background:var(--dark);color:#fff;font-size:11.5px;font-weight:700;padding:7px 11px;line-height:1.3;}
+.card-hd.green{background:var(--mid);}.card-hd.lg{background:var(--lg);}.card-hd.warnh{background:var(--warn);}
+.card-body{padding:9px 11px;}
+.card-body p{font-size:10.5px;color:var(--text);line-height:1.5;}
+.card-body ul{list-style:none;}.card-body li{font-size:10.3px;color:var(--text);padding:2px 0 2px 11px;position:relative;line-height:1.45;}
+.card-body li::before{content:'•';position:absolute;left:0;color:var(--mid);}
+.kpi-num{font-size:34px;font-weight:900;color:var(--dark);line-height:1;}
+.kpi-lbl{font-size:10px;color:var(--mid);font-weight:600;margin-top:3px;}
+/* ===== 표 ===== */
+.it{width:100%;border-collapse:separate;border-spacing:0;border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+.it th{background:var(--hdr);color:var(--dark);font-size:10.5px;font-weight:700;padding:7px 9px;text-align:center;border-right:1px solid var(--line);border-bottom:1px solid var(--line);}
+.it th:last-child{border-right:none;}
+.it td{font-size:10.5px;color:var(--text);padding:6px 9px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-align:center;}
+.it td:first-child{text-align:left;font-weight:600;}.it td:last-child{border-right:none;}
+.it tr:last-child td{border-bottom:none;}
+.it tr.hl td{background:var(--lg-sft);font-weight:800;color:var(--dark);}
+.pos{color:var(--lg-dk);font-weight:800;}.neg{color:var(--warn);font-weight:800;}.muted{color:var(--gray);}
+/* ===== 표지 ===== */
+.cov-bg{position:absolute;inset:0;background:linear-gradient(120deg,#1c5a40,#2E7D5B 45%,#4CAF88);}
+.cov-ov{position:absolute;inset:0;background:radial-gradient(circle at 78% 30%,rgba(123,196,174,.35),transparent 55%);}
+.cov-body{position:relative;z-index:2;padding:0 60px;}
+.cov-tag{font-size:11px;letter-spacing:2px;color:#ECF7F2;font-weight:700;text-transform:uppercase;}
+.cov-h1{font-size:50px;font-weight:900;color:#fff;line-height:1.08;margin-top:14px;letter-spacing:-1px;}
+.cov-h1 .hl{color:#ECF7F2;}
+.cov-sub{font-size:16px;color:#eafaf2;margin-top:14px;font-weight:600;max-width:560px;line-height:1.5;}
+.cov-meta{display:flex;gap:18px;margin-top:26px;}
+.cov-meta span{font-size:10.5px;color:#d6f0e3;font-weight:600;border-left:2px solid #ECF7F2;padding-left:9px;line-height:1.4;}
+.cov-conf{position:absolute;bottom:18px;left:60px;z-index:2;font-size:9px;color:#cfe8da;letter-spacing:.5px;}
+/* ===== 목차 ===== */
+.tocrow{cursor:pointer;display:flex;align-items:center;gap:16px;padding:4px 4px;border-bottom:1px solid var(--line);}
+.tocrow .nu{font-size:20px;font-weight:900;color:var(--mint3);font-style:italic;min-width:34px;line-height:1;}
+.tocrow .ti{font-size:12px;font-weight:800;color:var(--dark);}
+.tocrow .de{font-size:8.6px;color:var(--gray);margin-top:1px;}
+/* ===== 타임라인 ===== */
+.tl{display:flex;gap:0;margin-top:14px;}
+.tlstep{flex:1;text-align:center;position:relative;}
+.tlstep .dot{width:16px;height:16px;border-radius:50%;background:var(--mid);margin:0 auto 7px;border:3px solid var(--alt);}
+.tlstep .ln{position:absolute;top:7px;left:50%;right:-50%;height:2px;background:var(--mint3);z-index:-1;}
+.tlstep:last-child .ln{display:none;}
+.tlstep .tt{font-size:11px;font-weight:800;color:var(--dark);}
+.tlstep .td{font-size:8.8px;color:var(--gray);margin-top:2px;line-height:1.35;}
+/* ===== 미션/비전 풀블리드 ===== */
+.fb{position:absolute;inset:0;background:linear-gradient(135deg,#2E7D5B,#4CAF88);display:flex;align-items:center;}
+.fb .inner{position:relative;z-index:2;padding:0 64px;max-width:660px;}
+.fb .big{font-size:36px;font-weight:900;color:#fff;line-height:1.22;letter-spacing:-.5px;}
+.fb .big .hl{color:#ECF7F2;}
+.fb .sm{font-size:14px;color:#eafaf2;margin-top:16px;line-height:1.55;font-weight:600;}
+.fb .masc{position:absolute;right:48px;bottom:0;z-index:1;height:88%;object-fit:contain;}
+/* ===== 칩/박스 ===== */
+.starbox{background:linear-gradient(135deg,#2E7D5B,#4CAF88);border-radius:9px;padding:11px 14px;color:#fff;box-shadow:0 6px 18px rgba(46,125,91,.3);}
+.starbox b{color:#ECF7F2;}
+.principle{background:#fff;border:2px solid var(--mid);border-radius:9px;padding:10px 14px;color:var(--dark);line-height:1.5;}
+.principle .pl-lbl{font-size:9px;font-weight:800;letter-spacing:.08em;color:var(--mid);text-transform:uppercase;margin-bottom:4px;}
+.pill{display:inline-block;font-size:9px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--alt);color:var(--dark);border:1px solid var(--mint3);}
+/* ===== 색칩 ===== */
+.swatch{border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+.swatch .chip{height:46px;}
+.swatch .lbl{padding:5px 8px;font-size:9px;font-weight:700;color:var(--text);background:#fff;}
+.swatch .lbl span{display:block;font-size:8px;color:var(--gray);font-weight:600;margin-top:1px;font-family:monospace;}
+/* ===== 스택 박스 (기술스택) ===== */
+.stk{background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+.stk .sh{background:var(--dark);color:#fff;font-size:10px;font-weight:800;padding:5px 9px;letter-spacing:.02em;}
+.stk .sh.g{background:var(--mid);}
+.stk .sb{padding:7px 9px;display:flex;flex-wrap:wrap;gap:4px;}
+.stk .t{font-size:8.6px;font-weight:700;color:var(--dark);background:var(--alt);border:1px solid var(--mint3);padding:2px 6px;border-radius:5px;}
+.stk .t b{color:var(--mid);font-weight:800;}
+/* ===== 미니 컴포넌트 미리보기 ===== */
+.mini{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px;display:flex;flex-direction:column;gap:6px;}
+.mini .mlbl{font-size:9px;font-weight:800;color:var(--dark);}
+.mini .mdesc{font-size:8.2px;color:var(--gray);line-height:1.35;}
+.riskpill{display:inline-block;font-size:8px;font-weight:800;padding:2px 7px;border-radius:999px;}
+.dot-hp{display:inline-block;width:9px;height:9px;border-radius:50%;}
+@media print{#nav,#prog{display:none!important;}.s{visibility:visible!important;position:relative!important;page-break-after:always;box-shadow:none;}}
+</style>
+</head>
+<body>
+<div id="vp-wrap">
+<div id="prog"><div id="prog-bar"></div></div>
+<div class="vp">
+
+<!-- ============ S1 · 표지 ============ -->
+<div class="s on" id="s1">
+  <div class="cov-bg"></div>
+  <div class="cov-ov"></div>
+  <div class="cov-body">
+    <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/brand/logo/soongong-logo-ko-light.svg" alt="순공대장" style="height:62px;margin-bottom:10px;">
+    <div class="cov-tag">SPARKCLAW 제출 · AI AGENT BUILDER SHOWCASE</div>
+    <div class="cov-h1">1인 창업자 <span class="hl">×</span><br>AI 에이전트 조직</div>
+    <div class="cov-sub">아이디어에서 제품까지, 에이전트로 빌드하다.</div>
+    <div class="cov-meta"><span>Multica 기반<br>둥지 hub-spoke</span><span>비개발자 1인<br>제품 방향만</span><span>자기검증 루프<br>PR → 자동머지</span></div>
+  </div>
+  <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/camera-capture-crown-alpha.png" alt="" style="position:absolute;right:42px;bottom:0;z-index:2;height:80%;object-fit:contain;">
+  <div class="cov-conf">SparkClaw 제출용 · 순공대장(Soongong) 빌드 사례</div>
+  <div class="pn" style="color:#cfe8da;">1 / 18</div>
+</div>
+
+<!-- ============ S2 · 목차 ============ -->
+<div class="s" id="s2">
+  <div class="rh"><div class="eyebrow">Table of Contents</div>
+    <div style="font-size:26px;font-weight:900;color:var(--dark);margin-top:2px;">목차</div>
+    <div class="ul"></div></div>
+  <div style="padding:6px 44px 0;display:grid;grid-template-columns:1fr 1fr;gap:0 30px;">
+    <div class="tocrow" onclick="go(3)"><div class="nu">01</div><div><div class="ti">문제의식</div><div class="de">1인이 어떻게 다 만드나</div></div></div>
+    <div class="tocrow" onclick="go(4)"><div class="nu">02</div><div><div class="ti">해법 — AI 에이전트 조직</div><div class="de">Multica 둥지 hub-spoke</div></div></div>
+    <div class="tocrow" onclick="go(5)"><div class="nu">03</div><div><div class="ti">조직 구조</div><div class="de">허브 + 스포크 4 리드</div></div></div>
+    <div class="tocrow" onclick="go(6)"><div class="nu">04</div><div><div class="ti">운영 메커니즘</div><div class="de">SOO 티켓 → 머지 게이트</div></div></div>
+    <div class="tocrow" onclick="go(7)"><div class="nu">05</div><div><div class="ti">워크플로우 사례</div><div class="de">아이디어 → 배포 타임라인</div></div></div>
+    <div class="tocrow" onclick="go(8)"><div class="nu">06</div><div><div class="ti">1인 창업자 레버리지</div><div class="de">방향만, 구현은 에이전트</div></div></div>
+    <div class="tocrow" onclick="go(9)"><div class="nu">07</div><div><div class="ti">브랜드 디자인 시스템</div><div class="de">living SSoT</div></div></div>
+    <div class="tocrow" onclick="go(10)"><div class="nu">08</div><div><div class="ti">로고 & 마스코트</div><div class="de">아이덴티티 자산</div></div></div>
+    <div class="tocrow" onclick="go(11)"><div class="nu">09</div><div><div class="ti">컬러 & 타이포</div><div class="de">민트 팔레트 · Pretendard</div></div></div>
+    <div class="tocrow" onclick="go(12)"><div class="nu">10</div><div><div class="ti">컴포넌트 시스템</div><div class="de">디자인 시스템 부품</div></div></div>
+    <div class="tocrow" onclick="go(13)"><div class="nu">11</div><div><div class="ti">아키텍처 — FSD 2.1</div><div class="de">레이어 스택 · 경계 강제</div></div></div>
+    <div class="tocrow" onclick="go(14)"><div class="nu">12</div><div><div class="ti">기술 스택 상세</div><div class="de">프론트 · AI · 품질 · 인프라</div></div></div>
+    <div class="tocrow" onclick="go(15)"><div class="nu">13</div><div><div class="ti">회독 엔진 파이프라인</div><div class="de">카메라 → 회독 스케줄</div></div></div>
+    <div class="tocrow" onclick="go(16)"><div class="nu">14</div><div><div class="ti">산출물 & 성과</div><div class="de">짧은 기간의 빌드</div></div></div>
+    <div class="tocrow" onclick="go(17)"><div class="nu">15</div><div><div class="ti">인사이트</div><div class="de">오케스트레이션 노하우</div></div></div>
+    <div class="tocrow" onclick="go(18)"><div class="nu">16</div><div><div class="ti">비전 / Next</div><div class="de">에이전트로 키운다</div></div></div>
+  </div>
+  <div class="pn">2 / 18</div>
+</div>
+
+<!-- ============ S3 · 문제의식 ============ -->
+<div class="s" id="s3">
+  <div class="rh"><span class="badge">PROBLEM</span>
+    <div class="slide-title">비개발자 1인이, 어떻게 이 모든 걸 다 만드나?</div>
+    <div class="slide-sub">브랜드 · 앱 화면 · 회독 엔진 · 문서까지 — 혼자서는 물리적으로 불가능했다</div>
+  </div>
+  <div style="padding:16px 44px 0;">
+    <div class="cg cg-4">
+      <div class="card"><div class="card-hd warnh">디자인</div><div class="card-body"><p>로고·마스코트·컬러·컴포넌트 — 일관된 브랜드 시스템을 누가 잡나</p></div></div>
+      <div class="card"><div class="card-hd warnh">앱 구현</div><div class="card-body"><p>랜딩·앱 전 화면 코드. 비개발자에겐 첫 줄부터 벽</p></div></div>
+      <div class="card"><div class="card-hd warnh">엔진</div><div class="card-body"><p>회독·망각 스케줄 로직 — 제품의 핵심 가치를 코드로</p></div></div>
+      <div class="card"><div class="card-hd warnh">문서·운영</div><div class="card-body"><p>IR·아키텍처·테스트·배포까지 끝없는 곁가지</p></div></div>
+    </div>
+    <div class="starbox" style="margin-top:14px;">
+      <b>핵심 딜레마.</b> &nbsp;아이디어와 제품 방향은 명확하다. 그러나 <b>구현·검증·배포</b>를 혼자 감당하는 순간, 속도는 0에 수렴한다. — 외주는 비싸고 느리고, 의도가 샌다.
+    </div>
+  </div>
+  <div class="note">1인 창업자(비개발자)의 실제 제약을 정리 <span class="tag t-asm">가정</span></div>
+  <div class="pn">3 / 18</div>
+</div>
+
+<!-- ============ S4 · 해법 ============ -->
+<div class="s" id="s4">
+  <div class="rh"><span class="badge lg">SOLUTION</span>
+    <div class="slide-title">Multica 기반 AI 에이전트 조직 — 둥지(Nest) hub-spoke</div>
+    <div class="slide-sub">사람을 더 뽑는 대신, 도메인별 AI 리드로 구성된 가상 조직을 운영한다</div>
+  </div>
+  <div style="padding:16px 44px 0;">
+    <div class="cg cg-3">
+      <div class="card"><div class="card-hd green">① 단일 창구</div><div class="card-body"><p>창업자는 <b>Orchestration Lead</b> 한 명하고만 대화. 기술 용어 대신 제품·유저 관점으로.</p></div></div>
+      <div class="card"><div class="card-hd green">② 도메인 라우팅</div><div class="card-body"><p>요청을 SOO 티켓으로 쪼개 <b>도메인 리드</b>에 배분. 복수 도메인은 병렬 티켓.</p></div></div>
+      <div class="card"><div class="card-hd green">③ 자기검증 루프</div><div class="card-body"><p>리드가 구현 → 렌더/스샷 검증 → PR → 머지 게이트 → 자동 머지.</p></div></div>
+    </div>
+    <div class="cg cg-2" style="margin-top:12px;">
+      <div class="principle"><div class="pl-lbl">한 문장 요약</div>비개발자는 <b>무엇을 만들지</b>만 정한다. <b>어떻게</b>는 에이전트 조직이 끝까지 가져간다.</div>
+      <div class="principle"><div class="pl-lbl">왜 Multica인가</div>이슈·티켓·PR·머지 게이트·오토파일럿이 한 곳에. 에이전트가 <b>실제로 코드를 짜고 배포</b>까지 한다.</div>
+    </div>
+  </div>
+  <div class="note">조직 운영 모델은 실제 차터(Orchestration Lead v2) 기준 <span class="tag t-ver">검증</span></div>
+  <div class="pn">4 / 18</div>
+</div>
+
+<!-- ============ S5 · 조직 구조 다이어그램 ============ -->
+<div class="s" id="s5">
+  <div class="rh"><span class="badge">ORG · HUB-SPOKE</span>
+    <div class="slide-title">조직 구조 — 허브 1, 스포크 4</div>
+    <div class="slide-sub">중앙 Orchestration Lead가 라우팅·취합, 4개 도메인 리드가 실제 빌드</div>
+  </div>
+  <div style="padding:6px 30px 0;display:flex;justify-content:center;">
+    <svg width="900" height="392" viewBox="0 0 900 392">
+      <defs>
+        <radialGradient id="hubG" cx="50%" cy="40%" r="65%"><stop offset="0%" stop-color="#4CAF88"/><stop offset="100%" stop-color="#2E7D5B"/></radialGradient>
+        <linearGradient id="spk" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ECF7F2"/><stop offset="100%" stop-color="#D4EFE4"/></linearGradient>
+      </defs>
+      <!-- 연결선 -->
+      <g stroke="#7BC4AE" stroke-width="2.5" fill="none">
+        <path d="M450,196 L165,90"/><path d="M450,196 L735,90"/>
+        <path d="M450,196 L165,300"/><path d="M450,196 L735,300"/>
+      </g>
+      <g fill="#A8DCCB"><circle cx="307" cy="143" r="3.5"/><circle cx="593" cy="143" r="3.5"/><circle cx="307" cy="248" r="3.5"/><circle cx="593" cy="248" r="3.5"/></g>
+      <!-- 허브 -->
+      <circle cx="450" cy="196" r="78" fill="url(#hubG)"/>
+      <circle cx="450" cy="196" r="78" fill="none" stroke="#fff" stroke-width="2" opacity=".5"/>
+      <text x="450" y="180" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Pretendard">Orchestration</text>
+      <text x="450" y="198" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Pretendard">Lead</text>
+      <text x="450" y="220" text-anchor="middle" fill="#ECF7F2" font-size="9.5" font-family="Pretendard">허브 · 라우팅 · 취합</text>
+      <!-- 스포크 노드 -->
+      <g font-family="Pretendard">
+        <!-- 좌상 -->
+        <rect x="40" y="44" width="250" height="92" rx="12" fill="url(#spk)" stroke="#4CAF88" stroke-width="1.5"/>
+        <circle cx="72" cy="76" r="15" fill="#4CAF88"/><text x="72" y="81" text-anchor="middle" fill="#fff" font-size="14">🎨</text>
+        <text x="98" y="73" fill="#2E7D5B" font-size="12.5" font-weight="800">UI · 디자인 리드</text>
+        <text x="98" y="93" fill="#6E6E6E" font-size="9">화면 · 컴포넌트</text>
+        <text x="98" y="106" fill="#6E6E6E" font-size="9">디자인 토큰 전파</text>
+        <text x="98" y="124" fill="#9B9B9B" font-size="8.2">SPOKE 01</text>
+        <!-- 우상 -->
+        <rect x="610" y="44" width="250" height="92" rx="12" fill="url(#spk)" stroke="#4CAF88" stroke-width="1.5"/>
+        <circle cx="642" cy="76" r="15" fill="#4CAF88"/><text x="642" y="81" text-anchor="middle" fill="#fff" font-size="14">🧠</text>
+        <text x="668" y="73" fill="#2E7D5B" font-size="12.5" font-weight="800">회독·망각 엔진 리드</text>
+        <text x="668" y="93" fill="#6E6E6E" font-size="9">회독 스케줄 · 망각위험</text>
+        <text x="668" y="106" fill="#6E6E6E" font-size="9">학습객체 구조화</text>
+        <text x="668" y="124" fill="#9B9B9B" font-size="8.2">SPOKE 02</text>
+        <!-- 좌하 -->
+        <rect x="40" y="256" width="250" height="92" rx="12" fill="url(#spk)" stroke="#4CAF88" stroke-width="1.5"/>
+        <circle cx="72" cy="288" r="15" fill="#4CAF88"/><text x="72" y="293" text-anchor="middle" fill="#fff" font-size="14">🏆</text>
+        <text x="98" y="285" fill="#2E7D5B" font-size="12.5" font-weight="800">게임화 리드</text>
+        <text x="98" y="305" fill="#6E6E6E" font-size="9">XP · 스트릭 · 기억HP</text>
+        <text x="98" y="318" fill="#6E6E6E" font-size="9">뱃지 · 리그</text>
+        <text x="98" y="336" fill="#9B9B9B" font-size="8.2">SPOKE 03</text>
+        <!-- 우하 -->
+        <rect x="610" y="256" width="250" height="92" rx="12" fill="url(#spk)" stroke="#4CAF88" stroke-width="1.5"/>
+        <circle cx="642" cy="288" r="15" fill="#4CAF88"/><text x="642" y="293" text-anchor="middle" fill="#fff" font-size="14">⚙️</text>
+        <text x="668" y="285" fill="#2E7D5B" font-size="12.5" font-weight="800">플랫폼·인프라 리드</text>
+        <text x="668" y="305" fill="#6E6E6E" font-size="9">배포 · DB · 보안</text>
+        <text x="668" y="318" fill="#6E6E6E" font-size="9">컴플라이언스</text>
+        <text x="668" y="336" fill="#9B9B9B" font-size="8.2">SPOKE 04</text>
+      </g>
+    </svg>
+  </div>
+  <div class="note">문제생성·온톨로지·RAG(MOAT)는 배분 금지 — 창업자 직접 결정 <span class="tag t-ver">검증</span></div>
+  <div class="pn">5 / 18</div>
+</div>
+
+<!-- ============ S6 · 운영 메커니즘 ============ -->
+<div class="s" id="s6">
+  <div class="rh"><span class="badge">MECHANISM</span>
+    <div class="slide-title">운영 메커니즘 — 티켓에서 배포까지, 사람 손 최소</div>
+    <div class="slide-sub">SOO 티켓 라우팅 → 도메인 작업 → 머지 게이트 → 자동 머지 → 배포</div>
+  </div>
+  <div style="padding:10px 24px 0;display:flex;justify-content:center;">
+    <svg width="912" height="250" viewBox="0 0 912 250" font-family="Pretendard">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4CAF88"/></marker>
+        <linearGradient id="stepg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ECF7F2"/><stop offset="100%" stop-color="#D4EFE4"/></linearGradient>
+      </defs>
+      <!-- main pipeline row -->
+      <g>
+        <!-- node template -->
+        <rect x="14" y="70" width="120" height="74" rx="10" fill="url(#stepg)" stroke="#4CAF88" stroke-width="1.5"/>
+        <text x="74" y="98" text-anchor="middle" fill="#2E7D5B" font-size="11.5" font-weight="800">아이디어</text>
+        <text x="74" y="116" text-anchor="middle" fill="#6E6E6E" font-size="8.6">창업자 입력</text>
+        <text x="74" y="130" text-anchor="middle" fill="#6E6E6E" font-size="8.6">(제품 방향)</text>
+
+        <rect x="170" y="70" width="120" height="74" rx="10" fill="#2E7D5B"/>
+        <text x="230" y="98" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="800">SOO 티켓</text>
+        <text x="230" y="116" text-anchor="middle" fill="#ECF7F2" font-size="8.6">도메인 분류</text>
+        <text x="230" y="130" text-anchor="middle" fill="#ECF7F2" font-size="8.6">+ 라우팅</text>
+
+        <rect x="326" y="70" width="120" height="74" rx="10" fill="url(#stepg)" stroke="#4CAF88" stroke-width="1.5"/>
+        <text x="386" y="98" text-anchor="middle" fill="#2E7D5B" font-size="11.5" font-weight="800">도메인 리드</text>
+        <text x="386" y="116" text-anchor="middle" fill="#6E6E6E" font-size="8.6">구현 + 자기</text>
+        <text x="386" y="130" text-anchor="middle" fill="#6E6E6E" font-size="8.6">검증(렌더)</text>
+
+        <rect x="482" y="62" width="138" height="90" rx="10" fill="#fff" stroke="#4CAF88" stroke-width="2" stroke-dasharray="5 3"/>
+        <text x="551" y="86" text-anchor="middle" fill="#2E7D5B" font-size="11.5" font-weight="800">머지 게이트</text>
+        <text x="551" y="104" text-anchor="middle" fill="#6E6E6E" font-size="8.4">CodeRabbit 리뷰</text>
+        <text x="551" y="118" text-anchor="middle" fill="#6E6E6E" font-size="8.4">+ 아키텍처 리뷰</text>
+        <text x="551" y="138" text-anchor="middle" fill="#4CAF88" font-size="8.4" font-weight="700">PR-only · 브랜치 규약</text>
+
+        <rect x="656" y="70" width="120" height="74" rx="10" fill="#4CAF88"/>
+        <text x="716" y="98" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="800">자동 머지</text>
+        <text x="716" y="116" text-anchor="middle" fill="#ECF7F2" font-size="8.6">승인 통과 시</text>
+        <text x="716" y="130" text-anchor="middle" fill="#ECF7F2" font-size="8.6">main 병합</text>
+
+        <rect x="812" y="70" width="92" height="74" rx="10" fill="#2E7D5B"/>
+        <text x="858" y="100" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="800">배포</text>
+        <text x="858" y="118" text-anchor="middle" fill="#ECF7F2" font-size="8.6">Vercel</text>
+
+        <!-- arrows -->
+        <g stroke="#4CAF88" stroke-width="2" marker-end="url(#ar)">
+          <line x1="134" y1="107" x2="166" y2="107"/>
+          <line x1="290" y1="107" x2="322" y2="107"/>
+          <line x1="446" y1="107" x2="478" y2="107"/>
+          <line x1="620" y1="107" x2="652" y2="107"/>
+          <line x1="776" y1="107" x2="808" y2="107"/>
+        </g>
+      </g>
+      <!-- watchdog autopilot -->
+      <rect x="326" y="186" width="294" height="48" rx="10" fill="#fff4e0" stroke="#b25e00" stroke-width="1.3"/>
+      <text x="473" y="206" text-anchor="middle" fill="#b25e00" font-size="10.5" font-weight="800">🛡 워치독 오토파일럿</text>
+      <text x="473" y="223" text-anchor="middle" fill="#8a5200" font-size="8.6">실패·정체 감지 → 자동 재시도 / 에스컬레이션</text>
+      <g stroke="#b25e00" stroke-width="1.3" stroke-dasharray="4 3" fill="none" marker-end="url(#ar)">
+        <path d="M386,186 L386,150"/><path d="M551,186 L551,156"/>
+      </g>
+    </svg>
+  </div>
+  <div style="padding:2px 44px 0;font-size:10.5px;color:var(--text);line-height:1.5;">머지 게이트는 창업자에게도 동일 적용된다 — <b>우회 없음, PR-only</b>. 자기검증 루프가 휴먼 리뷰 부담을 흡수한다.</div>
+  <div class="note">머지 게이트·브랜치 규약·CodeRabbit은 실제 운영 룰 <span class="tag t-ver">검증</span> · 워치독 동작은 <span class="tag t-est">추정</span></div>
+  <div class="pn">6 / 18</div>
+</div>
+
+<!-- ============ S7 · 워크플로우 타임라인 ============ -->
+<div class="s" id="s7">
+  <div class="rh"><span class="badge">WORKFLOW</span>
+    <div class="slide-title">워크플로우 사례 — 한 기능이 흘러가는 경로</div>
+    <div class="slide-sub">"이 화면 이렇게 바꿔줘" 한마디가 배포까지 가는 동안</div>
+  </div>
+  <div style="padding:18px 44px 0;">
+    <div class="tl">
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">아이디어</div><div class="td">창업자 한마디<br>제품 관점</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">라우팅</div><div class="td">분류표 → SOO<br>티켓 발행</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">리드 작업</div><div class="td">도메인 리드<br>코드 구현</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">OL 검증</div><div class="td">렌더·스크린샷<br>육안 확인</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">PR</div><div class="td">브랜치 규약<br>PR 생성</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="ln"></div><div class="tt">자동 머지</div><div class="td">CodeRabbit<br>승인 통과</div></div>
+      <div class="tlstep"><div class="dot"></div><div class="tt">배포</div><div class="td">Vercel<br>프리뷰→프로덕션</div></div>
+    </div>
+    <div class="cg cg-3" style="margin-top:26px;">
+      <div class="card"><div class="card-hd green">검증 루프가 핵심</div><div class="card-body"><p>에이전트가 자기 결과를 <b>렌더·스샷</b>으로 확인 후 PR — 깨진 화면이 머지되지 않는다.</p></div></div>
+      <div class="card"><div class="card-hd green">멈춤 없는 직진</div><div class="card-body"><p>plan + 워크트리 + OK 후엔 <b>task별 멈춤 없이</b> PR까지 직진.</p></div></div>
+      <div class="card"><div class="card-hd green">창업자 개입 최소</div><div class="card-body"><p>비가역·비용·정책 충돌만 <b>상신</b>. 그 외는 조직이 자율 처리.</p></div></div>
+    </div>
+  </div>
+  <div class="note">워크플로우 단계는 실제 운영 규약 기반 <span class="tag t-ver">검증</span> · 단계별 소요는 사례별 상이 <span class="tag t-asm">가정</span></div>
+  <div class="pn">7 / 18</div>
+</div>
+
+<!-- ============ S8 · 1인 창업자 레버리지 ============ -->
+<div class="s" id="s8">
+  <div class="rh"><span class="badge lg">LEVERAGE</span>
+    <div class="slide-title">1인 창업자 레버리지 — 방향만, 나머지는 자동화</div>
+    <div class="slide-sub">사람을 늘리지 않고 산출 역량을 늘린다</div>
+  </div>
+  <div style="padding:18px 44px 0;">
+    <div class="cg cg-4">
+      <div class="card" style="text-align:center;"><div class="card-body" style="padding:14px 10px;"><div class="kpi-num">1</div><div class="kpi-lbl">사람 (비개발자)</div></div></div>
+      <div class="card" style="text-align:center;"><div class="card-body" style="padding:14px 10px;"><div class="kpi-num">4+1</div><div class="kpi-lbl">AI 리드 (4 스포크 + 허브)</div></div></div>
+      <div class="card" style="text-align:center;"><div class="card-body" style="padding:14px 10px;"><div class="kpi-num">0</div><div class="kpi-lbl">직접 작성한 코드 라인</div></div></div>
+      <div class="card" style="text-align:center;"><div class="card-body" style="padding:14px 10px;"><div class="kpi-num">24/7</div><div class="kpi-lbl">병렬 가용 빌드 시간</div></div></div>
+    </div>
+    <div class="cg cg-2" style="margin-top:14px;">
+      <div class="principle"><div class="pl-lbl">창업자가 하는 일</div>제품 방향 정의 · 우선순위 · 비가역 결정 승인 · MOAT 설계. <b>"무엇을, 왜"</b>에 집중.</div>
+      <div class="principle"><div class="pl-lbl">에이전트가 하는 일</div>분해 · 구현 · 자기검증 · 리뷰 · 머지 · 배포. <b>"어떻게"</b>를 끝까지. 실패는 워치독이 재시도.</div>
+    </div>
+    <div class="starbox" style="margin-top:12px;"><b>레버리지 효과.</b> &nbsp;외주·채용 없이 디자인·프론트·엔진·문서·배포를 <b>병렬</b>로 굴린다. 비개발자의 약점(구현)이 더 이상 병목이 아니다.</div>
+  </div>
+  <div class="note">KPI 수치는 운영 모델 표현 <span class="tag t-est">추정</span> · "직접 코드 0"은 차터 원칙 <span class="tag t-ver">검증</span></div>
+  <div class="pn">8 / 18</div>
+</div>
+
+<!-- ============ S9 · 브랜드 디자인 시스템 SSoT ============ -->
+<div class="s" id="s9">
+  <div class="rh"><span class="badge">DESIGN SSoT</span>
+    <div class="slide-title">브랜드 디자인 시스템 — 변경 진원지 단일화 (living SSoT)</div>
+    <div class="slide-sub">한 곳을 바꾸면 전 화면에 전파 — 토큰이 단일 진실 공급원</div>
+  </div>
+  <div style="padding:10px 44px 0;display:flex;justify-content:center;">
+    <svg width="850" height="240" viewBox="0 0 850 240" font-family="Pretendard">
+      <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2E7D5B"/></marker></defs>
+      <!-- source -->
+      <rect x="40" y="86" width="180" height="68" rx="12" fill="#2E7D5B"/>
+      <text x="130" y="112" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">SSoT</text>
+      <text x="130" y="131" text-anchor="middle" fill="#ECF7F2" font-size="9">브랜드페이지 + tokens.css</text>
+      <!-- fan-out -->
+      <g stroke="#7BC4AE" stroke-width="2.5" fill="none" marker-end="url(#ar2)">
+        <path d="M220,108 C300,60 360,50 470,48"/>
+        <path d="M220,116 C300,100 360,100 470,108"/>
+        <path d="M220,124 C300,160 360,168 470,168"/>
+        <path d="M220,132 C300,200 360,212 470,228" transform="translate(0,-8)"/>
+      </g>
+      <g font-family="Pretendard">
+        <rect x="470" y="30" width="340" height="38" rx="9" fill="#ECF7F2" stroke="#4CAF88" stroke-width="1.3"/>
+        <text x="490" y="54" fill="#2E7D5B" font-size="11" font-weight="700">랜딩 페이지 — 색·타이포 자동 반영</text>
+        <rect x="470" y="90" width="340" height="38" rx="9" fill="#ECF7F2" stroke="#4CAF88" stroke-width="1.3"/>
+        <text x="490" y="114" fill="#2E7D5B" font-size="11" font-weight="700">앱 전 화면 — 컴포넌트 토큰 전파</text>
+        <rect x="470" y="150" width="340" height="38" rx="9" fill="#ECF7F2" stroke="#4CAF88" stroke-width="1.3"/>
+        <text x="490" y="174" fill="#2E7D5B" font-size="11" font-weight="700">망각맵·기억HP — 위험도 컬러 일관</text>
+        <rect x="470" y="194" width="340" height="38" rx="9" fill="#ECF7F2" stroke="#4CAF88" stroke-width="1.3"/>
+        <text x="490" y="218" fill="#2E7D5B" font-size="11" font-weight="700">IR·문서 덱 — 동일 브랜드 룩</text>
+      </g>
+    </svg>
+  </div>
+  <div style="padding:6px 44px 0;font-size:10.5px;color:var(--text);line-height:1.5;">디자인 토큰이 살아있는 SSoT다. 색 하나를 바꾸면 <b>전파가 자동</b>이라, 1인이 운영해도 브랜드가 흩어지지 않는다. (이 덱 역시 같은 토큰으로 만들어졌다.)</div>
+  <div class="note">SSoT 전파 모델은 디자인 토큰 구조 기반 <span class="tag t-ver">검증</span></div>
+  <div class="pn">9 / 18</div>
+</div>
+
+<!-- ============ S10 · 로고 & 마스코트 ============ -->
+<div class="s" id="s10">
+  <div class="rh"><span class="badge">IDENTITY</span>
+    <div class="slide-title">로고 & 마스코트 — 순공이</div>
+    <div class="slide-sub">배경 명도별 로고 4종 + 표정 마스코트로 일관된 아이덴티티</div>
+  </div>
+  <div style="padding:14px 44px 0;">
+    <div class="cg cg-2" style="gap:12px;">
+      <div>
+        <div style="background:#2E7D5B;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px;align-items:center;">
+          <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/brand/logo/soongong-logo-ko-light.svg" style="height:36px;" alt="KO light">
+          <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/brand/logo/soongong-logo-en-light.svg" style="height:30px;" alt="EN light">
+        </div>
+        <div style="font-size:9px;color:var(--gray);font-weight:700;text-align:center;margin-top:5px;">어두운 배경 → light (KO · EN)</div>
+      </div>
+      <div>
+        <div style="background:#F8FBF7;border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px;align-items:center;">
+          <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/brand/logo/soongong-logo-ko-mint.svg" style="height:36px;" alt="KO mint">
+          <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/brand/logo/soongong-logo-en-mint.svg" style="height:30px;" alt="EN mint">
+        </div>
+        <div style="font-size:9px;color:var(--gray);font-weight:700;text-align:center;margin-top:5px;">밝은 배경 → mint (KO · EN)</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;align-items:center;margin-top:14px;">
+      <div style="flex:1;display:flex;gap:8px;justify-content:center;background:var(--alt);border-radius:10px;padding:8px;">
+        <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/camera-capture-crown-alpha.png" style="height:84px;object-fit:contain;" alt="">
+        <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/main-half-cheer-alpha.png" style="height:84px;object-fit:contain;" alt="">
+        <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/main-half-good-alpha.png" style="height:84px;object-fit:contain;" alt="">
+        <img src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/main-half-comeon-alpha.png" style="height:84px;object-fit:contain;" alt="">
+      </div>
+      <div class="principle" style="flex:1;"><div class="pl-lbl">사용 규칙</div>로고는 배경 명도로 light/mint 자동 선택. 마스코트 순공이는 <b>카메라(찍기)·응원·격려</b> 표정으로 맥락별 사용. 원본 비율·여백 유지.</div>
+    </div>
+  </div>
+  <div class="note">로고·마스코트는 실제 브랜드 자산(raw) 렌더 <span class="tag t-ver">검증</span></div>
+  <div class="pn">10 / 18</div>
+</div>
+
+<!-- ============ S11 · 컬러 & 타이포 ============ -->
+<div class="s" id="s11">
+  <div class="rh"><span class="badge">COLOR · TYPE</span>
+    <div class="slide-title">컬러 & 타이포 — 민트 팔레트 + Pretendard</div>
+    <div class="slide-sub">메인 민트를 축으로 한 9단계 + 텍스트 3종</div>
+  </div>
+  <div style="padding:12px 44px 0;">
+    <div class="cg" style="grid-template-columns:repeat(7,1fr);gap:8px;">
+      <div class="swatch"><div class="chip" style="background:#4CAF88;"></div><div class="lbl">메인 민트<span>#4CAF88</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#2E7D5B;"></div><div class="lbl">딥 민트<span>#2E7D5B</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#7BC4AE;"></div><div class="lbl">보조 민트<span>#7BC4AE</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#A8DCCB;"></div><div class="lbl">민트 라이트<span>#A8DCCB</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#D4EFE4;"></div><div class="lbl">민트 페일<span>#D4EFE4</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#ECF7F2;"></div><div class="lbl">박스 배경<span>#ECF7F2</span></div></div>
+      <div class="swatch"><div class="chip" style="background:#F8FBF7;border-bottom:1px solid var(--line);"></div><div class="lbl">페이지 BG<span>#F8FBF7</span></div></div>
+    </div>
+    <div class="cg cg-2" style="margin-top:14px;gap:14px;">
+      <div>
+        <div style="font-size:10px;font-weight:800;color:var(--dark);margin-bottom:7px;">텍스트 컬러</div>
+        <div style="display:flex;gap:8px;">
+          <div class="swatch" style="flex:1;"><div class="chip" style="background:#2E2E2E;height:34px;"></div><div class="lbl">본문<span>#2E2E2E</span></div></div>
+          <div class="swatch" style="flex:1;"><div class="chip" style="background:#6E6E6E;height:34px;"></div><div class="lbl">보조<span>#6E6E6E</span></div></div>
+          <div class="swatch" style="flex:1;"><div class="chip" style="background:#9B9B9B;height:34px;"></div><div class="lbl">캡션<span>#9B9B9B</span></div></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;font-weight:800;color:var(--dark);margin-bottom:5px;">Pretendard 타이포 스케일</div>
+        <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;">
+          <div style="font-size:24px;font-weight:900;color:var(--dark);line-height:1.1;">Display 900</div>
+          <div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.2;">Heading 800</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text);">Body 600 — 본문 가독성 기준</div>
+          <div style="font-size:9px;font-weight:600;color:var(--gray);">Caption 600 — 보조 정보</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">HEX·타이포 스케일은 디자인 토큰 기준 <span class="tag t-ver">검증</span></div>
+  <div class="pn">11 / 18</div>
+</div>
+
+<!-- ============ S12 · 컴포넌트 시스템 ============ -->
+<div class="s" id="s12">
+  <div class="rh"><span class="badge">COMPONENTS</span>
+    <div class="slide-title">컴포넌트 시스템 — 재사용 부품으로 화면을 조립</div>
+    <div class="slide-sub">네비 레일 · 카드 · stats · 위험도 pill · 망각맵 · 기억HP 도트</div>
+  </div>
+  <div style="padding:12px 44px 0;">
+    <div class="cg cg-3" style="gap:10px;">
+      <div class="mini"><div class="mlbl">좌측 네비 레일</div>
+        <div style="display:flex;gap:6px;"><div style="width:30px;background:var(--dark);border-radius:6px;display:flex;flex-direction:column;gap:7px;padding:7px 0;align-items:center;"><span style="font-size:11px;">🏠</span><span style="font-size:11px;">📷</span><span style="font-size:11px;">🧠</span><span style="font-size:11px;">🏆</span></div><div class="mdesc" style="align-self:center;">고정 레일 · 도메인 진입</div></div>
+      </div>
+      <div class="mini"><div class="mlbl">카드 / Stats</div>
+        <div style="background:var(--alt);border:1px solid var(--line);border-radius:6px;padding:6px 8px;"><div style="font-size:18px;font-weight:900;color:var(--dark);line-height:1;">87%</div><div style="font-size:8px;color:var(--mid);font-weight:700;">회독 달성률</div></div>
+      </div>
+      <div class="mini"><div class="mlbl">위험도 pill</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;"><span class="riskpill" style="background:#e6f7ec;color:#2E7D5B;">또렷</span><span class="riskpill" style="background:#fff4e0;color:#b25e00;">가물</span><span class="riskpill" style="background:#fde7e3;color:#e8552d;">막막</span></div>
+        <div class="mdesc">자기평가 → 간격 차등</div>
+      </div>
+      <div class="mini"><div class="mlbl">망각맵</div>
+        <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+          <span style="aspect-ratio:1;background:#2E7D5B;border-radius:2px;"></span><span style="aspect-ratio:1;background:#4CAF88;border-radius:2px;"></span><span style="aspect-ratio:1;background:#7BC4AE;border-radius:2px;"></span><span style="aspect-ratio:1;background:#A8DCCB;border-radius:2px;"></span><span style="aspect-ratio:1;background:#D4EFE4;border-radius:2px;"></span><span style="aspect-ratio:1;background:#4CAF88;border-radius:2px;"></span><span style="aspect-ratio:1;background:#2E7D5B;border-radius:2px;"></span><span style="aspect-ratio:1;background:#A8DCCB;border-radius:2px;"></span>
+          <span style="aspect-ratio:1;background:#7BC4AE;border-radius:2px;"></span><span style="aspect-ratio:1;background:#D4EFE4;border-radius:2px;"></span><span style="aspect-ratio:1;background:#2E7D5B;border-radius:2px;"></span><span style="aspect-ratio:1;background:#4CAF88;border-radius:2px;"></span><span style="aspect-ratio:1;background:#A8DCCB;border-radius:2px;"></span><span style="aspect-ratio:1;background:#7BC4AE;border-radius:2px;"></span><span style="aspect-ratio:1;background:#D4EFE4;border-radius:2px;"></span><span style="aspect-ratio:1;background:#2E7D5B;border-radius:2px;"></span>
+        </div>
+        <div class="mdesc">리텐션 히트맵 (순공냅스)</div>
+      </div>
+      <div class="mini"><div class="mlbl">기억 HP 도트</div>
+        <div style="display:flex;gap:4px;align-items:center;"><span class="dot-hp" style="background:#2E7D5B;"></span><span class="dot-hp" style="background:#4CAF88;"></span><span class="dot-hp" style="background:#7BC4AE;"></span><span class="dot-hp" style="background:#A8DCCB;"></span><span class="dot-hp" style="background:#e3ece7;"></span><span style="font-size:8px;color:var(--gray);margin-left:3px;font-weight:700;">3/5</span></div>
+        <div class="mdesc">학습객체 잔존 기억량</div>
+      </div>
+      <div class="mini"><div class="mlbl">버튼 / 배지</div>
+        <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;"><span style="background:var(--mid);color:#fff;font-size:8.5px;font-weight:800;padding:4px 10px;border-radius:6px;">회독 시작</span><span class="pill">NEW</span></div>
+        <div class="mdesc">민트 프라이머리 · pill 배지</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:10px;color:var(--text);line-height:1.5;">모든 부품은 토큰을 참조 → 한 번 정의하면 전 화면에서 동일하게 동작. 에이전트가 새 화면을 짤 때도 <b>같은 부품을 재사용</b>한다.</div>
+  </div>
+  <div class="note">컴포넌트는 디자인 시스템 부품을 도식화한 미리보기 <span class="tag t-est">추정</span></div>
+  <div class="pn">12 / 18</div>
+</div>
+
+<!-- ============ S13 · 아키텍처 FSD 2.1 ============ -->
+<div class="s" id="s13">
+  <div class="rh"><span class="badge">ARCHITECTURE</span>
+    <div class="slide-title">아키텍처 — Feature-Sliced Design 2.1</div>
+    <div class="slide-sub">레이어 스택 · 의존성은 아래로만 · 경계는 도구로 강제</div>
+  </div>
+  <div style="padding:10px 44px 0;display:flex;gap:20px;">
+    <div style="flex:1.3;">
+      <svg width="100%" viewBox="0 0 420 280" font-family="Pretendard">
+        <defs><marker id="dn" markerWidth="9" markerHeight="9" refX="3" refY="6" orient="auto"><path d="M0,0 L6,0 L3,6 Z" fill="#2E7D5B"/></marker></defs>
+        <!-- layers -->
+        <g>
+          <rect x="40" y="6" width="300" height="38" rx="7" fill="#2E7D5B"/><text x="190" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">app</text>
+          <rect x="40" y="50" width="300" height="38" rx="7" fill="#3f9a72"/><text x="190" y="74" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">views</text>
+          <rect x="40" y="94" width="300" height="38" rx="7" fill="#4CAF88"/><text x="190" y="118" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">widgets</text>
+          <rect x="40" y="138" width="300" height="38" rx="7" fill="#5fbf9b"/><text x="190" y="162" text-anchor="middle" fill="#fff" font-size="13" font-weight="800">features</text>
+          <rect x="40" y="182" width="300" height="38" rx="7" fill="#7BC4AE"/><text x="190" y="206" text-anchor="middle" fill="#1c5a40" font-size="13" font-weight="800">entities</text>
+          <rect x="40" y="226" width="300" height="38" rx="7" fill="#A8DCCB"/><text x="190" y="250" text-anchor="middle" fill="#1c5a40" font-size="13" font-weight="800">shared</text>
+        </g>
+        <!-- dependency arrow (down only) -->
+        <line x1="370" y1="14" x2="370" y2="256" stroke="#2E7D5B" stroke-width="2.5" marker-end="url(#dn)"/>
+        <text x="392" y="140" fill="#2E7D5B" font-size="9.5" font-weight="800" transform="rotate(90 392 140)" text-anchor="middle">의존성 방향 (아래로만)</text>
+      </svg>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:9px;">
+      <div class="principle"><div class="pl-lbl">규칙</div>상위 레이어는 하위만 참조. <b>역방향·동일 레이어 횡단 금지</b>. 슬라이스 격리.</div>
+      <div class="card"><div class="card-hd green">경계 강제 도구</div><div class="card-body"><ul><li><b>dependency-cruiser</b> — 의존성 그래프 검사</li><li><b>eslint-plugin-boundaries</b> — 레이어 import 차단</li><li>커스텀 lint: arch · sub-scope</li></ul></div></div>
+      <div class="starbox" style="padding:9px 12px;font-size:10px;">경계를 <b>사람이 지키는 규율</b>이 아니라 <b>도구가 막는 게이트</b>로 — 1인 운영에도 구조가 무너지지 않는다.</div>
+    </div>
+  </div>
+  <div class="note">FSD 2.1 레이어·경계 도구는 실제 코드베이스 구성 <span class="tag t-ver">검증</span></div>
+  <div class="pn">13 / 18</div>
+</div>
+
+<!-- ============ S14 · 기술스택 상세 ============ -->
+<div class="s" id="s14">
+  <div class="rh"><span class="badge">TECH STACK</span>
+    <div class="slide-title">기술 스택 상세 — 프론트부터 품질 게이트까지</div>
+    <div class="slide-sub">모던 풀스택 · 버전 고정 · AI는 문제인식 MOAT 슬롯</div>
+  </div>
+  <div style="padding:8px 30px 0;">
+    <div class="cg" style="grid-template-columns:repeat(4,1fr);gap:8px;">
+      <div class="stk"><div class="sh">프론트엔드</div><div class="sb"><span class="t">Next.js <b>15.5</b></span><span class="t">React <b>19</b></span><span class="t">TypeScript <b>5</b></span><span class="t">Tailwind <b>v4</b></span><span class="t">Radix UI</span><span class="t">shadcn</span><span class="t">lucide</span><span class="t">framer-motion</span><span class="t">next-themes</span></div></div>
+      <div class="stk"><div class="sh">상태 · 데이터</div><div class="sb"><span class="t">zustand</span><span class="t">@tanstack/react-query</span><span class="t">zod</span></div>
+        <div class="sh g" style="margin-top:0;">백엔드</div><div class="sb"><span class="t">Supabase <b>ssr/js</b></span><span class="t">web-push (PWA)</span></div></div>
+      <div class="stk"><div class="sh">도메인</div><div class="sb"><span class="t">katex (수식)</span><span class="t">tldraw (풀이캔버스)</span><span class="t">canvas-confetti</span></div>
+        <div class="sh g" style="margin-top:0;">AI</div><div class="sb"><span class="t">Anthropic <b>Claude</b></span><span class="t" style="background:#fff4e0;border-color:#b25e00;color:#b25e00;">문제인식 MOAT</span></div></div>
+      <div class="stk"><div class="sh">품질</div><div class="sb"><span class="t">Vitest</span><span class="t">Playwright</span><span class="t">Testing Library</span><span class="t">dependency-cruiser</span><span class="t">eval harness</span></div>
+        <div class="sh g" style="margin-top:0;">인프라</div><div class="sb"><span class="t">pnpm monorepo</span><span class="t">Vercel</span></div></div>
+    </div>
+    <div class="stk" style="margin-top:9px;"><div class="sh g">커스텀 Lint 룰</div><div class="sb"><span class="t">arch</span><span class="t">tokens</span><span class="t">no-dark</span><span class="t">sub-scope</span><span class="t">images</span><span style="font-size:8.4px;color:var(--gray);align-self:center;margin-left:4px;">— 브랜드·아키텍처·접근성을 코드 레벨에서 강제</span></div></div>
+  </div>
+  <div class="note">버전·패키지는 실제 의존성 기준 <span class="tag t-ver">검증</span> · Claude 문제인식은 MOAT 슬롯 <span class="tag t-asm">가정</span></div>
+  <div class="pn">14 / 18</div>
+</div>
+
+<!-- ============ S15 · 회독 엔진 파이프라인 ============ -->
+<div class="s" id="s15">
+  <div class="rh"><span class="badge">RETENTION ENGINE</span>
+    <div class="slide-title">회독 엔진 파이프라인 — 카메라에서 간격 차등까지</div>
+    <div class="slide-sub">학생이 찍은 문제가 회독 스케줄로 구조화된다</div>
+  </div>
+  <div style="padding:8px 24px 0;display:flex;justify-content:center;">
+    <svg width="912" height="248" viewBox="0 0 912 248" font-family="Pretendard">
+      <defs><marker id="ar3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#4CAF88"/></marker>
+        <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ECF7F2"/><stop offset="100%" stop-color="#D4EFE4"/></linearGradient></defs>
+      <!-- row 1 -->
+      <rect x="14" y="34" width="128" height="70" rx="10" fill="url(#pg)" stroke="#4CAF88" stroke-width="1.5"/>
+      <text x="78" y="62" text-anchor="middle" fill="#2E7D5B" font-size="11.5" font-weight="800">입력</text>
+      <text x="78" y="80" text-anchor="middle" fill="#6E6E6E" font-size="8.6">카메라 / 문제</text>
+      <text x="78" y="93" text-anchor="middle" fill="#6E6E6E" font-size="8.6">찍어서 공급</text>
+
+      <rect x="186" y="34" width="138" height="70" rx="10" fill="#fff" stroke="#b25e00" stroke-width="1.6"/>
+      <text x="255" y="60" text-anchor="middle" fill="#b25e00" font-size="11.5" font-weight="800">인식 (MOAT)</text>
+      <text x="255" y="78" text-anchor="middle" fill="#8a5200" font-size="8.6">OCR · AI 문제인식</text>
+      <text x="255" y="91" text-anchor="middle" fill="#8a5200" font-size="8.6">온톨로지 슬롯</text>
+
+      <rect x="368" y="34" width="138" height="70" rx="10" fill="url(#pg)" stroke="#4CAF88" stroke-width="1.5"/>
+      <text x="437" y="60" text-anchor="middle" fill="#2E7D5B" font-size="11.5" font-weight="800">학습객체화</text>
+      <text x="437" y="78" text-anchor="middle" fill="#6E6E6E" font-size="8.6">구조화 · 메타</text>
+      <text x="437" y="91" text-anchor="middle" fill="#6E6E6E" font-size="8.6">태깅 · prior</text>
+
+      <rect x="550" y="34" width="150" height="70" rx="10" fill="#2E7D5B"/>
+      <text x="625" y="60" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="800">회독 스케줄</text>
+      <text x="625" y="78" text-anchor="middle" fill="#ECF7F2" font-size="8.6">1 · 3 · 7 · 14일</text>
+      <text x="625" y="91" text-anchor="middle" fill="#ECF7F2" font-size="8.6">간격 반복</text>
+
+      <rect x="744" y="34" width="152" height="70" rx="10" fill="#4CAF88"/>
+      <text x="820" y="60" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="800">자기평가</text>
+      <text x="820" y="78" text-anchor="middle" fill="#ECF7F2" font-size="8.6">또렷 / 가물 / 막막</text>
+      <text x="820" y="91" text-anchor="middle" fill="#ECF7F2" font-size="8.6">→ 간격 차등</text>
+
+      <g stroke="#4CAF88" stroke-width="2" marker-end="url(#ar3)">
+        <line x1="142" y1="69" x2="182" y2="69"/>
+        <line x1="324" y1="69" x2="364" y2="69"/>
+        <line x1="506" y1="69" x2="546" y2="69"/>
+        <line x1="700" y1="69" x2="740" y2="69"/>
+      </g>
+      <!-- feedback loop -->
+      <path d="M820,104 C820,170 625,180 625,118" fill="none" stroke="#7BC4AE" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#ar3)"/>
+      <text x="700" y="172" text-anchor="middle" fill="#4CAF88" font-size="9" font-weight="700">평가 결과가 다음 회독 간격을 조정</text>
+      <!-- self-eval color legend -->
+      <g>
+        <rect x="744" y="120" width="44" height="18" rx="9" fill="#e6f7ec"/><text x="766" y="133" text-anchor="middle" fill="#2E7D5B" font-size="9" font-weight="800">또렷↑</text>
+        <rect x="794" y="120" width="44" height="18" rx="9" fill="#fff4e0"/><text x="816" y="133" text-anchor="middle" fill="#b25e00" font-size="9" font-weight="800">가물=</text>
+        <rect x="844" y="120" width="44" height="18" rx="9" fill="#fde7e3"/><text x="866" y="133" text-anchor="middle" fill="#e8552d" font-size="9" font-weight="800">막막↓</text>
+      </g>
+    </svg>
+  </div>
+  <div style="padding:2px 44px 0;font-size:10.5px;color:var(--text);line-height:1.5;">막힘은 AI 풀이가 푼다. <b>까먹음은 회독 엔진이 푼다</b> — 자기평가가 간격을 차등해 약한 기억부터 회수한다.</div>
+  <div class="note">스케줄 1·3·7·14일·자기평가 3단은 제품 설계 <span class="tag t-ver">검증</span> · 인식(MOAT) 세부는 <span class="tag t-asm">가정</span></div>
+  <div class="pn">15 / 18</div>
+</div>
+
+<!-- ============ S16 · 산출물 & 성과 ============ -->
+<div class="s" id="s16">
+  <div class="rh"><span class="badge">OUTPUT</span>
+    <div class="slide-title">산출물 & 성과 — 짧은 기간에 만든 것</div>
+    <div class="slide-sub">1인 + 에이전트 조직이 병렬로 빌드한 결과물</div>
+  </div>
+  <div style="padding:16px 44px 0;">
+    <div class="cg cg-2" style="gap:14px;">
+      <div class="card"><div class="card-hd">완료 / 빌드됨</div><div class="card-body"><ul>
+        <li>브랜드 시스템 — 로고 4종·마스코트·토큰·컴포넌트 <span class="tag t-ver">검증</span></li>
+        <li>랜딩 페이지 + 앱 전 화면 골격 <span class="tag t-ver">검증</span></li>
+        <li>FSD 2.1 아키텍처 + 경계 강제 도구 <span class="tag t-ver">검증</span></li>
+        <li>회독 엔진 기초 (스케줄·자기평가) <span class="tag t-est">추정</span></li>
+        <li>IR 덱 · 본 쇼케이스 덱 등 문서 <span class="tag t-ver">검증</span></li>
+      </ul></div></div>
+      <div class="card"><div class="card-hd green">운영 지표 (모델)</div><div class="card-body"><ul>
+        <li>도메인 리드 <b>4 + 허브 1</b>로 병렬 빌드</li>
+        <li>SOO 티켓 라우팅으로 작업 분배·취합</li>
+        <li>PR-only 머지 게이트로 품질 일관</li>
+        <li>워치독 오토파일럿으로 실패 자동 복구</li>
+        <li>창업자 직접 코드 <b>0줄</b> — 방향 결정에 집중</li>
+      </ul></div></div>
+    </div>
+    <div class="starbox" style="margin-top:14px;"><b>핵심.</b> &nbsp;브랜드·프론트·아키텍처·엔진·문서를 <b>한 사람이, 외주 없이</b> 동시에 진척시켰다. 가능하게 한 것은 에이전트 조직이라는 레버리지다.</div>
+  </div>
+  <div class="note">완료 항목은 빌드 기준 <span class="tag t-ver">검증</span> · 진척도·기간은 <span class="tag t-est">추정</span></div>
+  <div class="pn">16 / 18</div>
+</div>
+
+<!-- ============ S17 · 인사이트 ============ -->
+<div class="s" id="s17">
+  <div class="rh"><span class="badge">INSIGHTS</span>
+    <div class="slide-title">인사이트 — 에이전트 오케스트레이션 노하우</div>
+    <div class="slide-sub">조직을 굴려보며 검증된 4가지 운영 원칙</div>
+  </div>
+  <div style="padding:16px 44px 0;">
+    <div class="cg cg-2" style="gap:12px;">
+      <div class="principle"><div class="pl-lbl">① 라우팅</div>도메인 분류표를 먼저 고정하라. <b>"누가 할 일인가"</b>가 명확하면 1인이 100개 요청도 흩어지지 않는다.</div>
+      <div class="principle"><div class="pl-lbl">② 검증 루프</div>에이전트가 <b>자기 결과를 스스로 확인</b>(렌더·스샷·테스트)하게 하라. 휴먼 리뷰 병목이 사라진다.</div>
+      <div class="principle"><div class="pl-lbl">③ SSoT</div>토큰·차터·룰을 <b>단일 진실 공급원</b>으로. 진원지 한 곳만 바꾸면 전체가 따라온다.</div>
+      <div class="principle"><div class="pl-lbl">④ 머지 게이트</div>품질은 사람 규율이 아니라 <b>자동 게이트</b>로. CodeRabbit·아키텍처 리뷰·PR-only가 바닥을 받친다.</div>
+    </div>
+    <div class="starbox" style="margin-top:14px;"><b>한 줄 정리.</b> &nbsp;에이전트는 "똑똑한 개인"이 아니라 <b>잘 설계된 조직</b>일 때 레버리지가 폭발한다 — 라우팅·검증·SSoT·게이트가 그 뼈대다.</div>
+  </div>
+  <div class="note">운영 원칙은 실제 차터·운영 경험 기반 <span class="tag t-ver">검증</span></div>
+  <div class="pn">17 / 18</div>
+</div>
+
+<!-- ============ S18 · 비전 / Next ============ -->
+<div class="s" id="s18">
+  <div class="fb">
+    <div class="inner">
+      <div style="font-size:11px;letter-spacing:2px;color:#ECF7F2;font-weight:700;margin-bottom:10px;">VISION · NEXT</div>
+      <div class="big">아이디어를 가진 누구나,<br><span class="hl">에이전트 조직</span>으로 빌드한다.</div>
+      <div class="sm">비개발자 1인이 제품을 끝까지 만든 이 과정을, 더 깊은 자기검증·더 많은 도메인 리드로 키운다.<br>다음은 회독 엔진(MOAT) 고도화와 베타 출시다.</div>
+    </div>
+    <img class="masc" src="https://raw.githubusercontent.com/mugungwhwa/soongong/main/apps/web/public/mascot/main-half-cheer-alpha.png" alt="">
+  </div>
+  <div class="pn" style="color:#cfe8da;">18 / 18</div>
+</div>
+
+</div><!-- .vp -->
+<div id="nav"><button id="btn-prev">&#8592;</button><span id="ctr">1 / 18</span><button id="btn-next">&#8594;</button></div>
+</div><!-- #vp-wrap -->
+
+<script>
+/* ============ 네비게이션 (TOTAL = 슬라이드 수) ============ */
+var TOTAL=18,cur=1;
+function go(n){
+  document.getElementById('s'+cur).classList.remove('on');
+  cur=Math.min(Math.max(n,1),TOTAL);
+  document.getElementById('s'+cur).classList.add('on');
+  document.getElementById('ctr').textContent=cur+' / '+TOTAL;
+  document.getElementById('prog-bar').style.width=(cur/TOTAL*100)+'%';
+}
+document.getElementById('btn-prev').onclick=function(){go(cur-1);};
+document.getElementById('btn-next').onclick=function(){go(cur+1);};
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ')go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(cur-1);
+});
+/* ============ 풀스크린 스케일링 ============ */
+function scaleVP(){var W=960,w=document.getElementById('vp-wrap');
+  w.style.transform='none';var natH=w.offsetHeight||600;
+  var s=Math.min(window.innerWidth/W,(window.innerHeight-8)/natH);
+  w.style.transform='scale('+s+')';w.style.transformOrigin='center top';}
+window.addEventListener('resize',scaleVP);
+scaleVP();
+document.getElementById('prog-bar').style.width=(1/TOTAL*100)+'%';
+</script>
+</body>
+</html>
