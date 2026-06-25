@@ -10,5 +10,6 @@ export const ROUTES = {
   play: (questId: string) => `/play/${questId}`,
   recovery: (objectId: string) => `/recovery/${objectId}`,
   result: "/result",
+  me: "/me",
   admin: "/admin",
 } as const;

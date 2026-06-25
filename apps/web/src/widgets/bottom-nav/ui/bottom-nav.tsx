@@ -84,7 +84,7 @@ const LEFT_ITEMS: TabItem[] = [
 ];
 const RIGHT_ITEMS: TabItem[] = [
   { href: ROUTES.wrongNotes, label: "오답", icon: <WrongNotesIcon /> },
-  { href: ROUTES.admin, label: "내 정보", icon: <ProfileIcon /> },
+  { href: ROUTES.me, label: "내 정보", icon: <ProfileIcon /> },
 ];
 
 export function BottomNav() {
