@@ -3,10 +3,18 @@ import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { CookieOptions } from "@supabase/ssr";
 
+function safeRedirectPath(value: string | null): string {
+  if (!value) return "/today";
+  // Allow only same-origin relative paths: must start with "/" but not "//"
+  // "//" would be interpreted as a protocol-relative URL pointing to an external host
+  if (value.startsWith("/") && !value.startsWith("//")) return value;
+  return "/today";
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/today";
+  const next = safeRedirectPath(searchParams.get("next"));
 
   if (!code) {
     return NextResponse.redirect(new URL("/login?error=missing_code", request.url));

@@ -1,38 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/shared/lib/supabase/client";
 import { Button } from "@/shared/ui/button";
 import { Mascot } from "@/shared/ui/mascot";
 
-export default function LoginPage() {
+const CALLBACK_ERRORS: Record<string, string> = {
+  missing_code: "인증 코드가 없어요. 다시 시도해 주세요.",
+  auth_failed: "로그인 링크가 만료됐어요. 다시 시도해 주세요.",
+};
+
+function LoginForm() {
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(() => {
+    const err = searchParams.get("error");
+    return err ? (CALLBACK_ERRORS[err] ?? "로그인에 실패했어요. 다시 시도해 주세요.") : null;
+  });
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
     setError(null);
+    try {
+      const supabase = createClient();
+      const redirectTo =
+        (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin) +
+        "/auth/callback";
 
-    const supabase = createClient();
-    const redirectTo =
-      (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin) +
-      "/auth/callback";
+      const { error: err } = await supabase.auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: redirectTo },
+      });
 
-    const { error: err } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: redirectTo },
-    });
-
-    if (err) {
+      if (err) {
+        setError("이메일 전송에 실패했어요. 다시 시도해 주세요.");
+      } else {
+        setSent(true);
+      }
+    } catch {
       setError("이메일 전송에 실패했어요. 다시 시도해 주세요.");
-    } else {
-      setSent(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   return (
@@ -86,5 +100,13 @@ export default function LoginPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
