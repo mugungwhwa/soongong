@@ -42,7 +42,7 @@ BEGIN
     v_object_id, NULL, v_user_id,
     'question', '수학', '수열', '점화식',
     'a_{n+1} = 2·a_n + 1, a_1 = 1 일 때, 일반항 a_n 을 구하시오.',
-    '점화식 풀이 시 특수해(상수 고정점) 설정을 놓침',
+    ARRAY['점화식 풀이 시 특수해(상수 고정점) 설정을 놓침'],
     'high', 0.9, 'approved'
   ) ON CONFLICT (object_id) DO NOTHING;
 
@@ -67,13 +67,14 @@ BEGIN
   -- due_date = 오늘로 항상 갱신 → 날짜가 바뀌어도 재실행 시 오늘 노출.
   INSERT INTO public.review_quests (
     quest_id, user_id, object_id, memory_id,
-    due_date, quest_mode, reward_xp, status
+    due_date, quest_mode, quest_format, reward_xp, status
   ) VALUES (
     v_quest_id, v_user_id, v_object_id, v_memory_id,
-    v_today, 'today', 30, 'pending'
+    v_today, 'today', 'original', 30, 'pending'
   ) ON CONFLICT (quest_id) DO UPDATE
-    SET due_date = v_today,
-        status   = 'pending';
+    SET due_date     = v_today,
+        quest_format = 'original',
+        status       = 'pending';
 
   -- ── 4. 변형 문항 (generated_problems) ──────────────────────
   INSERT INTO public.generated_problems (
