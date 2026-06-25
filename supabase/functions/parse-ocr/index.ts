@@ -112,6 +112,7 @@ Deno.serve(async (req: Request) => {
     review_priority: ocrResult.review_priority,
     confidence_score: ocrResult.confidence_score,
     reviewer_status: "pending",
+    variant_status: "pending",
   };
 
   const { data: plo, error: insertError } = await supabase

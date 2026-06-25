@@ -13,6 +13,7 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState<"uploading" | "analyzing" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   function handleFile(f: File) {
@@ -28,6 +29,7 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
   async function handleSubmit() {
     if (!file) return;
     setLoading(true);
+    setLoadingStep("uploading");
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
@@ -42,11 +44,14 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
       const source = await createSource({ source_type: "problem_photo", raw_url: rawUrl });
       if (!source) throw new Error("저장 실패");
 
+      setLoadingStep("analyzing");
       await runIntakePipeline(source.source_id);
+      // OCR + 회독 퀘스트 완료 즉시 이동 — 변형 문항은 백그라운드 생성 중
       router.push(ROUTES.today);
     } catch (e) {
       setError(e instanceof Error ? e.message : "오류가 발생했어요.");
       setLoading(false);
+      setLoadingStep(null);
     }
   }
 
@@ -85,7 +90,7 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
         onClick={handleSubmit}
       >
         {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-        분석 시작
+        {loadingStep === "uploading" ? "업로드 중..." : loadingStep === "analyzing" ? "분석 중..." : "분석 시작"}
       </Button>
     </div>
   );

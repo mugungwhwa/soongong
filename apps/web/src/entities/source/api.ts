@@ -1,6 +1,6 @@
 import { createClient } from "@/shared/lib/supabase/client";
 import type { Source, SourceType } from "./model";
-import { createIntakeQuest } from "./actions";
+import { createIntakeQuest, updateVariantStatus } from "./actions";
 
 export async function createSource(payload: {
   source_type: SourceType;
@@ -110,17 +110,20 @@ export async function runIntakePipeline(
     );
   }
 
-  // 3) generate-problem — 적격성은 함수가 self-gate. 부적격(422/403)은 정상 흐름.
-  const { data: generated, error: genErr } = await supabase.functions.invoke<{
-    problem_id: string;
-  }>("generate-problem", { body: { object_id: plo.object_id } });
-  if (genErr || !generated?.problem_id) {
-    console.info("[intake] generate-problem 미적재(부적격/실패) — 정상 종료", genErr ?? "");
-    return result;
-  }
-  result.generatedProblemId = generated.problem_id;
+  // 3) generate-problem — 블로킹 해제: fire-and-forget.
+  //    parse-ocr에서 variant_status='pending'으로 이미 적재됨.
+  //    완료/실패 후 서버 액션으로 variant_status 갱신.
+  const objectIdForVariant = plo.object_id;
+  supabase.functions
+    .invoke<{ problem_id: string }>("generate-problem", { body: { object_id: objectIdForVariant } })
+    .then((res: { data: { problem_id: string } | null; error: unknown }) => {
+      const nextStatus = !res.error && res.data?.problem_id ? "done" : "failed";
+      return updateVariantStatus(objectIdForVariant, nextStatus);
+    })
+    .catch(() => updateVariantStatus(objectIdForVariant, "failed").catch(() => {}));
 
-  console.info("[intake] end-to-end 완료", result);
+  // OCR + SMI + 회독 퀘스트 완료 → 즉시 return (변형 문항 완료 대기 안 함)
+  console.info("[intake] OCR+SMI 완료 — 변형 문항 백그라운드 생성 중", result);
   return result;
 }
 

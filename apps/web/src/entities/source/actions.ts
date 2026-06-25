@@ -1,6 +1,17 @@
 "use server";
 import { createServiceClient } from "@/shared/lib/supabase/service";
 
+export async function updateVariantStatus(
+  objectId: string,
+  status: "pending" | "done" | "failed",
+): Promise<void> {
+  const supabase = createServiceClient();
+  await supabase
+    .from("parsed_learning_objects")
+    .update({ variant_status: status })
+    .eq("object_id", objectId);
+}
+
 /**
  * 이미지 intake 완료 후 service_role로 SMI + review_quests를 즉시 생성.
  *
