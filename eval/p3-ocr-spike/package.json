@@ -1,0 +1,28 @@
+{
+  "name": "p3-ocr-spike",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "순공대장 P3 OCR 게이트 사전검증 — Mathpix vs Claude vision vs Tesseract.js 비교 spike",
+  "scripts": {
+    "run:tesseract": "tsx runners/tesseract.ts",
+    "run:claude": "tsx runners/claude.ts",
+    "run:mathpix": "tsx runners/mathpix.ts",
+    "run:all": "pnpm run:tesseract && pnpm run:claude && pnpm run:mathpix",
+    "report": "tsx runners/aggregate.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.0",
+    "dotenv": "^16.4.5",
+    "tesseract.js": "^5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "tesseract.js"]
+  }
+}
