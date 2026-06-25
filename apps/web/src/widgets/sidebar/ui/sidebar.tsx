@@ -176,12 +176,13 @@ export function Sidebar() {
           </span>
         </div>
 
-        {/* 내 정보 — 관리(검수) 진입 보존: 운영자는 /admin 라우트로 접근. */}
+        {/* 내 정보 = 내 기록 페이지(/me). 어드민 AI 분석 검수(/admin)는 유저 네비에서 분리 —
+            운영자는 /admin URL 로 직접 접근(역할 가드는 인증 인프라 도입 시 추가). */}
         {(() => {
-          const isActive = pathname === ROUTES.admin;
+          const isActive = pathname === ROUTES.me;
           return (
             <Link
-              href={ROUTES.admin}
+              href={ROUTES.me}
               aria-current={isActive ? "page" : undefined}
               className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-[11px] text-sm font-bold transition-colors"
               style={
