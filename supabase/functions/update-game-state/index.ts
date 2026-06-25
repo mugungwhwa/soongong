@@ -52,6 +52,8 @@ Deno.serve(async (req) => {
     last_active_date: null,
     memory_hp: 5,
     total_xp: 0,
+    today_xp: 0,
+    today_minutes: 0,
   };
 
   // XP 계산
@@ -65,10 +67,14 @@ Deno.serve(async (req) => {
   const today = new Date().toISOString().slice(0, 10);
   const lastDate = cur.last_active_date;
   let streak = cur.streak_days;
-  if (lastDate !== today) {
+  const isNewDay = lastDate !== today;
+  if (isNewDay) {
     const yest = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
     streak = lastDate === yest ? streak + 1 : 1;
   }
+
+  // today_xp: 날짜 전환 시 xpDelta부터 새로 시작, 같은 날이면 누적
+  const todayXp = isNewDay ? xpDelta : (cur.today_xp ?? 0) + xpDelta;
 
   // 기억 HP — 0-5 정수 (SSoT §4-2)
   // grade 제공 시: 또렷 +2 / 가물가물 0 / 막막 -1
@@ -95,13 +101,15 @@ Deno.serve(async (req) => {
     last_active_date: today,
     memory_hp: hp,
     total_xp: newXp,
+    today_xp: todayXp,
+    today_minutes: cur.today_minutes ?? 0,
     rank: newRank,
     updated_at: new Date().toISOString(),
   });
 
   await awardBadges(supabase, user_id, { streak, hp, total_xp: newXp, quest_result });
 
-  return Response.json({ xp_delta: xpDelta, streak, hp, total_xp: newXp, rank: newRank });
+  return Response.json({ xp_delta: xpDelta, streak, hp, total_xp: newXp, rank: newRank, today_xp: todayXp });
 });
 
 async function awardBadges(
