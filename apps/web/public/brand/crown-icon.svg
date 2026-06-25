@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="순공대장">
+  <rect width="512" height="512" rx="112" fill="#5E9C7B"/>
+  <polygon points="110,349 110,216 203,269 256,163 309,269 402,216 402,349"
+    fill="#F2C94C" stroke="#E2B33D" stroke-width="9" stroke-linejoin="round"/>
+  <circle cx="256" cy="158" r="20" fill="#FBE7A6" stroke="#E2B33D" stroke-width="8"/>
+  <circle cx="110" cy="214" r="15" fill="#FBE7A6" stroke="#E2B33D" stroke-width="7"/>
+  <circle cx="402" cy="214" r="15" fill="#FBE7A6" stroke="#E2B33D" stroke-width="7"/>
+</svg>
