@@ -132,8 +132,8 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
 .fb .masc{position:absolute;right:48px;bottom:0;z-index:1;height:88%;object-fit:contain;}
 .pricebadge{font-size:9px;font-weight:800;padding:1px 7px;border-radius:999px;background:var(--mid);color:#fff;}
 /* ===== 폰 목업 카드 (제품 시안) ===== */
-.phone{background:#11211b;border-radius:18px;padding:7px 6px 9px;box-shadow:0 8px 22px rgba(0,0,0,.22);display:flex;flex-direction:column;}
-.phone .scr{border-radius:11px;overflow:hidden;background:var(--alt);border:1px solid rgba(255,255,255,.08);}
+.phone{background:transparent;display:flex;flex-direction:column;}
+.phone .scr{border-radius:14px;overflow:hidden;background:var(--alt);box-shadow:0 4px 14px rgba(17,33,27,.10);}
 .phone .scr img{width:100%;aspect-ratio:960/1580;object-fit:contain;display:block;background:var(--alt);}
 .phone .cap{padding:6px 4px 1px;text-align:center;}
 .phone .cap b{font-size:10px;font-weight:800;color:#eafaf2;display:block;}
@@ -146,8 +146,8 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
 .webfull img{display:block;width:100%;max-height:380px;object-fit:contain;background:var(--alt);}
 .webfull-cap{margin-top:12px;font-size:11px;font-weight:700;color:var(--mid);letter-spacing:.01em;text-align:center;}
 /* ===== 기능 슬라이드 (좌 스크린샷 + 우 설명) ===== */
-.featshot{background:#11211b;border-radius:18px;padding:8px 7px 10px;box-shadow:0 8px 22px rgba(0,0,0,.22);display:flex;gap:8px;}
-.featshot img{width:100%;aspect-ratio:960/1580;object-fit:contain;border-radius:12px;display:block;background:var(--alt);}
+.featshot{background:transparent;display:flex;gap:10px;}
+.featshot img{width:100%;aspect-ratio:960/1580;object-fit:contain;border-radius:14px;display:block;background:var(--alt);box-shadow:0 4px 14px rgba(17,33,27,.10);}
 .devtag{display:inline-block;font-size:8.5px;font-weight:800;padding:2px 9px;border-radius:999px;background:#fff4e0;color:#b25e00;letter-spacing:.02em;}
 .starbox{background:linear-gradient(135deg,#2E7D5B,#4CAF88);border-radius:9px;padding:11px 14px;color:#fff;box-shadow:0 6px 18px rgba(46,125,91,.3);}
 .starbox b{color:#ECF7F2;}
@@ -296,7 +296,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge lg">Section 05 · 제품 시안</div>
     <div class="slide-title">제품 시안 — 모바일</div>
     <div class="slide-sub">캡처 → 망각맵 → 회독 → 오답 회수, 한 흐름으로 설계된 화면</div></div>
-  <div style="padding:14px 60px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:start;">
+  <div style="padding:14px 44px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:start;">
     <div class="phone"><div class="scr"><img src="assets/screen-main-m.png" alt="메인"></div><div class="cap"><b>메인 · 오늘</b><span>오늘의 회독·진척</span></div></div>
     <div class="phone"><div class="scr"><img src="assets/screen-naps-m.png" alt="순공냅스"></div><div class="cap"><b>순공냅스</b><span>망각맵 시각화</span></div></div>
     <div class="phone"><div class="scr"><img src="assets/screen-play-m.png" alt="회독 플레이"></div><div class="cap"><b>회독 플레이</b><span>스스로 떠올리기</span></div></div>
@@ -324,7 +324,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 06 · 기능 ①</div>
     <div class="slide-title">① 찍고 → 회독으로</div>
     <div class="slide-sub">학생이 자기 문제를 카메라로 찍으면, 그게 곧 회독 큐가 된다</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:230px 1fr;gap:22px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
     <div class="featshot"><img src="assets/screen-main-m.png" alt="메인 화면"></div>
     <div>
       <div class="card"><div class="card-hd lg">동작</div><div class="card-body"><ul>
@@ -345,7 +345,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 07 · 기능 ②</div>
     <div class="slide-title">② 회독 플레이 — 스스로 떠올린다</div>
     <div class="slide-sub">탭하면 풀이 펼침 · 3단 자기평가로 복습 간격을 차등 배치</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:230px 1fr;gap:22px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
     <div class="featshot"><img src="assets/screen-play-m.png" alt="회독 플레이"></div>
     <div>
       <div class="card"><div class="card-hd green">3단 자기평가 → 복습 간격 차등</div><div class="card-body"><ul>
@@ -366,7 +366,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 08 · 기능 ③</div>
     <div class="slide-title">③ 망각맵 · 오답 회수</div>
     <div class="slide-sub">진척을 뇌로 채우는 리텐션 시각화 + 위험도 기반 오답 회수</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:336px 1fr;gap:24px;align-items:start;">
     <div class="featshot two"><img src="assets/screen-naps-m.png" alt="망각맵"><img src="assets/screen-wrong-m.png" alt="오답 회수"></div>
     <div>
       <div class="card"><div class="card-hd lg">망각맵 (순공냅스)</div><div class="card-body"><p>회독 진척을 <b>뇌가 채워지는 형태</b>로 시각화. 무엇을 언제 다시 볼지, 까먹음 위험을 한눈에.</p></div></div>
