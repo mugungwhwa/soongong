@@ -110,17 +110,27 @@ export async function runIntakePipeline(
     );
   }
 
-  // 3) generate-problem — 적격성은 함수가 self-gate. 부적격(422/403)은 정상 흐름.
-  const { data: generated, error: genErr } = await supabase.functions.invoke<{
-    problem_id: string;
-  }>("generate-problem", { body: { object_id: plo.object_id } });
-  if (genErr || !generated?.problem_id) {
-    console.info("[intake] generate-problem 미적재(부적격/실패) — 정상 종료", genErr ?? "");
-    return result;
+  // 3) generate-problem — 블로킹 해제: keepalive fetch로 페이지 이동 후에도 완료 보장.
+  //    V0 회독 퀘스트는 이미 생성됐으므로 사용자 대기 불필요.
+  //    생성 완료 시 generated_problems에 적재 → 퀘스트 열람 시 자동 반영.
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token && plo.object_id) {
+    fetch(
+      `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/generate-problem`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ object_id: plo.object_id }),
+        keepalive: true,
+      },
+    ).catch(() => {});
   }
-  result.generatedProblemId = generated.problem_id;
 
-  console.info("[intake] end-to-end 완료", result);
+  console.info("[intake] 회독 퀘스트 생성 완료 — generate-problem 백그라운드 진행", result);
   return result;
 }
 
