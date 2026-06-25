@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { Mascot } from "@/shared/ui/mascot";
-import { getGameState } from "@/shared/mocks/game-state";
+import { useGameState } from "@/entities/user-game-state";
 import {
   MOCK_PERIOD_STATS,
   MOCK_ACCURACY,
@@ -89,7 +89,7 @@ function GraphCard({
 }
 
 export function GraphPage() {
-  const game = getGameState();
+  const game = useGameState();
   const [period, setPeriod] = useState<StatsPeriod>("week");
   const [mounted, setMounted] = useState(false);
 

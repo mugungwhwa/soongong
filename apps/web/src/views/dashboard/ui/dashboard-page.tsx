@@ -297,7 +297,11 @@ function RankCard({ rank, xp, badges }: { rank: string; xp: number; badges: Game
 // ── 페이지 (RSC) ───────────────────────────────────────────────────────────────
 
 export async function DashboardPage() {
-  const data = await fetchDashboardData("mock-user");
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const data = await fetchDashboardData(user?.id ?? "");
 
   if (!data.ok) {
     return (
