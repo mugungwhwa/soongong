@@ -7,7 +7,8 @@ import { ReviewMap } from "@/widgets/review-map";
 import { SubjectProgress } from "@/widgets/subject-progress";
 import { ForgettingTop3 } from "@/widgets/forgetting-top3";
 import { NudgeBanner, NotificationBell, NudgeProvider } from "@/widgets/nudge-banner";
-import { IntakeHero } from "@/features/upload-source";
+import { TodayGreeting } from "./today-greeting";
+import { CameraHero } from "./camera-hero";
 import Link from "next/link";
 import { ROUTES } from "@/shared/config/routes";
 import { Brain, PartyPopper } from "lucide-react";
@@ -54,18 +55,9 @@ export function TodayPage({
 
       {/* NudgeProvider: useNudgeTrigger를 1회만 실행 — NudgeBanner/NotificationBell/QuestList가 context로 소비 */}
       <NudgeProvider>
-        {/* 1. 인사 + 항시 액션 — 가볍게, 여백 두고 */}
+        {/* 1. 인사 + 항시 액션 — 순공이 cheer + "오늘 회독 N개 남았어요" + 날짜 (SOO-128 .greet) */}
         <header className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-xl font-extrabold tracking-tight text-[var(--color-text-strong)] lg:text-2xl">
-              {userName ? `안녕하세요, ${userName}님!` : "안녕하세요!"}
-            </h1>
-            <p className="mt-1 text-sm text-[var(--color-text-muted)]">
-              {isFirstEntry
-                ? "순공이랑 첫 회독 퀘스트를 시작해볼까요?"
-                : "오늘도 까먹기 전에 한 번 더, 순공이랑 같이 가요."}
-            </p>
-          </div>
+          <TodayGreeting userName={userName} />
           {/* 순공냅스(시그니처) + 알림. 모바일에선 사이드바가 숨으므로 여기가 상시 진입점 (SOO-90). */}
           <div className="flex shrink-0 items-center gap-2">
             <Link
@@ -87,8 +79,8 @@ export function TodayPage({
 
         <NudgeBanner />
 
-        {/* 2. 핵심 한 가지 — 자료 흡수를 페이지 선두 행동으로 */}
-        <IntakeHero />
+        {/* 2. 핵심 한 가지 — 카메라=메인 히어로 액션(촬영하기는 업로드 시트 재사용) */}
+        <CameraHero />
 
         {/* 3. 내 상태 — 등급 strip + 스탯 4박스(차분한 컨텍스트). design-review §2-2 */}
         <section aria-label="내 상태" className="space-y-3">

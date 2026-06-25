@@ -2,7 +2,14 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Eye, X } from "lucide-react";
+import {
+  CheckCircle2,
+  Eye,
+  Frown,
+  MinusCircle,
+  X,
+  type LucideIcon,
+} from "lucide-react";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { MathRenderer } from "@/shared/ui/math-renderer";
 import { RiskBadge } from "@/entities/quest";
@@ -13,7 +20,7 @@ import {
 } from "@/features/quest-play";
 // 순수 게임 룰 함수만 deep import — entities/game 배럴은 ./api(server supabase, next/headers)를
 // 끌어와 client 컴포넌트 빌드를 깨므로 우회한다. (entities/game 무수정)
-import { gradeToHpDelta, gradeToInterval } from "@/entities/game/lib/game-rules";
+import { gradeToInterval } from "@/entities/game/lib/game-rules";
 import type { ReviewGrade } from "@/shared/contracts";
 import { ROUTES } from "@/shared/config/routes";
 
@@ -23,35 +30,44 @@ import { ROUTES } from "@/shared/config/routes";
  * grade(또렷/가물가물/막막)는 SOO-115/116 확정 계약으로 기존 영속화 경로
  * (persistPlaySubmission → completeQuest / update-game-state)에 그대로 전달한다.
  * 채점·진행·스케줄·HP 계산 로직은 엔진/게임화 소유 — 본 뷰는 grade 값만 세팅한다(read 훅 소비).
- * 버튼 보조 라벨도 게임 룰 SSoT 함수(gradeToHpDelta/gradeToInterval)에서 파생 — 하드코딩 없음.
+ * 버튼 보조 라벨(회독 주기)도 게임 룰 SSoT 함수(gradeToInterval)에서 파생 — 하드코딩 없음.
  */
 function intervalLabel(days: number): string {
-  return days === 1 ? "내일 다시" : `${days}일 뒤 다시`;
+  return days === 1 ? "내일 다시" : `${days}일 뒤`;
 }
 
 const GRADES: {
   grade: ReviewGrade;
-  emoji: string;
+  icon: LucideIcon;
   label: string;
   hint: string;
+  /** 아이콘 원형 배경 + 아이콘 전경 토큰 (그레이드별 데사처드 색) */
+  iconBg: string;
+  iconFg: string;
 }[] = [
   {
     grade: "clear",
-    emoji: "😌",
-    label: "또렷했어요",
-    hint: `기억 HP +${gradeToHpDelta("clear")}`,
+    icon: CheckCircle2,
+    label: "또렷",
+    hint: intervalLabel(gradeToInterval("clear", false, 0)),
+    iconBg: "bg-[var(--color-mint-100)]",
+    iconFg: "text-[var(--color-mint-700)]",
   },
   {
     grade: "fuzzy",
-    emoji: "🤔",
+    icon: MinusCircle,
     label: "가물가물",
     hint: intervalLabel(gradeToInterval("fuzzy", false, 0)),
+    iconBg: "bg-[var(--color-risk-mid)]",
+    iconFg: "text-[var(--color-text-on-warm)]",
   },
   {
     grade: "blank",
-    emoji: "😮‍💨",
-    label: "막막했어요",
+    icon: Frown,
+    label: "막막",
     hint: intervalLabel(gradeToInterval("blank", false, 0)),
+    iconBg: "bg-[var(--color-risk-high)]",
+    iconFg: "text-[var(--color-text-strong)]",
   },
 ];
 
@@ -246,28 +262,34 @@ function RatePanel({
       }`}
     >
       <div className="mb-3 text-center text-[12.5px] font-bold text-[var(--color-text-default)]">
-        얼마나 또렷하게 떠올랐나요?
+        떠올린 만큼 정직하게 — 얼마나 또렷했나요?
       </div>
       <div className="grid grid-cols-3 gap-2.5">
-        {GRADES.map((g) => (
-          <button
-            key={g.grade}
-            type="button"
-            disabled={!revealed || disabled}
-            onClick={() => onGrade(g.grade)}
-            className="rounded-[var(--radius-lg)] border border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] px-1.5 pb-3 pt-3.5 text-center transition-transform hover:border-[var(--color-border-strong)] active:scale-[0.96]"
-          >
-            <span className="block text-[22px] leading-none" aria-hidden>
-              {g.emoji}
-            </span>
-            <span className="mt-1.5 block text-xs font-extrabold text-[var(--color-text-strong)]">
-              {g.label}
-            </span>
-            <span className="mt-0.5 block text-[9.5px] font-bold text-[var(--color-text-muted)]">
-              {g.hint}
-            </span>
-          </button>
-        ))}
+        {GRADES.map((g) => {
+          const Icon = g.icon;
+          return (
+            <button
+              key={g.grade}
+              type="button"
+              disabled={!revealed || disabled}
+              onClick={() => onGrade(g.grade)}
+              className="rounded-[var(--radius-lg)] border-[1.5px] border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] px-1.5 pb-3 pt-3.5 text-center transition-transform hover:border-[var(--color-border-strong)] active:scale-[0.96]"
+            >
+              <span
+                className={`mx-auto flex h-[38px] w-[38px] items-center justify-center rounded-full ${g.iconBg}`}
+                aria-hidden
+              >
+                <Icon size={20} strokeWidth={2.2} className={g.iconFg} />
+              </span>
+              <span className="mt-2 block text-xs font-extrabold text-[var(--color-text-strong)]">
+                {g.label}
+              </span>
+              <span className="mt-0.5 block text-[9.5px] font-bold text-[var(--color-text-muted)]">
+                {g.hint}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

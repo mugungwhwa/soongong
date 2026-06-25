@@ -129,7 +129,7 @@ const COMPANION_QUOTES = [
   "“이 단원, 슬슬 흐려질 때예요.”",
 ] as const;
 
-const SHELL = "mx-auto w-full max-w-[1180px] px-6";
+const SHELL = "mx-auto w-full max-w-[1080px] px-6";
 const EYEBROW =
   "inline-flex items-center gap-2 rounded-[var(--radius-pill)] bg-[var(--color-mint-50)] px-[15px] py-[7px] text-[13px] font-bold tracking-[0.03em] text-[var(--color-mint-900)]";
 const SECTION = "pt-[clamp(40px,7vh,80px)]";
