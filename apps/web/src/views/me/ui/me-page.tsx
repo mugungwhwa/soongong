@@ -295,7 +295,7 @@ export function MePage() {
                 오늘의 회독
               </span>
               <span className="text-lg font-extrabold text-[var(--color-text-strong)]">
-                {quests.length}개 남음
+                {quests.length}개
               </span>
             </span>
             <ChevronRight size={18} strokeWidth={2} color="var(--color-mint-700)" aria-hidden="true" />

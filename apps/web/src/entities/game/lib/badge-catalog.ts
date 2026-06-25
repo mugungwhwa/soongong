@@ -1,40 +1,34 @@
-// 뱃지 컬렉션 표시용 카탈로그.
+// 뱃지 컬렉션 표시용 카탈로그 — 정본은 DB view `public.badge_definitions`
+// (supabase/migrations/0011_badges.sql). 본 목록은 그 view 의 10행을 1:1 미러링한다.
 //
-// 경계(중요): 뱃지 "메카닉"(어떤 키가 있는지·희귀도·획득 조건)은 게임화 SSoT
-// (게임성_기획_구조.md §5-3) + game-rules.ts 가 진실 공급원이다. 여기서 새 뱃지를
-// 기획하지 않는다 — game-rules.ts 의 badgeCandidates / BADGE_RARITY_MAP 에 이미
-// 존재하는 키만 모아 "표시(라벨·획득 조건 카피)" 한다.
-// 희귀도는 rarityFor()(game-rules SSoT)에서 직접 읽어 두 번째 SSoT 를 만들지 않는다.
-//
-// 사람이 읽는 한글 라벨·조건 문구는 카피(디자인 리드 도메인)다. 단, 서버에 본 목록
-// 밖의 badge_key 가 추가될 수 있으므로 "정본 전체 카탈로그"는 게임화 리드 확정 대상.
-import { rarityFor } from "./game-rules";
+// 왜 정적 미러인가: 프론트는 SQL 을 import 할 수 없고, 레이블/조건 문구는 어차피 UI 카피다.
+// 그래서 key·rarity 는 view 와 동일하게 고정하고, 표시 라벨·조건만 카피로 붙인다.
+// 절대 game-rules.ts(BADGE_RARITY_MAP/badgeCandidates)에서 derive 하지 않는다 —
+// 그건 희귀도 조회·발급후보 계산용이라 전체 카탈로그 SSoT 가 아니며(recover_10/study_60
+// 누락), rarityFor() 는 미등록 키를 조용히 "common" 으로 떨궈 오표시를 만든다.
+// rarity 는 BadgeRarity 로 타입 고정 → 오타 시 컴파일 에러로 drift 를 차단한다.
 import type { BadgeRarity } from "../model";
 
 export interface BadgeCatalogEntry {
-  /** DB badge_key (획득 데이터와 매칭되는 키). */
+  /** DB badge_key (badge_definitions / badges 와 매칭되는 키). */
   key: string;
-  /** 표시 라벨(카피). */
+  /** 표시 라벨(카피) — badge_definitions.name 과 일치. */
   label: string;
-  /** 획득 조건 한 줄(카피) — game-rules.badgeCandidates 로직과 일치. */
+  /** 획득 조건 한 줄(카피) — badge_definitions.description 과 일치. */
   condition: string;
   rarity: BadgeRarity;
 }
 
-// game-rules.ts(badgeCandidates / BADGE_RARITY_MAP)에 등장하는 키 + 조건 카피.
-const CATALOG_KEYS: { key: string; label: string; condition: string }[] = [
-  { key: "first_quest", label: "첫 회독", condition: "첫 회독 완료" },
-  { key: "streak_7", label: "7일 연속", condition: "스트릭 7일 달성" },
-  { key: "streak_30", label: "30일 연속", condition: "스트릭 30일 달성" },
-  { key: "hp_full", label: "기억 만렙", condition: "기억 HP 5 달성" },
-  { key: "recover_50", label: "오답 정복", condition: "오답 50회 회수" },
-  { key: "defense_7", label: "7일 방어", condition: "7일 망각방어 성공" },
-  { key: "defense_14", label: "14일 방어", condition: "14일 망각방어 성공" },
-  { key: "concept_20", label: "개념 20", condition: "개념 20개 또렷" },
+/** badge_definitions view(0011_badges.sql) 10행을 1:1 미러링한 정본 표시 카탈로그. */
+export const BADGE_CATALOG: BadgeCatalogEntry[] = [
+  { key: "first_quest", label: "첫 회독", condition: "첫 회독퀘스트 완료", rarity: "common" },
+  { key: "streak_7", label: "7일 불꽃", condition: "7일 연속 회독", rarity: "rare" },
+  { key: "streak_30", label: "30일 불꽃", condition: "30일 연속 회독", rarity: "epic" },
+  { key: "recover_10", label: "오답회수꾼", condition: "오답 10개 다시 맞힘", rarity: "common" },
+  { key: "recover_50", label: "오답회수 마스터", condition: "오답 50개 다시 맞힘", rarity: "rare" },
+  { key: "defense_7", label: "기억수비수", condition: "7일 전 문제 첫 정답", rarity: "rare" },
+  { key: "defense_14", label: "14일 방어", condition: "14일 망각방어 첫 성공", rarity: "epic" },
+  { key: "concept_20", label: "수열 사냥꾼", condition: "특정 단원 20회 완료", rarity: "rare" },
+  { key: "hp_full", label: "기억 만렙", condition: "기억 HP 5/5 달성", rarity: "common" },
+  { key: "study_60", label: "60분 순공러", condition: "하루 인정 순공 60분", rarity: "common" },
 ];
-
-/** 표시용 전체 뱃지 카탈로그. 희귀도는 game-rules.rarityFor() SSoT 에서 읽는다. */
-export const BADGE_CATALOG: BadgeCatalogEntry[] = CATALOG_KEYS.map((b) => ({
-  ...b,
-  rarity: rarityFor(b.key),
-}));
