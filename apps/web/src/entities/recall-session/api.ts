@@ -130,8 +130,15 @@ export async function fetchRecallSession(
   } | null;
   const smi = smiRes.data as { forgetting_risk?: string } | null;
 
-  // 인출 프롬프트/정답은 생성문항이 정본. 없으면 회상 카드를 구성할 수 없으므로 null.
-  if (!gp?.stem || !gp.answer) return null;
+  // 생성 문항이 정본. 없으면 PLO 원문으로 폴백(신규 업로드 직후 generate-problem 미완료 케이스).
+  // 둘 다 없으면 회상 카드를 구성할 수 없으므로 null.
+  const hasProblem = Boolean(gp?.stem && gp.answer);
+  if (!hasProblem && !plo?.extracted_text) return null;
+
+  const stem = hasProblem ? gp!.stem! : plo!.extracted_text!;
+  const answerText = hasProblem ? gp!.answer! : "개념을 처음부터 되짚어 보세요";
+  const explanation = hasProblem ? (gp!.explanation ?? "") : "원본 자료를 참고해 개념을 정리해요.";
+  const answerFormat = hasProblem ? "latex" : "plaintext";
 
   // 진행 표시(현재/전체) — 오늘 회독 큐 기준(로컬 today, ddayLabel 과 동일 기준). 실패 시 단일 세션.
   let progress = { current: 1, total: 1 };
@@ -144,7 +151,7 @@ export async function fetchRecallSession(
     .eq("quest_mode", "today")
     .order("reward_xp", { ascending: false });
   if (todayQuests?.length) {
-    const idx = todayQuests.findIndex((q) => q.quest_id === questId);
+    const idx = todayQuests.findIndex((q: { quest_id: string }) => q.quest_id === questId);
     progress = {
       current: idx >= 0 ? idx + 1 : 1,
       total: todayQuests.length,
@@ -159,10 +166,10 @@ export async function fetchRecallSession(
     dday: ddayLabel(quest.due_date),
     riskLevel: RISK_MAP[smi?.forgetting_risk ?? ""] ?? "mid",
     kicker: "기억 인출 · 떠올려 보세요",
-    concept: plo?.topic ?? gp.stem.slice(0, 40),
-    prompt: gp.stem,
-    answerText: gp.answer,
-    answerFormat: "latex",
-    answerNote: gp.explanation ?? "",
+    concept: plo?.topic ?? stem.slice(0, 40),
+    prompt: stem,
+    answerText,
+    answerFormat,
+    answerNote: explanation,
   };
 }

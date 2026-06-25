@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/button";
 import { ChevronLeft, Loader2 } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/client";
 import { createSource, uploadSourceFile, runIntakePipeline } from "@/entities/source";
+import { ROUTES } from "@/shared/config/routes";
 
 export function PhotoUpload({ onBack }: { onBack: () => void }) {
   const router = useRouter();
@@ -39,7 +40,7 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
       if (!source) throw new Error("저장 실패");
 
       await runIntakePipeline(source.source_id);
-      router.push(`/analysis/${source.source_id}`);
+      router.push(ROUTES.today);
     } catch (e) {
       setError(e instanceof Error ? e.message : "오류가 발생했어요.");
       setLoading(false);
