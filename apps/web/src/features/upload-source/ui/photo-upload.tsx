@@ -31,7 +31,10 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("로그인이 필요합니다.");
+      if (!user) {
+        router.push(ROUTES.login);
+        return;
+      }
 
       const rawUrl = await uploadSourceFile(user.id, file);
       if (!rawUrl) throw new Error("업로드 실패");
