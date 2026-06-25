@@ -147,7 +147,7 @@ function RankCard({
               width: 52,
               height: 52,
               background:
-                "linear-gradient(135deg, var(--color-mint-100), var(--color-mint-200))",
+                "linear-gradient(135deg, var(--color-mint-100), var(--color-mint-300))",
               borderRadius: "var(--radius-md)",
               display: "flex",
               alignItems: "center",
@@ -552,7 +552,7 @@ export function JourneyView() {
                   marginTop: 1,
                 }}
               >
-                내 위치 · 다음 목표
+                내 기억이 자라는 지도 · 회독할수록 또렷해져요
               </p>
             </div>
           </div>
@@ -752,7 +752,7 @@ export function JourneyView() {
         style={{
           flex: 1,
           padding: "0 var(--space-4) var(--space-6)",
-          background: "var(--color-bg-default)",
+          background: "var(--color-background)",
           position: "relative",
         }}
       >

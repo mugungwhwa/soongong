@@ -1,7 +1,9 @@
 "use client";
+import Link from "next/link";
 import { useTodayQuests } from "@/entities/quest";
 import { useNudgeContext } from "@/shared/lib/nudge-context";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
+import { ROUTES } from "@/shared/config/routes";
 import { QuestCard } from "./quest-card";
 
 export function QuestList() {
@@ -45,8 +47,38 @@ export function QuestList() {
     );
   }
 
+  // 완료 진행도: Quest 계약엔 완료 카운트가 없어 mock 유지(데이터 배선은 후속).
+  // 진행 카드가 비지 않도록 보수적으로 절반 미만을 완료로 가정.
+  const total = quests.length;
+  const done = Math.floor(total / 2);
+  const progressPct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const firstQuestId = quests[0]?.questId;
+
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2.5">
+      {/* due 진행 카드 — 오늘 회독 전체 진행을 한눈에 (프로토타입 .due) */}
+      <div className="flex items-center gap-3.5 rounded-[var(--radius-lg)] bg-[var(--color-mint-700)] px-4 py-4 text-[var(--color-text-inverse)] shadow-[var(--shadow-card)]">
+        <div className="min-w-0 flex-1">
+          <b className="text-base font-extrabold">
+            오늘 회독 {total}개 · {done}개 완료
+          </b>
+          <div className="mt-2 h-2 overflow-hidden rounded-[var(--radius-pill)] bg-[rgba(255,255,255,0.22)]">
+            <i
+              className="block h-full rounded-[var(--radius-pill)] bg-white"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+        </div>
+        {firstQuestId && (
+          <Link
+            href={ROUTES.play(firstQuestId)}
+            className="shrink-0 rounded-[var(--radius-pill)] bg-white px-4 py-2.5 text-sm font-extrabold text-[var(--color-mint-900)]"
+          >
+            이어서
+          </Link>
+        )}
+      </div>
+
       {quests.map((q, i) => (
         <QuestCard key={q.questId} quest={q} index={i} />
       ))}
