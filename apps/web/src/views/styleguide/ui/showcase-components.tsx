@@ -21,6 +21,8 @@ import {
 } from "@/shared/ui/card";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
+import { StatCard } from "@/shared/ui/stat-card";
+import { Flame, Brain, Clock, Zap } from "lucide-react";
 import {
   Dialog,
   DialogTrigger,
@@ -144,6 +146,80 @@ export function CompCard() {
         donts={[
           "토스풍 box-shadow 중첩",
           "카드 배경에 그라데이션/네온",
+        ]}
+      />
+    </ShowcaseSection>
+  );
+}
+
+export function CompStatCard() {
+  return (
+    <ShowcaseSection
+      eyebrow="Components"
+      title="Stat 카드 (규격)"
+      description="홈(/today)·내기록(/me) 의 stats 4박스 공통 타일. 치수(최소높이·패딩·radius·gap)는 tokens.css --stat-card-* 가 단일 통제(SOO-143). 화면마다 임의 px 금지 — 항상 shared/ui StatCard 사용. 보조행(기억HP 점)이 있어도 4개 카드가 같은 키(등높이)."
+    >
+      <ExampleCard title="4박스 등높이 — 기억HP 점 행이 있어도 일치">
+        <div className="grid w-full max-w-2xl grid-cols-2 items-stretch gap-[var(--stat-card-gap)] sm:grid-cols-4">
+          <StatCard
+            icon={<Flame size={14} strokeWidth={1.5} />}
+            label="스트릭"
+            value={3}
+            suffix="일"
+          />
+          <StatCard
+            icon={<Brain size={14} strokeWidth={1.5} />}
+            label="기억 HP"
+            value={4}
+            suffix="/ 5"
+          >
+            <div className="flex gap-[3px]" aria-hidden="true">
+              {Array.from({ length: 5 }, (_, i) => (
+                <span
+                  key={i}
+                  className="h-[13px] w-[13px] rounded-full"
+                  style={{
+                    background:
+                      i < 4
+                        ? "var(--color-risk-high)"
+                        : "var(--color-border-default)",
+                  }}
+                />
+              ))}
+            </div>
+          </StatCard>
+          <StatCard
+            icon={<Clock size={14} strokeWidth={1.5} />}
+            label="순공시간"
+            value={42}
+            suffix="분"
+          />
+          <StatCard
+            icon={<Zap size={14} strokeWidth={1.5} />}
+            label="오늘 XP"
+            value={120}
+            suffix="XP"
+          />
+        </div>
+        <TokenChips
+          tokens={[
+            "--stat-card-min-h",
+            "--stat-card-pad",
+            "--stat-card-radius",
+            "--stat-card-gap",
+          ]}
+        />
+      </ExampleCard>
+      <DoDont
+        dos={[
+          "stats 타일은 항상 shared/ui StatCard 로 — 치수는 --stat-card-* 토큰만",
+          "그리드는 items-stretch + gap-[var(--stat-card-gap)] 로 등높이 보장",
+          "보조행(기억HP 점)은 카드 안 mt-auto 바닥 정렬 — 카드 높이를 늘리지 않음",
+        ]}
+        donts={[
+          "화면마다 p-3.5 / rounded-md 등 치수를 직접 박기 (drift 원인)",
+          "한 카드만 콘텐츠가 길어 키가 달라지게 두기 (등높이 깨짐)",
+          "stats 타일용으로 별도 카드 컴포넌트를 새로 만들기",
         ]}
       />
     </ShowcaseSection>
