@@ -179,7 +179,7 @@
 | 요소 | 값 |
 |---|---|
 | 사이드바 너비 | 220px / 52px / 없음 (폼팩터별) |
-| 카드 border-radius | 16px (모든 폼팩터) |
+| 일반 카드 border-radius | 16px (모든 폼팩터) — **단, stats 4박스(Stat 타일)는 예외**: 아래 Stat 타일 규격(`--stat-card-radius`)을 따른다 |
 | 버튼 최소 hit area | 44×44px |
 | GameBar 높이 | 36px |
 | 하단 탭바 높이 | 64px + iOS safe-area |
