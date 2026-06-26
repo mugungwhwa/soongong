@@ -183,6 +183,9 @@
 | 버튼 최소 hit area | 44×44px |
 | GameBar 높이 | 36px |
 | 하단 탭바 높이 | 64px + iOS safe-area |
+| **Stat 타일 규격 (stats 4박스)** | **값은 `tokens.css --stat-card-{min-h,pad,radius,gap}` 가 SSoT (여기에 px 복붙 금지). 공용 `shared/ui/stat-card` StatCard 로만 렌더 — 홈·내기록 등높이 통제(SOO-143).** |
+
+> **stats 4박스(스트릭·기억HP·순공시간·XP) 디자인리뷰 항목 (§2-2 시각위계 보강, SOO-143):** 4개 타일은 **등높이**여야 한다. 기억HP 0–5 점(●●●●●) 행이 한 카드만 키를 늘리면 **위반**. 치수를 화면에 직접 박지 말고 공용 StatCard + `--stat-card-*` 토큰만 쓴다(한 곳 통제 → 전 화면 반영). 라이브 규격: `/styleguide` → Components → "Stat 카드 (규격)".
 
 ### 유동(Fluid) 요소
 

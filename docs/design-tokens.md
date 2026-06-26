@@ -42,6 +42,7 @@
 | Gradient | `--gradient-quest-map` | teal 재조율, 등록 gradient만 사용 (lint 통과 대상) |
 | Radius | `--radius-{sm,md,lg,xl,pill}` | 8/12/16/24/9999px |
 | Spacing | `--space-{1..12}` | 4px base, scale 1=4 / 2=8 / 4=16 / 6=24 / 12=48 |
+| **Stat 카드 규격** | `--stat-card-{min-h,pad,radius,gap}` | **홈(/today)·내기록(/me) stats 4박스 공통 타일(SOO-143). min-h `92px`(등높이 baseline) / pad `14px` / radius=`--radius-md`(12px) / gap `10px`. 공용 `shared/ui/stat-card` StatCard 와 짝 — 화면마다 임의 치수 금지, 여기 한 곳에서 통제.** `/styleguide` → Components → "Stat 카드 (규격)" 가 라이브 규격 surface. |
 | Shadow | `--shadow-{card,elevated}` | v2 teal alpha 기반 (rgba(46,125,91,…), `#2E7D5B`) — 구 오션톤(rgba(14,92,130,…)) 폐기 |
 | Motion | `--ease-out-soft`, `--duration-{fast,mid,slow}` | 160/240/380ms |
 | Typography | `--font-{display,body}` | Pretendard 단일 (v1.3.9 webfont) |
@@ -70,6 +71,7 @@
 - 직접 hex 사용 금지 — `lint:tokens`가 차단.
 - gradient는 `--gradient-*` 변수 또는 명시적으로 등록된 것만 (인라인 `linear-gradient()` 직접 사용 시 lint fail).
 - `surface-play` 같은 화면별 강제 클래스는 컴포넌트 레벨에서 추가 가능 (UI 설계.md §8 E 참조).
+- **카드 치수(특히 stats 4박스 타일)는 컴포넌트에 직접 박지 말 것.** stats 타일은 공용 `shared/ui/stat-card` StatCard + `--stat-card-*` 토큰만 사용한다. 화면마다 `p-3.5`/`rounded-md` 등을 따로 박으면 화면 간 drift(예: SOO-143 기억HP 카드만 키 큼)가 재발한다. 규격 변경은 `tokens.css` 한 곳 → 전 화면 일괄 반영.
 
 ---
 
@@ -80,3 +82,4 @@
 | **v1.0** | **2026-05-19** | **초안. P0 와꾸 단계가 깔아놓은 `tokens.css` 기준 SSoT 메타 문서. P1 sub-plan Task 1 Step 3 산물.** |
 | **v1.1** | **2026-06-16** | **SOO-45: 시안 UI v2(teal/green) 팔레트 교체. 앵커 7종(`#A8DCCB`/`#7BC4AE`/`#4CAF88`/`#FFEBA3`/`#FFB4B4`/`#6BA6FF`/`#8E8E93`)으로 mint 스케일·risk·semantic state·border·gradient·shadow 재매핑. 신규 카테고리: Primary CTA(`#___` placeholder, Mike 확정 대기), Semantic state(info/danger/warning/neutral), text-disabled 추가. Ocean(SOO-17)→teal 전환 — CLAUDE.md §2/§8·design-system-lock v1.0 동반 갱신 필요(Mike 확인 대기). `pnpm lint:tokens` 통과(30 토큰), `pnpm build` 통과.** |
 | **v1.2** | **2026-06-16** | **SOO-45: Mike 확정 맵 반영. primary CTA fill = `#5E9C7B` 확정(placeholder 대체), `--color-primary-bg`(`#EAF4EE`) 신규. bg-soft `#EFF5F1`·border-soft `#E3EDE7`·state bg(danger `#FFEFEF`/warning `#FFF8E0`/info `#EAF2FF`) 확정값 반영. text 4단을 중성 그레이(`#2E2E2E`/`#6E6E6E`/`#9B9B9B`/`#BBBBBB`)로 확정. `pnpm lint:tokens` 통과(32 토큰), `pnpm build` 통과.** |
+| **v1.3** | **2026-06-26** | **SOO-143: Stat 카드 규격 토큰 신설(`--stat-card-{min-h,pad,radius,gap}` = 92px/14px/--radius-md/10px). 홈·내기록 stats 4박스가 공용 `shared/ui/stat-card` StatCard + 토큰으로 중앙 통제(기존 today=StatCard / me=SummaryBox 이원화 제거). 기억HP 점 행이 그 카드만 키우던 등높이 불일치 해소(min-h+items-stretch+children mt-auto). `/styleguide` Components 에 "Stat 카드 (규격)" 라이브 섹션 추가. §4 사용 규칙에 '카드 치수 직접 박기 금지' 항목 추가.** |

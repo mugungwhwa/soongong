@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { Card } from "@/shared/ui/card";
+import { StatCard } from "@/shared/ui/stat-card";
 import { TierJourneyHero } from "@/widgets/tier-journey-hero";
 import { useGameState } from "@/entities/user-game-state";
 import { useForgettingTop } from "@/entities/forgetting";
@@ -85,35 +86,6 @@ function SectionCard({
 }
 
 /** 활동 한눈 요약 박스 (무엇을·얼마나). */
-function SummaryBox({
-  icon,
-  label,
-  value,
-  suffix,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-  suffix?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[var(--radius-md)] border border-[var(--color-border-default)] bg-[var(--color-surface)] p-3.5 shadow-[var(--shadow-card)]">
-      <span className="flex items-center gap-1.5 text-xs font-bold text-[var(--color-text-muted)]">
-        <span className="text-[var(--color-mint-500)]">{icon}</span>
-        {label}
-      </span>
-      <span className="text-xl font-extrabold tracking-tight text-[var(--color-text-strong)]">
-        {value}
-        {suffix && (
-          <span className="ml-1 text-xs font-bold text-[var(--color-text-muted)]">
-            {suffix}
-          </span>
-        )}
-      </span>
-    </div>
-  );
-}
-
 /**
  * 내 기록 (내 정보) — "내가 뭘 얼마나 했고, 게임 상태가 어떤지" 한눈에.
  *
@@ -144,11 +116,11 @@ export function MePage() {
       </header>
 
       {/* 활동 한눈 — 무엇을·얼마나 */}
-      <section aria-label="활동 요약" className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-        <SummaryBox icon={<BookOpen size={14} strokeWidth={1.5} />} label="오늘 회독" value={quests.length} suffix="개" />
-        <SummaryBox icon={<RotateCcw size={14} strokeWidth={1.5} />} label="오답 회수" value={wrong.summary.reviewCount} suffix="개" />
-        <SummaryBox icon={<Clock size={14} strokeWidth={1.5} />} label="순공시간" value={s.todayMinutes} suffix="분" />
-        <SummaryBox icon={<Zap size={14} strokeWidth={1.5} />} label="누적 XP" value={s.totalXp.toLocaleString()} suffix="XP" />
+      <section aria-label="활동 요약" className="grid grid-cols-2 gap-[var(--stat-card-gap)] sm:grid-cols-4 items-stretch">
+        <StatCard icon={<BookOpen size={14} strokeWidth={1.5} />} label="오늘 회독" value={quests.length} suffix="개" />
+        <StatCard icon={<RotateCcw size={14} strokeWidth={1.5} />} label="오답 회수" value={wrong.summary.reviewCount} suffix="개" />
+        <StatCard icon={<Clock size={14} strokeWidth={1.5} />} label="순공시간" value={s.todayMinutes} suffix="분" />
+        <StatCard icon={<Zap size={14} strokeWidth={1.5} />} label="누적 XP" value={s.totalXp.toLocaleString()} suffix="XP" />
       </section>
 
       {/* 등급 진행 — TierJourneyHero 재사용(→ /journey 여정) */}

@@ -103,6 +103,16 @@
        폭 기반(레일 폭 꽉 차게, 가운데). 고정 px 높이 방식 금지. 값 변경은 여기 한 곳. */
     --rail-logo-max-w: 176px;
 
+    /* ---- Stat 타일 규격 (홈 /today · 내기록 /me 의 stats 4박스 공통 — SOO-143) ----
+       카드 치수의 단일 통제점. 화면마다 임의 px 금지 — 공용 StatCard(shared/ui/stat-card)
+       와 이 토큰만 쓴다. 한 곳(여기)에서 바꾸면 전 화면 일괄 반영.
+       min-h: 등높이 baseline. 기억HP 점(●●●●●) 행이 있어도 이 높이 안에 수용해
+       4개 카드가 같은 키가 되게 한다(점 행이 한 카드만 키우던 불일치 차단). */
+    --stat-card-min-h: 92px;
+    --stat-card-pad: 14px;                  /* = 기존 p-3.5 */
+    --stat-card-radius: var(--radius-md);   /* 12px */
+    --stat-card-gap: 10px;                  /* = 기존 gap-2.5 (grid gap) */
+
     /* Shadow (teal alpha 기반 — #2E7D5B) */
     --shadow-card: 0 2px 8px rgba(46, 125, 91, 0.06);
     --shadow-elevated: 0 8px 24px rgba(46, 125, 91, 0.10);
