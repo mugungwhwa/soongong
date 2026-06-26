@@ -109,17 +109,17 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
 .shot .cap{padding:7px 10px;font-size:10px;font-weight:700;color:var(--dark);}
 .shot .cap span{display:block;font-size:8.6px;color:var(--gray);font-weight:500;margin-top:1px;}
 /* ===== DONE / NEXT 2단 (트랙션) ===== */
-.dn-done{background:linear-gradient(135deg,#2E7D5B,#4CAF88);border:1px solid transparent;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(46,125,91,.28);}
+.dn-done{background:linear-gradient(135deg,#2E7D5B,#4CAF88);border:1px solid transparent;border-radius:10px;overflow:hidden;box-shadow:0 6px 18px rgba(46,125,91,.28);display:flex;flex-direction:column;}
 .dn-done .dn-hd{padding:9px 14px;font-size:12.5px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.25);}
 .dn-done .dn-hd .chip{background:rgba(255,255,255,.22);color:#fff;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em;}
-.dn-done ul{list-style:none;padding:11px 14px;}
+.dn-done ul{list-style:none;padding:11px 14px;flex:1;display:flex;flex-direction:column;justify-content:center;}
 .dn-done li{font-size:11px;color:#f3fbf7;line-height:1.45;padding:5px 0 5px 18px;position:relative;}
 .dn-done li::before{content:'✓';position:absolute;left:0;color:#fff;font-weight:900;}
 .dn-done li b{color:#fff;}
-.dn-next{background:var(--white);border:1.5px dashed var(--mint2);border-radius:10px;overflow:hidden;}
+.dn-next{background:var(--white);border:1.5px dashed var(--mint2);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;}
 .dn-next .dn-hd{padding:9px 14px;font-size:12.5px;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:8px;border-bottom:1px dashed var(--mint3);}
 .dn-next .dn-hd .chip{background:var(--alt);color:var(--dark);font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em;border:1px solid var(--mint3);}
-.dn-next ul{list-style:none;padding:11px 14px;}
+.dn-next ul{list-style:none;padding:11px 14px;flex:1;display:flex;flex-direction:column;justify-content:center;}
 .dn-next li{font-size:11px;color:var(--text);line-height:1.45;padding:5px 0 5px 18px;position:relative;}
 .dn-next li::before{content:'○';position:absolute;left:0;color:var(--mint2);font-weight:900;font-size:9px;top:6px;}
 .dn-next li b{color:var(--dark);}
@@ -327,7 +327,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 06 · 기능 ①</div>
     <div class="slide-title">① 찍고 → 회독으로</div>
     <div class="slide-sub">학생이 자기 문제를 카메라로 찍으면, 그게 곧 회독 큐가 된다</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:center;">
     <div class="featshot"><img src="assets/screen-main-m.png" alt="메인 화면"></div>
     <div>
       <div class="card"><div class="card-hd lg">동작</div><div class="card-body"><ul>
@@ -348,7 +348,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 07 · 기능 ②</div>
     <div class="slide-title">② 회독 플레이 — 스스로 떠올린다</div>
     <div class="slide-sub">탭하면 풀이 펼침 · 3단 자기평가로 복습 간격을 차등 배치</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:center;">
     <div class="featshot"><img src="assets/screen-play-m.png" alt="회독 플레이"></div>
     <div>
       <div class="card"><div class="card-hd green">3단 자기평가 → 복습 간격 차등</div><div class="card-body"><ul>
@@ -369,7 +369,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 08 · 기능 ③</div>
     <div class="slide-title">③ 망각맵 — 순공냅스</div>
     <div class="slide-sub">회독 진척을 뇌 모양으로 채우는 리텐션 시각화</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:center;">
     <div class="featshot"><img src="assets/screen-naps-m.png" alt="망각맵 (순공냅스)"></div>
     <div>
       <div class="card"><div class="card-hd lg">망각맵 (순공냅스)</div><div class="card-body"><ul>
@@ -390,7 +390,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge">Section 09 · 기능 ④</div>
     <div class="slide-title">④ 오답 회수 — 약한 기억부터</div>
     <div class="slide-sub">위험도 기반으로 틀린 문제를 골라 회독 큐로 되돌린다</div></div>
-  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:start;">
+  <div style="padding:12px 44px 0;display:grid;grid-template-columns:258px 1fr;gap:24px;align-items:center;">
     <div class="featshot"><img src="assets/screen-wrong-m.png" alt="오답 회수"></div>
     <div>
       <div class="card"><div class="card-hd green">위험도 기반 오답 회수</div><div class="card-body"><ul>
@@ -683,7 +683,7 @@ body{background:#1c2b25;display:flex;flex-direction:column;align-items:center;ju
   <div class="rh"><div class="badge lg">Section 15 · 트랙션 · 로드맵</div>
     <div class="slide-title">현재 완료 vs 이후 할 일</div>
     <div class="slide-sub">기술 베이스·브랜드/UX 초기는 완성 — 다음은 MOAT 엔진 고도화</div></div>
-  <div style="padding:14px 44px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;">
+  <div style="padding:14px 44px 0;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch;">
     <div class="dn-done">
       <div class="dn-hd"><span class="chip">DONE</span> 현재 완료 <span style="margin-left:auto" class="tag t-ver">검증</span></div>
       <ul>
