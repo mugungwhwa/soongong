@@ -28,9 +28,15 @@ function LoginForm() {
     setError(null);
     try {
       const supabase = createClient();
-      const redirectTo =
-        (process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin) +
-        "/auth/callback";
+      // SOO-146 로그인 게이트 복귀 계약: 게이트가 실은 `next`(예: /today?upload=1)를
+      // 인증 콜백까지 그대로 실어보낸다. /auth/callback 이 next 로 redirect 하므로
+      // 로그인 완료 후 원래 화면으로 돌아오고, ?upload=1 이면 업로드 시트가 자동 재오픈된다.
+      // SOO-260630-02 OTP 전환 시에도 이 next 전달은 반드시 보존할 것.
+      const origin = process.env.NEXT_PUBLIC_APP_URL ?? window.location.origin;
+      const next = searchParams.get("next");
+      const redirectTo = `${origin}/auth/callback${
+        next ? `?next=${encodeURIComponent(next)}` : ""
+      }`;
 
       const { error: err } = await supabase.auth.signInWithOtp({
         email,

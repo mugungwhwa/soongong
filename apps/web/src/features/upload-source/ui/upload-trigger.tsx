@@ -1,13 +1,13 @@
 "use client";
 import { Button } from "@/shared/ui/button";
-import { useUploadSheetStore } from "../model/upload-sheet-store";
+import { useTriggerUpload } from "../model/use-trigger-upload";
 
 export function UploadTrigger() {
-  const openSheet = useUploadSheetStore((s) => s.openSheet);
+  const triggerUpload = useTriggerUpload();
   return (
     <Button
       className="bg-[var(--color-mint-500)] text-[var(--color-text-inverse)] hover:bg-[var(--color-mint-700)]"
-      onClick={openSheet}
+      onClick={triggerUpload}
     >
       + 문제 출제하기
     </Button>

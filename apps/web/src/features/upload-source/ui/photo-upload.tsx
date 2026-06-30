@@ -1,11 +1,12 @@
 "use client";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/shared/ui/button";
 import { ChevronLeft, Loader2, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/client";
 import { createSource, uploadSourceFile, runIntakePipeline } from "@/entities/source";
 import { ROUTES } from "@/shared/config/routes";
+import { buildLoginGateUrl } from "../model/login-gate";
 
 type AnalysisStep = "idle" | "upload" | "ocr" | "quest";
 
@@ -20,6 +21,7 @@ const ORDERED_STEPS: AnalysisStep[] = ["upload", "ocr", "quest"];
 
 export function PhotoUpload({ onBack }: { onBack: () => void }) {
   const router = useRouter();
+  const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -45,7 +47,9 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        router.push(ROUTES.login);
+        // 입구 게이트가 1차 방어. 여기 도달은 촬영 중 세션 만료 등 예외 케이스.
+        // 막다른 에러 대신 로그인으로 보내고, 완료 후 시트를 다시 연다(두 경로 동일 동작).
+        router.push(buildLoginGateUrl(pathname));
         return;
       }
 

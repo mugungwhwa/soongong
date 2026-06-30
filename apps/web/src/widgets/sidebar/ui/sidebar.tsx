@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
 import { Logo } from "@/shared/ui/logo";
-import { useUploadSheetStore } from "@/features/upload-source";
+import { useTriggerUpload } from "@/features/upload-source";
 import type { ReactNode } from "react";
 
 /**
@@ -106,7 +106,7 @@ const NAV_ITEMS: RailItem[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const openSheet = useUploadSheetStore((s) => s.openSheet);
+  const triggerUpload = useTriggerUpload();
 
   return (
     <aside className="hidden lg:flex w-[216px] flex-col gap-[3px] border-r border-[var(--color-border-default)] bg-[var(--color-bg-elevated)] px-3 py-[18px]">
@@ -122,7 +122,7 @@ export function Sidebar() {
       {/* "문제 찍기" 카메라 CTA = 메인 히어로 액션. 업로드 시트 트리거 재사용. */}
       <button
         type="button"
-        onClick={openSheet}
+        onClick={triggerUpload}
         aria-label="문제 찍기 — 카메라로 새 회독 만들기"
         className="mb-2.5 flex items-center justify-center gap-2 rounded-[var(--radius-md)] bg-[var(--color-primary-cta)] p-3 text-sm font-extrabold text-[var(--color-text-inverse)] shadow-[var(--shadow-card)] transition-transform hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2"
       >

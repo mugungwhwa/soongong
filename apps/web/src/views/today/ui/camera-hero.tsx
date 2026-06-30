@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useUploadSheetStore } from "@/features/upload-source";
+import { useTriggerUpload } from "@/features/upload-source";
 
 /**
  * 카메라 = 메인 히어로 액션 — SOO-128 프로토타입(.cam-hero.mascot) 정합.
@@ -10,12 +10,12 @@ import { useUploadSheetStore } from "@/features/upload-source";
  * 배선은 건드리지 않음(MOAT, Mike 소유). 색은 tokens.css 변수만, light-only.
  */
 export function CameraHero() {
-  const openSheet = useUploadSheetStore((s) => s.openSheet);
+  const triggerUpload = useTriggerUpload();
 
   return (
     <button
       type="button"
-      onClick={openSheet}
+      onClick={triggerUpload}
       aria-label="문제 찍어 새 회독 만들기"
       className="relative flex w-full items-center gap-4 overflow-hidden rounded-[var(--radius-xl)] bg-[linear-gradient(120deg,var(--color-mint-700),var(--color-mint-900))] p-5 text-left text-[var(--color-text-inverse)] shadow-[var(--shadow-elevated)]"
     >
