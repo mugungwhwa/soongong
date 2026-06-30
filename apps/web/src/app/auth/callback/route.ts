@@ -1,47 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import type { CookieOptions } from "@supabase/ssr";
 
-function safeRedirectPath(value: string | null): string {
-  if (!value) return "/today";
-  // Allow only same-origin relative paths: must start with "/" but not "//"
-  // "//" would be interpreted as a protocol-relative URL pointing to an external host
-  if (value.startsWith("/") && !value.startsWith("//")) return value;
-  return "/today";
-}
-
+// OTP 코드 방식으로 전환 후 이 콜백은 사용되지 않습니다.
+// 기존 매직링크 이메일을 클릭한 사용자를 로그인 화면으로 안내합니다.
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const code = searchParams.get("code");
-  const next = safeRedirectPath(searchParams.get("next"));
-
-  if (!code) {
-    return NextResponse.redirect(new URL("/login?error=missing_code", request.url));
-  }
-
-  const cookieStore = await cookies();
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
-        },
-      },
-    },
-  );
-
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
-    return NextResponse.redirect(new URL("/login?error=auth_failed", request.url));
-  }
-
-  return NextResponse.redirect(new URL(next, request.url));
+  return NextResponse.redirect(new URL("/login?error=auth_failed", request.url));
 }
