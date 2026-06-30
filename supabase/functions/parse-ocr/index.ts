@@ -1,5 +1,6 @@
 // deno-lint-ignore-file
 import { generateObject, OCR_SYSTEM, getModel } from "../_shared/ai.ts";
+import { withCors } from "../_shared/cors.ts";
 import { ocrParsedSchema } from "../_shared/schemas.ts";
 import { getAdminClient } from "../_shared/supabase.ts";
 
@@ -9,7 +10,7 @@ const OCR_PROMPT =
   "이 문제 이미지에서 문제 본문, 선지, 조건, 수식(LaTeX), 그림 설명, 학생 표시(밑줄·동그라미·메모)를 분리해서 JSON으로 추출하라. " +
   "수식은 LaTeX로, 학생 필기/메모는 student_note로 분리. 인식 불가 영역은 extracted_text에 [불명] 표기.";
 
-Deno.serve(async (req: Request) => {
+Deno.serve(withCors(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
@@ -123,7 +124,7 @@ Deno.serve(async (req: Request) => {
   if (insertError) return new Response(insertError.message, { status: 500 });
 
   return Response.json(plo);
-});
+}));
 
 // Mathpix stub — ENABLE_MATHPIX=true 전환 시 SOO-58에서 실연결
 async function callMathpixStub(_imageUrl: string): Promise<string | null> {

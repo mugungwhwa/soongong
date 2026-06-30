@@ -1,10 +1,11 @@
 // deno-lint-ignore-file
 import { getAdminClient } from "../_shared/supabase.ts";
+import { withCors } from "../_shared/cors.ts";
 
 const TEMPORARY_RETENTION_DAYS = 30;
 const DERIVED_ONLY_RETENTION_DAYS = 7;
 
-Deno.serve(async (req: Request) => {
+Deno.serve(withCors(async (req: Request) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   const supabase = getAdminClient();
@@ -51,4 +52,4 @@ Deno.serve(async (req: Request) => {
   }
 
   return Response.json({ deleted, failed, total: expired.length });
-});
+}));

@@ -1,6 +1,7 @@
 import { getAdminClient } from "../_shared/supabase.ts";
+import { withCors } from "../_shared/cors.ts";
 
-Deno.serve(async (_req) => {
+Deno.serve(withCors(async (_req) => {
   const supabase = getAdminClient();
   const today = new Date().toISOString().slice(0, 10);
 
@@ -57,4 +58,4 @@ Deno.serve(async (_req) => {
   }
 
   return Response.json({ built, users: users.length, date: today });
-});
+}));

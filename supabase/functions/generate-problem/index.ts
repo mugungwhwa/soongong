@@ -2,6 +2,7 @@
 // SOO-64: generate-problem — 오답 학습객체 1건 → 약점 정조준 변형 문항 1개 (1:1).
 // 난이도는 get_target_difficulty RPC(level+mode) 결과만 적용 — 생성 코드 자체산정 0.
 import { generateObject, getModel, GEN_SYSTEM, SELF_CHECK_SYSTEM, DEFAULT_MODEL } from "../_shared/ai.ts";
+import { withCors } from "../_shared/cors.ts";
 import { generatedProblemSchema, selfCheckSchema } from "../_shared/schemas.ts";
 import { getAdminClient } from "../_shared/supabase.ts";
 import { evaluateGenerationEligibility, intersectWrongReasons, meaningfulWrongReasons } from "./eligibility.ts";
@@ -21,7 +22,7 @@ interface TargetDifficulty {
   mode: string; // "rebuild" | "maintain" | "stretch"
 }
 
-Deno.serve(async (req: Request) => {
+Deno.serve(withCors(async (req: Request) => {
   if (req.method !== "POST") {
     return new Response("Method not allowed", { status: 405 });
   }
@@ -170,7 +171,7 @@ Deno.serve(async (req: Request) => {
   if (insertError) return new Response(insertError.message, { status: 500 });
 
   return Response.json(row);
-});
+}));
 
 function buildGenPrompt(
   plo: {
