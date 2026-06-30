@@ -1,5 +1,6 @@
 // deno-lint-ignore-file
 import { getAdminClient } from "../_shared/supabase.ts";
+import { withCors } from "../_shared/cors.ts";
 import { generateObject } from "../_shared/ai.ts";
 import { complianceSchema } from "../_shared/schemas.ts";
 
@@ -17,7 +18,7 @@ const COMPLIANCE_PROMPT = `
 응답은 한국어 reason 포함.
 `.trim();
 
-Deno.serve(async (req: Request) => {
+Deno.serve(withCors(async (req: Request) => {
   if (req.method !== "POST") return new Response("Method not allowed", { status: 405 });
 
   const { source_id } = await req.json();
@@ -93,4 +94,4 @@ Deno.serve(async (req: Request) => {
   }
 
   return Response.json(check);
-});
+}));

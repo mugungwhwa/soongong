@@ -1,10 +1,11 @@
 import { getAdminClient } from "../_shared/supabase.ts";
+import { withCors } from "../_shared/cors.ts";
 
 type ReviewGrade = "clear" | "fuzzy" | "blank";
 const VALID_GRADES = new Set<ReviewGrade>(["clear", "fuzzy", "blank"]);
 const VALID_RESULTS = new Set(["correct", "wrong", "partial"]);
 
-Deno.serve(async (req) => {
+Deno.serve(withCors(async (req) => {
   const { quest_id, result, grade, solve_time_seconds, hint_used, confidence } =
     await req.json();
 
@@ -98,7 +99,7 @@ Deno.serve(async (req) => {
   });
 
   return Response.json({ next_variation: nextV, next_days: nextDays, grade: resolvedGrade });
-});
+}));
 
 function gradeToResult(grade: ReviewGrade): "correct" | "wrong" {
   return grade === "clear" ? "correct" : grade === "fuzzy" ? "correct" : "wrong";

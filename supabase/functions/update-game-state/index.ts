@@ -1,6 +1,7 @@
 // P7: 회독 완료 시 호출 → XP / 스트릭 / HP / 뱃지 일괄 업데이트
 // SSoT: 01_제품_UX_게임화/게임성_기획_구조.md v1.0
 import { getAdminClient } from "../_shared/supabase.ts";
+import { withCors } from "../_shared/cors.ts";
 
 const XP_RULES = {
   today_quest_done: 20,
@@ -36,7 +37,7 @@ type QuestResult = {
   grade?: ReviewGrade;  // 3단계 자가평가; 없으면 result로 폴백
 };
 
-Deno.serve(async (req) => {
+Deno.serve(withCors(async (req) => {
   const { user_id, quest_result }: { user_id: string; quest_result: QuestResult } = await req.json();
   const supabase = getAdminClient();
 
@@ -110,7 +111,7 @@ Deno.serve(async (req) => {
   await awardBadges(supabase, user_id, { streak, hp, total_xp: newXp, quest_result });
 
   return Response.json({ xp_delta: xpDelta, streak, hp, total_xp: newXp, rank: newRank, today_xp: todayXp });
-});
+}));
 
 async function awardBadges(
   supabase: ReturnType<typeof getAdminClient>,
