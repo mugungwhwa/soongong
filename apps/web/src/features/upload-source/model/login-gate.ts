@@ -6,10 +6,10 @@ import { ROUTES } from "@/shared/config/routes";
  * 입구 게이트(useTriggerUpload)와 제출 시점 폴백(photo-upload / capture-note-form)이
  * **같은 규칙**으로 로그인 URL을 만들도록 한 곳에 모은다 → 두 업로드 경로 동작 통일.
  *
- * 복귀 계약(02 리드와 합의 대상):
+ * 복귀 계약(SOO-145 PR 162 OTP 동선과 정합):
  *  - 게이트는 `/login?next=<현재경로+?upload=1>` 로 보낸다.
- *  - 로그인 완료 후 인증 콜백/플로우는 `next` 경로로 그대로 돌아와야 한다
- *    (`/auth/callback` 은 이미 safeRedirectPath 로 next 를 따라감 — 매직링크/OTP 무관).
+ *  - 로그인 페이지가 OTP 인증 성공 시 `next` 경로로 `router.push` 한다
+ *    (login/page.tsx 의 safeNext + verifyOtp 동선 — 같은 탭에서 복귀).
  *  - 복귀 화면에서 `?upload=1` 을 감지하면 업로드 시트를 자동으로 다시 연다(GlobalUploadSheet).
  */
 
