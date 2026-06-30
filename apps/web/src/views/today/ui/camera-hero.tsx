@@ -33,10 +33,10 @@ export function CameraHero() {
         className="relative z-[1] h-[88px] w-[88px] shrink-0 object-contain drop-shadow-[0_6px_12px_rgba(0,0,0,0.18)] sm:h-[104px] sm:w-[104px]"
       />
       <span className="relative z-[1] min-w-0 flex-1">
-        <span className="block text-lg font-extrabold tracking-tight">
+        <span className="block break-keep text-lg font-extrabold tracking-tight [overflow-wrap:break-word]">
           문제 찍어 새 회독 만들기
         </span>
-        <span className="block text-sm opacity-90">
+        <span className="block break-keep text-sm opacity-90 [overflow-wrap:break-word]">
           틀린 문제·인강 캡처 한 장이면 AI가 회독퀘스트로
         </span>
       </span>
