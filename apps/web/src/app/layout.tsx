@@ -3,6 +3,7 @@ import "pretendard/dist/web/static/pretendard.css";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { PwaInit } from "@/shared/ui/PwaInit";
+import { AppToaster } from "@/shared/ui/app-toaster";
 
 export const metadata: Metadata = {
   title: "순공대장",
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         <PwaInit />
         {children}
+        <AppToaster />
       </body>
     </html>
   );
