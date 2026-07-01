@@ -4,9 +4,18 @@ import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/shared/ui/button";
 import { ChevronLeft, Loader2, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/client";
-import { createSource, uploadSourceFile, runIntakePipeline } from "@/entities/source";
+import {
+  createSource,
+  uploadSourceFile,
+  runComplianceAndOcr,
+  finalizeIntake,
+  type OcrDetection,
+} from "@/entities/source";
+import type { Subject } from "@/shared/contracts/common";
 import { ROUTES } from "@/shared/config/routes";
 import { buildLoginGateUrl } from "../model/login-gate";
+import { normalizeSubject, isLowConfidence } from "../model/subject";
+import { SubjectConfirm } from "./subject-confirm";
 
 type AnalysisStep = "idle" | "upload" | "ocr" | "quest";
 
@@ -26,6 +35,8 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [step, setStep] = useState<AnalysisStep>("idle");
+  const [detection, setDetection] = useState<OcrDetection | null>(null);
+  const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const loading = step !== "idle";
@@ -38,6 +49,16 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
     setFile(f);
     setPreview(URL.createObjectURL(f));
     setError(null);
+  }
+
+  /** 완료: 상단 토스트로 알리고 촬영 모달을 닫으며 오늘의 회독으로 하드 내비게이션. */
+  function finishToToday() {
+    try {
+      sessionStorage.setItem("soongong:intakeToast", "회독퀘스트가 등록되었습니다");
+    } catch {
+      /* sessionStorage 접근 불가 환경 무시 */
+    }
+    window.location.assign(ROUTES.today);
   }
 
   async function handleSubmit() {
@@ -59,23 +80,58 @@ export function PhotoUpload({ onBack }: { onBack: () => void }) {
       const source = await createSource({ source_type: "problem_photo", raw_url: rawUrl });
       if (!source) throw new Error("저장 실패");
 
-      // compliance + OCR 단계. generate-problem은 내부에서 keepalive로 백그라운드 진행.
+      // compliance + OCR 까지만. 과목 판별 결과를 받아 확정/수정 UI를 띄운다(SOO-150).
       setStep("ocr");
-      await runIntakePipeline(source.source_id);
-      setStep("quest");
-      // 완료: 상단 토스트로 알리고 촬영 모달을 닫으며 오늘의 회독으로 이동.
-      // sessionStorage로 토스트 메시지를 전달 → 하드 내비게이션(촬영 모달 닫힘 +
-      // 오늘의 회독 목록 최신 갱신) 후 AppToaster가 상단 토스트로 띄운다.
-      try {
-        sessionStorage.setItem("soongong:intakeToast", "회독퀘스트가 등록되었습니다");
-      } catch {
-        /* sessionStorage 접근 불가 환경 무시 */
+      const det = await runComplianceAndOcr(source.source_id);
+      if (!det) {
+        // OCR 미적재(문제 사진 아님/부적격) — 확정할 과목이 없으니 기존 동작대로 오늘의 회독으로.
+        finishToToday();
+        return;
       }
-      window.location.assign(ROUTES.today);
+      // 과목 확정 카드 표시(로딩 종료). 확정 시 finalizeIntake로 퀘스트 생성.
+      setDetection(det);
+      setStep("idle");
     } catch (e) {
       setError(e instanceof Error ? e.message : "오류가 발생했어요.");
       setStep("idle");
     }
+  }
+
+  async function handleConfirmSubject(subject: Subject) {
+    if (!detection) return;
+    setConfirming(true);
+    setError(null);
+    try {
+      await finalizeIntake({
+        objectId: detection.objectId,
+        userId: detection.userId,
+        subject,
+      });
+      finishToToday();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "과목 저장 중 오류가 발생했어요.");
+      setConfirming(false);
+    }
+  }
+
+  // OCR 완료 → 과목 확정/수정 단계. 판별 실패·저신뢰면 폴백(직접 선택).
+  if (detection) {
+    const normalized = normalizeSubject(detection.subject);
+    const needsSelection = normalized === null || isLowConfidence(detection.confidence);
+    return (
+      <div className="space-y-4">
+        <button onClick={onBack} className="flex items-center gap-1 text-sm text-muted-foreground">
+          <ChevronLeft size={16} /> 뒤로
+        </button>
+        <SubjectConfirm
+          detected={normalized}
+          needsSelection={needsSelection}
+          submitting={confirming}
+          onConfirm={handleConfirmSubject}
+        />
+        {error && <p className="text-destructive text-sm">{error}</p>}
+      </div>
+    );
   }
 
   return (
