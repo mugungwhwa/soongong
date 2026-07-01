@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ROUTES } from "@/shared/config/routes";
-import { useUploadSheetStore } from "@/features/upload-source";
+import { useTriggerUpload } from "@/features/upload-source";
 import type { ReactNode } from "react";
 
 /**
@@ -89,7 +89,7 @@ const RIGHT_ITEMS: TabItem[] = [
 
 export function BottomNav() {
   const pathname = usePathname();
-  const openSheet = useUploadSheetStore((s) => s.openSheet);
+  const triggerUpload = useTriggerUpload();
 
   const renderTab = (item: TabItem) => {
     const isActive = pathname === item.href;
@@ -120,7 +120,7 @@ export function BottomNav() {
       {/* 중앙 카메라 FAB = 메인 히어로 액션. 업로드 시트 트리거 재사용. */}
       <button
         type="button"
-        onClick={openSheet}
+        onClick={triggerUpload}
         aria-label="카메라로 문제 출제하기"
         className="flex flex-none flex-col items-center"
       >

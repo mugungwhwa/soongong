@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useUploadSheetStore } from "../model/upload-sheet-store";
+import { useTriggerUpload } from "../model/use-trigger-upload";
 
 /**
  * 카메라 캡처 자산(순공이+카메라) 단일 참조 경로.
@@ -20,11 +20,11 @@ export const CAMERA_CAPTURE_ASSET = "/mascot/camera-capture-alpha.png";
  * 그림자는 `--shadow-elevated` 단독(토스풍 중첩 금지 — design-review §2-4).
  */
 export function CameraCaptureFab() {
-  const openSheet = useUploadSheetStore((s) => s.openSheet);
+  const triggerUpload = useTriggerUpload();
   return (
     <button
       type="button"
-      onClick={openSheet}
+      onClick={triggerUpload}
       aria-label="카메라로 문제 출제하기"
       className="group fixed bottom-8 right-8 z-50 hidden flex-col items-center gap-1.5 rounded-full transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-mint-500)] focus-visible:ring-offset-2 lg:flex"
     >

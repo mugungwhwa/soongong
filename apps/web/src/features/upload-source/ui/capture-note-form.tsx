@@ -1,12 +1,13 @@
 "use client";
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import { Label } from "@/shared/ui/label";
 import { ChevronLeft, Loader2, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/shared/lib/supabase/client";
 import { createSource, uploadSourceFile, runIntakePipeline } from "@/entities/source";
+import { buildLoginGateUrl } from "../model/login-gate";
 
 type AnalysisStep = "idle" | "upload" | "ocr" | "quest";
 
@@ -21,6 +22,7 @@ const ORDERED_STEPS: AnalysisStep[] = ["upload", "ocr", "quest"];
 
 export function CaptureNoteForm({ onBack }: { onBack: () => void }) {
   const router = useRouter();
+  const pathname = usePathname();
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -46,7 +48,12 @@ export function CaptureNoteForm({ onBack }: { onBack: () => void }) {
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("로그인이 필요합니다.");
+      if (!user) {
+        // 입구 게이트가 1차 방어. 막다른 에러("로그인이 필요합니다") 결함 흡수 —
+        // photo-upload 와 동일하게 로그인으로 보내고 완료 후 시트를 다시 연다.
+        router.push(buildLoginGateUrl(pathname));
+        return;
+      }
 
       const rawUrl = await uploadSourceFile(user.id, file);
       if (!rawUrl) throw new Error("업로드 실패");
