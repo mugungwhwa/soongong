@@ -9,7 +9,8 @@ export type SubjectGroup =
   | "korean"
   | "english"
   | "social"
-  | "science";
+  | "science"
+  | "other";
 
 export interface SubjectRoutingResult {
   routing_id: string;
