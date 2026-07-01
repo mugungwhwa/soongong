@@ -16,6 +16,7 @@ import type {
   PipelineOutput,
 } from "@/shared/contracts/pipeline";
 import type { TypePatternCard } from "@/entities/type-pattern";
+import { detectSubject } from "@/entities/subject-routing";
 import { generateV1Variation } from "./variation-v1";
 import { generateV2Variation } from "./variation-v2";
 
@@ -41,27 +42,13 @@ export async function stageSubmit(input: SubmitInput): Promise<SubmitOutput> {
 }
 
 // ─── Stage 2: Route ─────────────────────────────────────────────────────────
-// 간단한 키워드 휴리스틱으로 과목 감지 (AI 라우팅 이전 배관용).
+// detectSubject(entities/subject-routing/lib)로 과목 감지 — 수학·영어·국어·과학·사회·기타.
 // Submit 직후 실행 — 감지된 subject를 Stage 3 Recognize에 전달해 정합성 확보.
-
-const MATH_KEYWORDS = ["함수", "미분", "적분", "방정식", "부등식", "벡터", "확률", "통계", "수열", "극값", "삼각", "수학"];
-const KOR_KEYWORDS  = ["문학", "독서", "화법", "작문", "문법", "국어", "현대시", "소설", "비문학"];
-const ENG_KEYWORDS  = ["영어", "grammar", "reading", "어법", "독해", "vocabulary", "english"];
-
-function detectSubjectFromText(text: string): { subject: string; group: "math" | "korean" | "english" } {
-  const lower = text.toLowerCase();
-  const mathScore = MATH_KEYWORDS.filter((kw) => text.includes(kw)).length;
-  const korScore  = KOR_KEYWORDS.filter((kw) => text.includes(kw)).length;
-  const engScore  = ENG_KEYWORDS.filter((kw) => lower.includes(kw)).length;
-
-  if (mathScore >= korScore && mathScore >= engScore) return { subject: "수학", group: "math" };
-  if (engScore >= korScore) return { subject: "영어", group: "english" };
-  return { subject: "국어", group: "korean" };
-}
+// 저신뢰(needsConfirmation=true) 시 final_subject=기타, UI는 SOO-260701-01이 처리.
 
 export async function stageRoute(input: RouteInput): Promise<RouteOutput> {
   const supabase = createServiceClient();
-  const { subject, group } = detectSubjectFromText(input.rawText);
+  const detected = detectSubject(input.rawText);
 
   const { data, error } = await supabase
     .from("subject_routing_results")
@@ -69,17 +56,21 @@ export async function stageRoute(input: RouteInput): Promise<RouteOutput> {
       source_id: input.sourceId,
       user_id: input.userId,
       source_type: input.sourceType,
-      detected_subject: subject,
-      subject_confidence: 0.5, // 키워드 휴리스틱 고정값
-      subject_group: group,
-      needs_user_confirmation: false,
-      final_subject: subject,
+      detected_subject: detected.needsConfirmation ? null : detected.label,
+      subject_confidence: detected.confidence,
+      subject_group: detected.group,
+      needs_user_confirmation: detected.needsConfirmation,
+      final_subject: detected.label, // 기타 포함 — 사용자 확정 전까지의 best-guess
     })
     .select("routing_id")
     .single();
 
   if (error || !data) throw new Error(`[route] ${error?.message ?? "insert failed"}`);
-  return { routingId: data.routing_id as string, detectedSubject: subject, finalSubject: subject };
+  return {
+    routingId: data.routing_id as string,
+    detectedSubject: detected.label,
+    finalSubject: detected.label,
+  };
 }
 
 // ─── Stage 3: Recognize (STUB) ──────────────────────────────────────────────

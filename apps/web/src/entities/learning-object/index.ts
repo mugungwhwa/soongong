@@ -11,3 +11,5 @@ export {
   getLearningObjectsByIds,
   getLearningObjectsByUser,
 } from "./api";
+
+export { updateLearningObjectSubject } from "./actions";
