@@ -3,20 +3,22 @@ name: arch-lint
 # soongong 네이티브 FSD 아키텍처 게이트 (SOO-67)
 # 레이어 단방향 의존 위반 시 PR 실패. Treenod arch-guard 외부 스킬 대체.
 # 아키텍처 한정 — 디자인/토큰 가드는 별도.
+#
+# [SOO-148] pull_request에서 paths 필터 제거 — 문서 전용 PR도 "FSD layer boundaries"
+# 체크를 항상 완료해 BLOCKED 방지. 실제 lint는 arch 파일 변경 시에만 실행(내부 조건부).
 
 on:
   pull_request:
-    # PR 과 main push 가 동일 경로를 감시하도록 YAML 앵커로 고정(드리프트 방지).
-    paths: &arch_paths
+    # 모든 PR에서 실행 — 경로 필터는 job 내부에서 처리 (필수 체크 BLOCKED 방지)
+  push:
+    branches: [main]
+    paths:
       - "apps/web/src/**"
       - "apps/web/.dependency-cruiser.cjs"
       - "apps/web/package.json"
       - "apps/web/tsconfig.json"
       - "package.json"
       - ".github/workflows/arch-lint.yml"
-  push:
-    branches: [main]
-    paths: *arch_paths
 
 jobs:
   fsd-arch:
@@ -27,11 +29,22 @@ jobs:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           persist-credentials: false
+          fetch-depth: 0
+
+      - name: Detect arch file changes
+        id: paths
+        run: |
+          git diff --name-only origin/${{ github.base_ref || 'main' }}...HEAD \
+            | grep -qE '^(apps/web/src/|apps/web/\.dependency-cruiser\.cjs|apps/web/package\.json|apps/web/tsconfig\.json|package\.json|\.github/workflows/arch-lint\.yml)' \
+            && echo "changed=true" >> "$GITHUB_OUTPUT" \
+            || echo "changed=false" >> "$GITHUB_OUTPUT"
 
       - name: Setup pnpm
+        if: steps.paths.outputs.changed == 'true'
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
 
       - name: Setup Node
+        if: steps.paths.outputs.changed == 'true'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           # Node 24: pnpm 11.x 는 시작 시 node:sqlite(스토어 인덱스)를 hard-require 하며,
@@ -41,7 +54,13 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.paths.outputs.changed == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: FSD architecture lint
+        if: steps.paths.outputs.changed == 'true'
         run: pnpm lint:arch
+
+      - name: No arch files changed — lint skipped
+        if: steps.paths.outputs.changed == 'false'
+        run: echo "No architecture files changed. FSD layer boundaries check passed (skipped)."
