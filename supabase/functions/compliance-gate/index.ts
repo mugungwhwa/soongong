@@ -11,7 +11,7 @@ const COMPLIANCE_PROMPT = `
 - 학생 본인 풀이/메모 → action=pass, copyright_risk=low
 - 문제집 한 페이지 통째로 업로드 → action=admin_review
 - 유료 인강 캡처 → contains_paid_lecture=true, action=derived_only (원본 장기저장 금지)
-- 수능 기출 원문 → contains_exam_original=true, action=derived_only (원본 장기저장 금지, 변형 문항만 생성 — 개발 단계 정책. 추후 실서비스 시 저작권 자문 반영 예정)
+- 수능 기출 원문 → contains_exam_original=true, action=derived_only (개발 단계: 학생 학습용 활용을 위해 체인 통과 허용. 원본 미저장·변형 전용 집행은 downstream 미구현 상태 — 실서비스 시 저작권 자문 반영해 구현 예정)
 - 학생 이름·전화번호 등 PII 노출 → contains_personal_info=true, action=redact
 - 그 외 애매한 경우 → action=admin_review
 
