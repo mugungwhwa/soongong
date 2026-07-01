@@ -15,7 +15,8 @@
     "test": "vitest",
     "test:e2e": "playwright test",
     "eval:p2": "tsx ../../eval/p2/runner.ts",
-    "eval:p3": "tsx ../../eval/p3/recurrence-e2e-smoke.ts"
+    "eval:p3": "tsx ../../eval/p3/recurrence-e2e-smoke.ts",
+    "ingest:csat": "tsx scripts/ingest-csat-problems.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
