@@ -13,7 +13,8 @@
     "lint:images": "bash scripts/check-image-deprecated.sh --all",
     "test": "pnpm --filter web test",
     "test:e2e": "pnpm --filter web test:e2e",
-    "eval:p3": "pnpm --filter web eval:p3"
+    "eval:p3": "pnpm --filter web eval:p3",
+    "ingest:csat": "pnpm --filter web ingest:csat"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
