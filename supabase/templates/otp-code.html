@@ -1,0 +1,130 @@
+<!--
+  순공대장 인증 코드 발송 이메일 (Supabase Auth · OTP)
+
+  연동: Supabase 이메일 템플릿. 코드 입장 방식이므로 {{ .Token }}(6자리)를 강조한다.
+  플레이스홀더(Supabase Go template):
+    {{ .Token }}    6자리 인증 코드
+    {{ .SiteURL }}  배포 사이트 URL (자산 절대경로/도움말 링크에 사용)
+    {{ .Email }}    수신자 이메일 (현재 미사용)
+
+  ⚠️ 색상 값 주의: 이메일 클라이언트는 외부 CSS/CSS변수(tokens.css)를 로드하지 못하므로
+  인라인 hex가 불가피하다. 아래 hex는 모두 apps/web/src/shared/styles/tokens.css 에서
+  가져온 값이며 tokens.css 가 단일 SSoT다(여기 값은 사본이 아니라 렌더용 인라인).
+    크림 배경      #F8FBF7  (--color-bg)
+    카드 흰색      #FFFFFF  (--color-surface/inverse)
+    민트 50 틴트   #ECF7F2  (--color-mint-50)
+    민트 300       #A8DCCB  (--color-mint-300)
+    민트 700 CTA   #4CAF88  (--color-primary-cta / mint-700)
+    민트 900 텍스트 #2E7D5B  (--color-mint-900)
+    본문 강조      #2E2E2E  (--color-text-strong)
+    본문 기본      #6E6E6E  (--color-text-default)
+    본문 흐림      #9B9B9B  (--color-text-muted)
+    보더 소프트    #E3EDE7  (--color-border-default)
+
+  톤(§8 폐기 정책): 동반자·가치 기반. fear/죄책감/passive-aggressive 카피 금지.
+-->
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>순공대장 인증 코드</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#F8FBF7; -webkit-text-size-adjust:100%;">
+    <!-- 프리헤더(받은편지함 미리보기) -->
+    <div style="display:none; max-height:0; overflow:hidden; opacity:0; color:#F8FBF7; font-size:1px; line-height:1px;">
+      순공대장 입장 코드예요. 10분 안에 입력해 주세요.
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#F8FBF7;">
+      <tr>
+        <td align="center" style="padding:32px 16px;">
+          <!-- 카드 -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px; width:100%; background-color:#FFFFFF; border:1px solid #E3EDE7; border-radius:24px; overflow:hidden;">
+            <!-- 브랜드 헤더 -->
+            <tr>
+              <td align="center" style="background-color:#ECF7F2; padding:28px 24px 20px;">
+                <img
+                  src="{{ .SiteURL }}/mascot/main-half-cheer-alpha.png"
+                  width="96"
+                  height="96"
+                  alt="순공이"
+                  style="display:block; width:96px; height:96px; margin:0 auto 8px;"
+                />
+                <div style="font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:18px; font-weight:800; color:#2E7D5B; letter-spacing:-0.01em;">
+                  순공대장
+                </div>
+              </td>
+            </tr>
+
+            <!-- 본문 -->
+            <tr>
+              <td style="padding:28px 28px 8px; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+                <h1 style="margin:0 0 8px; font-size:22px; font-weight:800; color:#2E2E2E; text-align:center; letter-spacing:-0.01em;">
+                  입장 코드가 도착했어요
+                </h1>
+                <p style="margin:0 0 24px; font-size:14px; line-height:1.6; color:#6E6E6E; text-align:center;">
+                  아래 6자리 코드를 로그인 화면에 입력하면 바로 입장해요.
+                </p>
+              </td>
+            </tr>
+
+            <!-- 코드 강조 박스 -->
+            <tr>
+              <td style="padding:0 28px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#ECF7F2; border:1px solid #A8DCCB; border-radius:16px;">
+                  <tr>
+                    <td align="center" style="padding:22px 16px;">
+                      <div style="font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif; font-size:34px; font-weight:800; letter-spacing:0.32em; color:#2E7D5B; text-indent:0.32em;">
+                        {{ .Token }}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- 만료 안내 -->
+            <tr>
+              <td style="padding:16px 28px 4px; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+                <p style="margin:0; font-size:13px; line-height:1.6; color:#9B9B9B; text-align:center;">
+                  이 코드는 <strong style="color:#6E6E6E;">10분 후 만료</strong>돼요.<br />
+                  코드가 만료되면 로그인 화면에서 새 코드를 받을 수 있어요.
+                </p>
+              </td>
+            </tr>
+
+            <!-- 안심 카피(동반자 톤) -->
+            <tr>
+              <td style="padding:20px 28px 28px; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E3EDE7;">
+                  <tr>
+                    <td style="padding-top:16px;">
+                      <p style="margin:0; font-size:12px; line-height:1.7; color:#9B9B9B; text-align:center;">
+                        직접 로그인을 시도하지 않았다면 이 메일은 무시해도 괜찮아요.<br />
+                        코드는 누구에게도 알려주지 마세요.
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+
+          <!-- 푸터 -->
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:440px; width:100%;">
+            <tr>
+              <td align="center" style="padding:20px 16px 0; font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+                <p style="margin:0; font-size:11px; line-height:1.6; color:#9B9B9B;">
+                  순공대장 · 까먹기 전에 다시 만나요
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
