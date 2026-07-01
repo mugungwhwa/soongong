@@ -5,9 +5,14 @@ import type { Subject } from "@/shared/contracts";
 
 /** 과목 이모지는 표시용 매핑(도메인 데이터 아님). */
 const SUBJECT_EMOJI: Record<Subject, string> = {
+  국어: "📚",
   수학: "📐",
   영어: "📖",
-  국어: "📚",
+  사회탐구: "🌏",
+  과학탐구: "🔬",
+  직업탐구: "🛠️",
+  한국사: "🏛️",
+  "제2외국어/한문": "🗣️",
 };
 
 export function SubjectProgress() {

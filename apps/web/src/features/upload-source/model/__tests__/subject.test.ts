@@ -6,20 +6,28 @@ import {
 } from "../subject";
 
 describe("normalizeSubject", () => {
-  it("계약 3과목은 그대로 통과", () => {
+  it("수능 영역 정규 라벨은 그대로 통과", () => {
+    expect(normalizeSubject("국어")).toBe("국어");
     expect(normalizeSubject("수학")).toBe("수학");
     expect(normalizeSubject("영어")).toBe("영어");
-    expect(normalizeSubject("국어")).toBe("국어");
+    expect(normalizeSubject("한국사")).toBe("한국사");
+    expect(normalizeSubject("직업탐구")).toBe("직업탐구");
+    expect(normalizeSubject("제2외국어/한문")).toBe("제2외국어/한문");
   });
 
   it("앞뒤 공백은 trim 후 매칭", () => {
     expect(normalizeSubject("  수학 ")).toBe("수학");
   });
 
-  it("계약 밖 과목(과학·사회·기타 등)은 null → 폴백 유도", () => {
-    expect(normalizeSubject("과학")).toBeNull();
-    expect(normalizeSubject("사회")).toBeNull();
+  it("엔진 약식 라벨은 수능 영역으로 접어준다", () => {
+    expect(normalizeSubject("과학")).toBe("과학탐구");
+    expect(normalizeSubject("사회")).toBe("사회탐구");
+    expect(normalizeSubject("한문")).toBe("제2외국어/한문");
+  });
+
+  it("매핑 대상 없는 값(기타 등)은 null → 폴백 유도", () => {
     expect(normalizeSubject("기타")).toBeNull();
+    expect(normalizeSubject("음악")).toBeNull();
   });
 
   it("빈/미상 입력은 null", () => {

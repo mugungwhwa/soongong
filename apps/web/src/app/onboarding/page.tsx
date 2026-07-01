@@ -12,7 +12,16 @@ type Step = "birth" | "subjects" | "upload";
 type UploadPhase = "idle" | "analyzing" | "reveal";
 
 const STEP_INDEX: Record<Step, number> = { birth: 0, subjects: 1, upload: 2 };
-const SUBJECT_ICONS: Record<Subject, string> = { 수학: "📐", 영어: "📖", 국어: "📚" };
+const SUBJECT_ICONS: Record<Subject, string> = {
+  국어: "📚",
+  수학: "📐",
+  영어: "📖",
+  사회탐구: "🌏",
+  과학탐구: "🔬",
+  직업탐구: "🛠️",
+  한국사: "🏛️",
+  "제2외국어/한문": "🗣️",
+};
 
 function ProgressBar({ current }: { current: Step }) {
   const idx = STEP_INDEX[current];

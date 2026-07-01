@@ -12,7 +12,7 @@ import { SUBJECTS, type Subject } from "@/shared/contracts/common";
  * - 판별 실패/저신뢰: "과목을 선택해주세요" 폴백 — 프리셀렉트 없이 직접 고르게 한다.
  *
  * 확정값은 {@link finalizeIntake}로 넘어가 SMI·퀘스트 subject에 반영된다(수정 저장).
- * 과목 목록은 Tech Lead 소유 계약(`SUBJECTS`, 3과목)을 그대로 쓴다 — 확장은 계약 경유(§ subject.ts).
+ * 과목 목록은 Tech Lead 소유 계약(`SUBJECTS`, 수능 영역)을 그대로 쓴다 — 표시 우선순위는 계약 배열 순서.
  */
 export function SubjectConfirm({
   detected,

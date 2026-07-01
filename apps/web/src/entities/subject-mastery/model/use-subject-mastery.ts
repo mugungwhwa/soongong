@@ -14,9 +14,14 @@ export interface SubjectMastery {
 }
 
 const MASTERY_BY_SUBJECT: Record<Subject, number> = {
+  국어: 62,
   수학: 70,
-  영어: 60,
-  국어: 56,
+  영어: 58,
+  사회탐구: 45,
+  과학탐구: 48,
+  직업탐구: 30,
+  한국사: 66,
+  "제2외국어/한문": 22,
 };
 
 const MOCK_SUBJECT_MASTERY: SubjectMastery[] = SUBJECTS.map((subject) => ({
