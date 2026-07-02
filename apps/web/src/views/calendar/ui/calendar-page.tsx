@@ -1,22 +1,19 @@
 import { Bell } from "lucide-react";
-import { Mascot } from "@/shared/ui/mascot";
 import { ReviewCalendar } from "@/widgets/review-calendar";
 
 export function CalendarPage() {
   return (
     <div className="p-4 lg:p-6 max-w-2xl mx-auto">
-      {/* 헤더 */}
+      {/* 헤더 — 순공이는 ReviewCalendar 위젯(히어로)에서 유지하고, 헤더의 장식 마스코트는
+          제거한다(SOO-157: 1 뷰포트 = 마스코트 1개). */}
       <header className="flex items-center justify-between gap-3 mb-5">
-        <div className="flex items-center gap-3">
-          <Mascot mood="cheer" size="md" />
-          <div>
-            <h1 className="text-lg font-bold text-[var(--color-text-strong)]">
-              회독 캘린더
-            </h1>
-            <p className="text-xs text-[var(--color-text-muted)]">
-              1/3/7/14일 회독 일정을 한눈에 확인해요
-            </p>
-          </div>
+        <div>
+          <h1 className="text-lg font-bold text-[var(--color-text-strong)]">
+            회독 캘린더
+          </h1>
+          <p className="text-xs text-[var(--color-text-muted)]">
+            1/3/7/14일 회독 일정을 한눈에 확인해요
+          </p>
         </div>
 
         <button

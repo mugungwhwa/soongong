@@ -16,7 +16,7 @@
 
 순공대장: 수능생 듀오링고형 AI **회독 리텐션 엔진**. 학생이 문제사진/인강기록/캡처를 올리면 AI Agent가 1/3/7/14일 회독퀘스트로 변환. **콴다는 학생의 '막힘'을 풀고, 순공대장은 학생의 '까먹음'을 푼다** (전략정리 §0). SparkClaw 1인 창업 트랙 8주 MVP 1차.
 
-## 2. 잠긴 결정사항 (디자인 값·스펙 충돌 시 `/styleguide` + `tokens.css` + design-system-lock v2.2 우선 — 구 시안 `app_UI.png`/`web_ui.png`는 폐기. §8 폐기 정책 위반 제안은 정책 우선)
+## 2. 잠긴 결정사항 (디자인 값·스펙 충돌 시 `/styleguide` + `tokens.css` + design-system-lock v2.3 우선 — 구 시안 `app_UI.png`/`web_ui.png`는 폐기. §8 폐기 정책 위반 제안은 정책 우선)
 
 | 항목 | 값 | SSoT |
 |---|---|---|
@@ -24,7 +24,7 @@
 | UI 라벨 | "회독퀘스트" / 백서 = "회독" / 저니탭(뉴럴 망각맵, /journey) = "순공냅스" | 핵심요약.md |
 | 톤 | Light Study Garden — **Light 단일 톤** (구 바다/Ocean 컨셉 명칭 폐기) | UI 설계.md §1 |
 | 컬러 | 크림 `#F8FBF7` + **v2 Teal/Mint** `#A8DCCB`/`#7BC4AE`/`#4CAF88` + 위험도(소프트). 구 오션 폐기 | docs/design-system/2026-06-09-design-system-lock.md (v2.0, SOO-260616-01) |
-| 디자인 SSoT | `/styleguide` + `tokens.css` + design-system-lock v2.2 (구 시안 `app_UI.png`/`web_ui.png`는 **폐기 — SSoT 아님**) | docs/design-system/2026-06-09-design-system-lock.md |
+| 디자인 SSoT | `/styleguide` + `tokens.css` + design-system-lock v2.3 (구 시안 `app_UI.png`/`web_ui.png`는 **폐기 — SSoT 아님**) | docs/design-system/2026-06-09-design-system-lock.md |
 | 시각 자산 | Midjourney + Canva (Mike 직접, **외주 없음**) | docs/visual-assets/...asset-inventory.md |
 | 디자인 reference | 듀오링고 + 카카오 헤이바이브 + 클래스101 + Pretendard (토스 차용 X) | UI 설계.md §1-2 비교 레퍼런스 |
 | 스택 | Next.js 15 + FSD 2.1 + Tailwind + shadcn + Supabase + Anthropic | docs/...master.md |
@@ -124,10 +124,10 @@ docs/
 ├── visual-assets/2026-05-18-character-design-agent.md  ← DEPRECATED, ui-master §4로 이관 (stub만 유지)
 ├── superpowers/specs/2026-05-18-ui-master-design.md  ← UI master SSoT (디자인 시스템 + 캐릭터 production + 에이전트 dispatch + 리서치 + 모션 + 6게이트)
 ├── visual-assets/mascot-v0.1/                         ← Mike 작업본 reference (main.png, repeat_normal.png)
-├── design-system/2026-06-09-design-system-lock.md    ← 디자인 시스템 잠금 v2.2 (v2 Teal/Mint 팔레트·로고 A·레이아웃·반응형·마스코트 SSoT)
+├── design-system/2026-06-09-design-system-lock.md    ← 디자인 시스템 잠금 v2.3 (v2 Teal/Mint 팔레트·로고 A·레이아웃·반응형·마스코트 SSoT + 노출 밀도)
 └── agent-strategy/2026-05-14-agent-tracks.md          ← 듀얼 트랙 (시각 specialist cross-link §8)
 01_제품_UX_게임화/순공대장_UI_설계.md (v2.3 SSoT)
-tokens.css + design-system-lock v2.2 (디자인 값/스펙 SSoT) — 구 app_UI.png / web_ui.png 시안은 폐기(SSoT 아님)
+tokens.css + design-system-lock v2.3 (디자인 값/스펙 SSoT) — 구 app_UI.png / web_ui.png 시안은 폐기(SSoT 아님)
 /styleguide (공개 라이브 가이드 URL · noindex unlisted, 접근: docs/ops/styleguide-review-access.md) ← 디자인·브랜드 가이드라인 시각적 출발점/근간
 ```
 
@@ -222,6 +222,7 @@ cd apps/web && pnpm dev
 | **v2.3** | **2026-06-21** | **§5 `/styleguide` 설명 'preview 전용 고정 리뷰 URL' → '공개 라이브 가이드 URL · noindex unlisted'. SOO-106 자산화로 `/styleguide`가 통합 라이브 가이드 + Mike 체크포인트 열람 수단이 되어, `page.tsx` env 게이트(production 404)를 제거하고 모든 환경 공개로 전환(검색 비노출 noindex 유지). 접근 가이드 `docs/ops/styleguide-review-access.md` 동기 갱신 (SOO-106 후속, Orchestration Lead 경유 Mike 요청).** |
 | **v2.4** | **2026-07-01** | **머지 게이트 정책 전환 — 코드래빗 필수 → 아키텍처 린트 하드 게이트 + 에이전트 리뷰 프로세스 게이트 (Mike 결정, 코드래빗 유료 거부). 룰2: '코드래빗 approve = 필수' → '아키텍처 린트(FSD layer boundaries) 필수 + Tech Lead 구조 리뷰(에이전트) 프로세스 게이트, 코드래빗 보조(옵션)'. 룰4: 코드래빗 역할 보조·옵션으로 강등 명시. 룰5: 자동 머지 조건 '코드래빗 approve' → '아키텍처 린트 통과'로 갱신. 머지 게이트 섹션 헤더 일자 추가. 트레이드오프 주석 추가(하드 게이트 단일화·리뷰 품질 에이전트 프로세스 의존·되돌리기 가능). GitHub 룰셋 main-protection(id 17492174): required_approving_review_count 1→0 + FSD layer boundaries 필수 상태 체크 신설(이미 실행). (SOO-148)** |
 | **v2.5** | **2026-07-02** | **design-system-lock 참조 v2.1→v2.2 동기화(§7 텍스트 표준 신설분 반영). 글로벌 텍스트 표준(한글 `word-break: keep-all` + `text-wrap: balance/pretty`, i18n 기반 next-intl 채택 검토·미착수 권고, 초월번역 원칙 적용 기준)을 `docs/design-system/2026-07-02-text-i18n-standard.md`로 신설·SSoT화 (SOO-158, 플랫폼·인프라 리드).** |
+| **v2.6** | **2026-07-02** | **design-system-lock 참조 v2.2→v2.3 동기화 — §5-4 마스코트 노출 밀도 규칙("1 뷰포트 = 순공이 최대 1개") 신설분 반영. 홈 외 화면 마스코트 중복 정리(diary·calendar 헤더 장식 마스코트 제거) 착수 (SOO-157, UI·디자인 리드).** |
 
 ---
 
