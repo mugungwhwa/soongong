@@ -48,8 +48,17 @@ export interface QuestionDNA {
   representation: "수식형";
   /** 조건 구조: 초항 a_1 값 */
   initial: number;
-  /** 요구값: a_k 의 k */
+  /** 요구값: a_k 의 k. 목표가 합/극한(단일 항 아님)일 때는 placeholder(기본값). */
   targetIndex: number;
+  /**
+   * 목표(요구값)의 종류 — 파서 커버리지 확장(SOO-162 S1).
+   *   - "term"  : 단일 항 a_k (기존 유일 지원 형태, 기본값)
+   *   - "sum"   : 합(Σ / 시그마) 목표
+   *   - "limit" : 극한(lim) 목표
+   * 합/극한 원문은 점화식 구조만 복원해 term/2항 재훈련 변형(V1/V2)의 소스로 쓴다.
+   * (합/극한 전용 변형 형태 자체는 변형정책 = 별도 설계 결정 범위.)
+   */
+  targetKind?: "term" | "sum" | "limit";
   /** 풀이전략의 골격 — V1 변형에서 form 불변 */
   recurrence: RecurrenceSpec;
 }
@@ -93,30 +102,79 @@ export function normalize(text: string): string {
     .trim();
 }
 
+// ─── 전처리: 실 OCR 산출 텍스트 정식화 (SOO-162 S1) ──────────────────────────
+// 실 OCR 이 산출하는 원문은 파서가 모르는 표기를 포함한다. 파서에 닿기 전 이를
+// 표준 형태로 정식화한다. 예전에는 이 단계가 평가 하네스에만 있어 실 파이프라인
+// (parseRecurrenceDNA)을 탄 실 OCR 경로(Pass A)는 항상 0/10 이었다 → 여기로 이관.
+//  (1) 정의역 표기 "(n=1, 2, 3, ...)" / "(n≥1)" / "(단, n≥1)" 제거
+//        → 파서 RHS 추출이 쉼표·괄호에서 끊기는 문제 해소
+//  (2) 연결어 "성립할 때"/"만족할 때"/"만족시킬 때"/"만족시키는" → 파서가 아는 "일 때"
+// 멱등(idempotent): 두 번 적용해도 결과 동일 — 하네스 Pass B(이중 적용)에도 안전.
+export function preprocessProblemText(text: string): string {
+  return text
+    // 정의역 표기: 괄호 안에 n 과 (=1 | ≥ | >= | \geq) 가 함께 오는 절 제거
+    .replace(/\((?:단,?\s*)?[^)]*n\s*(?:=\s*1|≥|>=|\\geq|\\ge)[^)]*\)/g, " ")
+    // 선행 조사(이/가/은/는/을/를) 포함 연결어구 → 파서가 아는 "일 때"
+    .replace(/(?:이|가|은|는|을|를)?\s*(?:성립할|만족할|만족시킬|만족시키는|만족하는)\s*때/g, "일 때")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 // ─── 파서: 문항 DNA 분해 ──────────────────────────────────────────────────────
+
+/** 계수 숫자 리터럴: 정수 · 소수 · 단순분수(a/b) — 유리수 계수 허용(SOO-162 S1). */
+const NUM = String.raw`\d+(?:\.\d+)?|\d+\/\d+`;
+
+/**
+ * 계수 문자열(NUM 형태)을 수치로 변환. 정수/소수/단순분수 지원. 실패 시 null.
+ * 주: 부동소수 표현 — 비순환 소수(예: 1/3)는 근사값이 된다(파서 인식 목적).
+ */
+function parseCoefficient(raw: string): number | null {
+  const s = raw.trim();
+  const frac = s.match(/^(\d+)\/(\d+)$/);
+  if (frac) {
+    const den = Number(frac[2]);
+    if (den === 0) return null;
+    return Number(frac[1]) / den;
+  }
+  if (/^\d+(?:\.\d+)?$/.test(s)) return Number(s);
+  return null;
+}
 
 /** 정규화된 RHS 문자열에서 점화식 구조를 분해. 실패 시 null. */
 function parseRecurrence(rhs: string): RecurrenceSpec | null {
   const body = rhs.replace(/\s+/g, "");
 
   // 다항 증분 먼저: an + c·n (+ d)  — 'an' 이외의 독립 n 항이 있을 때.
-  //   an+2n, an+2n+1, an-3n+2 ...
-  const poly = body.match(/^an([+-])(\d*)n(?:([+-])(\d+))?$/);
+  //   an+2n, an+2n+1, an-3n+2, an+(1/2)n ...  (c·d 유리수 허용)
+  const poly = body.match(new RegExp(`^an([+-])\\(?(${NUM})?\\)?n(?:([+-])(${NUM}))?$`));
   if (poly) {
     const cSign = poly[1] === "-" ? -1 : 1;
-    const cMag = poly[2] === "" ? 1 : Number(poly[2]);
+    const cMag = poly[2] === undefined ? 1 : parseCoefficient(poly[2]);
+    if (cMag === null) return null;
     const c = cSign * cMag;
-    const d = poly[3] ? (poly[3] === "-" ? -1 : 1) * Number(poly[4]) : 0;
+    let d = 0;
+    if (poly[3]) {
+      const dMag = parseCoefficient(poly[4]);
+      if (dMag === null) return null;
+      d = (poly[3] === "-" ? -1 : 1) * dMag;
+    }
     if (!Number.isFinite(c) || c === 0) return null;
     return { form: "poly_increment", c, d };
   }
 
-  // 선형: (p)an (+ q)   — p 생략 시 1, q 생략 시 0.
-  //   3an+1, an+3, 2an-3, an
-  const lin = body.match(/^(\d*)an(?:([+-])(\d+))?$/);
+  // 선형: (p)an (+ q)   — p 생략 시 1, q 생략 시 0.  (p·q 유리수 허용)
+  //   3an+1, an+3, 2an-3, an, 0.5an+1, (1/2)an-1
+  const lin = body.match(new RegExp(`^\\(?(${NUM})?\\)?an(?:([+-])(${NUM}))?$`));
   if (lin) {
-    const p = lin[1] === "" ? 1 : Number(lin[1]);
-    const q = lin[2] ? (lin[2] === "-" ? -1 : 1) * Number(lin[3]) : 0;
+    const p = lin[1] === undefined ? 1 : parseCoefficient(lin[1]);
+    if (p === null) return null;
+    let q = 0;
+    if (lin[2]) {
+      const qMag = parseCoefficient(lin[3]);
+      if (qMag === null) return null;
+      q = (lin[2] === "-" ? -1 : 1) * qMag;
+    }
     if (!Number.isFinite(p)) return null;
     return { form: "linear", p, q };
   }
@@ -124,14 +182,19 @@ function parseRecurrence(rhs: string): RecurrenceSpec | null {
   return null;
 }
 
+/** 합/극한 목표의 targetIndex placeholder — 실제 요구값은 targetKind 가 기술.
+ *  (V1/V2 생성은 자체 인덱스를 쓰므로 이 값은 소스 계보 기록용일 뿐.) */
+const DEFAULT_TARGET_INDEX = 5;
+
 /**
  * 점화식 문제 텍스트를 문항 DNA로 분해한다.
- * 대상: a_1 초항 + a_{n+1}=... 점화식 + a_k 요구값.
+ * 대상: a_1 초항 + a_{n+1}=... 점화식 + 요구값(a_k · 합Σ · 극한lim).
+ * 실 OCR 원문을 위해 전처리(preprocessProblemText)를 내부에서 먼저 적용한다(SOO-162 S1).
  * 파싱 불가(점화식 아님/모호) 시 null → 호출부가 V0로 폴백.
  */
 export function parseRecurrenceDNA(text: string): QuestionDNA | null {
   if (!text || !text.trim()) return null;
-  const s = normalize(text);
+  const s = normalize(preprocessProblemText(text));
 
   // 초항 a1 = <int>
   const initMatch = s.match(/a1\s*=\s*(-?\d+)/);
@@ -139,7 +202,8 @@ export function parseRecurrenceDNA(text: string): QuestionDNA | null {
   const initial = Number(initMatch[1]);
 
   // 점화식 RHS: an+1 = <rhs>  (',' 또는 '일 때'/'일때' 또는 문장부호 전까지)
-  const recMatch = s.match(/an\+1\s*=\s*([^,]+?)\s*(?:일\s*때|일때|$|\.|\?)/);
+  //   마침표는 소수점(0.5)과 구분하기 위해 '숫자가 뒤따르지 않는 .' 만 종결자로 취급.
+  const recMatch = s.match(/an\+1\s*=\s*([^,]+?)\s*(?:일\s*때|일때|$|\.(?!\d)|\?)/);
   if (!recMatch) return null;
   const recurrence = parseRecurrence(recMatch[1]);
   if (!recurrence) return null;
@@ -152,7 +216,21 @@ export function parseRecurrenceDNA(text: string): QuestionDNA | null {
     const idx = Number(m[1]);
     if (idx >= 1) targetIndex = idx; // 마지막(요구값) 채택
   }
-  if (targetIndex === null || targetIndex < 1) return null;
+
+  // 목표 종류 판정: 단일 항(a_k) → 없으면 합(Σ)/극한(lim) 목표 지원(SOO-162 S1).
+  //   합/극한은 점화식 구조만 복원해 term/2항 재훈련 변형의 소스로 삼는다.
+  let targetKind: "term" | "sum" | "limit";
+  if (targetIndex !== null && targetIndex >= 1) {
+    targetKind = "term";
+  } else if (/합|Σ|∑|시그마/.test(s)) {
+    targetKind = "sum";
+    targetIndex = DEFAULT_TARGET_INDEX;
+  } else if (/lim|극한/.test(s)) {
+    targetKind = "limit";
+    targetIndex = DEFAULT_TARGET_INDEX;
+  } else {
+    return null;
+  }
 
   return {
     concept: "수열_점화식",
@@ -160,6 +238,7 @@ export function parseRecurrenceDNA(text: string): QuestionDNA | null {
     representation: "수식형",
     initial,
     targetIndex,
+    targetKind,
     recurrence,
   };
 }
