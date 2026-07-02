@@ -2,6 +2,11 @@ import { createClient } from "@/shared/lib/supabase/client";
 import type { Quest } from "./model";
 import type { ReviewGrade } from "@/shared/contracts";
 
+/** KST(Asia/Seoul) 기준 오늘 날짜 문자열 "YYYY-MM-DD". 테스트에서 vi.setSystemTime으로 제어 가능. */
+export function getKstTodayStr(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" }).format(new Date());
+}
+
 export interface QuestEnriched {
   quest: Quest;
   subject: string;
@@ -15,16 +20,17 @@ export interface QuestEnriched {
  *  FSD entity 간 import 금지 — 직접 Supabase 쿼리로 3개 테이블 처리. */
 export async function getTodayQuestsEnriched(userId: string): Promise<QuestEnriched[]> {
   const supabase = createClient();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getKstTodayStr();
 
   const { data: questData, error: questError } = await supabase
     .from("review_quests")
     .select("*")
     .eq("user_id", userId)
-    .eq("due_date", today)
-    .eq("quest_mode", "today")
-    .order("reward_xp", { ascending: false })
-    .limit(3);
+    .lte("due_date", today)                            // overdue(놓친 회독) 포함
+    .in("quest_mode", ["today", "memory_defense"])     // 알럿과 동일한 모드 범위
+    .eq("status", "pending")                           // 완료 회독 제외
+    .order("due_date", { ascending: true })            // 오래된 것 우선
+    .order("reward_xp", { ascending: false });
 
   if (questError) {
     console.error("[quest/api] getTodayQuestsEnriched:", questError.message);
@@ -87,15 +93,16 @@ export async function getTodayQuestsEnriched(userId: string): Promise<QuestEnric
 
 export async function getTodayQuestsFromDb(userId: string): Promise<Quest[]> {
   const supabase = createClient();
-  const today = new Date().toISOString().slice(0, 10);
+  const today = getKstTodayStr();
   const { data, error } = await supabase
     .from("review_quests")
     .select("*")
     .eq("user_id", userId)
-    .eq("due_date", today)
-    .eq("quest_mode", "today")
-    .order("reward_xp", { ascending: false })
-    .limit(3);
+    .lte("due_date", today)
+    .in("quest_mode", ["today", "memory_defense"])
+    .eq("status", "pending")
+    .order("due_date", { ascending: true })
+    .order("reward_xp", { ascending: false });
 
   if (error) {
     console.error("[quest/api] getTodayQuestsFromDb:", error.message);
