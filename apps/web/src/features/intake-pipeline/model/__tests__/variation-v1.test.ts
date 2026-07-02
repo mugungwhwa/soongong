@@ -6,6 +6,7 @@ import {
   parseRecurrenceDNA,
   solveRecurrence,
   generateV1Variation,
+  preprocessProblemText,
   type QuestionDNA,
 } from "../variation-v1";
 
@@ -149,5 +150,88 @@ describe("generateV1Variation — 숫자 변형 + 풀이 보존", () => {
 
   it("파싱 불가 입력은 null(파이프라인이 V0로 폴백)", () => {
     expect(generateV1Variation("주제 찾기 비문학 지문")).toBeNull();
+  });
+});
+
+// ─── SOO-162 S1: 파서 커버리지 확장 ─────────────────────────────────────────────
+
+describe("전처리 정식화 — 실 OCR 원문(Pass A)이 파이프라인에서 통과한다", () => {
+  it("정의역 표기 (n=1,2,3,...) + '성립할 때' 원문을 DNA로 분해한다", () => {
+    // 04번 유형(2010학년도 10월 7번): 이전엔 하네스 preprocess 밖(Pass A)에서 파싱 실패.
+    const raw =
+      "수열 {a_n}에 대하여 a_1 = 2, a_{n+1} = 3a_n - 3 (n=1, 2, 3, ...) 이 성립할 때, a_6 - a_5 의 값은?";
+    const dna = parseRecurrenceDNA(raw);
+    expect(dna).not.toBeNull();
+    expect(dna!.initial).toBe(2);
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 3, q: -3 });
+    expect(dna!.targetKind).toBe("term");
+  });
+
+  it("'(n≥1)' 정의역 표기와 '만족시킬 때' 도 정식화한다", () => {
+    const raw = "a_1 = 1, a_{n+1} = 2a_n + 1 (n≥1) 을 만족시킬 때 a_4 의 값은?";
+    const dna = parseRecurrenceDNA(raw);
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 2, q: 1 });
+  });
+
+  it("preprocessProblemText 는 멱등이다(두 번 적용해도 동일)", () => {
+    const raw = "a_{n+1} = 2a_n + 1 (n=1, 2, 3, ...) 을 만족할 때";
+    const once = preprocessProblemText(raw);
+    expect(preprocessProblemText(once)).toBe(once);
+    expect(once).not.toContain("(n=1");
+    expect(once).toContain("일 때");
+  });
+});
+
+describe("목표범위 확장 — 합(Σ)·극한(lim) 목표를 인식한다", () => {
+  it("합(Σ) 목표 문제도 점화식 구조를 복원한다(05번 유형)", () => {
+    // 05번(2011학년도 7월 12번): 목표가 단일 항 a_k 가 아니라 '합' → 이전엔 파싱 실패.
+    const raw =
+      "수열 {a_n}이 a_1 = 1, a_{n+1} = 2a_n + 1 (n=1, 2, 3, ...) 을 만족할 때, 합 1/(log_2(a_n+1) log_2(a_{n+1}+1)) 의 값은?";
+    const dna = parseRecurrenceDNA(raw);
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 2, q: 1 });
+    expect(dna!.targetKind).toBe("sum");
+  });
+
+  it("극한(lim) 목표 문제도 점화식 구조를 복원한다", () => {
+    const raw = "a_1 = 3, a_{n+1} = a_n + 2n (n≥1) 일 때, lim a_n 의 값은?";
+    const dna = parseRecurrenceDNA(raw);
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "poly_increment", c: 2, d: 0 });
+    expect(dna!.targetKind).toBe("limit");
+  });
+
+  it("합/극한 소스로도 V1 변형이 생성되고 풀이 보존된다", () => {
+    const raw = "a_1 = 1, a_{n+1} = 2a_n + 1 (n=1, 2, 3, ...) 을 만족할 때, 합 ... 의 값은?";
+    const v = generateV1Variation(raw, 7);
+    expect(v).not.toBeNull();
+    // 생성된 term 변형은 같은 풀이법으로 정확히 풀린다
+    expect(solveRecurrence(v!.dna.recurrence, v!.dna.initial, v!.dna.targetIndex)).toBe(v!.answer);
+  });
+});
+
+describe("계수 범위 확장 — 유리수 계수(소수·분수)를 인식한다", () => {
+  it("소수 계수 0.5a_n 을 분해한다", () => {
+    const dna = parseRecurrenceDNA("$a_1 = 8$, $a_{n+1} = 0.5a_n + 1$ 일 때 $a_3$의 값은?");
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 0.5, q: 1 });
+  });
+
+  it("분수 계수 (1/2)a_n 을 분해한다", () => {
+    const dna = parseRecurrenceDNA("$a_1 = 8$, $a_{n+1} = (1/2)a_n - 1$ 일 때 $a_3$의 값은?");
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 0.5, q: -1 });
+  });
+
+  it("유리수 상수항 a_n + 3/2 도 분해한다", () => {
+    const dna = parseRecurrenceDNA("$a_1 = 1$, $a_{n+1} = a_n + 3/2$ 일 때 $a_3$의 값은?");
+    expect(dna).not.toBeNull();
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 1, q: 1.5 });
+  });
+
+  it("정수 계수는 기존과 동일하게 정수로 분해한다(회귀 방지)", () => {
+    const dna = parseRecurrenceDNA("$a_1 = 2$, $a_{n+1} = 3a_n + 1$ 일 때 $a_3$의 값은?");
+    expect(dna!.recurrence).toEqual({ form: "linear", p: 3, q: 1 });
   });
 });

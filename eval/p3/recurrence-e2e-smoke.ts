@@ -138,7 +138,10 @@ const FIXTURES: Fixture[] = [
 
 // ── 텍스트 정규화(진단용) ─────────────────────────────────────────────────────
 // 실 OCR 산출 텍스트가 파서에 닿기 전 거쳐야 할 "전처리"의 최소 형태.
-// 현재 파이프라인에는 이 전처리 단계가 없다 — 이 하네스가 그 부재를 드러낸다.
+// [SOO-162 S1] 이 전처리는 이제 파이프라인(parseRecurrenceDNA → preprocessProblemText)
+//   안으로 이관되었다. 따라서 Pass A(실 OCR 원문)도 파서 진입 시 동일 전처리를 거쳐,
+//   Pass A ≈ Pass B 로 수렴한다. 이 로컬 사본은 멱등이라 Pass B(이중 적용)에도 무해한
+//   중복 안전망으로만 남는다(대조군 유지 목적).
 //  (1) 정의역 표기 "(n=1, 2, 3, ...)" 제거 — 파서 RHS 추출의 쉼표 차단 해소
 //  (2) 연결어 "성립할 때"/"만족할 때"/"만족시킬 때" → 파서가 아는 "일 때"로 치환
 function preprocess(text: string): string {
@@ -271,7 +274,8 @@ console.log(`픽스처 페이지: ${FIXTURES.length}/${EXPECTED_FIXTURE_COUNT}`)
 console.log(`Pass A (실 OCR 그대로)  V1=${rawAgg.v1} V2=${rawAgg.v2} 합산(생성)=${rawAgg.any}/${total} (${pct(rawAgg.any)})`);
 console.log(`Pass B (전처리 후)      V1=${preAgg.v1} V2=${preAgg.v2} 합산(생성)=${preAgg.any}/${total} (${pct(preAgg.any)})`);
 console.log(`→ 엔진은 진짜(stub 아님): 전처리 후 생성된 변형은 독립 오라클 재계산과 정답 일치.`);
-console.log(`→ 그러나 현 파이프라인엔 (a) OCR (b) 텍스트 전처리 단계가 없어, 실 OCR 자동 생성은 ${rawAgg.any}/${total}.`);
+console.log(`→ [SOO-162 S1] 텍스트 전처리가 파이프라인으로 이관되어 Pass A(실 OCR 원문)=${rawAgg.any}/${total} 로 상승(0→${rawAgg.any}).`);
+console.log(`→ 남은 격차는 (a) OCR 자체 + 형태 범위밖(비선형/조건분기/확통) — S2(LLM 파싱)·S3(비전) 후속 과제.`);
 
 // ── P3 정확도 게이트 (SSoT: CLAUDE.md §4) ───────────────────────────────────────
 // 미달 시 P4 진입 차단 + 수동 폴백 활성. 리포팅(METRIC)은 유지하고, 게이트로 강제한다.
