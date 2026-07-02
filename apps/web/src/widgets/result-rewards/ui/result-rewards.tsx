@@ -6,6 +6,12 @@ import { MascotReaction } from "@/shared/ui/mascot-reaction";
 import { XpCounter } from "./xp-counter";
 import { useGameState } from "@/entities/user-game-state";
 import { resultToMood } from "@/entities/game/lib/mascot-mood";
+import {
+  rankAccent,
+  rankAccentBg,
+  rankIsIridescent,
+  RANK_LEGEND_GRADIENT,
+} from "@/entities/game/lib/rank-color";
 
 export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
   const s = useGameState();
@@ -48,10 +54,33 @@ export function ResultRewards({ earnedXp = 60 }: { earnedXp?: number }) {
             <div className="text-[var(--color-text-muted)]">기억 HP</div>
           </div>
           <div>
+            {/* 등급 = 레벨업 축하 존(SOO-159). 등급색 emblem + 절제된 spring 등장 —
+                결과 화면 게임성 상한 50% 내(네온·파티클 X). 등급색이 성취의 신분증. */}
             <div className="flex justify-center">
-              <Trophy size={28} strokeWidth={1.5} style={{ color: "var(--color-mint-700)" }} />
+              <motion.div
+                className="grid size-11 place-items-center rounded-full"
+                style={{
+                  background: rankIsIridescent(s.rank)
+                    ? RANK_LEGEND_GRADIENT
+                    : rankAccentBg(s.rank),
+                  boxShadow: `inset 0 0 0 1.5px ${rankAccent(s.rank)}`,
+                }}
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.35, type: "spring", stiffness: 260, damping: 16 }}
+              >
+                <Trophy
+                  size={22}
+                  strokeWidth={1.6}
+                  style={{
+                    color: rankIsIridescent(s.rank)
+                      ? "var(--color-text-strong)"
+                      : rankAccent(s.rank),
+                  }}
+                />
+              </motion.div>
             </div>
-            <div className="font-semibold">{s.rank}</div>
+            <div className="mt-1 font-semibold">{s.rank}</div>
             <div className="text-[var(--color-text-muted)]">등급</div>
           </div>
         </div>

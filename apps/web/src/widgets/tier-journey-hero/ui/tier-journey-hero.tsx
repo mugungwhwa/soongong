@@ -3,6 +3,12 @@ import Link from "next/link";
 import { useGameState } from "@/entities/user-game-state";
 import { ROUTES } from "@/shared/config/routes";
 import type { UserRank } from "@/shared/contracts";
+import {
+  rankAccent,
+  rankAccentBg,
+  rankIsIridescent,
+  RANK_LEGEND_GRADIENT,
+} from "@/entities/game/lib/rank-color";
 import { ChevronRight, MapPin, Trophy } from "lucide-react";
 
 // §6-1 — 게임성_기획_구조.md v1.0 SSoT 누적 XP 임계값
@@ -49,11 +55,35 @@ function computeTierInfo(xp: number) {
  * 오늘 홈 상단 컴팩트 strip — 현재 등급 + 진행바 + 다음 목표를 한 줄 띠로.
  * design-review §2-3: 홈 게임성 강도 50%(2026-06-20 Mike, 30→50) — 활기 OK이되
  * 다크/미등록 네온·glow 남발 금지. 여정 서사(6노드/CTA)는 /journey 화면 담당.
+ *
+ * accent (SOO-159 등급색 보상):
+ *  - "brand"(기본) — 홈 등 브랜드색 유지 존. v2 Teal/Mint 그대로.
+ *  - "grade" — 내기록·프로필 등 등급색 존. emblem·"지금 여기" 라벨·진행바를
+ *    현재 등급색으로 accent(등급 = 시각적 신분증). 등급명은 대비 위해 text-strong 유지.
  */
-export function TierJourneyHero() {
+export function TierJourneyHero({
+  accent = "brand",
+}: {
+  accent?: "brand" | "grade";
+} = {}) {
   const { totalXp } = useGameState();
   const { current, next, remaining, progressPct, isMax } =
     computeTierInfo(totalXp);
+
+  const isGrade = accent === "grade";
+  const gradeAccent = isGrade ? rankAccent(current.name) : undefined;
+  const emblemBg =
+    isGrade && rankIsIridescent(current.name)
+      ? RANK_LEGEND_GRADIENT
+      : isGrade
+        ? rankAccentBg(current.name)
+        : undefined;
+  const emblemStyle = isGrade
+    ? {
+        background: emblemBg,
+        boxShadow: `inset 0 0 0 1.5px ${gradeAccent}`,
+      }
+    : undefined;
 
   return (
     <Link
@@ -66,15 +96,19 @@ export function TierJourneyHero() {
         <span
           aria-hidden="true"
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-mint-50)] text-xl leading-none"
+          style={emblemStyle}
         >
           {current.emoji}
         </span>
         <div className="min-w-0">
-          <span className="flex items-center gap-1 text-[0.6rem] font-bold uppercase tracking-wider text-[var(--color-mint-700)]">
+          <span
+            className="flex items-center gap-1 text-[0.6rem] font-bold uppercase tracking-wider text-[var(--color-mint-700)]"
+            style={isGrade ? { color: gradeAccent } : undefined}
+          >
             <MapPin
               size={9}
               strokeWidth={2}
-              color="var(--color-mint-700)"
+              color={isGrade ? gradeAccent : "var(--color-mint-700)"}
               fill="none"
               aria-hidden="true"
             />
@@ -115,7 +149,10 @@ export function TierJourneyHero() {
                 {remaining.toLocaleString()} XP
               </strong>
             </span>
-            <span className="flex-shrink-0 font-extrabold text-[var(--color-mint-500)]">
+            <span
+              className="flex-shrink-0 font-extrabold text-[var(--color-mint-500)]"
+              style={isGrade ? { color: gradeAccent } : undefined}
+            >
               {progressPct}%
             </span>
           </div>
@@ -129,7 +166,10 @@ export function TierJourneyHero() {
           >
             <div
               className="h-full rounded-[var(--radius-pill)] bg-[var(--color-mint-500)] transition-[width] duration-[var(--duration-slow)] ease-[var(--ease-out-soft)]"
-              style={{ width: `${progressPct}%` }}
+              style={{
+                width: `${progressPct}%`,
+                background: isGrade ? gradeAccent : undefined,
+              }}
             />
           </div>
         </div>

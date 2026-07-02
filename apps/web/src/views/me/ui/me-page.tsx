@@ -5,6 +5,12 @@ import { Card } from "@/shared/ui/card";
 import { StatCard } from "@/shared/ui/stat-card";
 import { TierJourneyHero } from "@/widgets/tier-journey-hero";
 import { useGameState } from "@/entities/user-game-state";
+import {
+  rankAccent,
+  rankAccentBg,
+  rankIsIridescent,
+  RANK_LEGEND_GRADIENT,
+} from "@/entities/game/lib/rank-color";
 import { useForgettingTop } from "@/entities/forgetting";
 import { useWrongNoteReview } from "@/entities/wrong-note-review";
 import { useTodayQuests } from "@/entities/quest";
@@ -102,13 +108,32 @@ export function MePage() {
 
   return (
     <div className="mx-auto max-w-[960px] space-y-6 p-4 lg:p-8">
-      {/* 헤더 — 순공이 동반자 톤 */}
+      {/* 헤더 — 순공이 동반자 톤 + 등급 배지(등급색 존, SOO-159) */}
       <header className="flex items-center gap-4">
         <MascotReaction mood="cheer" size="lg" reason="내 기록 보기" />
         <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold text-[var(--color-text-strong)]">
-            내 기록
-          </h1>
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-[var(--color-text-strong)]">
+              내 기록
+            </h1>
+            {/* 등급 배지 = "노력의 시각적 신분증". 등급색 accent, 등급명은 대비 위해 text-strong. */}
+            <span
+              className="inline-flex items-center gap-1.5 rounded-[var(--radius-pill)] px-2.5 py-1 text-xs font-extrabold text-[var(--color-text-strong)]"
+              style={{
+                background: rankIsIridescent(s.rank)
+                  ? RANK_LEGEND_GRADIENT
+                  : rankAccentBg(s.rank),
+                boxShadow: `inset 0 0 0 1.5px ${rankAccent(s.rank)}`,
+              }}
+            >
+              <span
+                aria-hidden="true"
+                className="h-2 w-2 rounded-full"
+                style={{ background: rankAccent(s.rank) }}
+              />
+              {s.rank}
+            </span>
+          </div>
           <p className="text-sm text-[var(--color-text-muted)]">
             지금까지의 회독 여정과 기억 상태를 한눈에 모았어요.
           </p>
@@ -138,7 +163,7 @@ export function MePage() {
           </Link>
         }
       >
-        <TierJourneyHero />
+        <TierJourneyHero accent="grade" />
       </SectionCard>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

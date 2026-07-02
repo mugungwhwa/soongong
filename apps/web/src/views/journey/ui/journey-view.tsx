@@ -5,6 +5,12 @@ import { useGameState } from "@/entities/user-game-state";
 import { useJourneyMap, type ForgettingRisk } from "@/features/journey-map";
 import { Mascot } from "@/shared/ui/mascot";
 import type { UserRank } from "@/shared/contracts";
+import {
+  rankAccent,
+  rankAccentBg,
+  rankIsIridescent,
+  RANK_LEGEND_GRADIENT,
+} from "@/entities/game/lib/rank-color";
 import { ROUTES } from "@/shared/config/routes";
 import { Trophy, Check, Star, RotateCw } from "lucide-react";
 import {
@@ -126,15 +132,26 @@ export function JourneyView() {
           <div className="px-[18px] pb-[18px] pt-3.5">
             {/* 현재 등급 */}
             <div className="flex items-center gap-3.5">
+              {/* 현재 등급 emblem — 등급색(SOO-159). 하위=차분·브랜드 계열 → 상위=희소.
+                  최고 등급(순공전설)만 iridescent 그라데이션. accent-on-tint 로 대비 확보. */}
               <div
                 className="grid size-16 flex-none place-items-center rounded-full"
                 style={{
-                  background:
-                    "radial-gradient(circle at 35% 30%, #FBE7A6, #F2C94C)",
-                  boxShadow: "0 4px 12px rgba(242,201,76,0.35)",
+                  background: rankIsIridescent(current.name)
+                    ? RANK_LEGEND_GRADIENT
+                    : rankAccentBg(current.name),
+                  boxShadow: `inset 0 0 0 2px ${rankAccent(current.name)}`,
                 }}
               >
-                <Trophy size={32} color="#2E2E2E" strokeWidth={1.6} />
+                <Trophy
+                  size={32}
+                  color={
+                    rankIsIridescent(current.name)
+                      ? "var(--color-text-strong)"
+                      : rankAccent(current.name)
+                  }
+                  strokeWidth={1.6}
+                />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold text-[var(--color-text-muted)]">
@@ -165,8 +182,7 @@ export function JourneyView() {
                 className="h-full rounded-[var(--radius-pill)]"
                 style={{
                   width: `${progressPct}%`,
-                  background:
-                    "linear-gradient(90deg, var(--color-mint-500), var(--color-mint-700))",
+                  background: rankAccent(current.name),
                 }}
               />
             </div>
