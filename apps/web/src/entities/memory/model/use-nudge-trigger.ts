@@ -63,7 +63,7 @@ export function useNudgeTrigger(): NudgeState & { loading: boolean } {
             .from("review_quests")
             .select("due_date")
             .eq("user_id", user.id)
-            .in("quest_mode", ["today", "memory_defense"])
+            .in("quest_mode", ["today", "memory_defense", "wrong_recovery"])
             .eq("status", "pending")
             .lt("due_date", todayStr)
             .order("due_date", { ascending: true })
@@ -72,7 +72,7 @@ export function useNudgeTrigger(): NudgeState & { loading: boolean } {
             .from("review_quests")
             .select("*", { count: "exact", head: true })
             .eq("user_id", user.id)
-            .in("quest_mode", ["today", "memory_defense"])
+            .in("quest_mode", ["today", "memory_defense", "wrong_recovery"])
             .eq("status", "pending")
             .lt("due_date", todayStr),
         ]);

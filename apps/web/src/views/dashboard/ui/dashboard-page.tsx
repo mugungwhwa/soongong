@@ -30,7 +30,7 @@ async function fetchDashboardData(userId: string): Promise<DashboardData> {
         .from("review_quests")
         .select("status")
         .eq("user_id", userId)
-        .eq("quest_mode", "today")
+        .in("quest_mode", ["today", "wrong_recovery"])
         .eq("due_date", todayStr),
       supabase
         .from("review_quests")

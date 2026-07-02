@@ -22,7 +22,7 @@ export async function getTodayQuestsEnriched(userId: string): Promise<QuestEnric
     .select("*")
     .eq("user_id", userId)
     .eq("due_date", today)
-    .eq("quest_mode", "today")
+    .in("quest_mode", ["today", "wrong_recovery"])
     .order("reward_xp", { ascending: false })
     .limit(3);
 
@@ -93,7 +93,7 @@ export async function getTodayQuestsFromDb(userId: string): Promise<Quest[]> {
     .select("*")
     .eq("user_id", userId)
     .eq("due_date", today)
-    .eq("quest_mode", "today")
+    .in("quest_mode", ["today", "wrong_recovery"])
     .order("reward_xp", { ascending: false })
     .limit(3);
 

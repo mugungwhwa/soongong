@@ -42,3 +42,10 @@ content_path = "./templates/otp-code.html"
 
 [analytics]
 enabled = false
+
+# daily-quest-builder: 매일 자정 망각위험 SMI → 오늘의 퀘스트 3개 생성.
+# cron 스케줄은 supabase/migrations/0031_setup_daily_quest_cron.sql 로 등록.
+# 프로덕션에서는 Supabase 대시보드 → Edge Functions → Schedule 에서도 동일 등록 필요.
+[functions.daily-quest-builder]
+enabled = true
+verify_jwt = false
