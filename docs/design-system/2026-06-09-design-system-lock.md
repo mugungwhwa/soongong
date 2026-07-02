@@ -1,4 +1,4 @@
-# 순공대장 디자인 시스템 잠금 v2.1
+# 순공대장 디자인 시스템 잠금 v2.2
 
 > **⚠️ 팔레트 v2.0 (2026-06-16, SOO-260616-01)**: 색 팔레트를 구 Ocean → **v2 Teal/Mint**로 교체(Mike 명시 승인, 토큰 본체는 #58로 선반영). 아래 §1 의 스케일·hex는 모두 v2 값이며, 구 Ocean(`#2AB8D0`/`#1A8FAD`/`#0E5C82`)은 폐기. 섹션 라벨에 남은 "Ocean/o50~o900"은 히스토리 표기 — **변수 슬롯명이며 값은 v2**. 앵커 SSoT = 시안 UI EXAMPLE v1.0(`#A8DCCB`/`#7BC4AE`/`#4CAF88`/`#FFEBA3`/`#FFB4B4`/`#6BA6FF`/`#8E8E93`). primary CTA = `#4CAF88`(후보 B 확정).
 > **SSoT 출처**: SOO-19 v3 커밋 `110076f` (2026-06-09 확정, 팔레트만 v2.0에서 교체).  
@@ -249,6 +249,10 @@
 
 ---
 
+## 7. 텍스트 표준 (줄바꿈 + i18n)
+
+전역 텍스트 줄바꿈 규칙(`word-break: keep-all` CJK / `hyphens: auto` 라틴, 제목 `text-wrap: balance` / 본문 `text-wrap: pretty`), i18n 기반(next-intl) 도입 검토, 초월번역(의도보존 번역) 원칙 적용 기준은 `docs/design-system/2026-07-02-text-i18n-standard.md`가 SSoT다 — 값/규칙을 본 문서로 복붙하지 않고 경로만 참조한다 (SOO-158).
+
 ## 6. 변경 이력
 
 | 버전 | 일자 | 내용 |
@@ -256,3 +260,4 @@
 | v1.0 | 2026-06-09 | 최초 잠금. SOO-19 v3(`110076f`) 기준. Ocean 팔레트 / 로고 A / 레이아웃 v3 / 반응형 / 마스코트 placeholder 규칙 캡처. |
 | v2.0 | 2026-06-16 | **팔레트 교체: Ocean → v2 Teal/Mint** (SOO-260616-01, Mike 명시 승인). §1 전체 스케일·서피스·보더·그라데이션 hex를 v2 앵커(`#A8DCCB`/`#7BC4AE`/`#4CAF88` + 파생)로 1:1 치환. 위험도(§1-2)는 팔레트 무관 고정 유지. primary CTA `#4CAF88`(후보 B). 토큰 본체는 #58 선반영, 본 갱신은 SSoT 정합(가드레일) 후속. 로고/레이아웃/마스코트 규칙은 v1.0 그대로. |
 | v2.1 | 2026-06-19 | **§5-3 마스코트 SSoT 일원화** (SOO-82, Mike 결정). 마스코트 정본 경로를 `public/mascot/` → **`public/brand/`** 단일 SSoT로 통일. 구 `public/mascot/` 폴더(stale 중복 4종)는 삭제, 인앱 컴포넌트·목업 참조를 `brand/soongong-main.png`로 교체. 감정 상태 슬롯 표를 단일 정본 + 오버레이/필터 연출로 갱신(삭제된 `repeat_normal*` 참조 제거). 근본 원인 = 두 번째 SSoT drift(인앱이 stale `mascot/main.png` 렌더). |
+| v2.2 | 2026-07-02 | **§7 텍스트 표준(줄바꿈+i18n) 신설** — `docs/design-system/2026-07-02-text-i18n-standard.md` 크로스링크 추가 (SOO-158). |

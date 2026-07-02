@@ -27,6 +27,34 @@ body {
   font-family: var(--font-body);
 }
 
+/* 글로벌 텍스트 줄바꿈 표준 (SOO-158) — 언어별 word-break 규칙.
+   html[lang] 속성을 기준으로 삼아, 향후 i18n 도입 시 lang만 바뀌면
+   별도 클래스 없이 자동 적용된다. 문서: docs/design-system/2026-07-02-text-i18n-standard.md */
+:lang(ko),
+:lang(ja),
+:lang(zh) {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+:lang(en) {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 /* 랜딩 히어로 카메라 캡처 카드 — 부드러운 부유 모션 (SOO-127 v4 계승, 마스코트 한정 차용).
    모션 토큰(--ease-out-soft)은 tokens.css 참조. reduced-motion이면 정지. */
 @keyframes soongong-floaty {
