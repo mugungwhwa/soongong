@@ -51,15 +51,13 @@ export function DiaryPage() {
 
   return (
     <div className="p-4 lg:p-6 max-w-[640px] mx-auto">
-      {/* 헤더 */}
-      <header className="flex items-center gap-3 mb-5">
-        <Mascot mood="comfort" size="md" />
-        <div>
-          <h1 className="text-lg font-bold text-[var(--color-text-strong)]">순공일지</h1>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            오늘 무엇을 회독했는지, 순공이가 한 줄로 남겨드려요.
-          </p>
-        </div>
+      {/* 헤더 — 순공이는 오늘 카드(히어로)에서 화자로 유지하고, 헤더의 장식 마스코트는
+          제거한다(SOO-157: 1 뷰포트 = 마스코트 1개). */}
+      <header className="mb-5">
+        <h1 className="text-lg font-bold text-[var(--color-text-strong)]">순공일지</h1>
+        <p className="text-xs text-[var(--color-text-muted)]">
+          오늘 무엇을 회독했는지, 순공이가 한 줄로 남겨드려요.
+        </p>
       </header>
 
       {/* 오늘 카드 */}
